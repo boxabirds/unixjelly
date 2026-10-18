@@ -48,4 +48,4 @@ Progress (collected jellies) and sound preference are saved in the browser's `lo
 
 - The jelly wobble is ported from [Jelly Baby](https://github.com/scottstts/Jelly-Baby) by Scott Sun, which is GPL-3.0.
 - Letters use Titan One (OFL). Other fonts are Lexend, VT323 and JetBrains Mono via Google Fonts.
-- This repo has no `LICENSE` file yet. Because of the GPL-3.0 port, check licensing before redistributing.
+- This project is licensed under the GNU General Public License v3.0, because it includes code ported from a GPL-3.0 project. See [LICENSE](LICENSE).
