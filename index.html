@@ -121,22 +121,34 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .show{width:min(100cqw,160cqh);position:relative;perspective:1600px;container-type:inline-size}
 .show-card{position:relative;aspect-ratio:16/10;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.6,-0.2,.3,1.25)}
 .show-card.flipped{transform:rotateY(180deg)}
+.show-card:not(.flipped) .face.back,.show-card.flipped .face.front{pointer-events:none}
 @media (prefers-reduced-motion:reduce){.show-card{transition:none}}
 .face{position:absolute;inset:0;border:4px solid var(--ink);border-radius:24px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 6px 0 var(--ink)}
 .face.front{background:radial-gradient(120% 90% at 50% 10%,#5c3d8f 0,#2a1747 70%);display:grid;place-items:center}
 .face.back{transform:rotateY(180deg);background:linear-gradient(#3a2463 0 68%,#5b3a2a 68%)}
 .face-tag{position:absolute;right:3%;top:4%;font-family:var(--display);font-size:clamp(11px,2cqw,18px);color:#fff;background:#00000040;padding:.2em .7em;border-radius:999px}
-.crt{width:58%;aspect-ratio:4/3;background:#d9cbb0;border:4px solid var(--ink);border-radius:9% / 11%;padding:5%;position:relative;transform:translateY(-6%);box-shadow:inset -8px -10px 0 #b8a988}
+.crt{width:50%;aspect-ratio:4/3;background:#d9cbb0;border:4px solid var(--ink);border-radius:9% / 11%;padding:5%;position:relative;transform:translateY(-15%);box-shadow:inset -8px -10px 0 #b8a988}
 .crt-screen{width:100%;height:100%;background:var(--term);border-radius:7%/9%;border:3px solid var(--ink);overflow:hidden;position:relative;padding:5% 6%;font-family:var(--crt);color:var(--phos);font-size:clamp(12px,3.4cqw,32px);line-height:1.05;text-shadow:0 0 6px #4dff8b99}
 .crt-screen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(#0000 0 2px,#00000038 2px 4px);pointer-events:none}
 .crt-screen .dim{color:var(--phos-dim)}
 .cursor{display:inline-block;width:.55em;height:.9em;background:var(--phos);vertical-align:-.1em;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
 .crt-brand{position:absolute;bottom:1.5%;left:0;right:0;text-align:center;font-family:var(--display);font-size:clamp(7px,1.2cqw,12px);color:#7d6d52}
-.keyboard{position:absolute;bottom:4%;width:62%;height:12%;background:#e9dfcc;border:4px solid var(--ink);border-radius:14px;display:flex;gap:1.2%;padding:1.2%;box-shadow:0 5px 0 var(--ink)}
-.keyboard i{flex:1;background:#fff;border:2px solid var(--ink);border-radius:5px}
-.keyboard .enter{flex:3;display:grid;place-items:center;font-family:var(--display);font-style:normal;font-size:clamp(8px,1.5cqw,15px);background:var(--lemon)}
-.keyboard .enter.hit{background:var(--berry);color:#fff;transform:translateY(3px)}
+/* a drawing of a keyboard: the letter keys light up as the typist types; only Enter is a real button */
+.keyboard{position:absolute;bottom:3%;width:60%;display:grid;grid-template-columns:minmax(0,1fr) 13%;gap:1.4%;padding:1.2% 1.4%;background:#e9dfcc;border:4px solid var(--ink);border-radius:12px;box-shadow:0 5px 0 var(--ink)}
+.krows{display:grid;gap:.25cqw;pointer-events:none}
+.krow{display:flex;gap:.25cqw;justify-content:center}
+.krow:nth-child(2){padding-left:2%}
+.krow:nth-child(3){padding-left:5%}
+.key{width:5.5%;aspect-ratio:1;display:grid;place-items:center;background:#fffaf0;border:2px solid #24133b99;border-bottom-width:3px;border-radius:4px;font-family:var(--mono);font-weight:700;font-size:clamp(6px,1.05cqw,11px);color:#24133bb0;transition:background .12s,transform .12s}
+.key.space{width:40%;aspect-ratio:auto}
+.key.lit{background:var(--phos);color:var(--ink);border-color:var(--ink);transform:translateY(2px)}
+.enter{display:grid;place-items:center;align-content:center;gap:.2em;background:var(--lemon);border:3px solid var(--ink);border-bottom-width:5px;border-radius:8px;font-family:var(--display);font-size:clamp(9px,1.5cqw,15px);line-height:1;color:var(--ink);padding:0;cursor:pointer;animation:press-me 1.4s ease-in-out infinite}
+.enter small{font-family:var(--body);font-size:.62em;font-weight:600}
+.enter:disabled{cursor:default;animation:none}
+.enter:disabled small{visibility:hidden}
+.enter.hit{background:var(--berry);color:#fff;transform:translateY(3px);border-bottom-width:3px}
+@keyframes press-me{50%{box-shadow:0 0 0 .5cqw #ffc61a88}}
 .actor{position:absolute}
 .actor svg{width:100%;height:auto;display:block;overflow:visible}
 .sign{position:absolute;font-family:var(--display);color:#fff;font-size:clamp(9px,1.7cqw,16px);background:var(--ink);padding:.15em .6em;border-radius:8px;white-space:nowrap}
@@ -275,7 +287,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
       <div class="ph">
         <div class="eyebrow">The big picture · 1 of 2</div>
         <h2>The whole game</h2>
-        <p>Follow one command, <code>ls</code>, all the way down to the disk and back up. Press Next. Drag the picture to spin it.</p>
+        <p>Follow one command, <code>ls</code>, all the way down to the disk and back up. Press Next. Drag to spin it, scroll to zoom, double-click to straighten up.</p>
       </div>
       <div class="town box">
         <div class="cv"><canvas id="town" aria-label="A 3D cartoon of a computer cut into layers: you and the terminal, the shell, the kernel, the hardware and the file tree."></canvas></div>
@@ -298,7 +310,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
             <div class="face front">
               <span class="face-tag">Front: the green screen</span>
               <div class="crt"><div class="crt-screen" id="crt"></div><div class="crt-brand">JELLY-TERM 3000</div></div>
-              <div class="keyboard"><i></i><i></i><i></i><i></i><i></i><i></i><i class="enter" id="enterKey">Enter</i></div>
+              <div class="keyboard" aria-hidden="false"><div class="krows" id="krows" aria-hidden="true"></div><button class="enter" id="enterKey" aria-label="Press Enter to watch ls happen">Enter<small>press me</small></button></div>
             </div>
             <div class="face back" id="back">
               <span class="face-tag">Backstage: the crew</span>
@@ -321,7 +333,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
         </div>
       </div>
       <div class="show-ui">
-        <div class="show-cap" id="showCap" data-fit aria-live="polite"><span><b>Ready.</b> Pick a command on the right and watch what happens inside the computer.</span></div>
+        <div class="show-cap" id="showCap" data-fit aria-live="polite"><span><b>Ready.</b> Press the yellow Enter key, or pick a command on the right, and watch what happens inside the computer.</span></div>
         <div class="show-btns">
           <button class="btn" data-show="ls">Play <code>ls</code></button>
           <button class="btn" data-show="cat">Play <code>cat secret-diary.txt</code></button>
@@ -910,14 +922,15 @@ function labelSprite(text, { bg = '#ffffff', fg = INK, h = .5 } = {}) {
 
 class Town {
   constructor(canvas) {
-    this.canvas = canvas; this.active = true; this.t = 0; this.step = 0; this.yaw = 0; this.drag = null;
+    this.canvas = canvas; this.active = true; this.t = 0; this.step = 0; this.drag = null;
+    this.view = { yaw: 0, pitch: 0, zoom: 1 }; this.easeHome = false; // the viewer's own orbit, layered on each step's camera shot
     const r = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.outputColorSpace = THREE.SRGBColorSpace;
     const s = this.scene = new THREE.Scene(); s.background = new THREE.Color('#fff6cf'); s.fog = new THREE.Fog('#fff6cf', 22, 46);
     s.add(new THREE.HemisphereLight('#ffffff', '#ffd98a', 1.6));
     const sun = new THREE.DirectionalLight('#ffffff', 2.2); sun.position.set(4, 10, 8); s.add(sun);
     this.camera = new THREE.PerspectiveCamera(38, 16 / 9, .1, 100);
-    this.camPos = new THREE.Vector3(3, 1.5, 21); this.camLook = new THREE.Vector3(2, .6, 0);
+    this.camOff = new THREE.Vector3(1, 2.6, 21); this.camLook = new THREE.Vector3(2, .4, 0);
     this.build();
     this.bindPointer();
     new ResizeObserver(() => this.resize()).observe(canvas);
@@ -1027,11 +1040,25 @@ class Town {
   }
   bindPointer() {
     const cv = this.canvas;
-    cv.addEventListener('pointerdown', (e) => { this.drag = { x: e.clientX, yaw: this.yaw }; });
-    addEventListener('pointermove', (e) => { if (this.drag) this.yaw = clamp(this.drag.yaw + (e.clientX - this.drag.x) * .006, -1.1, 1.1); });
-    addEventListener('pointerup', () => { this.drag = null; });
-    addEventListener('pointercancel', () => { this.drag = null; });
+    const end = () => { this.drag = null; cv.style.cursor = 'grab'; };
+    cv.style.cursor = 'grab';
+    cv.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      cv.setPointerCapture(e.pointerId); cv.style.cursor = 'grabbing'; this.easeHome = false;
+      this.drag = { x: e.clientX, y: e.clientY, yaw: this.view.yaw, pitch: this.view.pitch };
+    });
+    // Grab-and-turn: drag right and the cake turns right; drag down to look over the top.
+    cv.addEventListener('pointermove', (e) => {
+      if (!this.drag) return;
+      if (!e.buttons) return end(); // the button came up outside the frame
+      this.view.yaw = this.drag.yaw - (e.clientX - this.drag.x) * .008;
+      this.view.pitch = clamp(this.drag.pitch + (e.clientY - this.drag.y) * .006, -.45, .9);
+    });
+    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end); cv.addEventListener('lostpointercapture', end);
+    cv.addEventListener('wheel', (e) => { e.preventDefault(); this.easeHome = false; this.view.zoom = clamp(this.view.zoom * Math.exp(e.deltaY * .0012), .45, 1.8); }, { passive: false });
+    cv.addEventListener('dblclick', () => this.resetView());
   }
+  resetView() { this.easeHome = true; }
   resize() {
     const w = this.canvas.clientWidth, h = this.canvas.clientHeight; if (!w || !h) return;
     this.renderer.setSize(w, h, false); this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
@@ -1052,10 +1079,18 @@ class Town {
       if (this.flyT >= 1 && this.onLand) { const f = this.onLand; this.onLand = null; f(); }
     }
     const v = TOWN_STEPS[this.step], narrow = this.camera.aspect < 1.1 ? 1.65 : 1;
-    const look = new THREE.Vector3(...v.look), off = new THREE.Vector3(...v.cam).sub(look).multiplyScalar(narrow).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw + Math.sin(t * .4) * .05);
-    const k = 1 - Math.exp(-dt * 2.6);
-    this.camLook.lerp(look, k); this.camPos.lerp(look.clone().add(off), k);
-    this.camera.position.copy(this.camPos); this.camera.lookAt(this.camLook);
+    const look = new THREE.Vector3(...v.look), base = new THREE.Vector3(...v.cam).sub(look).multiplyScalar(narrow);
+    const k = 1 - Math.exp(-dt * 2.6), V = this.view;
+    this.camLook.lerp(look, k); this.camOff.lerp(base, k); // the step's shot glides in
+    if (this.easeHome && !this.drag) {
+      const e = 1 - Math.exp(-dt * 4);
+      V.yaw += (Math.round(V.yaw / (Math.PI * 2)) * Math.PI * 2 - V.yaw) * e; V.pitch -= V.pitch * e; V.zoom += (1 - V.zoom) * e;
+    }
+    // The viewer's orbit applies instantly on top, so dragging feels attached to the mouse.
+    const sph = new THREE.Spherical().setFromVector3(this.camOff);
+    sph.theta += V.yaw + (this.drag ? 0 : Math.sin(t * .4) * .05);
+    sph.phi = clamp(sph.phi - V.pitch, .12, Math.PI - .12); sph.radius *= V.zoom;
+    this.camera.position.copy(this.camLook).add(new THREE.Vector3().setFromSpherical(sph)); this.camera.lookAt(this.camLook);
     this.renderer.render(this.scene, this.camera);
   }
 }
@@ -1113,7 +1148,7 @@ const say = async (el, text, ms = 1700) => {
 const crtPrompt = '<span class="dim">kid@jelly:~$</span> ';
 async function runShow(id) {
   if (showBusy) return; showBusy = true;
-  document.querySelectorAll('[data-show]').forEach((b) => { b.disabled = true; });
+  document.querySelectorAll('[data-show]').forEach((b) => { b.disabled = true; }); $('#enterKey').disabled = true;
   const s = SHOWS[id], card = $('#showCard'), crt = $('#crt'), tiles = $('#tiles'), prog = $('#aProg'), paper = $('#paper'), cab = $('#aCab');
   $('#back').getAnimations({ subtree: true }).forEach((a) => a.cancel());
   card.classList.remove('flipped'); tiles.innerHTML = ''; prog.style.opacity = 0; prog.style.left = '40%'; paper.style.opacity = 0;
@@ -1121,7 +1156,11 @@ async function runShow(id) {
   if (!showZoomed && !REDUCED) { showZoomed = true; await card.animate([{ transform: 'scale(2.3) translateY(10%)', filter: 'blur(3px)' }, { transform: 'none', filter: 'none' }], { duration: 1100, easing: 'cubic-bezier(.2,.8,.2,1)' }).finished; }
   showCap('<b>Front.</b> Someone types at the green screen...');
   crt.innerHTML = crtPrompt + '<span id="typed"></span><span class="cursor"></span>';
-  for (const ch of s.line) { $('#typed').textContent += ch; sound.boing(1400, .03, .03); await sleep(75); }
+  for (const ch of s.line) {
+    $('#typed').textContent += ch; sound.boing(1400, .03, .03);
+    const key = $('#krows').querySelector(`[data-k="${ch === ' ' ? 'space' : ch}"]`); key?.classList.add('lit');
+    await sleep(75); key?.classList.remove('lit');
+  }
   await sleep(350);
   const ek = $('#enterKey'); ek.classList.add('hit'); sound.boing(220, .2, .12); await sleep(220); ek.classList.remove('hit');
   showCap('<b>Enter!</b> Now let\'s flip the screen around and peek backstage.');
@@ -1161,10 +1200,12 @@ async function runShow(id) {
   showCap('<b>Done.</b> That whole trip happens every time you press Enter, and it takes less than a blink. Try another one, or scroll down and type some yourself.');
   complete('backstage');
   showBusy = false;
-  document.querySelectorAll('[data-show]').forEach((b) => { b.disabled = false; });
+  document.querySelectorAll('[data-show]').forEach((b) => { b.disabled = false; }); $('#enterKey').disabled = false;
 }
 document.querySelectorAll('[data-show]').forEach((b) => { b.onclick = () => runShow(b.dataset.show); });
 $('#crt').innerHTML = crtPrompt + '<span class="cursor"></span>';
+$('#krows').innerHTML = ['qwertyuiop-', 'asdfghjkl', 'zxcvbnm.'].map((r) => `<div class="krow">${[...r].map((c) => `<span class="key" data-k="${c}">${c}</span>`).join('')}</div>`).join('') + '<div class="krow"><span class="key space" data-k="space"></span></div>';
+$('#enterKey').onclick = () => runShow('ls');
 
 /* ---------------- section 3: the pretend computer ---------------- */
 let nid = 0;
@@ -1793,7 +1834,7 @@ function boot() {
   const town = new Town($('#town'));
   const dots = $('#townDots'); dots.innerHTML = TOWN_STEPS.map(() => '<i></i>').join('');
   const townGo = (i) => {
-    town.step = i; const s = TOWN_STEPS[i];
+    town.step = i; town.resetView(); const s = TOWN_STEPS[i];
     $('#townWho').textContent = s.who; $('#townText').textContent = s.text;
     [...dots.children].forEach((d, k) => d.classList.toggle('on', k <= i));
     $('#townPrev').disabled = i === 0;
