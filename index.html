@@ -98,7 +98,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .hero-copy .eyebrow{grid-column:1/-1;font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
 .hero-copy h1{font-size:clamp(2rem,.6rem + 5vh,4.4rem);max-width:14ch}
 .hero-copy h1 em{font-style:normal;color:var(--berry)}
-.hero-side{display:grid;gap:14px;justify-items:start}
+.hero-side{display:grid;gap:14px;justify-items:start;padding:20px 24px 22px 36px;border-radius:24px} /* room for the guide's ring and number badge */
 .hero-side p{color:var(--ink-soft);max-width:44ch;font-size:clamp(.9rem,.7rem + .5vh,1.08rem)}
 .hero-stage{position:relative;flex:1;min-height:0}
 .hero-stage canvas,.cv canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
@@ -162,7 +162,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .show-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:stretch}
 .show-cap{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:10px 16px;height:clamp(64px,11vh,104px);overflow:hidden;display:flex;align-items:center;font-size:calc(1rem * var(--fit,1))}
 .show-cap b{font-family:var(--display);font-weight:400;color:var(--grape)}
-.show-btns{display:grid;gap:6px;align-content:center}
+.show-btns{display:grid;gap:6px;align-content:center;padding:10px 12px 12px 30px}
 .show-btns .btn{font-size:.92rem;padding:5px 12px;text-align:left}
 
 /* a magic word: jelly + mission on top, explanation + terminal below, file tree down the side */
@@ -504,7 +504,7 @@ const UP = new THREE.Vector3(0, 0, 1);
 class JellyBody {
   constructor(stage, ch, color, cx, size) {
     const L = makeLetter(ch, size), geo = L.geo, box = L.box, polys = L.polys;
-    this.stage = stage; this.size = size; this.cx = cx; this.height = box.max.y;
+    this.stage = stage; this.size = size; this.cx = cx; this.homeX = cx; this.width = box.max.x - box.min.x; this.height = box.max.y;
     const dx = box.max.x - box.min.x, dy = box.max.y - box.min.y, dz = box.max.z - box.min.z, cell = size / 6.5;
     const nx = Math.max(1, Math.round(dx / cell)), ny = Math.max(1, Math.round(dy / cell)), nz = Math.max(2, Math.round(dz / cell));
     const sx = dx / nx, sy = dy / ny, sz = dz / nz, ox = box.min.x, oy = box.min.y, oz = box.min.z;
@@ -545,6 +545,10 @@ class JellyBody {
 
     const N = rest.length / 3;
     this.N = N; this.rest = Float64Array.from(rest);
+    this.restMean = [0, 1, 2].map((k) => rest.reduce((a, v, i) => i % 3 === k ? a + v / N : a, 0));
+    // two bottom-back corners, used to tell whether the letter is standing upright and facing front
+    const base = [...Array(N).keys()].filter((i) => rest[i * 3 + 1] < oy + sy * .5 && rest[i * 3 + 2] < oz + sz * .5);
+    this.footL = base.reduce((m, i) => rest[i * 3] < rest[m * 3] ? i : m, base[0]); this.footR = base.reduce((m, i) => rest[i * 3] > rest[m * 3] ? i : m, base[0]);
     this.x = new Float64Array(N * 3); this.prev = new Float64Array(N * 3); this.v = new Float64Array(N * 3);
     this.mass = new Float64Array(N); this.inv = new Float64Array(N); this.nodalVolume = new Float64Array(N);
     this.normal = new Float64Array(N); this.incoming = new Float64Array(N); this.nodalF = new Float64Array(N * 9);
@@ -613,18 +617,42 @@ class JellyBody {
       const x = this.rest[i * 3], y = this.rest[i * 3 + 1] - cy;
       this.x[i * 3] = this.cx + x * c - y * s; this.x[i * 3 + 1] = cy + drop + x * s + y * c; this.x[i * 3 + 2] = this.rest[i * 3 + 2];
     }
-    this.prev.set(this.x); this.v.fill(0); this.grab = null; this.wake();
+    this.prev.set(this.x); this.v.fill(0); this.grab = null; this.wake(); this.updateBox();
     for (const e of this.eyes) e.first = true;
   }
   wake() { this.sleeping = false; this.quiet = 0; }
+  updateBox() {
+    const x = this.x, lo = this.lo ??= [0, 0, 0], hi = this.hi ??= [0, 0, 0];
+    lo.fill(Infinity); hi.fill(-Infinity);
+    for (let i = 0; i < x.length; i += 3) for (let k = 0; k < 3; k++) { const v = x[i + k]; if (v < lo[k]) lo[k] = v; if (v > hi[k]) hi[k] = v; }
+  }
   // Tall thin letters topple. Once one has settled on its side, it springs back up like a weeble.
+  isFallen() {
+    let lo = Infinity, hi = -Infinity;
+    for (let i = 0; i < this.N; i++) { const y = this.x[i * 3 + 1]; lo = Math.min(lo, y); hi = Math.max(hi, y); }
+    return hi - lo < this.height * .75;
+  }
   standUpIfFallen() {
-    let lo = Infinity, hi = -Infinity, mx = 0;
-    for (let i = 0; i < this.N; i++) { const y = this.x[i * 3 + 1]; lo = Math.min(lo, y); hi = Math.max(hi, y); mx += this.x[i * 3] / this.N; }
-    if (hi - lo > this.height * .75) return;
+    if (!this.isFallen()) return;
     const B = this.stage.bounds;
-    this.cx = clamp(mx, B.x0 + this.size * .5, B.x1 - this.size * .5);
+    const x = this.center()[0] - this.restMean[0];
+    this.cx = Math.abs(x - this.homeX) < this.size * .6 ? this.homeX : clamp(x, B.x0 + this.size * .5, B.x1 - this.size * .5); // close to home? stand up in its spot
     this.place(this.size * .2, 0); sound.boing(480, .3, .1);
+  }
+  center() {
+    const c = [0, 0, 0]; for (let i = 0; i < this.N; i++) for (let k = 0; k < 3; k++) c[k] += this.x[i * 3 + k] / this.N;
+    return c;
+  }
+  facingFront() {
+    const a = this.footL * 3, b = this.footR * 3, dx = this.x[b] - this.x[a], dy = this.x[b + 1] - this.x[a + 1], dz = this.x[b + 2] - this.x[a + 2], len = Math.hypot(dx, dy, dz);
+    return len > 1e-6 && dx / len > .9;
+  }
+  // A small sideways hop: up a bit, across a bit. Friction stops the slide when it lands.
+  hopToward(dx, dz, up = .42) {
+    this.wake();
+    const air = 2 * up / PHYS.gravity, d = Math.hypot(dx, dz), s = Math.min(1, this.size * .6 / (d || 1));
+    for (let i = 0; i < this.N; i++) { this.v[i * 3] += dx * s / air; this.v[i * 3 + 1] += up; this.v[i * 3 + 2] += dz * s / air; }
+    sound.boing(620 + Math.random() * 220, .09, .04);
   }
   visibleNow(on) {
     if (this.visible === on) return;
@@ -692,7 +720,9 @@ class JellyBody {
     for (let v = 0; v < 4; v++) for (let k = 0; k < 3; k++) this.x[e.o[v] + k] += this.inv[e.ids[v]] * delta * out[v * 3 + k];
   }
   solveGrab(h) {
-    const gr = this.grab; if (!gr) return;
+    for (const gr of this.grab?.multi ?? (this.grab ? [this.grab] : [])) this.solveGrabPoint(gr, h);
+  }
+  solveGrabPoint(gr, h) {
     const alpha = 1 / (90 * h * h);
     let den = alpha; const pt = [0, 0, 0];
     for (const [id, w] of gr.weights) { for (let k = 0; k < 3; k++) pt[k] += this.x[id * 3 + k] * w; den += this.inv[id] * w * w; }
@@ -711,9 +741,12 @@ class JellyBody {
       x[j] = clamp(x[j], B.x0, B.x1); x[j + 2] = clamp(x[j + 2], B.z0, B.z1);
     }
   }
-  step(h) {
+  step(h) { if (this.solve(h)) this.finish(h); }
+  // Predict and solve the jelly's own constraints. The stage resolves letter-vs-letter contacts
+  // between solve() and finish(), so the push turns into velocity like every other constraint.
+  solve(h) {
     if (this.grab) this.wake();
-    if (this.sleeping) return;
+    if (this.sleeping) return false;
     const x = this.x, v = this.v, old = this.prev, N3 = this.N * 3;
     old.set(x); this.normal.fill(0);
     const air = Math.exp(-.025 * h);
@@ -722,13 +755,17 @@ class JellyBody {
     for (let i = 0; i < this.N; i++) this.incoming[i] = v[i * 3 + 1];
     for (let i = 0; i < N3; i++) x[i] += v[i] * h;
     for (const e of this.elements) e.lD = e.lH = e.lB = 0;
-    if (this.grab) this.grab.lambda = [0, 0, 0];
+    for (const gr of this.grab?.multi ?? (this.grab ? [this.grab] : [])) gr.lambda = [0, 0, 0];
     const E = this.elements, n = E.length;
     for (let it = 0; it < PHYS.iterations; it++) {
       for (let q = 0; q < n; q++) { const e = E[(it & 1) ? n - 1 - q : q]; this.solveElastic(e, h); this.solveBarrier(e); }
       this.solveGrab(h); this.solveContacts();
     }
-    let grounded = false;
+    return true;
+  }
+  finish(h) {
+    const x = this.x, v = this.v, old = this.prev, N3 = this.N * 3;
+    let grounded = false; this.grounded = false;
     for (let i = 0; i < this.N; i++) if (this.normal[i] > 0) {
       grounded = true;
       const j = i * 3, dx = x[j] - old[j], dz = x[j + 2] - old[j + 2], t = Math.hypot(dx, dz), nrm = this.normal[i];
@@ -753,9 +790,10 @@ class JellyBody {
     }
     let energy = 0; for (let i = 0; i < this.N; i++) energy += .5 * this.mass[i] * (v[i * 3] ** 2 + v[i * 3 + 1] ** 2 + v[i * 3 + 2] ** 2);
     const rms = Math.sqrt(2 * energy / this.totalMass);
+    this.grounded = grounded; this.rms = Math.sqrt(2 * energy / this.totalMass);
     this.quiet = !this.grab && grounded && rms < .005 ? this.quiet + h : 0;
     if (this.quiet > .45) { this.sleeping = true; v.fill(0); }
-    this.dirty = true;
+    this.dirty = true; this.updateBox();
     if (!Number.isFinite(x[0])) this.place(.05, 0);
   }
   updateSurface() {
@@ -919,14 +957,130 @@ class JellyStage {
     };
     cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
   }
-  tick(dt) {
+  // Letters bump into each other: cage nodes of different letters keep a minimum gap.
+  // Only pairs whose bounding boxes touch are checked, so letters standing apart cost nothing.
+  collide() {
+    const live = this.bodies.filter((b) => this.t >= b.spawnAt && b.lo), d = this.opts.size / 6.5 * .7, d2 = d * d, cap = d * .3;
+    for (let a = 0; a < live.length; a++) for (let c = a + 1; c < live.length; c++) {
+      const P = live[a], Q = live[c];
+      if (P.sleeping && Q.sleeping) continue;
+      const lo = [0, 1, 2].map((k) => Math.max(P.lo[k], Q.lo[k]) - d), hi = [0, 1, 2].map((k) => Math.min(P.hi[k], Q.hi[k]) + d);
+      if (lo.some((v, k) => v > hi[k])) continue;
+      const near = (b) => { const out = []; for (let i = 0; i < b.N; i++) { const j = i * 3; if (b.x[j] >= lo[0] && b.x[j] <= hi[0] && b.x[j + 1] >= lo[1] && b.x[j + 1] <= hi[1] && b.x[j + 2] >= lo[2] && b.x[j + 2] <= hi[2]) out.push(i); } return out; };
+      const ps = near(P), qs = near(Q);
+      let hit = false;
+      for (const i of ps) for (const j of qs) {
+        const pi = i * 3, qj = j * 3, dx = Q.x[qj] - P.x[pi], dy = Q.x[qj + 1] - P.x[pi + 1], dz = Q.x[qj + 2] - P.x[pi + 2], r2 = dx * dx + dy * dy + dz * dz;
+        if (r2 >= d2 || r2 < 1e-14) continue;
+        const r = Math.sqrt(r2), depth = d - r; if (depth < 1e-4) continue;
+        const wi = P.inv[i], wj = Q.inv[j], push = Math.min(depth, cap) / (wi + wj), nx = dx / r, ny = dy / r, nz = dz / r;
+        const si = push * wi, sj = push * wj;
+        P.x[pi] -= nx * si; P.x[pi + 1] -= ny * si; P.x[pi + 2] -= nz * si; Q.x[qj] += nx * sj; Q.x[qj + 1] += ny * sj; Q.x[qj + 2] += nz * sj;
+        if (P.x[pi + 1] < 0) P.x[pi + 1] = 0; if (Q.x[qj + 1] < 0) Q.x[qj + 1] = 0;
+        if (depth > d * .15) hit = true; // a real bump, not two letters resting cheek to cheek
+        P.dirty = Q.dirty = true;
+      }
+      if (hit) {
+        for (const b of [P, Q]) { if (b.sleeping) b.wake(); b.updateBox(); }
+        if (performance.now() - (this.lastBump || 0) > 260) { this.lastBump = performance.now(); sound.boing(300 + Math.random() * 160, .18, .07); }
+      }
+    }
+  }
+  // Stage two of tidying up: once everyone is standing still, letters that strayed go back into order.
+  // An invisible hand holds each wanderer by the top and carries it home in bouncy hops, so it squishes
+  // and dangles but cannot topple. A letter whose way is blocked goes round the front: forward, along, back.
+  shuffleHome(dt) {
+    const B = this.bodies, size = this.opts.size, gap = size * .14;
+    const drop = (b) => { if (b.carry) { if (b.grab === b.carry) b.grab = null; b.carry = null; b.wake(); } };
+    if (this.drag || B.some((b) => this.t < b.spawnAt)) { if (this.homing) B.forEach(drop); this.homing = false; this.calm = 0; return; }
+    const home = (b) => [b.homeX + b.restMean[0], b.restMean[2]];
+    const atHome = (b, c) => { const [hx, hz] = home(b); return Math.abs(c[0] - hx) < size * .1 && Math.abs(c[2] - hz) < size * .2; };
+    const centers = new Map(B.map((b) => [b, b.center()]));
+    const still = B.every((b) => !b.grab && !b.isFallen() && (b.sleeping || (b.grounded && b.rms < .03)));
+    if (!this.homing) {
+      this.calm = still ? (this.calm || 0) + dt : 0;
+      if (this.calm < .6) return;
+      const strays = B.filter((b) => !atHome(b, centers.get(b)));
+      B.filter((b) => !strays.includes(b) && !b.facingFront()).forEach((b) => { b.cx = b.homeX; b.place(size * .2, 0); sound.boing(480, .3, .1); });
+      if (!strays.length) return;
+      this.homing = true; this.homeTime = 0; this.lanes = {}; B.forEach((b) => { b.lane = null; b.stray = strays.includes(b); });
+    }
+    this.homeTime += dt;
+    if (this.homeTime > 20) { // tangled up: everyone pops straight home instead
+      B.forEach((b) => { drop(b); b.cx = b.homeX; b.place(size * .15, 0); });
+      sound.boing(300, .5, .14); this.homing = false; this.lanes = {}; return;
+    }
+    let moving = false;
+    for (const b of B) {
+      const c = centers.get(b), [hx, hz] = home(b), lane = hz + (b.lane === 'back' ? -1.15 : 1.15) * size;
+      // only the letters that were out of place move; neighbours who just got jostled stay put
+      if (!b.stray) { if (Math.abs(c[0] - hx) > size * .5 || Math.abs(c[2] - hz) > size * .6) b.stray = true; else continue; }
+      if (atHome(b, c) && b.carry) { // arrived: lower it gently onto its spot before letting go, so thin letters do not topple
+        const k = b.carry; k.landing = (k.landing || 0) + dt;
+        k.p[0] += (hx + k.ox - k.p[0]) * .2; k.p[2] += (hz + k.oz - k.p[2]) * .2; k.p[1] += (k.y0 - k.p[1]) * .2;
+        if (k.landing > .4) { b.stray = false; drop(b); if (b.lane) { this.lanes[b.lane] = null; b.lane = null; } }
+        continue;
+      }
+      if (atHome(b, c)) {
+        b.stray = false; if (b.lane) { this.lanes[b.lane] = null; b.lane = null; }
+        if (!b.facingFront() && !b.isFallen() && b.grounded) { b.cx = b.homeX; b.place(size * .2, 0); sound.boing(480, .3, .1); }
+        continue;
+      }
+      moving = true;
+      const others = B.filter((o) => o !== b), main = (oc) => Math.abs(oc[2] - hz) < size * .7;
+      const right = hx > c[0], pad = (o) => (b.width + o.width) / 2 + gap * .3;
+      const spotFree = !others.some((o) => { const oc = centers.get(o); return main(oc) && Math.abs(oc[0] - hx) < pad(o); });
+      const between = others.some((o) => { const oc = centers.get(o); return main(oc) && (right ? oc[0] > c[0] && oc[0] < hx : oc[0] < c[0] && oc[0] > hx); });
+      const blocked = between || !spotFree;
+      let tx = hx, tz = hz;
+      if (b.lane) {
+        if (Math.abs(c[2] - lane) > size * .2 && Math.abs(c[0] - hx) > size * .1) tx = c[0], tz = lane; // step out to the front lane
+        else if (Math.abs(c[0] - hx) > size * .1) tz = lane;                                             // shuffle along it
+        else if (!spotFree) { this.carry(b).hold = true; continue; }                                    // wait in front of the gap
+      } else if (blocked) {
+        // go round the front, or round the back if the front is busy; otherwise wait a turn
+        const side = !this.lanes.front ? 'front' : !this.lanes.back ? 'back' : null;
+        if (!side) { drop(b); continue; }
+        this.lanes[side] = b; b.lane = side; tx = c[0]; tz = hz + (side === 'back' ? -1.15 : 1.15) * size;
+      }
+      const k = this.carry(b); k.hold = false;
+      const sp = .16 * dt, p = k.p, gx = tx + k.ox - p[0], gz = tz + k.oz - p[2], gd = Math.hypot(gx, gz), f = gd > sp ? sp / gd : 1;
+      p[0] += gx * f; p[2] += gz * f;
+      k.phase += dt * 1.7;
+      p[1] = k.y0 + size * .06 + size * .25 * Math.abs(Math.sin(k.phase * Math.PI));
+      if (Math.floor(k.phase) !== k.lastHop) { k.lastHop = Math.floor(k.phase); sound.boing(620 + Math.random() * 220, .09, .035); }
+    }
+    if (!moving && still) { this.homing = false; this.lanes = {}; B.forEach((b, i) => setTimeout(() => b.hopToward(0, 0, .22), i * 70)); sound.ding(); } // a happy little squish, not a jump
+  }
+  // The invisible hand: a soft grab on the letter's top nodes, using the same constraint as a mouse drag.
+  carry(b) {
+    if (b.carry) return b.carry;
+    const top = [...Array(b.N).keys()].filter((i) => b.rest[i * 3 + 1] > b.height * .6);
+    const mean = (ids, arr) => [0, 1, 2].map((k) => ids.reduce((a, i) => a + arr[i * 3 + k] / ids.length, 0));
+    const r = mean(top, b.rest), cur = mean(top, b.x);
+    const k = { ox: r[0] - b.restMean[0], oz: r[2] - b.restMean[2], y0: r[1], p: cur, phase: 0, lastHop: 0 };
+    // one hand on each side of the top, keeping their rest spacing, so the letter cannot spin round
+    k.multi = [top.filter((i) => b.rest[i * 3] <= r[0]), top.filter((i) => b.rest[i * 3] >= r[0])].map((ids) => {
+      const o = mean(ids, b.rest).map((v, j) => v - r[j]);
+      return { weights: ids.map((i) => [i, 1 / ids.length]), lambda: [0, 0, 0], target: { getComponent: (j) => k.p[j] + o[j] } };
+    });
+    b.carry = k; b.grab = k; b.wake();
+    return k;
+  }
+  simulate(dt) {
     this.t += dt; this.acc += Math.min(dt, 1 / 20);
     let n = 0;
-    while (this.acc >= PHYS.step && n < 7) { for (const b of this.bodies) if (this.t >= b.spawnAt) b.step(PHYS.step); this.acc -= PHYS.step; n++; }
+    while (this.acc >= PHYS.step && n < 7) { const moving = this.bodies.filter((b) => this.t >= b.spawnAt && b.solve(PHYS.step)); this.collide(); for (const b of moving) b.finish(PHYS.step); this.acc -= PHYS.step; n++; }
     if (n === 7) this.acc = 0;
     for (const b of this.bodies) {
       b.restTime = b.sleeping ? (b.restTime || 0) + dt : 0;
       if (b.restTime > 1.1) { b.restTime = 0; b.standUpIfFallen(); }
+    }
+    this.shuffleHome(dt);
+  }
+  tick(dt) {
+    this.simulate(dt);
+    for (const b of this.bodies) {
       b.visibleNow(this.t >= b.spawnAt);
       if (b.dirty) b.updateSurface();
       b.updateEyes(dt, this.look, this.t);
