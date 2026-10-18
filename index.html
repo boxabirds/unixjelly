@@ -334,7 +334,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
       <div class="lesson" id="lcard">
         <div class="ljelly box"><canvas id="lessonJelly" aria-label="The current command as squishy jelly letters" style="position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none"></canvas><span class="stands" id="lStands"></span></div>
         <div class="mission" data-fit>
-          <div class="mission-head"><h4>Your mission</h4><button class="btn alt" id="lNext">Next word</button></div>
+          <div class="mission-head"><h4>Your mission</h4><button class="btn alt" id="lRestart" title="Untick this mission and give the sandbox a fresh start">Start over</button><button class="btn alt" id="lNext">Next word</button></div>
           <ol class="steps" id="lSteps"></ol>
         </div>
         <div class="ltext box" data-fit>
@@ -348,7 +348,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
         <div class="term box" id="term">
           <div class="term-top"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span id="termTitle">kid@jelly: ~</span><button id="sbReset">Reset sandbox</button></div>
           <div class="term-body" id="termBody"><div id="termOut"></div><div class="inline" id="termLine"><span class="p" id="termPrompt"></span><input id="termIn" aria-label="Type a command" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"></div></div>
-          <div class="keys" aria-label="Helper keys"><button data-k="tab">Tab</button><button data-k="up">↑</button><button data-k="down">↓</button><button data-k="ctrlc">Ctrl+C</button><button data-k="ins" data-v="~">~</button><button data-k="ins" data-v="/">/</button><button data-k="ins" data-v="..">..</button><button data-k="enter">Enter</button></div>
+          <div class="keys" aria-label="Helper keys"><button data-k="tab">Tab</button><button data-k="up">↑</button><button data-k="down">↓</button><button data-k="ctrlc">Ctrl+C</button><button data-k="ctrld">Ctrl+D</button><button data-k="ins" data-v="~">~</button><button data-k="ins" data-v="/">/</button><button data-k="ins" data-v="..">..</button><button data-k="enter">Enter</button></div>
         </div>
         <div class="map box">
           <div class="map-head">The file tree <small>Tap a folder to type its <code>cd</code></small></div>
@@ -1277,7 +1277,7 @@ function run(line) {
       break;
     }
     case 'cat': {
-      if (!rest.length) { sh.catMode = true; say('(cat is waiting for you to type. Everything you type, it repeats. Press Ctrl+C to escape!)', 'tip'); break; }
+      if (!rest.length) { sh.catMode = true; say('(cat is waiting for you to type. Everything you type, it repeats. Press Ctrl+D when you are done, or Ctrl+C to escape!)', 'tip'); break; }
       info.hits = [];
       for (const p of rest) {
         const n = find(p);
@@ -1467,22 +1467,37 @@ function ctrlC() {
   if (sh.catMode) print('<span class="tip">Phew! Ctrl+C rescued you from cat. Ctrl+C stops whatever is running.</span>');
   sh.catMode = false; termIn.value = ''; paintPrompt(); scrollDown(); check({ type: 'ctrlc' });
 }
+function ctrlD() {
+  if (sh.catMode) {
+    if (termIn.value) print(esc(termIn.value) + '<br>' + esc(termIn.value));
+    print('<span class="tip">Ctrl+D means "I am done typing". cat heard it and finished politely.</span>');
+    sh.catMode = false; termIn.value = ''; paintPrompt(); scrollDown(); check({ type: 'ctrld' }); return;
+  }
+  if (termIn.value) return;
+  print(`<span class="p">${esc(promptText())}</span> <span class="er">^D</span>`);
+  print('<span class="tip">On a real computer, Ctrl+D at an empty prompt closes the terminal, just like exit. Here, you stay. Forever. Muhaha.</span>');
+  scrollDown(); check({ type: 'ctrld' });
+}
 termIn.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') { e.preventDefault(); submit(); }
   else if (e.key === 'Tab') { e.preventDefault(); completeTab(); }
   else if (e.key === 'ArrowUp') { e.preventDefault(); recall(-1); }
   else if (e.key === 'ArrowDown') { e.preventDefault(); recall(1); }
   else if (e.ctrlKey && e.key.toLowerCase() === 'c') { e.preventDefault(); ctrlC(); }
+  else if (e.ctrlKey && e.key.toLowerCase() === 'd') { e.preventDefault(); ctrlD(); }
   else if (e.ctrlKey && e.key.toLowerCase() === 'l') { e.preventDefault(); termOut.innerHTML = ''; check({ type: 'cmd', cmd: 'clear', toks: ['clear'], args: [], ok: true, info: { clear: true }, cwd: pathOf(sh.cwd) }); }
 });
 termBody.addEventListener('click', () => { if (!getSelection().toString()) termIn.focus({ preventScroll: true }); });
 document.querySelectorAll('.keys button').forEach((b) => b.addEventListener('click', () => {
   const k = b.dataset.k;
-  if (k === 'tab') completeTab(); else if (k === 'up') recall(-1); else if (k === 'down') recall(1); else if (k === 'ctrlc') ctrlC(); else if (k === 'enter') submit();
+  if (k === 'tab') completeTab(); else if (k === 'up') recall(-1); else if (k === 'down') recall(1); else if (k === 'ctrlc') ctrlC(); else if (k === 'ctrld') ctrlD(); else if (k === 'enter') submit();
   else { const s = termIn.selectionStart ?? termIn.value.length; termIn.value = termIn.value.slice(0, s) + b.dataset.v + termIn.value.slice(s); }
   termIn.focus({ preventScroll: true });
 }));
-$('#sbReset').onclick = () => { resetFS(); sh.catMode = false; termOut.innerHTML = ''; welcome(); paintPrompt(); renderMap(); };
+function resetSandbox() { resetFS(); sh.catMode = false; termIn.value = ''; termOut.innerHTML = ''; welcome(); paintPrompt(); renderMap(); }
+$('#sbReset').onclick = resetSandbox;
+// Ctrl+D anywhere in the sandbox panel belongs to the terminal, not the browser's bookmark dialog.
+addEventListener('keydown', (e) => { if (e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 'd' && !$('#p-lesson').hidden) { e.preventDefault(); if (e.target !== termIn) { termIn.focus({ preventScroll: true }); ctrlD(); } } });
 function welcome() {
   print('<span class="tip">Welcome to the sandbox! This is a pretend computer, so nothing you do here can break anything.</span>');
   print('<span class="mute">Type a command and press Enter. Stuck? Type help.</span>');
@@ -1584,7 +1599,7 @@ const LESSONS = [
   { id: 'cat', word: 'cat', name: 'Read a file', stands: 'conCATenate', color: '#ff8a2b',
     title: 'cat coughs up files', why: 'Concatenate means "glue together". It is a very long word, so the computer kept just the cat bit. Sorry. There is no kitten inside. We checked.',
     mnem: 'cat coughs up files like a hairball.',
-    points: ['<code>cat secret-diary.txt</code> prints the whole file on the screen.', '<code>cat a.txt b.txt</code> glues two files together in one go. That is the concatenate part.', 'Typing <code>cat</code> alone makes it wait for you forever. <kbd>Ctrl</kbd>+<kbd>C</kbd> is the escape hatch.'],
+    points: ['<code>cat secret-diary.txt</code> prints the whole file on the screen.', '<code>cat a.txt b.txt</code> glues two files together in one go. That is the concatenate part.', 'Typing <code>cat</code> alone makes it wait for you to type. <kbd>Ctrl</kbd>+<kbd>D</kbd> says "I am done". <kbd>Ctrl</kbd>+<kbd>C</kbd> is the emergency stop.'],
     steps: [
       { t: 'Read the diary: <code>cat secret-diary.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('secret-diary.txt')) },
       { t: 'Glue two files: <code>cat snacks/pizza.txt snacks/cookie.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.length >= 2 },
@@ -1625,11 +1640,11 @@ const LESSONS = [
   { id: 'keys', word: 'tab', name: 'Pro shortcuts', stands: 'Tab, ↑, Ctrl+C, clear', color: '#9b5cff',
     title: 'Type less, do more', why: 'Professionals do not type everything. They press Tab and let the shell finish the word. They press ↑ to bring back old commands. Being lazy, cleverly, is the whole point.',
     mnem: 'Tab finishes. ↑ remembers. Ctrl+C rescues. clear wipes.',
-    points: ['<kbd>Tab</kbd> completes file and folder names. If nothing happens, press it twice to see the choices.', '<kbd>↑</kbd> and <kbd>↓</kbd> scroll through what you typed before.', '<kbd>Ctrl</kbd>+<kbd>C</kbd> stops whatever is running. Your emergency brake.', '<code>clear</code> wipes the screen. Your files are fine.'],
+    points: ['<kbd>Tab</kbd> completes file and folder names. If nothing happens, press it twice to see the choices.', '<kbd>↑</kbd> and <kbd>↓</kbd> scroll through what you typed before.', '<kbd>Ctrl</kbd>+<kbd>C</kbd> stops whatever is running. <kbd>Ctrl</kbd>+<kbd>D</kbd> means "I am done typing".', '<code>clear</code> wipes the screen. Your files are fine.'],
     steps: [
       { t: 'Type <code>cat secr</code> then press <kbd>Tab</kbd>.', ok: (e) => e.type === 'tab' },
       { t: 'Press <kbd>↑</kbd> to bring back an old command.', ok: (e) => e.type === 'up' },
-      { t: 'Type <code>cat</code> alone, press Enter, then escape with <kbd>Ctrl</kbd>+<kbd>C</kbd>.', ok: (e) => e.type === 'ctrlc' },
+      { t: 'Type <code>cat</code> alone and press Enter. Get out with <kbd>Ctrl</kbd>+<kbd>C</kbd> or <kbd>Ctrl</kbd>+<kbd>D</kbd>.', ok: (e) => e.type === 'ctrlc' || e.type === 'ctrld' },
       { t: 'Wipe the screen: <code>clear</code>', ok: (e) => isCmd(e, 'clear') },
     ] },
   { id: 'man', word: 'man', name: 'Ask the wizard', stands: 'MANual', color: '#3a5bff',
@@ -1749,6 +1764,12 @@ function showLesson(i) {
   if (lessonStage && lessonStage.word !== L.word) { lessonStage.opts.colorOffset = Math.max(0, JELLY.indexOf(L.color)); lessonStage.setWord(L.word); }
 }
 $('#lNext').onclick = () => step(1);
+// Start over: untick this mission's steps and give the sandbox a fresh start. Jellies already earned stay in the jar.
+$('#lRestart').onclick = () => {
+  const L = LESSONS[cur]; store.steps[L.id] = L.steps.map(() => false); save();
+  resetSandbox(); paintSteps(); termIn.focus({ preventScroll: true });
+  toast(`Fresh start on ${L.word}!`); sound.boing(360, .35, .12);
+};
 
 $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; $('#resetBtn').hidden = true; };
 $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; $('#resetBtn').hidden = false; };
