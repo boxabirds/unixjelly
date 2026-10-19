@@ -1,8 +1,11 @@
-# Jelly Shell
+# Jelly Unix
 
-A playful, browser-based introduction to the Unix command line. Learn `ls`, `cd`, `cat` and friends through wobbly 3D jelly letters, an animated "how a command works" tour, and a sandboxed terminal where you complete small missions.
+Two playful guides, shell first and then git. Open `index.html` for the landing page that links to both.
 
-There is no build step, no backend and no install. The whole app is a single HTML file.
+- **Jelly Shell** (`jellyshell/`): the command line.
+- **Jelly Git** (`jellygit/`): git, built on the same ideas.
+
+There is no build step, no backend and no install. Each guide is a single HTML file.
 
 ## Run it
 
@@ -18,7 +21,11 @@ Requirements:
 - A laptop or desktop window of at least **900 × 560**. Smaller windows show a "needs a bigger screen" notice (a phone layout is not built yet).
 - An internet connection. Three.js (v0.169.0) loads from jsDelivr and fonts from Google Fonts.
 
-## What's inside
+## Jelly Shell
+
+A playful, browser-based introduction to the Unix command line. Learn `ls`, `cd`, `cat` and friends through wobbly 3D jelly letters, an animated "how a command works" tour, and a sandboxed terminal where you complete small missions.
+
+### What's inside
 
 The app is a fixed left nav plus one full-window panel at a time:
 
@@ -39,10 +46,26 @@ Keyboard: `Tab` completes, `↑`/`↓` recall history, `Ctrl+C` interrupts, `Ctr
 
 Progress (collected jellies) and sound preference are saved in the browser's `localStorage`. "Empty the jar" clears them.
 
+## Jelly Git
+
+Same format as Jelly Shell (same nav, 3D cutaway, backstage animation and sandbox), applied to git. Start with Jelly Shell: the git sandbox reuses the shell commands.
+
+| Section | What it does |
+| --- | --- |
+| Welcome | Intro to git as "a time machine for your code". |
+| The whole game | A 3D cutaway of how a file moves from your desk to the stage to the photo album to GitHub. |
+| Backstage | A flip-card animation of `git add` and friends. |
+| Lessons | 14 short missions with a live sandbox. |
+
+Lessons, in order: meet git, `config`, `init`, `status`, `add`, `commit`, `log`, `diff`, `restore`, `remote`, `push`, `pull`, `.gitignore`, and a final "daily loop" quest.
+
+The sandbox adds a fake `git` supporting `init`, `config`, `status`, `add`, `commit`, `log`, `diff`, `restore`, `remote`, `push`, `pull` and `clone`. `branch` just shows `main` with a pointer, and other git words (`checkout`, `switch`, `merge`, `rebase`, `stash`, `reset`, `fetch`) answer with a friendly pointer rather than doing anything. Progress is 16 jellies, saved separately from Jelly Shell.
+
 ## Repo layout
 
-- `index.html`: the current app.
-- `index-v1.html`, `index-v2.html`: earlier iterations, kept for reference.
+- `index.html`: landing page pointing to the two guides, shell first, then git.
+- `jellyshell/index.html`: Jelly Shell, the app described above.
+- `jellygit/index.html`: Jelly Git, the follow-on guide to git.
 
 ## Credits and licensing
 
