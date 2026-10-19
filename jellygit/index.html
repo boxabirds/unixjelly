@@ -63,14 +63,34 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pill:hover{border-color:#fff}
 .confirm{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:.78rem}
 .confirm .yes{background:var(--berry);border-color:var(--berry)}
-.credit{font-size:.7rem;color:#ffffff80;line-height:1.35;padding:0 4px}
+/* attribution: always visible on every panel; only the extras hide on short screens */
+.credit{font-size:.7rem;color:#ffffff99;line-height:1.35;padding:0 4px;display:grid;gap:4px}
+.credit p{margin:0}
+.repo{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-weight:700;font-size:.78rem;color:#fff!important;text-decoration:none;width:max-content}
+.repo svg{width:16px;height:16px;flex:none}
+.repo:hover span{text-decoration:underline}
+.credit .short{display:none}
+@media (max-height:960px){.credit .more{display:none}}
+/* very short windows: the credit becomes one line and the nav rows slim down, so nothing scrolls */
+@media (max-height:720px){
+  .side{gap:6px;padding-top:10px;padding-bottom:10px}
+  .credit{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px}
+  .credit .long{display:none}.credit .short{display:inline}
+  .ni{padding:1px 8px;font-size:.78rem}
+  .ng{padding:3px 8px 0;font-size:.62rem}
+  .recap-btn,.stepper .btn{padding:3px 10px;font-size:.92rem}
+  .brand{font-size:1.15rem}
+}
+@media (max-height:680px){
+  .ng{font-size:0;padding:0;height:2px;margin:3px 8px;background:#ffffff26;border-radius:2px}
+  .ni{padding:0 8px;line-height:1.25}
+}
 .credit a{color:#ffffffb0}
 @media (max-height:860px){
   .brand{font-size:1.3rem}
   .beans{display:none}
   .ni{padding:2px 8px;font-size:.82rem}
   .ng{padding:4px 8px 1px}
-  .credit{display:none}
 }
 
 .stage{position:relative;min-width:0;min-height:0;overflow:hidden;background:var(--sky)}
@@ -235,6 +255,9 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .gate-card svg{width:150px;height:auto}
 .gate-card h1{font-size:2.1rem}
 .gate-card p{color:var(--ink-soft)}
+.gate-credit{display:grid;gap:4px;justify-items:center;font-size:.8rem;margin-top:10px}
+.gate-credit .repo{color:var(--ink)!important}
+.gate-credit a{color:var(--ink)}
 @media (max-width:899px),(max-height:559px){.app{display:none}.gate{display:grid}}
 /* the guide: numbered areas, a moving spotlight, a jelly-bean coach, and "next up" */
 .guide{position:absolute;inset:0;pointer-events:none;z-index:30}
@@ -364,13 +387,14 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
     <svg viewBox="0 0 200 150" aria-hidden="true"><g stroke="#24133b" stroke-width="5" stroke-linejoin="round"><circle cx="118" cy="62" r="46" fill="#b18cff"/><ellipse cx="96" cy="108" rx="70" ry="30" fill="#ff5a4e"/><path d="M70 88 L64 52 M100 86 L104 50" fill="none"/><circle cx="64" cy="46" r="13" fill="#fff"/><circle cx="104" cy="44" r="13" fill="#fff"/><circle cx="64" cy="50" r="5" fill="#24133b"/><circle cx="104" cy="48" r="5" fill="#24133b"/><path d="M82 120 q14 -10 28 0" fill="none" stroke-linecap="round"/></g></svg>
     <h1>Jelly Shell needs a bigger screen</h1>
     <p>Open this on a laptop or desktop computer, with the window at least 900 × 560. A phone version is on the way.</p>
+    <div class="gate-credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a><p>Jelly physics ported from <a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener">Jelly Baby</a> by Scott Sun (GPL-3.0).</p></div>
   </div>
 </div>
 
 <div class="app">
   <aside class="side" aria-label="Jelly Shell navigation">
     <div class="brand">Jelly <b>Git</b></div>
-    <div class="jar" aria-label="Your progress"><div class="beans" id="beans"></div><div class="jar-count" id="jarCount">0 / 16 jellies</div></div>
+    <div class="jar" aria-label="Your progress"><div class="beans" id="beans"></div><div class="jar-count" id="jarCount">0 / 15 jellies</div></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <button class="btn recap-btn" id="recapBtn">★ What I’ve learnt</button>
@@ -380,7 +404,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
         <button class="pill" id="resetBtn">Empty the jar</button>
         <div class="confirm" id="resetConfirm" hidden><span>Sure?</span><button class="pill yes" id="resetYes">Yes, empty it</button><button class="pill" id="resetNo">Keep</button></div>
       </div>
-      <p class="credit">A companion to <a href="https://claude.ai/artifact/QKpnE1d1poehF9u2UX1wsW" target="_blank" rel="noopener">Jelly Shell</a>. Wobble ported from <a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener">Jelly Baby</a> by Scott Sun (GPL-3.0). Letters in Titan One (OFL). Progress is saved in this browser only.</p>
+      <div class="credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a><p><span class="long">Jelly physics ported from </span><a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener"><span class="short">Physics: </span>Jelly Baby</a><span class="long"> by Scott Sun</span> (GPL-3.0).<span class="more"> A companion to <a href="https://claude.ai/artifact/QKpnE1d1poehF9u2UX1wsW" target="_blank" rel="noopener">Jelly Shell</a>. Letters in Titan One (OFL). Progress is saved in this browser only.</span></p></div>
     </div>
   </aside>
 
