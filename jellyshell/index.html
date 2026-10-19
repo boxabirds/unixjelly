@@ -65,7 +65,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .confirm .yes{background:var(--berry);border-color:var(--berry)}
 .credit{font-size:.7rem;color:#ffffff80;line-height:1.35;padding:0 4px}
 .credit a{color:#ffffffb0}
-@media (max-height:760px){
+@media (max-height:860px){
   .brand{font-size:1.3rem}
   .beans{display:none}
   .ni{padding:2px 8px;font-size:.82rem}
@@ -276,6 +276,42 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .flyer svg{width:40px;height:auto}
 .ni.up-next::after{content:"NEXT";font-family:var(--display);font-size:.62rem;background:var(--lime);color:var(--ink);border-radius:999px;padding:1px 6px;animation:pulse 1.2s ease-in-out infinite}
 .ni{grid-template-columns:16px auto minmax(0,1fr) auto}
+/* what I've learnt so far */
+.recap-btn{width:100%;font-size:1rem;padding:6px 10px;background:var(--lemon)}
+.recap-btn.cur{background:#fff;box-shadow:0 4px 0 var(--lemon)}
+.rc-head{display:flex;align-items:flex-end;gap:12px 24px;flex-wrap:wrap}
+.rc-head .ph{flex:1;min-width:300px}
+.rc-mode{display:flex;border:3px solid var(--ink);border-radius:14px;overflow:hidden;box-shadow:0 4px 0 var(--ink);background:#fff;flex:none}
+.rc-mode button{border:0;background:#fff;padding:7px 16px;font-family:var(--display);font-size:1rem}
+.rc-mode button+button{border-left:3px solid var(--ink)}
+.rc-mode button.on{background:var(--grape);color:#fff}
+.rc-chain{padding:12px 16px;display:grid;gap:6px}
+.rc-stops{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap}
+.rc-stops.dim-chain{opacity:.45;filter:saturate(.4)}
+.rc-stop{flex:1;min-width:110px;background:var(--sun);border:3px solid var(--ink);border-radius:14px;padding:6px 10px;display:grid;gap:1px}
+.rc-stop b{font-family:var(--display);font-weight:400;font-size:1.1rem;line-height:1.1}
+.rc-stop small{font-size:.78rem;color:var(--ink-soft)}
+.rc-via{display:grid;place-items:center;align-content:center;font-family:var(--mono);color:var(--ink-soft);min-width:52px}
+.rc-via small{font-size:.68rem;white-space:nowrap}
+.rc-via b{font-size:1.2rem;color:var(--ink)}
+.rc-line{font-weight:600;font-size:.92rem}
+.link{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--blue);text-decoration:underline}
+.rc-grid{flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;font-size:calc(1rem * var(--fit,1));align-content:start}
+.rc-card{display:flex;flex-direction:column;align-items:flex-start;gap:.3em;text-align:left;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:.6em .7em;box-shadow:0 4px 0 var(--ink);font:inherit;color:var(--ink);min-width:0;border-top:8px solid var(--c)}
+.rc-card .w{font-family:var(--display);font-size:1.5em;line-height:1;color:var(--c);-webkit-text-stroke:1px var(--ink);paint-order:stroke fill}
+.rc-card .m{font-family:var(--display);font-size:.9em;line-height:1.15}
+.rc-card .d{font-size:.8em;line-height:1.3;color:var(--ink-soft)}
+.rc-card code{font-size:.75em;white-space:normal;overflow-wrap:anywhere;margin-top:auto}
+.rc-card.locked{background:#f4f1f8;border-style:dashed;border-top-style:solid;cursor:pointer;box-shadow:none}
+.rc-card.locked .w{color:#d6d0df;-webkit-text-stroke:1px #9f97ad}
+.rc-card.locked .go{margin-top:auto;font-family:var(--display);font-size:.85em;color:var(--blue)}
+.rc-card.quiz{cursor:pointer;background:var(--lilac)}
+.rc-card.quiz .q{font-weight:700;font-size:.92em;line-height:1.3}
+.rc-card.quiz .reveal{margin-top:auto;font-size:.75em;color:var(--ink-soft);font-style:italic}
+.rc-card.quiz .ans{display:none;gap:.3em;margin-top:auto}
+.rc-card.quiz.shown{background:#fff}
+.rc-card.quiz.shown .ans{display:grid}
+.rc-card.quiz.shown .reveal{display:none}
 </style>
 
 <script type="importmap">
@@ -298,6 +334,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
     <div class="jar" aria-label="Your progress"><div class="beans" id="beans"></div><div class="jar-count" id="jarCount">0 / 15 jellies</div></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
+      <button class="btn recap-btn" id="recapBtn">★ What I’ve learnt</button>
       <div class="stepper"><button class="btn alt" id="navPrev">Back</button><button class="btn go" id="navNext">Next</button></div>
       <div class="tools">
         <button class="pill" id="muteBtn" aria-pressed="false">Sound on</button>
@@ -408,6 +445,14 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
           <div class="map-list" id="map" data-fit></div>
         </div>
       </div>
+    </section>
+    <section class="panel sun" id="p-recap" aria-label="What I've learnt so far" hidden>
+      <div class="rc-head">
+        <div class="ph"><div class="eyebrow">Wrap up</div><h2>What I’ve learnt so far</h2><p id="rcCount"></p></div>
+        <div class="rc-mode" role="group" aria-label="Recap mode"><button data-mode="remind">Remind me</button><button data-mode="test">Test me</button></div>
+      </div>
+      <div class="rc-chain box" id="rcChain"></div>
+      <div class="rc-grid" id="rcGrid" data-fit></div>
     </section>
     <div class="guide" id="guide">
       <div class="ring" id="gRing"></div>
@@ -1910,6 +1955,36 @@ const LESSONS = [
     ] },
 ];
 const ALL = [{ id: 'whole', name: 'The whole game', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];
+/* recap data */
+// What the recap shows: the whole game in one line, and for each magic word what it does, an example and a test question.
+const RECAP = {
+  wizard: 'Shell wizard!', wizardText: 'You collected every single jelly. Now go and boss a real computer around.',
+  chain: [
+    { label: 'You', sub: 'type a command' },
+    { label: 'Terminal', sub: 'shows the letters', via: 'Enter' },
+    { label: 'Shell', sub: 'reads your words', via: 'down the tube' },
+    { label: 'Kernel', sub: 'the boss does it', via: 'asks nicely' },
+    { label: 'Disk + file tree', sub: 'where files live', via: 'reads' },
+  ],
+  line: 'Every command makes this trip, down and back up, in less than a blink.',
+  words: {
+    echo: { does: 'Repeats what you say. Proves the shell is listening.', ex: 'echo hello', quiz: 'Make the computer say "hi there".' },
+    pwd: { does: 'Prints the address of the folder you are in.', ex: 'pwd', quiz: 'You are lost. Where are you standing?' },
+    ls: { does: 'Lists what is in a folder. -a shows hidden files.', ex: 'ls -a', quiz: 'What is in this folder, even the hidden things?' },
+    cd: { does: 'Walks into a folder. cd .. climbs back up.', ex: 'cd toys', quiz: 'Walk into the toys folder.' },
+    paths: { does: '/ is the root, ~ is home, .. is the parent folder.', ex: 'cd ~', quiz: 'Get home from anywhere, fast.' },
+    cat: { does: 'Prints a file on the screen. Glues files together.', ex: 'cat notes.txt', quiz: 'Read what is inside notes.txt.' },
+    mkdir: { does: 'Makes a folder. touch makes an empty file.', ex: 'mkdir fort', quiz: 'Build a new folder called fort.' },
+    cp: { does: 'Copies a file: first where it IS, then where it GOES.', ex: 'cp pizza.txt pizza2.txt', quiz: 'Make a twin of pizza.txt called pizza2.txt.' },
+    mv: { does: 'Moves or renames. Same job: change the label.', ex: 'mv hamster.txt hammy.txt', quiz: 'Rename hamster.txt to hammy.txt.' },
+    rm: { does: 'Deletes forever. No undo! Add -r for folders.', ex: 'rm broccoli.txt', quiz: 'Get rid of broccoli.txt for good.' },
+    keys: { does: 'Tab finishes words, ↑ remembers, Ctrl+C stops, clear wipes.', ex: 'Ctrl+C', quiz: 'A command is stuck and will not stop. Help!' },
+    man: { does: 'Opens the built-in manual for any command.', ex: 'man ls', quiz: 'You forgot what ls -a does. Where can you look?' },
+    quest: { does: 'Look, walk, read and move, all together.', ex: 'ls · cd · cat · mv', quiz: 'Find a lost file and bring it home. Which four words?' },
+  },
+};
+/* end recap data */
+
 
 function complete(id) {
   if (store.done[id]) return;
@@ -1953,10 +2028,11 @@ const PANELS = [
   { id: 'whole', group: 'The big picture', label: 'The whole game', tag: '1', color: '#ffc61a' },
   { id: 'backstage', group: 'The big picture', label: 'Backstage', tag: '2', color: '#9b5cff' },
   ...LESSONS.map((l) => ({ id: l.id, group: 'The magic words', label: l.name, tag: l.word, color: l.color, lesson: l })),
+  { id: 'recap', group: 'Wrap up', label: 'What I’ve learnt', tag: '★', color: '#ffc61a', ownButton: true }, // reached by its own sidebar button
 ];
 let cur = clamp(LESSONS.findIndex((l) => l.id === store.cur), 0, LESSONS.length - 1), lessonStage = null, panelIdx = -1;
 const navEl = $('#nav');
-navEl.innerHTML = PANELS.map((p, i) => `${i === 0 || PANELS[i - 1].group !== p.group ? `<div class="ng">${esc(p.group)}</div>` : ''}<a class="ni" href="#${p.id}" data-id="${p.id}" style="--c:${p.color}"><span class="nd"></span><span class="nw">${esc(p.tag)}</span><span class="nl">${esc(p.label)}</span></a>`).join('');
+navEl.innerHTML = PANELS.filter((p) => !p.ownButton).map((p, i, list) => `${i === 0 || list[i - 1].group !== p.group ? `<div class="ng">${esc(p.group)}</div>` : ''}<a class="ni" href="#${p.id}" data-id="${p.id}" style="--c:${p.color}"><span class="nd"></span><span class="nw">${esc(p.tag)}</span><span class="nl">${esc(p.label)}</span></a>`).join('');
 navEl.addEventListener('click', (e) => { const a = e.target.closest('.ni'); if (!a) return; e.preventDefault(); go(a.dataset.id); });
 
 function go(id) {
@@ -1966,7 +2042,9 @@ function go(id) {
   const el = P.lesson ? $('#p-lesson') : $('#p-' + P.id);
   document.querySelectorAll('.panel').forEach((p) => { p.hidden = p !== el; });
   if (P.lesson) showLesson(LESSONS.indexOf(P.lesson));
-  navEl.querySelectorAll('.ni').forEach((a, k) => { a.classList.toggle('cur', k === i); if (k === i) a.scrollIntoView({ block: 'nearest' }); });
+  if (P.id === 'recap') renderRecap();
+  navEl.querySelectorAll('.ni').forEach((a) => { const on = a.dataset.id === P.id; a.classList.toggle('cur', on); if (on) a.scrollIntoView({ block: 'nearest' }); });
+  $('#recapBtn').classList.toggle('cur', P.id === 'recap');
   $('#navPrev').disabled = i === 0; $('#navNext').disabled = i === PANELS.length - 1;
   if (!REDUCED && from >= 0) el.animate([{ opacity: 0, transform: `translateY(${i >= from ? 28 : -28}px)` }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' }).finished.then(() => placeGuide(), () => {});
   requestAnimationFrame(() => { fitAll(el); guideStart(P, el); });
@@ -2038,6 +2116,11 @@ const GUIDES = {
     { sel: '.show-wrap', title: 'Press Enter', text: 'Press the yellow Enter key on the keyboard. Then watch the screen flip around!' },
     { sel: '.show-cap', title: 'Read along', text: 'This box tells you what each character is doing.' },
     { sel: '.show-btns', title: 'Try all three', text: 'Watch cat and mv too. Every command makes the same trip with a different program.' },
+  ],
+  recap: [
+    { sel: '.rc-chain', title: 'The big picture, again', text: 'Remember the whole game? Here it is in one line.' },
+    { sel: '.rc-grid', title: 'Your magic words', text: 'Every word you learnt, with its brain-burner. Grey ones are still waiting for you: tap one to learn it.' },
+    { sel: '.rc-mode', title: 'Test yourself', text: 'Press Test me. Each card asks a question. Say the answer out loud, then tap the card to check.' },
   ],
   lesson: (L) => [
     { sel: '.ljelly', title: `Meet ${L.word}`, text: 'Grab the jelly letters and give them a squish. This is the word you are learning.' },
@@ -2135,9 +2218,10 @@ stageEl.addEventListener('pointerdown', follow, true);
 stageEl.addEventListener('focusin', follow);
 
 /* the end of a section: jelly into the jar, then a clear "next up" */
+// The next unfinished section; once everything is done, the recap.
 function nextUp() {
-  const after = PANELS.slice(panelIdx + 1).find((p) => !store.done[p.id]);
-  return after ?? PANELS.slice(1).find((p) => !store.done[p.id] && p.id !== PANELS[panelIdx].id) ?? null;
+  const open = (p) => ALL.some((a) => a.id === p.id) && !store.done[p.id];
+  return PANELS.slice(panelIdx + 1).find(open) ?? PANELS.find((p) => open(p) && p.id !== PANELS[panelIdx].id) ?? PANELS.find((p) => p.id === 'recap');
 }
 function sectionDone(id) {
   if (PANELS[panelIdx]?.id !== id) return false;
@@ -2145,12 +2229,12 @@ function sectionDone(id) {
   G.card = true; G.tour = false; store.tour[id] = 'done'; save();
   upnext.innerHTML = `<div class="un-card">${bean(item.color, 'un-bean')}
     <div class="un-earned">You earned the <b style="color:${item.color}">${esc(item.word ?? item.name)}</b> jelly!</div>
-    ${n ? `<div class="un-label">Next up</div><div class="un-word" style="color:${n.color}">${esc(n.lesson ? n.tag : n.label)}</div>${n.lesson ? `<div class="un-name">${esc(n.label)}</div>` : ''}
+    ${n.id !== 'recap' ? `<div class="un-label">Next up</div><div class="un-word" style="color:${n.color}">${esc(n.lesson ? n.tag : n.label)}</div>${n.lesson ? `<div class="un-name">${esc(n.label)}</div>` : ''}
     <div class="un-btns"><button class="btn go un-go" id="unGo">Go to ${esc(n.lesson ? n.tag : n.label)} →</button><button class="btn alt" id="unStay">Stay and play</button></div>`
-    : `<div class="un-word" style="color:var(--berry)">Shell wizard!</div><div class="un-name">You collected every single jelly. Now go and boss a real computer around.</div>
-    <div class="un-btns"><button class="btn go un-go" id="unGo">Back to the start</button><button class="btn alt" id="unStay">Stay and play</button></div>`}</div>`;
+    : `<div class="un-word" style="color:var(--berry)">${esc(RECAP.wizard)}</div><div class="un-name">${esc(RECAP.wizardText)}</div>
+    <div class="un-btns"><button class="btn go un-go" id="unGo">See what I’ve learnt →</button><button class="btn alt" id="unStay">Stay and play</button></div>`}</div>`;
   renderGuide();
-  $('#unGo').onclick = () => { G.card = false; go(n ? n.id : 'welcome'); };
+  $('#unGo').onclick = () => { G.card = false; go(n.id); };
   $('#unStay').onclick = () => { G.card = false; renderGuide(); };
   upnext.querySelector('.un-card').animate([{ transform: 'scale(.4) rotate(-6deg)', opacity: 0 }, { transform: 'scale(1.06) rotate(1deg)', opacity: 1 }, { transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.3,1.4,.5,1)' });
   flyToJar(upnext.querySelector('.un-bean'), item.color);
@@ -2167,7 +2251,33 @@ function flyToJar(from, color) {
   fly.animate([{ transform: 'translate(0,0) scale(1) rotate(0)' }, { transform: `translate(${dx * .5}px,${dy * .5 - 160}px) scale(1.3) rotate(-200deg)`, offset: .5 }, { transform: `translate(${dx}px,${dy}px) scale(.35) rotate(-400deg)` }], { duration: 1100, delay: 350, easing: 'cubic-bezier(.4,0,.3,1)', fill: 'backwards' })
     .finished.then(() => { fly.remove(); jar.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.9)' }, { transform: 'scale(1)' }], { duration: 420 }); sound.boing(700, .25, .1); });
 }
-upPill.onclick = () => { const n = nextUp(); go(n ? n.id : 'welcome'); };
+upPill.onclick = () => go(nextUp().id);
+
+/* ---------------- what I've learnt so far ---------------- */
+// Tell them what you told them: the whole game again in one line, then every magic word learnt so far.
+// "Test me" turns each learnt card into a question to answer from memory before tapping to check.
+function renderRecap() {
+  const learnt = LESSONS.filter((L) => store.done[L.id]).length, test = store.recapMode === 'test', seen = !!store.done.whole;
+  $('#rcCount').textContent = !learnt ? 'Nothing yet! Every magic word you learn will show up here.'
+    : learnt === LESSONS.length ? `You have learnt all ${LESSONS.length} magic words. Wow.` : `You have learnt ${learnt} of ${LESSONS.length} magic words so far.`;
+  document.querySelectorAll('.rc-mode button').forEach((b) => b.classList.toggle('on', (b.dataset.mode === 'test') === test));
+  $('#rcChain').innerHTML = `<div class="rc-stops${seen ? '' : ' dim-chain'}">${RECAP.chain.map((c, i) => `${i ? `<span class="rc-via"><small>${esc(c.via ?? '')}</small><b>→</b></span>` : ''}<div class="rc-stop"><b>${esc(c.label)}</b><small>${esc(c.sub)}</small></div>`).join('')}</div>
+    <p class="rc-line">${seen ? esc(RECAP.line) : 'Watch <button class="link" data-go="whole">The whole game</button> to fill in the big picture.'}</p>`;
+  $('#rcGrid').innerHTML = LESSONS.map((L) => {
+    const R = RECAP.words[L.id], st = store.steps[L.id] ?? [], part = st.filter(Boolean).length;
+    if (!store.done[L.id]) return `<button class="rc-card locked" data-go="${L.id}" style="--c:${L.color}"><span class="w">${esc(L.word)}</span><span class="d">${part ? `${part} of ${L.steps.length} done` : 'Not learnt yet'}</span><span class="go">Learn it →</span></button>`;
+    if (test) return `<button class="rc-card quiz" data-flip style="--c:${L.color}"><span class="q">${esc(R.quiz)}</span><span class="reveal">Say it out loud, then tap</span><span class="ans"><span class="w">${esc(L.word)}</span><code>${esc(R.ex)}</code></span></button>`;
+    return `<div class="rc-card" style="--c:${L.color}"><span class="w">${esc(L.word)}</span><span class="m">${esc(L.mnem)}</span><span class="d">${esc(R.does)}</span><code>${esc(R.ex)}</code></div>`;
+  }).join('');
+  requestAnimationFrame(() => fitAll($('#p-recap')));
+}
+$('#p-recap').addEventListener('click', (e) => {
+  const go_ = e.target.closest('[data-go]')?.dataset.go, mode = e.target.closest('[data-mode]')?.dataset.mode, card = e.target.closest('[data-flip]');
+  if (go_) go(go_);
+  if (mode) { store.recapMode = mode; save(); renderRecap(); sound.blip(); }
+  if (card) { card.classList.toggle('shown'); sound.boing(card.classList.contains('shown') ? 700 : 400, .2, .08); }
+});
+$('#recapBtn').onclick = () => go('recap');
 
 /* ---------------- boot ---------------- */
 resetFS(); welcome(); paintPrompt(); renderMap(); paintProgress();
