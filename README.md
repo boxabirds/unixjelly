@@ -1,9 +1,10 @@
 # Jelly Unix
 
-Two playful guides, shell first and then git. Open `index.html` for the landing page that links to both.
+Three playful guides: shell, then git, then the web. Open `index.html` for the landing page that links to all three.
 
 - **Jelly Shell** (`jellyshell/`): the command line.
 - **Jelly Git** (`jellygit/`): git, built on the same ideas.
+- **Jelly Web** (`jellyweb/`): HTML, how pages travel, and publishing a site.
 
 There is no build step, no backend and no install. Each guide is a single HTML file.
 
@@ -63,9 +64,10 @@ The sandbox adds a fake `git` supporting `init`, `config`, `status`, `add`, `com
 
 ## Repo layout
 
-- `index.html`: landing page pointing to the two guides, shell first, then git.
+- `index.html`: landing page pointing to the three guides, in order: shell, git, web.
 - `jellyshell/index.html`: Jelly Shell, the app described above.
 - `jellygit/index.html`: Jelly Git, the follow-on guide to git.
+- `jellyweb/index.html`: Jelly Web, the third guide (15 jellies, progress saved separately).
 
 ## Credits and licensing
 
