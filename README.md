@@ -1,10 +1,10 @@
 # Jelly Unix
 
-Three playful guides: shell, then git, then the web. Open `index.html` for the landing page that links to all three.
+Three playful guides: the shell first, then git, then the web. Open `index.html` for the landing page that links to all three.
 
 - **Jelly Shell** (`jellyshell/`): the command line.
 - **Jelly Git** (`jellygit/`): git, built on the same ideas.
-- **Jelly Web** (`jellyweb/`): HTML, how pages travel, and publishing a site.
+- **Jelly Web** (`jellyweb/`): HTML, how web pages travel, and publishing with GitHub Pages.
 
 There is no build step, no backend and no install. Each guide is a single HTML file.
 
@@ -62,12 +62,33 @@ Lessons, in order: meet git, `config`, `init`, `status`, `add`, `commit`, `log`,
 
 The sandbox adds a fake `git` supporting `init`, `config`, `status`, `add`, `commit`, `log`, `diff`, `restore`, `remote`, `push`, `pull` and `clone`. `branch` just shows `main` with a pointer, and other git words (`checkout`, `switch`, `merge`, `rebase`, `stash`, `reset`, `fetch`) answer with a friendly pointer rather than doing anything. Progress is 16 jellies, saved separately from Jelly Shell.
 
+## Jelly Web
+
+Same format again, applied to the web. The lesson panel swaps the file tree for a pretend browser, and the terminal shares its space with an HTML editor.
+
+| Section | What it does |
+| --- | --- |
+| Welcome | Intro: every web page is a text file that crosses the planet. |
+| The whole game | A 3D trip of one page request: your computer, the router, the DNS phonebook, the undersea internet, the server, and back. |
+| Backstage | A flip-card animation of the browser crew loading `gerbil.zone`, a 404, and a teapot's 418. |
+| Lessons | 17 short missions with an editor, a terminal and a live browser. |
+
+Lessons, in order: view source, tags as boxes with lids, boxes inside boxes, standalone tags (`<hr/>`), lists, `<a>`, `<img/>`, CSS, reading a URL, `curl`, HTTP `GET`, status codes, DNS, `ping`, HTTPS, publishing with `git push` to GitHub Pages, and a final mission to fix Gerald's broken website.
+
+Everything runs on a pretend internet built into the page (`jelly.fun`, `gerbil.zone`, `teapot.jelly`, `moon.base` and friends), so no real network requests are made. The sandbox adds `curl [-I] [-v] [-L] [-o]`, `ping [-c]`, `nslookup`, `open`, and a small `git` with `status`, `add`, `commit`, `push`, `log` and `remote`. HTML is taught the tidy (XHTML) way throughout: every tag is closed, lids close in reverse order, and standalone tags close themselves (`<hr/>`, `<br/>`, `<img/>`). A tag checker under the editor enforces those rules and points at the line, and a Boxes view draws the page as nested boxes. Pages are previewed in a sandboxed frame with scripts removed. The pretend computer (including the kid's website) is saved in `localStorage`, so it survives a reload. Progress is 19 jellies.
+
+## How every guide flows
+
+- During the tutorial the section list slides away; a tab on the left edge brings it back.
+- Each magic word runs one thing at a time: the story, then "remember it", then the mission one step at a time, with the jelly letters in the top left throughout.
+- Enter always means "carry on": it presses the one big green button on screen (marked "Enter ↵"). Inside the terminal or editor, Enter keeps its usual meaning.
+
 ## Repo layout
 
-- `index.html`: landing page pointing to the three guides, in order: shell, git, web.
+- `index.html`: landing page pointing to the three guides: shell, then git, then the web.
 - `jellyshell/index.html`: Jelly Shell, the app described above.
 - `jellygit/index.html`: Jelly Git, the follow-on guide to git.
-- `jellyweb/index.html`: Jelly Web, the third guide (15 jellies, progress saved separately).
+- `jellyweb/index.html`: Jelly Web, the guide to HTML, HTTP and publishing.
 
 ## Credits and licensing
 

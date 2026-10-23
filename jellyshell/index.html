@@ -99,7 +99,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .ph{display:flex;align-items:flex-end;gap:12px 28px;flex-wrap:wrap}
 .ph .eyebrow{font-family:var(--display);color:var(--berry);font-size:clamp(.9rem,.6rem + .8vh,1.15rem);width:100%;margin-bottom:-6px}
 .ph h2{font-size:clamp(1.6rem,.8rem + 2.6vh,2.7rem)}
-.ph p{color:var(--ink-soft);max-width:60ch;font-size:clamp(.88rem,.7rem + .45vh,1.02rem);flex:1;min-width:280px}
+.ph p{color:var(--ink-soft);max-width:60ch;font-size:clamp(1rem,.8rem + .5vh,1.2rem);flex:1;min-width:280px}
 
 .btn{background:var(--lemon);color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:7px 15px;font-family:var(--display);font-size:1.02rem;box-shadow:0 4px 0 var(--ink);transition:transform .08s;white-space:nowrap}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
@@ -127,8 +127,8 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 /* whole game */
 .town{flex:1;min-height:0;display:flex;flex-direction:column;background:#fff6cf}
 .cv{position:relative;flex:1;min-height:0}
-.town-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:12px 16px;border-top:4px solid var(--ink);background:var(--card);height:clamp(92px,15vh,128px)}
-.cap{display:grid;gap:2px;min-width:0;height:100%;overflow:hidden;align-content:center;font-size:calc(1rem * var(--fit,1))}
+.town-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:12px 18px;border-top:4px solid var(--ink);background:var(--card);height:clamp(110px,19vh,170px)}
+.cap{display:grid;gap:4px;min-width:0;height:100%;overflow:hidden;align-content:center;font-size:calc(clamp(1.05rem,.75rem + 1vh,1.35rem) * var(--fit,1))}
 .cap .who{font-family:var(--display);font-size:1.25em;color:var(--blue)}
 .cap p{max-width:70ch}
 .ctrls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -180,39 +180,67 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .bubble::after{content:"";position:absolute;left:18%;bottom:-11px;border:8px solid transparent;border-top-color:var(--ink)}
 .paper{position:absolute;width:5%;aspect-ratio:3/4;background:#fff;border:3px solid var(--ink);border-radius:4px;opacity:0;z-index:2;background-image:repeating-linear-gradient(#0000 0 18%,#24133b44 18% 24%);background-clip:content-box;padding:12% 14%}
 .show-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:stretch}
-.show-cap{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:10px 16px;height:clamp(64px,11vh,104px);overflow:hidden;display:flex;align-items:center;font-size:calc(1rem * var(--fit,1))}
+.show-cap{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:10px 18px;height:clamp(76px,14vh,130px);overflow:hidden;display:flex;align-items:center;font-size:calc(clamp(1.05rem,.75rem + 1vh,1.35rem) * var(--fit,1))}
 .show-cap b{font-family:var(--display);font-weight:400;color:var(--grape)}
 .show-btns{display:grid;gap:6px;align-content:center;padding:10px 12px 12px 30px}
 .show-btns .btn{font-size:.92rem;padding:5px 12px;text-align:left}
+#p-backstage:not([data-played]) .show-btns{display:none} /* first, just press Enter; the other shows appear afterwards */
+.show-btns .btn.go{font-size:1.1rem;text-align:center}
 
-/* a magic word: jelly + mission on top, explanation + terminal below, file tree down the side */
-.lesson{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(0,.72fr);grid-template-rows:var(--top) minmax(0,1fr);grid-template-areas:"jelly mission map" "text term map";gap:var(--gap);--top:clamp(150px,25vh,250px)}
+/* a magic word, one thing at a time: the story, then the brain-burner, then the mission. The jelly stays top left. */
+.lesson{flex:1;min-height:0;display:grid;grid-template-columns:var(--jw) minmax(0,1fr);grid-template-rows:var(--top) minmax(0,1fr) auto;grid-template-areas:"jelly head" "body body" "foot foot";gap:var(--gap);--top:clamp(130px,21vh,210px);--jw:clamp(200px,24vw,340px)}
 .ljelly{grid-area:jelly;position:relative;background:#fff4d6}
-.ljelly .stands{position:absolute;left:12px;top:10px;font-family:var(--mono);font-size:.78rem;background:var(--ink);color:#fff;padding:2px 10px;border-radius:999px;pointer-events:none;z-index:1}
-.mission{grid-area:mission;background:#fffbea;border:4px dashed var(--ink);border-radius:22px;padding:12px 16px;display:flex;flex-direction:column;gap:8px;overflow:hidden;font-size:calc(1rem * var(--fit,1))}
-.mission-head{display:flex;align-items:center;gap:10px}
-.mission-head h4{font-size:1.25em;margin-right:auto}
-.mission-head .btn{font-size:.92em;padding:4px 12px}
-.steps{list-style:none;margin:0;padding:0;display:grid;gap:.45em}
-.steps li{display:grid;grid-template-columns:1.7em 1fr;gap:.5em;align-items:start;line-height:1.35}
-.steps .sb{width:1.5em;height:1.5em;border:3px solid var(--ink);border-radius:8px;background:var(--card);display:grid;place-items:center;font-weight:800;font-size:.85em}
-.steps li.ok .sb{background:var(--lime)}
-.steps li.ok>span:last-child{text-decoration:line-through;text-decoration-thickness:2px;color:var(--ink-soft)}
-.ltext{grid-area:text;padding:clamp(12px,2vh,20px);display:flex;flex-direction:column;gap:.75em;font-size:calc(1rem * var(--fit,1));overflow:hidden;border-color:var(--ink)}
-.ltext .num{font-family:var(--mono);font-size:.72em;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
-.ltext h3{font-size:1.75em;margin-top:-.3em}
-.mnem-label{font-family:var(--mono);font-size:.68em;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:-.6em}
-.mnem{font-family:var(--display);font-size:1.6em;line-height:1.08;color:var(--c,var(--berry));text-wrap:balance;-webkit-text-stroke:1.5px var(--ink);paint-order:stroke fill;text-shadow:0 3px 0 var(--ink)}
-.points{margin:0;padding:0;list-style:none;display:grid;gap:.4em;font-size:.94em}
-.points li{display:grid;grid-template-columns:1.1em minmax(0,1fr);gap:.5em}
-.ltext code,.mission code{white-space:normal;overflow-wrap:anywhere} /* long commands wrap instead of being clipped */
+.ljelly .stands{position:absolute;left:12px;top:10px;max-width:calc(100% - 24px);font-family:var(--mono);font-size:.8rem;background:var(--ink);color:#fff;padding:2px 10px;border-radius:999px;pointer-events:none;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lhead{grid-area:head;display:flex;flex-direction:column;justify-content:center;gap:.4em;min-width:0;overflow:hidden;font-size:calc(1rem * var(--fit,1))}
+.lhead .num{font-family:var(--mono);font-size:.85em;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.lhead h3{font-size:clamp(2.1rem,1rem + 3.6vh,3.6rem)}
+.task{display:none;background:#fffbea;border:4px solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--ink);padding:.55em 1em .65em;gap:.3em;min-height:0}
+.lesson[data-phase=mission] .lhead h3{display:none}
+.lesson[data-phase=mission]{--top:clamp(100px,17vh,180px)}
+.lesson[data-phase=mission] .task{display:grid}
+.task-top{display:flex;align-items:center;gap:.7em;font-family:var(--display);font-size:1.05em}
+.pips{display:flex;gap:.35em}
+.pip{width:1.7em;height:1.7em;border:3px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-family:var(--body);font-weight:800;font-size:.72em;background:#fff;transition:transform .2s}
+.pip.ok{background:var(--lime)}
+.pip.cur{background:var(--lemon);transform:scale(1.2)}
+.task-t{font-size:clamp(1.15rem,.7rem + 1.4vh,1.65rem);font-weight:600;line-height:1.35}
+.task-t code{white-space:normal;overflow-wrap:anywhere}
+.task-yay{font-family:var(--display);color:#2e8a1a;font-size:1.25em;display:inline-block;animation:yay .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes yay{from{transform:scale(.4)}}
+.lbody{grid-area:body;min-height:0;display:grid}
+.lstory,.lbrain,.ltools{display:none;min-height:0}
+.lesson[data-phase=meet] .lstory{display:grid}
+.lesson[data-phase=brain] .lbrain{display:flex}
+.lesson[data-phase=mission] .ltools{display:grid}
+.lstory{grid-auto-flow:column;align-items:center;justify-content:center;gap:clamp(16px,3vw,40px);overflow:hidden;font-size:calc(clamp(1.25rem,.6rem + 2.4vh,2.1rem) * var(--fit,1))}
+.why{background:#fff;border:4px solid var(--ink);border-radius:26px;box-shadow:0 6px 0 var(--ink);padding:.9em 1.2em;line-height:1.5;max-width:36ch}
+.lvisual:empty{display:none}
+.lbrain{flex-direction:column;justify-content:center;align-items:center;gap:.7em;text-align:center;overflow:hidden;font-size:calc(clamp(1.1rem,.7rem + 1.4vh,1.6rem) * var(--fit,1))}
+.mnem-label{font-family:var(--mono);font-size:.7em;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.mnem{font-family:var(--display);font-size:2.3em;line-height:1.05;color:var(--c,var(--berry));text-wrap:balance;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink);max-width:20ch}
+.points{margin:.4em 0 0;padding:0;list-style:none;display:grid;gap:.55em;text-align:left;max-width:46ch}
+.points li{display:grid;grid-template-columns:1.1em minmax(0,1fr);gap:.6em}
 .points li::before{content:"";width:.7em;height:.95em;border-radius:50%/42%;background:var(--c,var(--berry));border:2px solid var(--ink);margin-top:.28em;transform:rotate(-14deg)}
+.lstory code,.lbrain code{white-space:normal;overflow-wrap:anywhere}
+.ltools{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-areas:"term map";gap:var(--gap)}
+.lfoot{grid-area:foot;display:flex;align-items:center;gap:12px}
+.lfoot .btn{font-size:1.15rem;padding:8px 18px}
+.lfoot .btn.small{font-size:.9rem;padding:5px 12px}
+#lNext{margin-left:auto}
+.phases{position:absolute;left:50%;transform:translateX(-50%)}
+@media (max-width:1150px){.phases{position:static;transform:none;margin:0 auto}.phases li{font-size:.8rem;padding:2px 10px}.lfoot .btn{font-size:1rem;padding:6px 14px}}
+.lfoot{position:relative;min-height:52px}
+.phases{display:flex;gap:8px;list-style:none;margin:0 auto;padding:0;counter-reset:ph}
+.phases li{counter-increment:ph;font-family:var(--display);font-size:.95rem;padding:3px 14px;border:3px solid #24133b44;border-radius:999px;color:var(--ink-soft);cursor:pointer;white-space:nowrap}
+.phases li::before{content:counter(ph) ". "}
+.phases li.on{border-color:var(--ink);background:var(--c);color:var(--ink)}
+.ent{display:inline-block;font-family:var(--body);font-weight:700;font-size:.6em;border:2px solid currentColor;border-radius:6px;padding:0 .4em;margin-left:.6em;vertical-align:.18em;opacity:.75;line-height:1.4}
 .term{grid-area:term;background:var(--term);color:#d9ffe6;display:flex;flex-direction:column;min-height:0}
 .term-top{display:flex;align-items:center;gap:8px;padding:7px 12px;background:#0e2a19;border-bottom:3px solid var(--ink)}
 .term-top i{width:12px;height:12px;border-radius:50%;display:block;border:2px solid var(--ink)}
 .term-top span{font-family:var(--mono);font-size:.8rem;color:#9fd9b4;margin-right:auto;margin-left:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .term-top button{background:transparent;border:2px solid #9fd9b466;color:#cfeedd;border-radius:999px;font-size:.76rem;padding:2px 10px}
-.term-body{flex:1;min-height:0;overflow-y:auto;padding:10px 14px;font-family:var(--mono);font-size:clamp(13px,.55rem + .6vh,15px);line-height:1.45;cursor:text}
+.term-body{flex:1;min-height:0;overflow-y:auto;padding:10px 14px;font-family:var(--mono);font-size:clamp(14px,.6rem + .75vh,18px);line-height:1.45;cursor:text}
 .term-body .ln{white-space:pre-wrap;word-break:break-word}
 .term-body .p{color:var(--phos)}
 .term-body .dir{color:#7aa8ff;font-weight:700}
@@ -222,16 +250,17 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .term-body .wiz{color:#d7b8ff}
 .inline{display:flex;gap:.6ch;align-items:baseline}
 .inline .p{white-space:nowrap}
-#termIn{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff;font:inherit;font-size:16px;caret-color:var(--phos);padding:0}
+#termIn{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff;font:inherit;caret-color:var(--phos);padding:0}
+#termIn::placeholder{color:#7fb092}
 .keys{display:flex;gap:6px;flex-wrap:wrap;padding:7px 10px;border-top:3px solid var(--ink);background:#0e2a19}
 .keys button{font-family:var(--mono);font-size:.8rem;background:#173d26;color:#dfffe9;border:2px solid #3b7a52;border-radius:9px;padding:3px 9px}
 .keys button:active{background:#2b6b45}
 .train{white-space:pre;color:var(--lemon);font-size:12px;line-height:1.1;animation:choo 3.2s linear forwards}
 @keyframes choo{from{transform:translateX(100%)}to{transform:translateX(-110%)}}
 .map{grid-area:map;display:flex;flex-direction:column;min-height:0}
-.map-head{display:grid;gap:2px;padding:8px 12px;border-bottom:3px solid var(--ink);font-family:var(--display);font-size:1.05rem}
+.map-head{display:grid;gap:2px;padding:8px 12px;border-bottom:3px solid var(--ink);font-family:var(--display);font-size:1.15rem}
 .map-head small{font-family:var(--body);font-size:.72rem;color:var(--ink-soft)}
-.map-list{position:relative;flex:1;min-height:0;overflow:hidden;padding:8px 8px 10px;font-size:calc(.86rem * var(--fit,1))}
+.map-list{position:relative;flex:1;min-height:0;overflow:auto;padding:8px 8px 10px;font-size:calc(.95rem * var(--fit,1));scrollbar-width:thin} /* on very small screens a long tree may scroll */
 .mrow{display:flex;align-items:center;gap:.45em;padding:.12em .5em .12em calc(var(--d) * 1.15em + .5em);border-radius:8px;font-family:var(--mono);white-space:nowrap;background-image:repeating-linear-gradient(90deg,#24133b22 0 2px,transparent 2px 1.15em);background-size:calc(var(--d) * 1.15em) 100%;background-repeat:no-repeat;background-position:.95em 0}
 .mrow.dir{cursor:pointer;font-weight:700}
 .mrow.dir:hover{background-color:#24133b0d}
@@ -245,7 +274,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 @keyframes tag{0%{background:var(--lemon)}100%{background:transparent}}
 .ghost{position:absolute;pointer-events:none;margin:0}
 
-.toast{position:fixed;left:calc(50% + var(--nav) / 2);bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(calc(100% + 40px));opacity:0;visibility:hidden;background:var(--ink);color:#fff;border-radius:18px;padding:12px 20px;font-family:var(--display);font-size:1.15rem;z-index:40;transition:transform .45s cubic-bezier(.3,1.6,.5,1);text-align:center;box-shadow:0 0 0 3px #fff}
+.toast{position:fixed;left:calc(50% + var(--nav) / 2);transition:left .45s,transform .45s cubic-bezier(.3,1.6,.5,1)!important;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(calc(100% + 40px));opacity:0;visibility:hidden;background:var(--ink);color:#fff;border-radius:18px;padding:12px 20px;font-family:var(--display);font-size:1.15rem;z-index:40;transition:transform .45s cubic-bezier(.3,1.6,.5,1);text-align:center;box-shadow:0 0 0 3px #fff}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
 .confetti{position:fixed;width:14px;height:20px;border-radius:50%/42%;z-index:39;pointer-events:none;border:2px solid var(--ink)}
 
@@ -259,30 +288,8 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .gate-credit .repo{color:var(--ink)!important}
 .gate-credit a{color:var(--ink)}
 @media (max-width:899px),(max-height:559px){.app{display:none}.gate{display:grid}}
-/* the guide: numbered areas, a moving spotlight, a jelly-bean coach, and "next up" */
+/* the end of a section: a jelly flies into the jar, then a clear "next up" */
 .guide{position:absolute;inset:0;pointer-events:none;z-index:30}
-.dim{opacity:.48;filter:saturate(.55);transition:opacity .35s,filter .35s}
-.ljelly,.ltext,.mission,.term,.map,.cv,.town-ui,.show-wrap,.show-cap,.show-btns,.hero-stage,.hero-side{transition:opacity .35s,filter .35s}
-.ring{position:absolute;border:4px solid var(--gc);border-radius:28px;box-shadow:0 0 0 5px #ffffffcc,0 0 34px 8px var(--gc);opacity:0;transition:left .5s cubic-bezier(.3,1.25,.5,1),top .5s cubic-bezier(.3,1.25,.5,1),width .5s cubic-bezier(.3,1.25,.5,1),height .5s cubic-bezier(.3,1.25,.5,1),opacity .3s}
-.ring.on{opacity:1;animation:ring 1.8s ease-in-out infinite}
-.ring.snap,.coach.snap{transition:none}
-@keyframes ring{50%{box-shadow:0 0 0 9px #ffffffaa,0 0 46px 12px var(--gc)}}
-.gbadge{position:absolute;width:34px;height:40px;border-radius:50%/44%;background:var(--gc);border:3px solid var(--ink);box-shadow:0 3px 0 var(--ink);display:grid;place-items:center;font-family:var(--display);font-size:1.15rem;color:var(--ink);transform:rotate(-10deg);transition:transform .3s,background .3s}
-.gbadge.past{background:#fff}
-.gbadge.cur{transform:rotate(-10deg) scale(1.3);animation:badge 1s ease-in-out infinite}
-@keyframes badge{50%{transform:rotate(6deg) scale(1.38)}}
-.coach{position:absolute;width:min(330px,40vw);pointer-events:auto;background:#fff;border:4px solid var(--ink);border-radius:22px;box-shadow:0 7px 0 var(--ink);padding:12px 14px 12px 10px;display:grid;grid-template-columns:54px minmax(0,1fr);gap:10px;transition:left .5s cubic-bezier(.3,1.25,.5,1),top .5s cubic-bezier(.3,1.25,.5,1)}
-.coach-bean{width:54px;height:auto;animation:bob 1.6s ease-in-out infinite}
-.coach[data-side=right] .pp{transform:translateX(-2.5px)} .coach[data-side=left] .pp{transform:translateX(2.5px)}
-.coach[data-side=below] .pp{transform:translateY(-2.5px)} .coach[data-side=above] .pp{transform:translateY(2.5px)}
-.coach-body{display:grid;gap:4px}
-.coach-n{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
-.coach h5{margin:0;font-family:var(--display);font-weight:400;font-size:1.25rem;line-height:1.05}
-.coach p{font-size:.92rem;line-height:1.4}
-.coach-btns{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
-.coach-btns .btn{padding:4px 12px;font-size:.95rem}
-.coach-hide{background:none;border:0;padding:0;margin-left:auto;font-size:.75rem;color:var(--ink-soft);text-decoration:underline}
-.tips-btn{position:absolute;right:18px;bottom:16px;pointer-events:auto;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:5px 14px;font-weight:600;font-size:.82rem;box-shadow:0 3px 0 var(--ink)}
 .upnext{position:absolute;inset:0;pointer-events:auto;display:grid;place-items:center;background:#24133b55;backdrop-filter:blur(2px)}
 .un-card{background:#fff;border:5px solid var(--ink);border-radius:30px;box-shadow:0 10px 0 var(--ink);padding:26px 36px 28px;display:grid;justify-items:center;gap:6px;text-align:center;max-width:min(520px,90%)}
 .un-bean{width:84px;height:auto;animation:bob 1.2s ease-in-out infinite}
@@ -292,11 +299,9 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .un-name{font-size:1.05rem;color:var(--ink-soft);max-width:34ch}
 .un-btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
 .un-go{font-size:1.3rem;padding:10px 22px;animation:pulse 1.1s ease-in-out infinite}
-.up-pill{position:absolute;right:18px;bottom:16px;pointer-events:auto;display:flex;align-items:center;gap:10px;background:var(--lime);border:4px solid var(--ink);border-radius:999px;padding:6px 18px 6px 8px;box-shadow:0 5px 0 var(--ink);font-family:var(--display);font-size:1.1rem;animation:pulse 1.4s ease-in-out infinite}
-.up-pill svg{width:34px;height:auto}
-.up-pill b{font-family:var(--mono)}
 .flyer{position:fixed;width:40px;z-index:60;pointer-events:none}
 .flyer svg{width:40px;height:auto}
+.un-card .ent{font-size:.55em}
 .ni.up-next::after{content:"NEXT";font-family:var(--display);font-size:.62rem;background:var(--lime);color:var(--ink);border-radius:999px;padding:1px 6px;animation:pulse 1.2s ease-in-out infinite}
 .ni{grid-template-columns:16px auto minmax(0,1fr) auto}
 /* what I've learnt so far */
@@ -335,6 +340,28 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .rc-card.quiz.shown{background:#fff}
 .rc-card.quiz.shown .ans{display:grid}
 .rc-card.quiz.shown .reveal{display:none}
+/* tutorial sections get the whole window: the nav slides away and waits behind a small tab on the left */
+.app{display:block;position:relative;height:100%}
+.side{position:absolute;left:0;top:0;bottom:0;width:var(--nav);z-index:45;transition:transform .45s cubic-bezier(.3,1,.4,1),box-shadow .3s}
+.stage{position:absolute;top:0;right:0;bottom:0;left:var(--nav);transition:left .45s cubic-bezier(.3,1,.4,1)}
+.app.focus .stage{left:0}
+.app.focus .side{transform:translateX(-100%)}
+.app.focus.peek .side{transform:none;box-shadow:16px 0 48px #24133b99}
+.app.focus .panel{padding-left:max(var(--pad),34px)}
+.app.focus ~ .toast{left:50%}
+.nav-handle{position:absolute;left:0;top:50%;z-index:44;display:grid;justify-items:center;gap:8px;padding:14px 7px 14px 5px;background:var(--ink);color:#fff;border:0;border-radius:0 16px 16px 0;font-family:var(--display);font-size:.85rem;line-height:1;transform:translate(-110%,-50%);transition:transform .35s;box-shadow:3px 0 0 #ffffff55}
+.app.focus .nav-handle{transform:translate(0,-50%)}
+.nav-handle .hb{font-size:1.2rem}
+.nav-handle .hc{writing-mode:vertical-rl;letter-spacing:.04em}
+.nav-handle .bean-svg{width:20px;height:auto}
+@media (prefers-reduced-motion:reduce){.side,.stage,.nav-handle{transition:none}}
+/* small windows: the recap packs its cards tighter */
+@media (max-height:700px),(max-width:1150px){
+  .rc-grid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+  .rc-stop{min-width:80px}.rc-via{min-width:30px}.rc-via small,.rc-stop small{display:none}
+  .rc-stop b{font-size:.95rem}
+  .rc-card .d{display:none}
+}
 </style>
 
 <script type="importmap">
@@ -359,7 +386,6 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <button class="btn recap-btn" id="recapBtn">★ What I’ve learnt</button>
-      <div class="stepper"><button class="btn alt" id="navPrev">Back</button><button class="btn go" id="navNext">Next</button></div>
       <div class="tools">
         <button class="pill" id="muteBtn" aria-pressed="false">Sound on</button>
         <button class="pill" id="resetBtn">Empty the jar</button>
@@ -368,6 +394,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
       <div class="credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a><p><span class="long">Jelly physics ported from </span><a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener"><span class="short">Physics: </span>Jelly Baby</a><span class="long"> by Scott Sun</span> (GPL-3.0).<span class="more"> Letters in Titan One (OFL). Progress is saved in this browser only.</span></p></div>
     </div>
   </aside>
+  <button class="nav-handle" id="navHandle" aria-label="Show every section"><span class="hb">☰</span><span class="hc" id="handleCount"></span></button>
 
   <main class="stage">
     <section class="panel sky" id="p-welcome" aria-label="Welcome">
@@ -376,7 +403,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
         <h1>Boss your computer around with <em>tiny words</em>.</h1>
         <div class="hero-side">
           <p>These words were invented in 1971. They still work today on Macs, Linux, Raspberry Pis and most of the computers that run the internet. Learn them once, use them for life.</p>
-          <button class="btn go" id="startBtn">Start the tour</button>
+          <button class="btn go" id="startBtn">Start the tour<span class="ent">Enter ↵</span></button>
         </div>
       </div>
       <div class="hero-stage">
@@ -412,7 +439,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
             <div class="face front">
               <span class="face-tag">Front: the green screen</span>
               <div class="crt"><div class="crt-screen" id="crt"></div><div class="crt-brand">JELLY-TERM 3000</div></div>
-              <div class="keyboard" aria-hidden="false"><div class="krows" id="krows" aria-hidden="true"></div><button class="enter" id="enterKey" aria-label="Press Enter to watch ls happen">Enter<small>press me</small></button></div>
+              <div class="keyboard" aria-hidden="false"><div class="krows" id="krows" aria-hidden="true"></div><button class="enter" id="enterKey" aria-label="Press Enter to watch ls happen">Enter<small>or press Enter</small></button></div>
             </div>
             <div class="face back" id="back">
               <span class="face-tag">Backstage: the crew</span>
@@ -435,38 +462,45 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
         </div>
       </div>
       <div class="show-ui">
-        <div class="show-cap" id="showCap" data-fit aria-live="polite"><span><b>Ready.</b> Press the yellow Enter key, or pick a command on the right, and watch what happens inside the computer.</span></div>
+        <div class="show-cap" id="showCap" data-fit aria-live="polite"><span><b>Ready?</b> Press <kbd>Enter</kbd> on your keyboard (or click the yellow key) and watch what happens inside the computer.</span></div>
         <div class="show-btns">
           <button class="btn" data-show="ls">Play <code>ls</code></button>
           <button class="btn" data-show="cat">Play <code>cat secret-diary.txt</code></button>
           <button class="btn" data-show="mv">Play <code>mv hamster.txt sir-fluffington.txt</code></button>
+          <button class="btn go" id="bsNext">Next<span class="ent">Enter ↵</span></button>
         </div>
       </div>
     </section>
 
     <section class="panel mint" id="p-lesson" aria-label="A magic word" hidden>
-      <div class="lesson" id="lcard">
+      <div class="lesson" id="lcard" data-phase="meet">
         <div class="ljelly box"><canvas id="lessonJelly" aria-label="The current command as squishy jelly letters" style="position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none"></canvas><span class="stands" id="lStands"></span></div>
-        <div class="mission" data-fit>
-          <div class="mission-head"><h4>Your mission</h4><button class="btn alt" id="lRestart" title="Untick this mission and give the sandbox a fresh start">Start over</button><button class="btn alt" id="lNext">Next word</button></div>
-          <ol class="steps" id="lSteps"></ol>
-        </div>
-        <div class="ltext box" data-fit>
+        <div class="lhead" data-fit>
           <div class="num" id="lNum"></div>
           <h3 id="lTitle"></h3>
-          <p id="lWhy"></p>
-          <div class="mnem-label">Burn this into your brain</div>
-          <div class="mnem" id="lMnem"></div>
-          <ul class="points" id="lPoints"></ul>
+          <div class="task" aria-live="polite"><div class="task-top"><span id="lTaskN"></span><span class="pips" id="lPips"></span></div><div class="task-t" id="lTask"></div></div>
         </div>
+        <div class="lbody">
+        <div class="lstory" data-fit><p class="why" id="lWhy"></p><div class="lvisual" id="lVisual"></div></div>
+        <div class="lbrain" data-fit><div class="mnem-label">Burn this into your brain</div><div class="mnem" id="lMnem"></div><ul class="points" id="lPoints"></ul></div>
+        <div class="ltools">
         <div class="term box" id="term">
           <div class="term-top"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span id="termTitle">kid@jelly: ~</span><button id="sbReset">Reset sandbox</button></div>
-          <div class="term-body" id="termBody"><div id="termOut"></div><div class="inline" id="termLine"><span class="p" id="termPrompt"></span><input id="termIn" aria-label="Type a command" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"></div></div>
+          <div class="term-body" id="termBody"><div id="termOut"></div><div class="inline" id="termLine"><span class="p" id="termPrompt"></span><input id="termIn" placeholder="type here, then press Enter ↵" aria-label="Type a command" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"></div></div>
           <div class="keys" aria-label="Helper keys"><button data-k="tab">Tab</button><button data-k="up">↑</button><button data-k="down">↓</button><button data-k="ctrlc">Ctrl+C</button><button data-k="ctrld">Ctrl+D</button><button data-k="ins" data-v="~">~</button><button data-k="ins" data-v="/">/</button><button data-k="ins" data-v="..">..</button><button data-k="enter">Enter</button></div>
         </div>
         <div class="map box">
           <div class="map-head">The file tree <small>Tap a folder to type its <code>cd</code></small></div>
           <div class="map-list" id="map" data-fit></div>
+        </div>
+        <!-- /tools -->
+        </div>
+        </div>
+        <div class="lfoot">
+          <button class="btn alt" id="lBack">← Back</button>
+          <button class="btn alt small" id="lRestart" title="Untick this mission and give the sandbox a fresh start">Start over</button>
+          <ol class="phases" id="lPhases"><li data-p="meet">The story</li><li data-p="brain">Remember it</li><li data-p="mission">Mission</li></ol>
+          <button class="btn go" id="lNext">Next</button>
         </div>
       </div>
     </section>
@@ -479,11 +513,6 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
       <div class="rc-grid" id="rcGrid" data-fit></div>
     </section>
     <div class="guide" id="guide">
-      <div class="ring" id="gRing"></div>
-      <div id="gBadges"></div>
-      <div class="coach" id="coach" role="dialog" aria-label="Guide" hidden></div>
-      <button class="tips-btn" id="tipsBtn" hidden>Show me the way</button>
-      <button class="up-pill" id="upPill" hidden></button>
       <div class="upnext" id="upnext" hidden></div>
     </div>
   </main>
@@ -2013,6 +2042,7 @@ const RECAP = {
 function complete(id) {
   if (store.done[id]) return;
   store.done[id] = true; save(); paintProgress();
+  if (id === 'backstage') $('#p-backstage').dataset.played = '1';
   const item = ALL.find((a) => a.id === id);
   if (!sectionDone(id)) toast(`Jelly collected: ${item.word ? item.word : item.name}!`);
   sound.ding(); confetti(item.color);
@@ -2023,12 +2053,12 @@ function check(ev) {
     const st = store.steps[L.id] ??= L.steps.map(() => false);
     let changed = false;
     L.steps.forEach((s, i) => { if (!st[i] && s.ok(ev)) { st[i] = true; changed = true; } });
-    if (changed) { save(); if (L === LESSONS[cur]) paintSteps(); if (st.every(Boolean)) complete(L.id); else if (L === LESSONS[cur]) sound.ding(); }
+    if (changed) { save(); if (L === LESSONS[cur]) paintSteps(true); if (st.every(Boolean)) complete(L.id); else if (L === LESSONS[cur]) sound.ding(); }
   }
 }
 function paintProgress() {
   const n = ALL.filter((a) => store.done[a.id]).length;
-  $('#jarCount').textContent = `${n} / ${ALL.length} jellies`;
+  $('#jarCount').textContent = `${n} / ${ALL.length} jellies`; $('#handleCount').textContent = `${n} / ${ALL.length}`;
   $('#beans').innerHTML = ALL.map((a) => `<span class="bean${store.done[a.id] ? ' on' : ''}" title="${esc(a.name)}" style="${store.done[a.id] ? `background:${a.color}` : ''}"></span>`).join('');
   const rec = PANELS.find((p) => p.id !== 'welcome' && !store.done[p.id])?.id;
   document.querySelectorAll('.ni').forEach((t) => { t.classList.toggle('done', !!store.done[t.dataset.id]); t.classList.toggle('up-next', t.dataset.id === rec); });
@@ -2065,18 +2095,38 @@ function go(id) {
   try { history.replaceState(null, '', '#' + P.id); } catch {}
   const el = P.lesson ? $('#p-lesson') : $('#p-' + P.id);
   document.querySelectorAll('.panel').forEach((p) => { p.hidden = p !== el; });
+  $('.app').classList.toggle('focus', !['welcome', 'recap'].includes(P.id)); $('.app').classList.remove('peek');
+  if (store.done.backstage) $('#p-backstage').dataset.played = '1';
   if (P.lesson) showLesson(LESSONS.indexOf(P.lesson));
   if (P.id === 'recap') renderRecap();
   navEl.querySelectorAll('.ni').forEach((a) => { const on = a.dataset.id === P.id; a.classList.toggle('cur', on); if (on) a.scrollIntoView({ block: 'nearest' }); });
   $('#recapBtn').classList.toggle('cur', P.id === 'recap');
-  $('#navPrev').disabled = i === 0; $('#navNext').disabled = i === PANELS.length - 1;
-  if (!REDUCED && from >= 0) el.animate([{ opacity: 0, transform: `translateY(${i >= from ? 28 : -28}px)` }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' }).finished.then(() => placeGuide(), () => {});
-  requestAnimationFrame(() => { fitAll(el); guideStart(P, el); });
+  if (!REDUCED && from >= 0) el.animate([{ opacity: 0, transform: `translateY(${i >= from ? 28 : -28}px)` }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  G.card = false; renderGuide();
+  // Start every section with the big button ready, so the very next Enter carries on.
+  requestAnimationFrame(() => { fitAll(el); const b = primaryButton(); if (b) b.focus({ preventScroll: true }); else document.activeElement?.blur(); });
   paintProgress();
 }
 const step = (d) => go(PANELS[clamp(panelIdx + d, 0, PANELS.length - 1)].id);
-$('#navPrev').onclick = () => step(-1);
-$('#navNext').onclick = () => step(1);
+// The nav waits behind a tab during the tutorial. Click the tab to peek; click anywhere else to tuck it away.
+$('#navHandle').onclick = () => $('.app').classList.toggle('peek');
+$('.stage').addEventListener('pointerdown', () => $('.app').classList.remove('peek'));
+$('.stage').addEventListener('transitionend', (e) => { if (e.target === e.currentTarget) fitNow(); });
+// Enter always means "carry on": it presses the one big button on the screen. Typing boxes keep Enter for themselves.
+function primaryButton() {
+  if (G.card) return $('#unGo');
+  const P = PANELS[panelIdx];
+  const b = P.lesson ? $('#lNext') : { welcome: $('#startBtn'), whole: $('#townNext'), backstage: showBusy ? null : store.done.backstage ? $('#bsNext') : $('#enterKey') }[P.id];
+  return b && !b.hidden && !b.disabled && b.offsetParent ? b : null;
+}
+addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') $('.app').classList.remove('peek');
+  if (e.key !== 'Enter' || e.repeat || e.isComposing || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+  if (e.target.closest?.('input,textarea,select,button,a,[contenteditable]') && e.target.offsetParent) return; // a hidden box has lost its turn
+  const b = primaryButton();
+  if (b) { e.preventDefault(); b.click(); }
+  else if (PANELS[panelIdx]?.lesson && $('#lcard').dataset.phase === 'mission') { e.preventDefault(); termIn.focus({ preventScroll: true }); }
+});
 addEventListener('keydown', (e) => {
   if (e.target.closest?.('input,textarea')) return;
   if (e.key === 'PageDown' || e.key === 'ArrowRight') { e.preventDefault(); step(1); }
@@ -2095,24 +2145,49 @@ const fitNow = () => { const P = PANELS[panelIdx]; if (P) fitAll(P.lesson ? $('#
 let fitTimer;
 addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(fitNow, 120); });
 
-/* ---------------- one magic word ---------------- */
-function paintSteps() {
-  const L = LESSONS[cur], st = store.steps[L.id] ?? [];
-  $('#lSteps').innerHTML = L.steps.map((s, i) => `<li class="${st[i] ? 'ok' : ''}"><span class="sb">${st[i] ? '✓' : i + 1}</span><span>${s.t}</span></li>`).join('');
-  const done = !!store.done[L.id], last = cur === LESSONS.length - 1;
-  const nx = $('#lNext'); nx.hidden = last; nx.classList.toggle('pulse', done); nx.classList.toggle('go', done); nx.classList.toggle('alt', !done);
-  if (PANELS[panelIdx]?.lesson) requestAnimationFrame(() => fitAll($('#p-lesson')));
+/* ---------------- one magic word, one thing at a time ---------------- */
+// Three phases: the story, the brain-burner, then the mission, one step at a time. The jelly stays put throughout.
+const ENTER = '<span class="ent">Enter ↵</span>';
+store.phase ??= {};
+let taskTimer, onTask = () => {}; // a guide can swap tools when a mission step needs a different one
+function setPhase(p) {
+  const L = LESSONS[cur]; store.phase[L.id] = p; save();
+  $('#lcard').dataset.phase = p; paintSteps(); sound.blip();
+  requestAnimationFrame(() => { fitAll($('#p-lesson')); if (p === 'mission') termIn.focus({ preventScroll: true }); else $('#lNext').focus({ preventScroll: true }); });
+}
+function paintSteps(celebrate = false) {
+  const L = LESSONS[cur], st = store.steps[L.id] ?? [], i = L.steps.findIndex((s, k) => !st[k]), p = $('#lcard').dataset.phase;
+  $('#lPips').innerHTML = L.steps.map((s, k) => `<span class="pip${st[k] ? ' ok' : ''}${k === i ? ' cur' : ''}">${st[k] ? '✓' : k + 1}</span>`).join('');
+  const show = () => {
+    $('#lTaskN').textContent = i < 0 ? 'Mission complete!' : `Step ${i + 1} of ${L.steps.length}`;
+    $('#lTask').innerHTML = i < 0 ? `You did every step. The <b>${esc(L.word)}</b> jelly is yours!` : L.steps[i].t;
+    if (i >= 0 && p === 'mission') onTask(L, L.steps[i]);
+    if (PANELS[panelIdx]?.lesson) fitAll($('#p-lesson'));
+  };
+  clearTimeout(taskTimer);
+  if (celebrate && p === 'mission' && !REDUCED) { $('#lTaskN').textContent = ''; $('#lTask').innerHTML = '<span class="task-yay">✓ Nice one!</span>'; lessonStage?.hopAll(.7); taskTimer = setTimeout(show, 1100); }
+  else show();
+  const done = !!store.done[L.id], last = cur === LESSONS.length - 1, nx = $('#lNext');
+  nx.hidden = p === 'mission' && (!done || last);
+  nx.innerHTML = (p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next word') + ENTER;
+  nx.classList.toggle('pulse', p === 'mission');
+  $('#lBack').hidden = p === 'meet'; $('#lRestart').hidden = p !== 'mission';
+  document.querySelectorAll('#lPhases li').forEach((li) => li.classList.toggle('on', li.dataset.p === p));
 }
 function showLesson(i) {
   cur = i; const L = LESSONS[i]; store.cur = L.id; save();
   $('#lcard').style.setProperty('--c', L.color);
   $('#lNum').textContent = `Magic word ${i + 1} of ${LESSONS.length}`;
   $('#lStands').textContent = L.stands; $('#lTitle').textContent = L.title; $('#lWhy').innerHTML = L.why; $('#lMnem').textContent = L.mnem;
+  $('#lVisual').innerHTML = L.visual ?? '';
   $('#lPoints').innerHTML = L.points.map((p) => `<li><span>${p}</span></li>`).join('');
+  $('#lcard').dataset.phase = store.done[L.id] ? 'meet' : store.phase[L.id] ?? 'meet';
   paintSteps();
   if (lessonStage && lessonStage.word !== L.word) { lessonStage.opts.colorOffset = Math.max(0, JELLY.indexOf(L.color)); lessonStage.setWord(L.word); }
 }
-$('#lNext').onclick = () => step(1);
+$('#lNext').onclick = () => { const p = $('#lcard').dataset.phase; if (p === 'meet') setPhase('brain'); else if (p === 'brain') setPhase('mission'); else step(1); };
+$('#lBack').onclick = () => setPhase($('#lcard').dataset.phase === 'mission' ? 'brain' : 'meet');
+$('#lPhases').onclick = (e) => { const li = e.target.closest('[data-p]'); if (li) setPhase(li.dataset.p); };
 // Start over: untick this mission's steps and give the sandbox a fresh start. Jellies already earned stay in the jar.
 $('#lRestart').onclick = () => {
   const L = LESSONS[cur]; store.steps[L.id] = L.steps.map(() => false); save();
@@ -2122,126 +2197,15 @@ $('#lRestart').onclick = () => {
 
 $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; $('#resetBtn').hidden = true; };
 $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; $('#resetBtn').hidden = false; };
-$('#resetYes').onclick = () => { store.done = {}; store.steps = {}; store.tour = {}; store.tipsOff = false; save(); paintProgress(); paintSteps(); $('#resetNo').onclick(); go(PANELS[panelIdx].id); toast('Jar emptied. Fresh start!'); };
+$('#resetYes').onclick = () => { store.done = {}; store.steps = {}; store.phase = {}; save(); paintProgress(); paintSteps(); $('#resetNo').onclick(); go(PANELS[panelIdx].id); toast('Jar emptied. Fresh start!'); };
 $('#startBtn').onclick = () => go('whole');
+$('#bsNext').onclick = () => go(nextUp().id);
 
-/* ---------------- the guide: numbered areas, a moving spotlight, and "next up" ---------------- */
-// Each panel lists its areas in the order a kid should use them. The spotlight suggests; clicking any area moves it there.
-const GUIDES = {
-  welcome: [
-    { sel: '.hero-stage', title: 'Squish a jelly', text: 'These wobbly letters are real commands. Grab one, stretch it, fling it!' },
-    { sel: '.hero-side', title: 'Start the tour', text: 'Press the green button when you are ready. You can also jump anywhere with the list on the left.' },
-  ],
-  whole: [
-    { sel: '.cv', title: 'The computer, sliced open', text: 'Every layer has a job. Drag to spin it. Scroll to zoom.' },
-    { sel: '.town-ui', title: 'Follow the jelly bean', text: 'Read the story, then press Next. Follow the bean all the way down and back up.' },
-  ],
-  backstage: [
-    { sel: '.show-wrap', title: 'Press Enter', text: 'Press the yellow Enter key on the keyboard. Then watch the screen flip around!' },
-    { sel: '.show-cap', title: 'Read along', text: 'This box tells you what each character is doing.' },
-    { sel: '.show-btns', title: 'Try all three', text: 'Watch cat and mv too. Every command makes the same trip with a different program.' },
-  ],
-  recap: [
-    { sel: '.rc-chain', title: 'The big picture, again', text: 'Remember the whole game? Here it is in one line.' },
-    { sel: '.rc-grid', title: 'Your magic words', text: 'Every word you learnt, with its brain-burner. Grey ones are still waiting for you: tap one to learn it.' },
-    { sel: '.rc-mode', title: 'Test yourself', text: 'Press Test me. Each card asks a question. Say the answer out loud, then tap the card to check.' },
-  ],
-  lesson: (L) => [
-    { sel: '.ljelly', title: `Meet ${L.word}`, text: 'Grab the jelly letters and give them a squish. This is the word you are learning.' },
-    { sel: '.ltext', title: 'Why the funny name?', text: 'Read the story. Then say the big coloured line out loud three times. Silly voices count.' },
-    { sel: '.mission', title: 'Your mission', text: `${L.steps.length} things to do, in order. Each one ticks itself when you do it.` },
-    { sel: '.term', title: 'Type here', text: 'Click in the black box and type the mission commands. Press Enter to run each one.' },
-    { sel: '.map', title: 'Watch the tree', text: 'Every command changes this tree or moves YOU ARE HERE. Keep an eye on it while you type!' },
-  ],
-};
+/* ---------------- the end of a section: jelly into the jar, then a clear "next up" ---------------- */
 const bean = (color, cls = '') => `<svg class="bean-svg ${cls}" viewBox="0 0 60 70" aria-hidden="true"><path d="M30 4c18 0 26 14 24 32-2 20-12 30-25 30S5 56 6 38C7 18 12 4 30 4z" fill="${color}" stroke="${INK}" stroke-width="4"/><ellipse cx="18" cy="15" rx="5" ry="3" fill="#fff" opacity=".55"/><ellipse cx="22" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><ellipse cx="38" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><g class="pp"><circle cx="22" cy="31" r="3.6" fill="${INK}"/><circle cx="38" cy="31" r="3.6" fill="${INK}"/></g><path d="M22 45q8 7 16 0" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/></svg>`;
-store.tour ??= {};
-const stageEl = $('.stage'), ring = $('#gRing'), coach = $('#coach'), badgesEl = $('#gBadges'), upnext = $('#upnext'), upPill = $('#upPill'), tipsBtn = $('#tipsBtn');
-const G = { id: null, steps: [], targets: [], i: 0, tour: false, color: '#ff4d6d', card: false };
+const upnext = $('#upnext'), G = { card: false };
+function renderGuide() { upnext.hidden = !G.card; }
 
-function guideStart(P, el) {
-  G.targets.forEach((t) => t?.classList.remove('dim'));
-  G.id = P.id; G.color = P.color; G.panel = el;
-  ring.classList.add('snap'); coach.classList.add('snap'); // jump straight to the new panel's areas, no glide from the old one
-  G.steps = P.lesson ? GUIDES.lesson(P.lesson) : GUIDES[P.id] ?? [];
-  G.targets = G.steps.map((s) => el.querySelector(s.sel));
-  guideObserver.disconnect(); G.targets.forEach((t) => t && guideObserver.observe(t));
-  const saved = store.tour[P.id];
-  G.i = typeof saved === 'number' ? clamp(saved, 0, G.steps.length - 1) : 0;
-  G.tour = !store.tipsOff && saved !== 'done' && !store.done[P.id] && G.steps.length > 0;
-  G.card = false;
-  renderGuide();
-  requestAnimationFrame(() => requestAnimationFrame(() => { ring.classList.remove('snap'); coach.classList.remove('snap'); }));
-}
-function guideTo(i) { G.i = clamp(i, 0, G.steps.length - 1); store.tour[G.id] = G.i; save(); renderGuide(); }
-function guideFinish() { G.tour = false; store.tour[G.id] = 'done'; save(); renderGuide(); }
-
-function renderGuide() {
-  const P = PANELS[panelIdx], done = !!store.done[P.id] && ALL.some((a) => a.id === P.id);
-  stageEl.style.setProperty('--gc', G.color);
-  badgesEl.innerHTML = G.steps.map((s, i) => `<span class="gbadge${G.tour && i === G.i ? ' cur' : ''}${G.tour && i < G.i ? ' past' : ''}" title="${esc(s.title)}">${i + 1}</span>`).join('');
-  G.targets.forEach((t, i) => t?.classList.toggle('dim', G.tour && !G.card && i !== G.i));
-  ring.classList.toggle('on', G.tour && !G.card);
-  coach.hidden = !G.tour || G.card;
-  if (G.tour) {
-    const s = G.steps[G.i], last = G.i === G.steps.length - 1;
-    coach.innerHTML = `${bean(G.color, 'coach-bean')}<div class="coach-body"><div class="coach-n">${G.i + 1} of ${G.steps.length}</div><h5>${esc(s.title)}</h5><p>${esc(s.text)}</p>
-      <div class="coach-btns"><button class="btn alt" data-g="back"${G.i === 0 ? ' disabled' : ''}>Back</button><button class="btn go" data-g="next">${last ? 'Got it!' : 'Next'}</button><button class="coach-hide" data-g="hide">Hide tips</button></div></div>`;
-  }
-  upnext.hidden = !G.card;
-  upPill.hidden = G.card || !done;
-  if (done && !G.card) { const n = nextUp(); upPill.innerHTML = n ? `${bean(n.color)}<span>Next up: ${n.lesson ? `<b>${esc(n.tag)}</b> ` : ''}${esc(n.label)}</span>` : `${bean('#ffc61a')}<span>Every jelly collected!</span>`; }
-  tipsBtn.hidden = G.tour || G.card || !G.steps.length || !upPill.hidden;
-  placeGuide();
-}
-function placeGuide() {
-  if (!G.steps.length || panelIdx < 0) return;
-  // Measure against the panel itself, so the panel's slide-in transform cancels out.
-  const S = stageEl.getBoundingClientRect(), PR = G.panel.getBoundingClientRect(), ox = G.panel.offsetLeft, oy = G.panel.offsetTop;
-  const rel = (t) => { const r = t.getBoundingClientRect(), left = r.left - PR.left + ox, top = r.top - PR.top + oy; return { left, top, right: left + r.width, bottom: top + r.height, width: r.width, height: r.height }; };
-  // Corner buttons sit above a panel's own control bar so they never cover Next or the play buttons.
-  const bar = { whole: '.town-ui', backstage: '.show-ui' }[G.id], br = bar && $('#p-' + G.id).querySelector(bar);
-  const lift = br ? `${S.height - rel(br).top + 12}px` : '';
-  upPill.style.bottom = lift; tipsBtn.style.bottom = lift;
-  [...badgesEl.children].forEach((b, i) => { const t = G.targets[i]; if (!t) return; const r = rel(t); b.style.left = `${r.left - 12}px`; b.style.top = `${r.top - 14}px`; });
-  if (!G.tour || G.card) return;
-  const t = G.targets[G.i]; if (!t) return;
-  const r = rel(t), pad = 6;
-  Object.assign(ring.style, { left: `${r.left - pad}px`, top: `${r.top - pad}px`, width: `${r.width + pad * 2}px`, height: `${r.height + pad * 2}px` });
-  const w = coach.offsetWidth, h = coach.offsetHeight, m = 18, W = S.width, H = S.height;
-  // Wide panels get the card inside their top corner; wide, short bars (full of buttons) get it above or below, never on top.
-  const big = r.width > W * .6, strip = big && r.height < H * .3;
-  const spots = [
-    !big && { side: 'right', x: r.right + m, y: r.top + 8 },
-    !big && { side: 'left', x: r.left - m - w, y: r.top + 8 },
-    (!big || strip) && { side: 'above', x: (strip ? r.right - w - 24 : r.left + 24), y: r.top - m - h },
-    (!big || strip) && { side: 'below', x: (strip ? r.right - w - 24 : r.left + 24), y: r.bottom + m },
-    !strip && { side: 'inside', x: r.right - w - 18, y: r.top + 18 },
-  ].filter(Boolean);
-  const fits = (c) => c.x >= 8 && c.y >= 8 && c.x + w <= W - 8 && c.y + h <= H - 8;
-  const c = spots.find(fits) ?? spots.at(-1);
-  coach.dataset.side = c.side;
-  coach.style.left = `${clamp(c.x, 8, W - w - 8)}px`; coach.style.top = `${clamp(c.y, 8, H - h - 8)}px`;
-}
-const guideObserver = new ResizeObserver(() => placeGuide());
-addEventListener('resize', () => placeGuide());
-coach.addEventListener('click', (e) => {
-  const a = e.target.closest('[data-g]')?.dataset.g;
-  if (a === 'back') guideTo(G.i - 1);
-  if (a === 'next') { sound.blip(); G.i === G.steps.length - 1 ? guideFinish() : guideTo(G.i + 1); }
-  if (a === 'hide') { store.tipsOff = true; save(); G.tour = false; renderGuide(); }
-});
-tipsBtn.onclick = () => { store.tipsOff = false; G.tour = true; guideTo(0); };
-// Touching any numbered area moves the spotlight there: a suggestion, never a cage.
-const follow = (e) => {
-  if (!G.tour || G.card) return;
-  const k = G.targets.findIndex((t) => t?.contains(e.target));
-  if (k >= 0 && k !== G.i) guideTo(k);
-};
-stageEl.addEventListener('pointerdown', follow, true);
-stageEl.addEventListener('focusin', follow);
-
-/* the end of a section: jelly into the jar, then a clear "next up" */
 // The next unfinished section; once everything is done, the recap.
 function nextUp() {
   const open = (p) => ALL.some((a) => a.id === p.id) && !store.done[p.id];
@@ -2250,23 +2214,25 @@ function nextUp() {
 function sectionDone(id) {
   if (PANELS[panelIdx]?.id !== id) return false;
   const item = ALL.find((a) => a.id === id), n = nextUp();
-  G.card = true; G.tour = false; store.tour[id] = 'done'; save();
+  G.card = true;
   upnext.innerHTML = `<div class="un-card">${bean(item.color, 'un-bean')}
     <div class="un-earned">You earned the <b style="color:${item.color}">${esc(item.word ?? item.name)}</b> jelly!</div>
     ${n.id !== 'recap' ? `<div class="un-label">Next up</div><div class="un-word" style="color:${n.color}">${esc(n.lesson ? n.tag : n.label)}</div>${n.lesson ? `<div class="un-name">${esc(n.label)}</div>` : ''}
-    <div class="un-btns"><button class="btn go un-go" id="unGo">Go to ${esc(n.lesson ? n.tag : n.label)} →</button><button class="btn alt" id="unStay">Stay and play</button></div>`
+    <div class="un-btns"><button class="btn go un-go" id="unGo">Go to ${esc(n.lesson ? n.tag : n.label)} →${ENTER}</button><button class="btn alt" id="unStay">Stay and play</button></div>`
     : `<div class="un-word" style="color:var(--berry)">${esc(RECAP.wizard)}</div><div class="un-name">${esc(RECAP.wizardText)}</div>
-    <div class="un-btns"><button class="btn go un-go" id="unGo">See what I’ve learnt →</button><button class="btn alt" id="unStay">Stay and play</button></div>`}</div>`;
+    <div class="un-btns"><button class="btn go un-go" id="unGo">See what I’ve learnt →${ENTER}</button><button class="btn alt" id="unStay">Stay and play</button></div>`}</div>`;
   renderGuide();
   $('#unGo').onclick = () => { G.card = false; go(n.id); };
-  $('#unStay').onclick = () => { G.card = false; renderGuide(); };
+  $('#unStay').onclick = () => { G.card = false; renderGuide(); primaryButton()?.focus({ preventScroll: true }); };
   upnext.querySelector('.un-card').animate([{ transform: 'scale(.4) rotate(-6deg)', opacity: 0 }, { transform: 'scale(1.06) rotate(1deg)', opacity: 1 }, { transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.3,1.4,.5,1)' });
   flyToJar(upnext.querySelector('.un-bean'), item.color);
+  $('#unGo').focus({ preventScroll: true });
   return true;
 }
 function flyToJar(from, color) {
   if (REDUCED || !from) return;
-  const last = [...document.querySelectorAll('.bean.on')].at(-1), jar = last?.offsetParent ? last : $('#jarCount');
+  const app = $('.app'), tucked = app.classList.contains('focus') && !app.classList.contains('peek');
+  const last = [...document.querySelectorAll('.bean.on')].at(-1), jar = tucked ? $('#navHandle') : last?.offsetParent ? last : $('#jarCount');
   const a = from.getBoundingClientRect(), b = jar.getBoundingClientRect();
   const fly = document.createElement('div'); fly.className = 'flyer'; fly.innerHTML = bean(color);
   Object.assign(fly.style, { left: `${a.left + a.width / 2 - 20}px`, top: `${a.top + a.height / 2 - 24}px` });
@@ -2275,7 +2241,6 @@ function flyToJar(from, color) {
   fly.animate([{ transform: 'translate(0,0) scale(1) rotate(0)' }, { transform: `translate(${dx * .5}px,${dy * .5 - 160}px) scale(1.3) rotate(-200deg)`, offset: .5 }, { transform: `translate(${dx}px,${dy}px) scale(.35) rotate(-400deg)` }], { duration: 1100, delay: 350, easing: 'cubic-bezier(.4,0,.3,1)', fill: 'backwards' })
     .finished.then(() => { fly.remove(); jar.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.9)' }, { transform: 'scale(1)' }], { duration: 420 }); sound.boing(700, .25, .1); });
 }
-upPill.onclick = () => go(nextUp().id);
 
 /* ---------------- what I've learnt so far ---------------- */
 // Tell them what you told them: the whole game again in one line, then every magic word learnt so far.
@@ -2324,8 +2289,8 @@ function boot() {
     $('#townWho').textContent = s.who; $('#townText').textContent = s.text;
     [...dots.children].forEach((d, k) => d.classList.toggle('on', k <= i));
     $('#townPrev').disabled = i === 0;
-    $('#townNext').textContent = s.cta ? 'Zoom in on the screen' : 'Next';
-    $('#townNext').classList.toggle('go', !!s.cta);
+    $('#townNext').innerHTML = (s.cta ? 'Zoom in on the screen' : 'Next') + ENTER;
+    $('#townNext').classList.add('go');
     if (s.fly) { town.fly(s.fly[0], s.fly[1], s.fly[2]); sound.boing(500, .3, .08); town.onLand = () => { if (s.screen) town.drawScreen(s.screen); sound.blip(); }; }
     else { town.curve = null; town.packet.visible = town.packetLabel.visible = false; }
     if (i === 0) town.drawScreen(['kid@jelly:~$ _']);

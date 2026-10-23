@@ -99,7 +99,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .ph{display:flex;align-items:flex-end;gap:12px 28px;flex-wrap:wrap}
 .ph .eyebrow{font-family:var(--display);color:var(--berry);font-size:clamp(.9rem,.6rem + .8vh,1.15rem);width:100%;margin-bottom:-6px}
 .ph h2{font-size:clamp(1.6rem,.8rem + 2.6vh,2.7rem)}
-.ph p{color:var(--ink-soft);max-width:60ch;font-size:clamp(.88rem,.7rem + .45vh,1.02rem);flex:1;min-width:280px}
+.ph p{color:var(--ink-soft);max-width:60ch;font-size:clamp(1rem,.8rem + .5vh,1.2rem);flex:1;min-width:280px}
 
 .btn{background:var(--lemon);color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:7px 15px;font-family:var(--display);font-size:1.02rem;box-shadow:0 4px 0 var(--ink);transition:transform .08s;white-space:nowrap}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
@@ -127,8 +127,8 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 /* whole game */
 .town{flex:1;min-height:0;display:flex;flex-direction:column;background:#fff6cf}
 .cv{position:relative;flex:1;min-height:0}
-.town-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:12px 16px;border-top:4px solid var(--ink);background:var(--card);height:clamp(92px,15vh,128px)}
-.cap{display:grid;gap:2px;min-width:0;height:100%;overflow:hidden;align-content:center;font-size:calc(1rem * var(--fit,1))}
+.town-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:12px 18px;border-top:4px solid var(--ink);background:var(--card);height:clamp(110px,19vh,170px)}
+.cap{display:grid;gap:4px;min-width:0;height:100%;overflow:hidden;align-content:center;font-size:calc(clamp(1.05rem,.75rem + 1vh,1.35rem) * var(--fit,1))}
 .cap .who{font-family:var(--display);font-size:1.25em;color:var(--blue)}
 .cap p{max-width:70ch}
 .ctrls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -180,39 +180,67 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .bubble::after{content:"";position:absolute;left:18%;bottom:-11px;border:8px solid transparent;border-top-color:var(--ink)}
 .paper{position:absolute;width:5%;aspect-ratio:3/4;background:#fff;border:3px solid var(--ink);border-radius:4px;opacity:0;z-index:2;background-image:repeating-linear-gradient(#0000 0 18%,#24133b44 18% 24%);background-clip:content-box;padding:12% 14%}
 .show-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:stretch}
-.show-cap{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:10px 16px;height:clamp(64px,11vh,104px);overflow:hidden;display:flex;align-items:center;font-size:calc(1rem * var(--fit,1))}
+.show-cap{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:10px 18px;height:clamp(76px,14vh,130px);overflow:hidden;display:flex;align-items:center;font-size:calc(clamp(1.05rem,.75rem + 1vh,1.35rem) * var(--fit,1))}
 .show-cap b{font-family:var(--display);font-weight:400;color:var(--grape)}
 .show-btns{display:grid;gap:6px;align-content:center;padding:10px 12px 12px 30px}
 .show-btns .btn{font-size:.92rem;padding:5px 12px;text-align:left}
+#p-backstage:not([data-played]) .show-btns{display:none} /* first, just press Enter; the other shows appear afterwards */
+.show-btns .btn.go{font-size:1.1rem;text-align:center}
 
-/* a magic word: jelly + mission on top, explanation + terminal below, file tree down the side */
-.lesson{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(0,.72fr);grid-template-rows:var(--top) minmax(0,1fr);grid-template-areas:"jelly mission map" "text term map";gap:var(--gap);--top:clamp(150px,25vh,250px)}
+/* a magic word, one thing at a time: the story, then the brain-burner, then the mission. The jelly stays top left. */
+.lesson{flex:1;min-height:0;display:grid;grid-template-columns:var(--jw) minmax(0,1fr);grid-template-rows:var(--top) minmax(0,1fr) auto;grid-template-areas:"jelly head" "body body" "foot foot";gap:var(--gap);--top:clamp(130px,21vh,210px);--jw:clamp(200px,24vw,340px)}
 .ljelly{grid-area:jelly;position:relative;background:#fff4d6}
-.ljelly .stands{position:absolute;left:12px;top:10px;font-family:var(--mono);font-size:.78rem;background:var(--ink);color:#fff;padding:2px 10px;border-radius:999px;pointer-events:none;z-index:1}
-.mission{grid-area:mission;background:#fffbea;border:4px dashed var(--ink);border-radius:22px;padding:12px 16px;display:flex;flex-direction:column;gap:8px;overflow:hidden;font-size:calc(1rem * var(--fit,1))}
-.mission-head{display:flex;align-items:center;gap:10px}
-.mission-head h4{font-size:1.25em;margin-right:auto}
-.mission-head .btn{font-size:.92em;padding:4px 12px}
-.steps{list-style:none;margin:0;padding:0;display:grid;gap:.45em}
-.steps li{display:grid;grid-template-columns:1.7em 1fr;gap:.5em;align-items:start;line-height:1.35}
-.steps .sb{width:1.5em;height:1.5em;border:3px solid var(--ink);border-radius:8px;background:var(--card);display:grid;place-items:center;font-weight:800;font-size:.85em}
-.steps li.ok .sb{background:var(--lime)}
-.steps li.ok>span:last-child{text-decoration:line-through;text-decoration-thickness:2px;color:var(--ink-soft)}
-.ltext{grid-area:text;padding:clamp(12px,2vh,20px);display:flex;flex-direction:column;gap:.75em;font-size:calc(1rem * var(--fit,1));overflow:hidden;border-color:var(--ink)}
-.ltext .num{font-family:var(--mono);font-size:.72em;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
-.ltext h3{font-size:1.75em;margin-top:-.3em}
-.mnem-label{font-family:var(--mono);font-size:.68em;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:-.6em}
-.mnem{font-family:var(--display);font-size:1.6em;line-height:1.08;color:var(--c,var(--berry));text-wrap:balance;-webkit-text-stroke:1.5px var(--ink);paint-order:stroke fill;text-shadow:0 3px 0 var(--ink)}
-.points{margin:0;padding:0;list-style:none;display:grid;gap:.4em;font-size:.94em}
-.points li{display:grid;grid-template-columns:1.1em minmax(0,1fr);gap:.5em}
-.ltext code,.mission code{white-space:normal;overflow-wrap:anywhere} /* long commands wrap instead of being clipped */
+.ljelly .stands{position:absolute;left:12px;top:10px;max-width:calc(100% - 24px);font-family:var(--mono);font-size:.8rem;background:var(--ink);color:#fff;padding:2px 10px;border-radius:999px;pointer-events:none;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lhead{grid-area:head;display:flex;flex-direction:column;justify-content:center;gap:.4em;min-width:0;overflow:hidden;font-size:calc(1rem * var(--fit,1))}
+.lhead .num{font-family:var(--mono);font-size:.85em;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.lhead h3{font-size:clamp(2.1rem,1rem + 3.6vh,3.6rem)}
+.task{display:none;background:#fffbea;border:4px solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--ink);padding:.55em 1em .65em;gap:.3em;min-height:0}
+.lesson[data-phase=mission] .lhead h3{display:none}
+.lesson[data-phase=mission]{--top:clamp(100px,17vh,180px)}
+.lesson[data-phase=mission] .task{display:grid}
+.task-top{display:flex;align-items:center;gap:.7em;font-family:var(--display);font-size:1.05em}
+.pips{display:flex;gap:.35em}
+.pip{width:1.7em;height:1.7em;border:3px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-family:var(--body);font-weight:800;font-size:.72em;background:#fff;transition:transform .2s}
+.pip.ok{background:var(--lime)}
+.pip.cur{background:var(--lemon);transform:scale(1.2)}
+.task-t{font-size:clamp(1.15rem,.7rem + 1.4vh,1.65rem);font-weight:600;line-height:1.35}
+.task-t code{white-space:normal;overflow-wrap:anywhere}
+.task-yay{font-family:var(--display);color:#2e8a1a;font-size:1.25em;display:inline-block;animation:yay .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes yay{from{transform:scale(.4)}}
+.lbody{grid-area:body;min-height:0;display:grid}
+.lstory,.lbrain,.ltools{display:none;min-height:0}
+.lesson[data-phase=meet] .lstory{display:grid}
+.lesson[data-phase=brain] .lbrain{display:flex}
+.lesson[data-phase=mission] .ltools{display:grid}
+.lstory{grid-auto-flow:column;align-items:center;justify-content:center;gap:clamp(16px,3vw,40px);overflow:hidden;font-size:calc(clamp(1.25rem,.6rem + 2.4vh,2.1rem) * var(--fit,1))}
+.why{background:#fff;border:4px solid var(--ink);border-radius:26px;box-shadow:0 6px 0 var(--ink);padding:.9em 1.2em;line-height:1.5;max-width:36ch}
+.lvisual:empty{display:none}
+.lbrain{flex-direction:column;justify-content:center;align-items:center;gap:.7em;text-align:center;overflow:hidden;font-size:calc(clamp(1.1rem,.7rem + 1.4vh,1.6rem) * var(--fit,1))}
+.mnem-label{font-family:var(--mono);font-size:.7em;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.mnem{font-family:var(--display);font-size:2.3em;line-height:1.05;color:var(--c,var(--berry));text-wrap:balance;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink);max-width:20ch}
+.points{margin:.4em 0 0;padding:0;list-style:none;display:grid;gap:.55em;text-align:left;max-width:46ch}
+.points li{display:grid;grid-template-columns:1.1em minmax(0,1fr);gap:.6em}
 .points li::before{content:"";width:.7em;height:.95em;border-radius:50%/42%;background:var(--c,var(--berry));border:2px solid var(--ink);margin-top:.28em;transform:rotate(-14deg)}
+.lstory code,.lbrain code{white-space:normal;overflow-wrap:anywhere}
+.ltools{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-areas:"term map";gap:var(--gap)}
+.lfoot{grid-area:foot;display:flex;align-items:center;gap:12px}
+.lfoot .btn{font-size:1.15rem;padding:8px 18px}
+.lfoot .btn.small{font-size:.9rem;padding:5px 12px}
+#lNext{margin-left:auto}
+.phases{position:absolute;left:50%;transform:translateX(-50%)}
+@media (max-width:1150px){.phases{position:static;transform:none;margin:0 auto}.phases li{font-size:.8rem;padding:2px 10px}.lfoot .btn{font-size:1rem;padding:6px 14px}}
+.lfoot{position:relative;min-height:52px}
+.phases{display:flex;gap:8px;list-style:none;margin:0 auto;padding:0;counter-reset:ph}
+.phases li{counter-increment:ph;font-family:var(--display);font-size:.95rem;padding:3px 14px;border:3px solid #24133b44;border-radius:999px;color:var(--ink-soft);cursor:pointer;white-space:nowrap}
+.phases li::before{content:counter(ph) ". "}
+.phases li.on{border-color:var(--ink);background:var(--c);color:var(--ink)}
+.ent{display:inline-block;font-family:var(--body);font-weight:700;font-size:.6em;border:2px solid currentColor;border-radius:6px;padding:0 .4em;margin-left:.6em;vertical-align:.18em;opacity:.75;line-height:1.4}
 .term{grid-area:term;background:var(--term);color:#d9ffe6;display:flex;flex-direction:column;min-height:0}
 .term-top{display:flex;align-items:center;gap:8px;padding:7px 12px;background:#0e2a19;border-bottom:3px solid var(--ink)}
 .term-top i{width:12px;height:12px;border-radius:50%;display:block;border:2px solid var(--ink)}
 .term-top span{font-family:var(--mono);font-size:.8rem;color:#9fd9b4;margin-right:auto;margin-left:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .term-top button{background:transparent;border:2px solid #9fd9b466;color:#cfeedd;border-radius:999px;font-size:.76rem;padding:2px 10px}
-.term-body{flex:1;min-height:0;overflow-y:auto;padding:10px 14px;font-family:var(--mono);font-size:clamp(13px,.55rem + .6vh,15px);line-height:1.45;cursor:text}
+.term-body{flex:1;min-height:0;overflow-y:auto;padding:10px 14px;font-family:var(--mono);font-size:clamp(14px,.6rem + .75vh,18px);line-height:1.45;cursor:text}
 .term-body .ln{white-space:pre-wrap;word-break:break-word}
 .term-body .p{color:var(--phos)}
 .term-body .dir{color:#7aa8ff;font-weight:700}
@@ -222,16 +250,17 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .term-body .wiz{color:#d7b8ff}
 .inline{display:flex;gap:.6ch;align-items:baseline}
 .inline .p{white-space:nowrap}
-#termIn{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff;font:inherit;font-size:16px;caret-color:var(--phos);padding:0}
+#termIn{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff;font:inherit;caret-color:var(--phos);padding:0}
+#termIn::placeholder{color:#7fb092}
 .keys{display:flex;gap:6px;flex-wrap:wrap;padding:7px 10px;border-top:3px solid var(--ink);background:#0e2a19}
 .keys button{font-family:var(--mono);font-size:.8rem;background:#173d26;color:#dfffe9;border:2px solid #3b7a52;border-radius:9px;padding:3px 9px}
 .keys button:active{background:#2b6b45}
 .train{white-space:pre;color:var(--lemon);font-size:12px;line-height:1.1;animation:choo 3.2s linear forwards}
 @keyframes choo{from{transform:translateX(100%)}to{transform:translateX(-110%)}}
 .map{grid-area:map;display:flex;flex-direction:column;min-height:0}
-.map-head{display:grid;gap:2px;padding:8px 12px;border-bottom:3px solid var(--ink);font-family:var(--display);font-size:1.05rem}
+.map-head{display:grid;gap:2px;padding:8px 12px;border-bottom:3px solid var(--ink);font-family:var(--display);font-size:1.15rem}
 .map-head small{font-family:var(--body);font-size:.72rem;color:var(--ink-soft)}
-.map-list{position:relative;flex:1;min-height:0;overflow:hidden;padding:8px 8px 10px;font-size:calc(.86rem * var(--fit,1))}
+.map-list{position:relative;flex:1;min-height:0;overflow:auto;padding:8px 8px 10px;font-size:calc(.95rem * var(--fit,1));scrollbar-width:thin} /* on very small screens a long tree may scroll */
 .mrow{display:flex;align-items:center;gap:.45em;padding:.12em .5em .12em calc(var(--d) * 1.15em + .5em);border-radius:8px;font-family:var(--mono);white-space:nowrap;background-image:repeating-linear-gradient(90deg,#24133b22 0 2px,transparent 2px 1.15em);background-size:calc(var(--d) * 1.15em) 100%;background-repeat:no-repeat;background-position:.95em 0}
 .mrow.dir{cursor:pointer;font-weight:700}
 .mrow.dir:hover{background-color:#24133b0d}
@@ -245,7 +274,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 @keyframes tag{0%{background:var(--lemon)}100%{background:transparent}}
 .ghost{position:absolute;pointer-events:none;margin:0}
 
-.toast{position:fixed;left:calc(50% + var(--nav) / 2);bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(calc(100% + 40px));opacity:0;visibility:hidden;background:var(--ink);color:#fff;border-radius:18px;padding:12px 20px;font-family:var(--display);font-size:1.15rem;z-index:40;transition:transform .45s cubic-bezier(.3,1.6,.5,1);text-align:center;box-shadow:0 0 0 3px #fff}
+.toast{position:fixed;left:calc(50% + var(--nav) / 2);transition:left .45s,transform .45s cubic-bezier(.3,1.6,.5,1)!important;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(calc(100% + 40px));opacity:0;visibility:hidden;background:var(--ink);color:#fff;border-radius:18px;padding:12px 20px;font-family:var(--display);font-size:1.15rem;z-index:40;transition:transform .45s cubic-bezier(.3,1.6,.5,1);text-align:center;box-shadow:0 0 0 3px #fff}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
 .confetti{position:fixed;width:14px;height:20px;border-radius:50%/42%;z-index:39;pointer-events:none;border:2px solid var(--ink)}
 
@@ -259,30 +288,8 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .gate-credit .repo{color:var(--ink)!important}
 .gate-credit a{color:var(--ink)}
 @media (max-width:899px),(max-height:559px){.app{display:none}.gate{display:grid}}
-/* the guide: numbered areas, a moving spotlight, a jelly-bean coach, and "next up" */
+/* the end of a section: a jelly flies into the jar, then a clear "next up" */
 .guide{position:absolute;inset:0;pointer-events:none;z-index:30}
-.dim{opacity:.48;filter:saturate(.55);transition:opacity .35s,filter .35s}
-.ljelly,.ltext,.mission,.term,.map,.cv,.town-ui,.show-wrap,.show-cap,.show-btns,.hero-stage,.hero-side{transition:opacity .35s,filter .35s}
-.ring{position:absolute;border:4px solid var(--gc);border-radius:28px;box-shadow:0 0 0 5px #ffffffcc,0 0 34px 8px var(--gc);opacity:0;transition:left .5s cubic-bezier(.3,1.25,.5,1),top .5s cubic-bezier(.3,1.25,.5,1),width .5s cubic-bezier(.3,1.25,.5,1),height .5s cubic-bezier(.3,1.25,.5,1),opacity .3s}
-.ring.on{opacity:1;animation:ring 1.8s ease-in-out infinite}
-.ring.snap,.coach.snap{transition:none}
-@keyframes ring{50%{box-shadow:0 0 0 9px #ffffffaa,0 0 46px 12px var(--gc)}}
-.gbadge{position:absolute;width:34px;height:40px;border-radius:50%/44%;background:var(--gc);border:3px solid var(--ink);box-shadow:0 3px 0 var(--ink);display:grid;place-items:center;font-family:var(--display);font-size:1.15rem;color:var(--ink);transform:rotate(-10deg);transition:transform .3s,background .3s}
-.gbadge.past{background:#fff}
-.gbadge.cur{transform:rotate(-10deg) scale(1.3);animation:badge 1s ease-in-out infinite}
-@keyframes badge{50%{transform:rotate(6deg) scale(1.38)}}
-.coach{position:absolute;width:min(330px,40vw);pointer-events:auto;background:#fff;border:4px solid var(--ink);border-radius:22px;box-shadow:0 7px 0 var(--ink);padding:12px 14px 12px 10px;display:grid;grid-template-columns:54px minmax(0,1fr);gap:10px;transition:left .5s cubic-bezier(.3,1.25,.5,1),top .5s cubic-bezier(.3,1.25,.5,1)}
-.coach-bean{width:54px;height:auto;animation:bob 1.6s ease-in-out infinite}
-.coach[data-side=right] .pp{transform:translateX(-2.5px)} .coach[data-side=left] .pp{transform:translateX(2.5px)}
-.coach[data-side=below] .pp{transform:translateY(-2.5px)} .coach[data-side=above] .pp{transform:translateY(2.5px)}
-.coach-body{display:grid;gap:4px}
-.coach-n{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
-.coach h5{margin:0;font-family:var(--display);font-weight:400;font-size:1.25rem;line-height:1.05}
-.coach p{font-size:.92rem;line-height:1.4}
-.coach-btns{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
-.coach-btns .btn{padding:4px 12px;font-size:.95rem}
-.coach-hide{background:none;border:0;padding:0;margin-left:auto;font-size:.75rem;color:var(--ink-soft);text-decoration:underline}
-.tips-btn{position:absolute;right:18px;bottom:16px;pointer-events:auto;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:5px 14px;font-weight:600;font-size:.82rem;box-shadow:0 3px 0 var(--ink)}
 .upnext{position:absolute;inset:0;pointer-events:auto;display:grid;place-items:center;background:#24133b55;backdrop-filter:blur(2px)}
 .un-card{background:#fff;border:5px solid var(--ink);border-radius:30px;box-shadow:0 10px 0 var(--ink);padding:26px 36px 28px;display:grid;justify-items:center;gap:6px;text-align:center;max-width:min(520px,90%)}
 .un-bean{width:84px;height:auto;animation:bob 1.2s ease-in-out infinite}
@@ -292,11 +299,9 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .un-name{font-size:1.05rem;color:var(--ink-soft);max-width:34ch}
 .un-btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
 .un-go{font-size:1.3rem;padding:10px 22px;animation:pulse 1.1s ease-in-out infinite}
-.up-pill{position:absolute;right:18px;bottom:16px;pointer-events:auto;display:flex;align-items:center;gap:10px;background:var(--lime);border:4px solid var(--ink);border-radius:999px;padding:6px 18px 6px 8px;box-shadow:0 5px 0 var(--ink);font-family:var(--display);font-size:1.1rem;animation:pulse 1.4s ease-in-out infinite}
-.up-pill svg{width:34px;height:auto}
-.up-pill b{font-family:var(--mono)}
 .flyer{position:fixed;width:40px;z-index:60;pointer-events:none}
 .flyer svg{width:40px;height:auto}
+.un-card .ent{font-size:.55em}
 .ni.up-next::after{content:"NEXT";font-family:var(--display);font-size:.62rem;background:var(--lime);color:var(--ink);border-radius:999px;padding:1px 6px;animation:pulse 1.2s ease-in-out infinite}
 .ni{grid-template-columns:16px auto minmax(0,1fr) auto}
 /* what I've learnt so far */
@@ -335,10 +340,30 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .rc-card.quiz.shown{background:#fff}
 .rc-card.quiz.shown .ans{display:grid}
 .rc-card.quiz.shown .reveal{display:none}
+/* tutorial sections get the whole window: the nav slides away and waits behind a small tab on the left */
+.app{display:block;position:relative;height:100%}
+.side{position:absolute;left:0;top:0;bottom:0;width:var(--nav);z-index:45;transition:transform .45s cubic-bezier(.3,1,.4,1),box-shadow .3s}
+.stage{position:absolute;top:0;right:0;bottom:0;left:var(--nav);transition:left .45s cubic-bezier(.3,1,.4,1)}
+.app.focus .stage{left:0}
+.app.focus .side{transform:translateX(-100%)}
+.app.focus.peek .side{transform:none;box-shadow:16px 0 48px #24133b99}
+.app.focus .panel{padding-left:max(var(--pad),34px)}
+.app.focus ~ .toast{left:50%}
+.nav-handle{position:absolute;left:0;top:50%;z-index:44;display:grid;justify-items:center;gap:8px;padding:14px 7px 14px 5px;background:var(--ink);color:#fff;border:0;border-radius:0 16px 16px 0;font-family:var(--display);font-size:.85rem;line-height:1;transform:translate(-110%,-50%);transition:transform .35s;box-shadow:3px 0 0 #ffffff55}
+.app.focus .nav-handle{transform:translate(0,-50%)}
+.nav-handle .hb{font-size:1.2rem}
+.nav-handle .hc{writing-mode:vertical-rl;letter-spacing:.04em}
+.nav-handle .bean-svg{width:20px;height:auto}
+@media (prefers-reduced-motion:reduce){.side,.stage,.nav-handle{transition:none}}
+/* small windows: the recap packs its cards tighter */
+@media (max-height:700px),(max-width:1150px){
+  .rc-grid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+  .rc-stop{min-width:80px}.rc-via{min-width:30px}.rc-via small,.rc-stop small{display:none}
+  .rc-stop b{font-size:.95rem}
+  .rc-card .d{display:none}
+}
 /* a web lesson: the browser takes the right-hand column, the workbench holds the editor and the terminal */
-.lesson{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr) minmax(0,1fr)}
-/* narrow windows: a smaller jelly makes room for a wider mission */
-@media (max-width:1150px){.lesson{grid-template-columns:minmax(0,.55fr) minmax(0,.45fr) minmax(0,1fr) minmax(0,.9fr);grid-template-areas:"jelly mission mission map" "text text term map"}}
+.ltools{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
 @media (max-height:940px){.beans{display:none}}
 /* short windows: the nav becomes a block of word chips (hover for the name), so all 17 fit without scrolling */
 @media (max-height:700px){
@@ -350,7 +375,6 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
   .ni.up-next::after{display:none}
   .ni.up-next{border-color:var(--lime);border-style:dashed}
 }
-.ljelly .stands{max-width:calc(100% - 24px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .jy[data-s=you],.jy-code{flex:none}
 @media (max-width:1150px){.jy-code span{display:none}}
 @media (max-height:700px),(max-width:1150px){
@@ -372,8 +396,12 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .ed-dir{font-family:var(--mono);font-size:.72rem;color:#7fb092;margin-right:4px;align-self:center}
 .ed-file{font-family:var(--mono);font-size:.78rem;background:#173d26;color:#9fd9b4;border:0;border-radius:8px 8px 0 0;padding:3px 10px}
 .ed-file.on{background:#06160c;color:#fff;font-weight:700}
-.ed-wrap{position:relative;flex:1;min-height:0;background:#06160c}
-.ed-wrap pre,.ed-wrap textarea{position:absolute;inset:0;margin:0;padding:10px 14px;font-family:var(--mono);font-size:clamp(13px,.55rem + .6vh,15px);line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:2;border:0;overflow-y:scroll;scrollbar-width:thin;scrollbar-color:#3b7a52 transparent;letter-spacing:0}
+.ed-wrap{position:relative;flex:1;min-height:0;background:#06160c;display:flex}
+.ed-area{position:relative;flex:1;min-width:0}
+.ed-gutter{flex:none;width:2.6em;padding:10px 6px 10px 0;text-align:right;font-family:var(--mono);font-size:clamp(14px,.6rem + .75vh,17px);line-height:1.45;color:#3b7a52;overflow:hidden;background:#0b1f13;user-select:none}
+.ed-gutter span{display:block}
+.ed-gutter span.bad{color:#fff;background:var(--berry);border-radius:0 6px 6px 0}
+.ed-wrap pre,.ed-wrap textarea{position:absolute;inset:0;margin:0;padding:10px 14px;font-family:var(--mono);font-size:clamp(14px,.6rem + .75vh,17px);line-height:1.45;white-space:pre;tab-size:2;border:0;overflow:scroll;scrollbar-width:thin;scrollbar-color:#3b7a52 transparent;letter-spacing:0}
 .ed-wrap pre{color:#d9ffe6;pointer-events:none}
 .ed-wrap textarea{background:transparent;color:transparent;caret-color:var(--phos);resize:none;outline:0;width:100%;height:100%}
 .ed-wrap textarea::selection{background:#4dff8b55;color:transparent}
@@ -438,6 +466,40 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .envelope{position:absolute;min-width:8%;padding:.4% 1%;aspect-ratio:auto;background:#fff;border:3px solid var(--ink);border-radius:4px;font-family:var(--mono);font-weight:700;font-size:clamp(7px,1.2cqw,13px);opacity:0;z-index:5;box-shadow:0 3px 0 var(--ink);white-space:nowrap;text-align:center}
 .envelope.ok{background:var(--lime)}.envelope.bad{background:var(--orange)}
 .term-top button.armed{background:var(--berry);color:#fff;border-color:#fff}
+/* the tag checker, under the editor */
+.ed-check{padding:6px 12px;font-weight:700;font-size:clamp(.9rem,.7rem + .5vh,1.05rem);background:#0b1f13;color:#9fd9b4;border-top:3px solid var(--ink);min-height:2.2em;line-height:1.3}
+.ed-check.ok{background:#1f6b3a;color:#dfffe9}
+.ed-check.bad{background:var(--berry);color:#fff}
+.ed-check small{opacity:.8;font-weight:400}
+/* the Boxes view: the page drawn as boxes inside boxes */
+.bw-boxes{position:absolute;inset:0;overflow:auto;padding:8px 10px;font-size:.85rem;display:block}
+.bx{position:relative;margin:6px 0;padding:0 8px 4px;border:3px solid hsl(var(--h) 60% 45%);border-radius:10px;background:hsl(var(--h) 90% 96%)}
+.bx.inl{display:inline-block;margin:2px 3px;vertical-align:middle}
+.bx-tag{display:inline-block;font-family:var(--mono);font-weight:700;font-size:.8em;color:hsl(var(--h) 60% 30%)}
+.bx-lid{display:block;text-align:right}
+.bx.inl .bx-lid{display:inline-block;margin-left:4px}
+.bx-in{padding-left:4px}
+.bx.inl .bx-in{display:inline}
+.bx.nolid{border-color:var(--berry);border-bottom-style:dashed;background:#ffe1e7}
+.bx.nolid > .bx-lid{color:#fff;background:var(--berry);border-radius:6px;padding:0 6px;display:inline-block;float:right;margin-top:2px}
+.bx-text{color:var(--ink-soft);margin:0 3px}
+.bx-void{display:inline-block;font-family:var(--mono);font-weight:700;font-size:.8em;background:var(--lemon);border:2px solid var(--ink);border-radius:999px;padding:0 8px;margin:3px}
+/* pictures for the story phase */
+.tagviz{display:grid;gap:.6em;justify-items:center;font-size:.95em}
+.tv-row{display:flex;align-items:stretch;font-size:1.5em}
+.tv-row code,.tv-big{font-family:var(--mono);font-weight:700;background:#fff;border:4px solid var(--ink);padding:.15em .45em;white-space:nowrap}
+.tv-open{border-radius:14px 0 0 14px;background:var(--lemon)!important}
+.tv-close{border-radius:0 14px 14px 0;background:var(--lime)!important}
+.tv-in{border-top:4px solid var(--ink);border-bottom:4px solid var(--ink);background:#fff;padding:.15em .5em;font-weight:600}
+.tv-labels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8em;font-size:.62em;text-align:center;line-height:1.3;max-width:34em}
+.tv-attr{color:var(--blue)}.tv-val{color:#2e8a1a}
+.tv-big{font-size:1.3em;border-radius:14px;background:var(--lemon)}
+.tv-note{font-size:.7em;color:var(--ink-soft);text-align:center}
+.tv-box{border:4px solid var(--ink);border-radius:16px;padding:.35em .6em;display:inline-flex;align-items:center;gap:.35em;flex-wrap:wrap;font-weight:600}
+.tv-box code{font-family:var(--mono);font-weight:700}
+.tv-b1{background:#e2f7d6;font-size:1.25em}
+.tv-b2{background:var(--lemon)}
+.tv-code{margin:0;font-family:var(--mono);font-weight:700;font-size:1.15em;background:#fff;border:4px solid var(--ink);border-radius:16px;padding:.5em .9em;line-height:1.5}
 </style>
 
 <script type="importmap">
@@ -462,15 +524,15 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <button class="btn recap-btn" id="recapBtn">★ What I’ve learnt</button>
-      <div class="stepper"><button class="btn alt" id="navPrev">Back</button><button class="btn go" id="navNext">Next</button></div>
       <div class="tools">
         <button class="pill" id="muteBtn" aria-pressed="false">Sound on</button>
         <button class="pill" id="resetBtn">Empty the jar</button>
         <div class="confirm" id="resetConfirm" hidden><span>Sure?</span><button class="pill yes" id="resetYes">Yes, empty it</button><button class="pill" id="resetNo">Keep</button></div>
       </div>
-      <div class="credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a><p><span class="long">Jelly physics ported from </span><a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener"><span class="short">Physics: </span>Jelly Baby</a><span class="long"> by Scott Sun</span> (GPL-3.0).<span class="more"> The third guide, after <a href="https://claude.ai/artifact/QKpnE1d1poehF9u2UX1wsW" target="_blank" rel="noopener">Jelly Shell</a> and <a href="https://claude.ai/artifact/FNCb8eUqjBgFrCNvkBfxSr" target="_blank" rel="noopener">Jelly Git</a>. Letters in Titan One (OFL). Progress is saved in this browser only.</span></p></div>
+      <div class="credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a><p><span class="long">Jelly physics ported from </span><a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener"><span class="short">Physics: </span>Jelly Baby</a><span class="long"> by Scott Sun</span> (GPL-3.0).<span class="more"> The third guide, after <a href="../jellyshell/">Jelly Shell</a> and <a href="../jellygit/">Jelly Git</a>. Letters in Titan One (OFL). Progress is saved in this browser only.</span></p></div>
     </div>
   </aside>
+  <button class="nav-handle" id="navHandle" aria-label="Show every section"><span class="hb">☰</span><span class="hc" id="handleCount"></span></button>
 
   <main class="stage">
     <section class="panel sky" id="p-welcome" aria-label="Welcome">
@@ -479,7 +541,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
         <h1>Make a <em>web page</em>, then send it round the world.</h1>
         <div class="hero-side">
           <p>Every web page is a text file that crosses the planet in less than a second. Find out how, write your own page, and put it on the internet for real. Best after Jelly Shell and Jelly Git.</p>
-          <button class="btn go" id="startBtn">Start the tour</button>
+          <button class="btn go" id="startBtn">Start the tour<span class="ent">Enter ↵</span></button>
         </div>
       </div>
       <div class="hero-stage">
@@ -515,7 +577,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
             <div class="face front">
               <span class="face-tag">Front: the browser</span>
               <div class="crt"><div class="crt-screen" id="crt"></div><div class="crt-brand">JELLY-SCREEN 3000</div></div>
-              <div class="keyboard" aria-hidden="false"><div class="krows" id="krows" aria-hidden="true"></div><button class="enter" id="enterKey" aria-label="Press Enter to watch gerbil.zone load">Enter<small>press me</small></button></div>
+              <div class="keyboard" aria-hidden="false"><div class="krows" id="krows" aria-hidden="true"></div><button class="enter" id="enterKey" aria-label="Press Enter to watch gerbil.zone load">Enter<small>or press Enter</small></button></div>
             </div>
             <div class="face back" id="back">
               <span class="face-tag">Backstage</span>
@@ -537,45 +599,53 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
         </div>
       </div>
       <div class="show-ui">
-        <div class="show-cap" id="showCap" data-fit aria-live="polite"><span><b>Ready.</b> Press the yellow Enter key, or pick an address on the right, and watch the crew fetch the page.</span></div>
+        <div class="show-cap" id="showCap" data-fit aria-live="polite"><span><b>Ready?</b> Press <kbd>Enter</kbd> on your keyboard (or click the yellow key) and watch the crew fetch a web page.</span></div>
         <div class="show-btns">
           <button class="btn" data-show="page">Play <code>gerbil.zone</code></button>
           <button class="btn" data-show="nope">Play <code>gerbil.zone/nope</code></button>
           <button class="btn" data-show="teapot">Play <code>teapot.jelly/coffee</code></button>
+          <button class="btn go" id="bsNext">Next<span class="ent">Enter ↵</span></button>
         </div>
       </div>
     </section>
 
     <section class="panel mint" id="p-lesson" aria-label="A magic word" hidden>
-      <div class="lesson" id="lcard">
+      <div class="lesson" id="lcard" data-phase="meet">
         <div class="ljelly box"><canvas id="lessonJelly" aria-label="The current command as squishy jelly letters" style="position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none"></canvas><span class="stands" id="lStands"></span></div>
-        <div class="mission" data-fit>
-          <div class="mission-head"><h4>Your mission</h4><button class="btn alt" id="lRestart" title="Untick this mission and give the sandbox a fresh start">Start over</button><button class="btn alt" id="lNext">Next word</button></div>
-          <ol class="steps" id="lSteps"></ol>
-        </div>
-        <div class="ltext box" data-fit>
+        <div class="lhead" data-fit>
           <div class="num" id="lNum"></div>
           <h3 id="lTitle"></h3>
-          <p id="lWhy"></p>
-          <div class="mnem-label">Burn this into your brain</div>
-          <div class="mnem" id="lMnem"></div>
-          <ul class="points" id="lPoints"></ul>
+          <div class="task" aria-live="polite"><div class="task-top"><span id="lTaskN"></span><span class="pips" id="lPips"></span></div><div class="task-t" id="lTask"></div></div>
         </div>
+        <div class="lbody">
+        <div class="lstory" data-fit><p class="why" id="lWhy"></p><div class="lvisual" id="lVisual"></div></div>
+        <div class="lbrain" data-fit><div class="mnem-label">Burn this into your brain</div><div class="mnem" id="lMnem"></div><ul class="points" id="lPoints"></ul></div>
+        <div class="ltools">
         <div class="term box work" id="term" data-tool="term">
           <div class="term-top"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><div class="wtabs" role="tablist" aria-label="Tools"><button class="wtab" data-tool="edit">Editor</button><button class="wtab" data-tool="term">Terminal</button></div><span id="termTitle">kid@jelly: ~</span><button id="sbReset" title="Put the whole pretend computer back the way it started">Reset sandbox</button></div>
           <div class="tool-edit" id="toolEdit">
             <div class="ed-files" id="edFiles"></div>
-            <div class="ed-wrap"><pre class="ed-hl" id="edHl" aria-hidden="true"></pre><textarea id="edText" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="HTML editor"></textarea></div>
+            <div class="ed-wrap"><div class="ed-gutter" id="edGut" aria-hidden="true"></div><div class="ed-area"><pre class="ed-hl" id="edHl" aria-hidden="true"></pre><textarea id="edText" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="HTML editor"></textarea></div></div>
+            <div class="ed-check" id="edCheck" aria-live="polite"></div>
             <div class="ed-keys" aria-label="Helper keys"><button data-ins="&lt;">&lt;</button><button data-ins="&gt;">&gt;</button><button data-ins="&lt;/">&lt;/</button><button data-ins="=">=</button><button data-ins='"'>"</button><button data-ins="{ }">{ }</button><small>Saved as you type</small></div>
           </div>
-          <div class="term-body" id="termBody"><div id="termOut"></div><div class="inline" id="termLine"><span class="p" id="termPrompt"></span><input id="termIn" aria-label="Type a command" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"></div></div>
+          <div class="term-body" id="termBody"><div id="termOut"></div><div class="inline" id="termLine"><span class="p" id="termPrompt"></span><input id="termIn" placeholder="type here, then press Enter ↵" aria-label="Type a command" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"></div></div>
           <div class="keys term-keys" aria-label="Helper keys"><button data-k="tab">Tab</button><button data-k="up">↑</button><button data-k="down">↓</button><button data-k="ctrlc">Ctrl+C</button><button data-k="ins" data-v="~">~</button><button data-k="ins" data-v="/">/</button><button data-k="ins" data-v="..">..</button><button data-k="ins" data-v="https://">https://</button><button data-k="enter">Enter</button></div>
         </div>
         <div class="map box browser" id="browser">
           <div class="bw-top"><button class="bw-nav" id="bwBack" aria-label="Back" disabled>←</button><button class="bw-lock" id="bwLock" aria-label="Site information"></button><input id="bwUrl" aria-label="Address bar" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" enterkeyhint="go"></div>
           <div class="bw-journey" id="bwJourney" aria-live="polite"></div>
-          <div class="bw-view"><iframe id="bwFrame" sandbox="allow-same-origin" title="The web page"></iframe><pre class="bw-source" id="bwSource" hidden></pre><div class="bw-tree" id="bwTree" hidden></div><div class="bw-pop" id="bwPop" role="dialog" hidden></div></div>
-          <div class="bw-tabs"><button data-view="page">Page</button><button data-view="source">View source</button><button data-view="tree">Page tree</button></div>
+          <div class="bw-view"><iframe id="bwFrame" sandbox="allow-same-origin" title="The web page"></iframe><pre class="bw-source" id="bwSource" hidden></pre><div class="bw-boxes" id="bwBoxes" hidden></div><div class="bw-pop" id="bwPop" role="dialog" hidden></div></div>
+          <div class="bw-tabs"><button data-view="page">Page</button><button data-view="source">View source</button><button data-view="boxes">Boxes</button></div>
+        </div>
+        <!-- /tools -->
+        </div>
+        </div>
+        <div class="lfoot">
+          <button class="btn alt" id="lBack">← Back</button>
+          <button class="btn alt small" id="lRestart" title="Untick this mission and give the sandbox a fresh start">Start over</button>
+          <ol class="phases" id="lPhases"><li data-p="meet">The story</li><li data-p="brain">Remember it</li><li data-p="mission">Mission</li></ol>
+          <button class="btn go" id="lNext">Next</button>
         </div>
       </div>
     </section>
@@ -588,11 +658,6 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
       <div class="rc-grid" id="rcGrid" data-fit></div>
     </section>
     <div class="guide" id="guide">
-      <div class="ring" id="gRing"></div>
-      <div id="gBadges"></div>
-      <div class="coach" id="coach" role="dialog" aria-label="Guide" hidden></div>
-      <button class="tips-btn" id="tipsBtn" hidden>Show me the way</button>
-      <button class="up-pill" id="upPill" hidden></button>
       <div class="upnext" id="upnext" hidden></div>
     </div>
   </main>
@@ -1639,7 +1704,7 @@ function seed() {
       'kid/': {
         'notes.txt': 'Website ideas:\n- a page about my gerbil\n- a page about pizza\n- a secret page (shh)',
         'site/': { 'index.html': '<!DOCTYPE html>\n<html>\n  <head>\n    <title>My page</title>\n  </head>\n  <body>\n    <h1>Hello, world!</h1>\n    <p>This is my very own web page.</p>\n  </body>\n</html>\n', 'about.html': '<!DOCTYPE html>\n<html>\n  <head>\n    <title>About me</title>\n  </head>\n  <body>\n    <h1>About me</h1>\n    <p>I am learning HTML. It is going great.</p>\n    <p><a href="index.html">Back home</a></p>\n  </body>\n</html>\n', 'images/': { 'gerbil.png': 'PNG:gerbil', 'rocket.png': 'PNG:rocket' } },
-        'gerald/': { 'index.html': '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Gerald\'s Homepage</title>\n  </head>\n  <body>\n    <h1>Welcome to Gerald\'s Homepage\n    <p>I am Gerald. I am a gerbil. I like seeds, caves and websites.</p>\n    <img src="gerbal.png" alt="A photo of me">\n    <p>Read <a href="abuot.html">all about me</a>.</p>\n  </body>\n</html>\n', 'about.html': '<!DOCTYPE html>\n<html>\n  <head>\n    <title>About Gerald</title>\n  </head>\n  <body>\n    <h1>All about Gerald</h1>\n    <p>Favourite food: sunflower seeds. Favourite place: a dark cave. Favourite person: you, for fixing my website.</p>\n    <p><a href="index.html">Home</a></p>\n  </body>\n</html>\n', 'gerbil.png': 'PNG:gerbil' },
+        'gerald/': { 'index.html': '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Gerald\'s Homepage</title>\n  </head>\n  <body>\n    <h1>Welcome to Gerald\'s Homepage\n    <p>I am Gerald. I am a gerbil. I like seeds, caves and websites.</p>\n    <img src="gerbal.png" alt="A photo of me"/>\n    <p>Read <a href="abuot.html">all about me</a>.</p>\n  </body>\n</html>\n', 'about.html': '<!DOCTYPE html>\n<html>\n  <head>\n    <title>About Gerald</title>\n  </head>\n  <body>\n    <h1>All about Gerald</h1>\n    <p>Favourite food: sunflower seeds. Favourite place: a dark cave. Favourite person: you, for fixing my website.</p>\n    <p><a href="index.html">Home</a></p>\n  </body>\n</html>\n', 'gerbil.png': 'PNG:gerbil' },
       },
     },
     'tmp/': {},
@@ -2004,7 +2069,7 @@ const NET = {
     '/broken': { status: 500, body: pg('Oops', '#ffe1e7', '#e0233f', '<h1>500 Internal Server Error</h1>\n<p>The server tripped over its own shoelaces. This one is NOT your fault.</p>') },
   }, notFound: pg('Not found', '#eadcff', '#9b5cff', '<h1>404: This jelly has wobbled away</h1>\n<p>There is no page here. Check the spelling, or go back <a href="/">home</a>.</p>') },
   'gerbil.zone': { ip: '203.0.113.7', https: true, ms: 41, pages: {
-    '/': pg('Gerald the Gerbil', '#d4eeff', '#3a5bff', '<h1>Gerald\'s Zone</h1>\n<img src="gerbil.png" alt="Gerald the gerbil">\n<p>Hello! I am Gerald. I live in a cave and I like seeds.</p>'),
+    '/': pg('Gerald the Gerbil', '#d4eeff', '#3a5bff', '<h1>Gerald\'s Zone</h1>\n<img src="gerbil.png" alt="Gerald the gerbil"/>\n<p>Hello! I am Gerald. I live in a cave and I like seeds.</p>'),
     '/gerbil.png': { type: 'image/png', art: 'gerbil' },
   } },
   'teapot.jelly': { ip: '198.51.100.18', https: true, ms: 12, pages: {
@@ -2013,7 +2078,7 @@ const NET = {
     '/coffee': { status: 418, body: pg('418', '#ffe1e7', '#e0233f', '<h1>418 I\'m a teapot</h1>\n<p>I cannot make coffee. I am a TEAPOT. This error is real: it was invented as an April Fools\' joke in 1998, and it stuck.</p>') },
   } },
   'info.cern.ch': { ip: '192.0.2.1', https: false, ms: 88, pages: {
-    '/': '<html>\n<head><title>The World Wide Web project</title></head>\n<body>\n<h1>World Wide Web</h1>\nThe WorldWideWeb (W3) is a wide-area hypermedia information retrieval initiative aiming to give universal access to a large universe of documents.\n<p>\n<i>(A pretend copy of the very first website, made by Tim Berners-Lee at CERN in 1991. Notice: no colours, no pictures, just words and links. Everything started here.)</i>\n</body>\n</html>',
+    '/': '<html>\n<head>\n<title>The World Wide Web project</title>\n</head>\n<body>\n<h1>World Wide Web</h1>\n<p>The WorldWideWeb (W3) is a wide-area hypermedia information retrieval initiative aiming to give universal access to a large universe of documents.</p>\n<hr/>\n<p><i>(A pretend copy of the very first website, made by Tim Berners-Lee at CERN in 1991. No colours, no pictures, just words and links. Everything started here.)</i></p>\n</body>\n</html>',
   } },
   'old.jelly': { ip: '203.0.113.99', https: false, ms: 140, pages: {
     '/': pg('Grandpa Jelly', '#ffff66', '#0000ff', '<h1>Grandpa Jelly\'s Home Page</h1>\n<p>Made in 1999! UNDER CONSTRUCTION!!!</p>\n<p>This site has no padlock, so your letters travel as postcards.</p>'),
@@ -2132,11 +2197,11 @@ function paintBrowser() {
   bwLock.innerHTML = r.local ? 'File' : r.error ? '!' : r.secure ? PADLOCK : 'Not secure';
   $('#bwBack').disabled = !BW.hist.length;
   document.querySelectorAll('.bw-tabs button').forEach((b) => b.classList.toggle('on', b.dataset.view === BW.view));
-  bwFrame.hidden = BW.view !== 'page'; $('#bwSource').hidden = BW.view !== 'source'; $('#bwTree').hidden = BW.view !== 'tree';
+  bwFrame.hidden = BW.view !== 'page'; $('#bwSource').hidden = BW.view !== 'source'; $('#bwBoxes').hidden = BW.view !== 'boxes';
   const html = pageHTML(r);
   if (BW.view === 'page') { bwFrame.dataset.url = BW.url; bwFrame.srcdoc = buildDoc(html, r); }
   if (BW.view === 'source') $('#bwSource').innerHTML = r.type === 'image/png' ? '<span class="hc">(This is a picture. Computers store pictures as numbers, so there is no text to show.)</span>' : r.body !== undefined && !r.error ? (r.type === 'text/css' ? hlCSS(r.body) : hlHTML(r.body)) : '<span class="hc">(Nothing came back, so there is no source to see.)</span>';
-  if (BW.view === 'tree') paintTree(html);
+  if (BW.view === 'boxes') paintBoxes(r.local && r.file === ED.path ? edText.value : html);
 }
 // The page the browser shows: the site's HTML, a picture, or one of the browser's own error pages.
 function pageHTML(r) {
@@ -2147,7 +2212,7 @@ function pageHTML(r) {
   if (r.error === 'search') return err('This pretend browser has no search engine', 'Type a full address with a dot in it, like <b>jelly.fun</b>.');
   if (r.error) return err('That address does not look right', 'Try something like <b>https://jelly.fun</b>.');
   if (!BW.url) return err('A brand-new browser', 'Type an address in the bar above.');
-  if (r.type === 'image/png') return `<!DOCTYPE html><html><body style="margin:0;background:#2a2a2a;display:grid;place-items:center;min-height:100vh"><img src="${r.url}"></body></html>`;
+  if (r.type === 'image/png') return `<!DOCTYPE html><html><body style="margin:0;background:#2a2a2a;display:grid;place-items:center;min-height:100vh"><img src="${r.url}"/></body></html>`;
   if (r.type !== 'text/html') return `<!DOCTYPE html><html><body><pre style="white-space:pre-wrap">${esc(r.body)}</pre></body></html>`;
   return r.body;
 }
@@ -2204,22 +2269,59 @@ bwLock.onclick = () => {
 };
 bwPop.addEventListener('click', (e) => { if (e.target.closest('.bw-pop-x')) bwPop.hidden = true; });
 
-// The page as a tree of boxes inside boxes, drawn like the file tree in Jelly Shell.
-const ICON = {
-  dir: `<svg viewBox="0 0 24 24"><path d="M2 6.5a2 2 0 0 1 2-2h5l2 2.5h9a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="#ffc61a" stroke="${INK}" stroke-width="2"/></svg>`,
-  file: `<svg viewBox="0 0 24 24"><path d="M5 2.5h9l5 5V21a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1z" fill="#fff" stroke="${INK}" stroke-width="2"/><path d="M8 12h8M8 16h6" stroke="${INK}" stroke-width="2"/></svg>`,
-};
-function paintTree(html) {
-  const doc = new DOMParser().parseFromString(html, 'text/html'), rows = [];
-  const walk = (n, d) => {
-    if (rows.length > 160) return;
-    if (n.nodeType === 3) { const t = n.textContent.trim(); if (t) rows.push(`<div class="mrow file" style="--d:${d}">${ICON.file}<span class="tx">“${esc(t.length > 26 ? t.slice(0, 25) + '…' : t)}”</span></div>`); return; }
-    if (n.nodeType !== 1) return;
-    rows.push(`<div class="mrow dir tag" style="--d:${d}">${ICON.dir}<span>&lt;${n.localName}&gt;</span></div>`);
-    if (!['style', 'script'].includes(n.localName)) n.childNodes.forEach((c) => walk(c, d + 1));
+/* ---------------- the tag checker ---------------- */
+// The tidy rules, the same everywhere in this guide (this is the XHTML way of writing HTML):
+// every box gets a lid, the last box opened is the first one closed, and standalone tags close themselves with />.
+// Browsers forgive messy HTML and guess; this checker does not, so mistakes show up instead of being hidden.
+const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
+function tidy(text) {
+  const errs = [], root = { tag: '', kids: [], closed: true }, stack = [root], crossed = [];
+  const lineAt = (i) => text.slice(0, i).split('\n').length;
+  for (const m of text.matchAll(/<!--[\s\S]*?(?:-->|$)|<![^>]*>|<(\/?)([a-zA-Z][\w-]*)([^<>]*?)(\/?)>|<|[^<]+/g)) {
+    const [t, close, name, attrs, slash] = m, line = lineAt(m.index), top = stack.at(-1), err = (type, msg, tag) => errs.push({ type, line, msg, tag });
+    if (t.startsWith('<!')) continue;
+    if (t === '<') { err('lt', 'A < on its own starts a tag. Did you forget its > ?'); continue; }
+    if (!name) { if (t.trim()) top.kids.push({ text: t.trim().replace(/\s+/g, ' ') }); continue; }
+    const tag = name.toLowerCase();
+    if (name !== tag) err('case', `Tags are written in lowercase: <${tag}>, not <${name}>.`, tag);
+    if (/=\s*[^\s"']/.test(attrs)) err('quote', 'Every value needs "quotes" around it, like href="about.html".', tag);
+    if (close) {
+      if (VOID.has(tag)) { err('voidlid', `<${tag}/> closes itself, so it never gets a </${tag}> lid. Delete the </${tag}>.`, tag); continue; }
+      const at = stack.findLastIndex((b) => b.tag === tag);
+      if (at < 1) {
+        const c = crossed.indexOf(tag); // the late lid of a crossed pair was already reported
+        if (c >= 0) crossed.splice(c, 1); else err('stray', `</${tag}> is a lid with no box: there is no <${tag}> open here.`, tag);
+        continue;
+      }
+      // A box still open inside this one: crossed lids if its own lid comes next, otherwise a forgotten lid.
+      const inner = stack.slice(at + 1), next = text.slice(m.index + t.length).match(/<\/([a-zA-Z][\w-]*)/)?.[1]?.toLowerCase();
+      inner.forEach((b) => {
+        if (b === inner.at(-1) && next === b.tag) { err('cross', `The lids are crossed! <${b.tag}> was opened last, so its lid goes first: </${b.tag}></${tag}>.`, b.tag); crossed.push(b.tag); }
+        else errs.push({ type: 'nolid', line: b.line, tag: b.tag, msg: `<${b.tag}> has no lid. Add </${b.tag}> after the words inside it.` });
+      });
+      stack.splice(at).forEach((b, k) => { b.closed = k === 0; });
+      continue;
+    }
+    if (VOID.has(tag)) { if (!slash) err('voidslash', `<${tag}> stands alone, so it closes itself with a slash: <${tag}/>`, tag); top.kids.push({ tag, line, void: true }); continue; }
+    if (slash) { err('selfclose', `Only standalone tags close themselves. Write <${tag}></${tag}>.`, tag); top.kids.push({ tag, line, kids: [], closed: true }); continue; }
+    const box = { tag, line, kids: [] }; top.kids.push(box); stack.push(box);
+  }
+  stack.slice(1).forEach((b) => errs.push({ type: 'nolid', line: b.line, tag: b.tag, msg: `<${b.tag}> has no lid. Add </${b.tag}> after the words inside it.` }));
+  errs.sort((a, b) => a.line - b.line);
+  return { ok: !errs.length, errs, root };
+}
+// The page drawn as boxes inside boxes. A box with no lid is drawn open at the bottom.
+const INLINE = new Set(['a', 'b', 'i', 'em', 'strong', 'span', 'code', 'small', 'img', 'br']);
+function paintBoxes(html) {
+  const t = tidy(html), find_ = (n, tag) => n.tag === tag ? n : n.kids?.map((k) => find_(k, tag)).find(Boolean);
+  const top = find_(t.root, 'body') ?? t.root;
+  const draw = (n, d) => {
+    if (n.text !== undefined) return `<span class="bx-text">${esc(n.text.length > 44 ? n.text.slice(0, 43) + '…' : n.text)}</span>`;
+    if (n.void) return `<span class="bx-void">&lt;${n.tag}/&gt;</span>`;
+    if (n.tag === 'style' || n.tag === 'script') return `<span class="bx-void">&lt;${n.tag}&gt;…&lt;/${n.tag}&gt;</span>`;
+    return `<div class="bx${INLINE.has(n.tag) ? ' inl' : ''}${n.closed ? '' : ' nolid'}" style="--h:${[210, 140, 45, 270, 180, 100][d % 6]}"><span class="bx-tag">&lt;${n.tag}&gt;</span><div class="bx-in">${n.kids.map((k) => draw(k, d + 1)).join('')}</div><span class="bx-tag bx-lid">${n.closed ? `&lt;/${n.tag}&gt;` : 'no lid!'}</span></div>`;
   };
-  walk(doc.documentElement, 0);
-  $('#bwTree').innerHTML = `<p class="tree-note">Every tag is a box. Boxes inside boxes make a tree, just like folders.</p>${rows.join('')}`;
+  $('#bwBoxes').innerHTML = `<p class="tree-note">Every pair of tags is a box. Boxes go inside boxes.${t.ok ? '' : ' <b>Red boxes have a problem.</b>'}</p>${top === t.root ? t.root.kids.map((k) => draw(k, 0)).join('') : draw(top, 0)}`;
 }
 
 /* ---------------- syntax colours ---------------- */
@@ -2238,14 +2340,22 @@ const hlCSS = (s) => s.replace(/\/\*[\s\S]*?(?:\*\/|$)|([^{}]*)(\{)|([\w-]+)(\s*
 
 /* ---------------- the editor ---------------- */
 const ED = { project: '', path: '' }, WB = { tool: 'term' };
-const edText = $('#edText'), edHl = $('#edHl');
+const edText = $('#edText'), edHl = $('#edHl'), edGut = $('#edGut'), edCheck = $('#edCheck');
 const projectFiles = () => (find(ED.project)?.children ?? []).filter((c) => c.type === 'file' && /\.(html|css)$/i.test(c.name));
 function edOpen(path) {
   const n = find(path); ED.path = n?.type === 'file' ? path : '';
   edText.value = n?.type === 'file' ? n.content : ''; edText.disabled = !ED.path; paintHl(); renderWork();
   if (ED.path && /\.html$/i.test(ED.path)) navigate(fileURL(n), 'auto');
 }
-const paintHl = () => { edHl.innerHTML = (/\.css$/i.test(ED.path) ? hlCSS(edText.value) : hlHTML(edText.value)) + '\n '; edHl.scrollTop = edText.scrollTop; };
+// Colours, line numbers, and the checker's verdict under the editor (lines with a problem get a red number).
+function paintHl() {
+  const css = /\.css$/i.test(ED.path), t = css || !ED.path ? null : tidy(edText.value), bad = new Set(t?.errs.map((e) => e.line));
+  edHl.innerHTML = (css ? hlCSS(edText.value) : hlHTML(edText.value)) + '\n ';
+  edGut.innerHTML = edText.value.split('\n').map((x, i) => `<span${bad.has(i + 1) ? ' class="bad"' : ''}>${i + 1}</span>`).join('');
+  edHl.scrollTop = edGut.scrollTop = edText.scrollTop; edHl.scrollLeft = edText.scrollLeft;
+  edCheck.className = 'ed-check' + (t ? (t.ok ? ' ok' : ' bad') : '');
+  edCheck.innerHTML = !t ? 'CSS file' : t.ok ? '✓ Every box has its lid' : `✗ Line ${t.errs[0].line}: ${esc(t.errs[0].msg)}${t.errs.length > 1 ? ` <small>(+${t.errs.length - 1} more)</small>` : ''}`;
+}
 function renderWork() {
   ED.project ||= pathOf(sh.home) + '/site';
   const files = projectFiles();
@@ -2264,9 +2374,10 @@ edText.addEventListener('input', () => {
   if (/\.html$/i.test(ED.path)) { if (BW.url === fileURL(n)) reload(); else navigate(fileURL(n), 'auto'); }
   else if (BW.res?.local) reload();
   clearTimeout(edTimer);
-  edTimer = setTimeout(() => check({ type: 'edit', path: ED.path, text: edText.value, doc: new DOMParser().parseFromString(edText.value, 'text/html') }), 260);
+  edTimer = setTimeout(() => check({ type: 'edit', path: ED.path, text: edText.value, doc: new DOMParser().parseFromString(edText.value, 'text/html'), tidy: tidy(edText.value) }), 260);
+  if (BW.view === 'boxes') paintBoxes(edText.value);
 });
-edText.addEventListener('scroll', () => { edHl.scrollTop = edText.scrollTop; });
+edText.addEventListener('scroll', () => { edHl.scrollTop = edGut.scrollTop = edText.scrollTop; edHl.scrollLeft = edText.scrollLeft; });
 edText.addEventListener('keydown', (e) => {
   if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); typeIn('  '); }
   if (e.ctrlKey && e.key.toLowerCase() === 'd') e.preventDefault(); // not the bookmark dialog
@@ -2279,7 +2390,15 @@ document.querySelectorAll('.wtab').forEach((b) => b.addEventListener('click', ()
   (WB.tool === 'edit' ? edText : termIn).focus({ preventScroll: true });
 }));
 // Each lesson opens the right project, tool and page.
+// A mission step can ask for a different tool: the workbench switches to it.
+function webTask(L, step) {
+  const t = step.tool ?? L.tool ?? 'edit';
+  if (WB.tool === t) return;
+  WB.tool = t; renderWork();
+  requestAnimationFrame(() => (t === 'edit' ? edText : termIn).focus({ preventScroll: true }));
+}
 function webLesson(L) {
+  onTask = webTask;
   ED.project = pathOf(sh.home) + '/' + (L.project ?? 'site'); WB.tool = L.tool ?? 'edit';
   if (!ED.path.startsWith(ED.project + '/')) ED.path = '';
   renderWork();
@@ -2484,6 +2603,10 @@ const edits = (e, file) => e.type === 'edit' && e.path.endsWith('/' + file);
 const lids = (t, tag) => [(t.match(new RegExp(`<${tag}[\\s>]`, 'gi')) || []).length, (t.match(new RegExp(`</${tag}\\s*>`, 'gi')) || []).length];
 const lidOpen = (t, tag) => { const [o, c] = lids(t, tag); return o > c; };
 const lidShut = (t, tag) => { const [o, c] = lids(t, tag); return o > 0 && o === c; };
+// The tag checker's verdict on what was just typed: tidy means every rule is kept. errType looks for one kind of mistake.
+const tidyOK = (e) => e.tidy?.ok;
+const errType = (e, type, tag) => e.tidy?.errs.some((x) => x.type === type && (!tag || x.tag === tag));
+const siteNow = () => { const t = find('~/site/index.html')?.content ?? ''; return { t, tidy: tidy(t), doc: new DOMParser().parseFromString(t, 'text/html') }; };
 // Did a request (from the browser or from curl) come back with this status?
 const statusOf = (e) => e.type === 'visit' ? e.status : isCmd(e, 'curl') ? e.info.curl?.status : undefined;
 const visited = (e, host, path) => e.type === 'visit' && !e.error && e.host === host && (!path || e.path === path);
@@ -2494,60 +2617,94 @@ const inRepo = (e, host) => e.type === 'cmd' && e.cmd === 'git' && e.ok && e.inf
 // Gerald's site, judged the same way whether it is in the editor or already on GitHub.
 function geraldFixed(html, has) {
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  return { lid: lidShut(html, 'h1') && !doc.querySelector('h1 p, h1 img'), pic: [...doc.querySelectorAll('img')].every((i) => has(i.getAttribute('src'), true)), link: [...doc.querySelectorAll('a[href]')].every((a) => /^https?:/.test(a.getAttribute('href')) || has(a.getAttribute('href'))) };
+  return { lid: lidShut(html, 'h1') && tidy(html).ok, pic: [...doc.querySelectorAll('img')].every((i) => has(i.getAttribute('src'), true)), link: [...doc.querySelectorAll('a[href]')].every((a) => /^https?:/.test(a.getAttribute('href')) || has(a.getAttribute('href'))) };
 }
 const geraldNow = (e) => geraldFixed(e.text, (h, pic) => { const n = fsResolve(e.path, h); return pic ? /^PNG:/.test(n?.content ?? '') : n?.type === 'file'; });
-// project: which folder the editor opens. tool: which tab of the workbench starts open. home: the page the browser starts on.
-// Every mission only counts on its own page (onlyHere), and steps tick in order (seq).
+// Little pictures for the story phase: a tag pulled apart, boxes inside boxes, a tag that stands alone.
+const viz = {
+  tag: (open, inside, close, labels) => `<div class="tagviz"><div class="tv-row"><code class="tv-open">${open}</code><span class="tv-in">${inside}</span><code class="tv-close">${close}</code></div><div class="tv-labels">${labels.map((l) => `<span>${l}</span>`).join('')}</div></div>`,
+  nest: `<div class="tagviz"><div class="tv-box tv-b1"><code>&lt;p&gt;</code> I like <div class="tv-box tv-b2"><code>&lt;b&gt;</code> cheese <code>&lt;/b&gt;</code></div> <code>&lt;/p&gt;</code></div><p class="tv-note">The &lt;b&gt; box is inside the &lt;p&gt; box,<br/>so its lid goes on first.</p></div>`,
+  alone: (tag, note) => `<div class="tagviz"><code class="tv-big">${tag}</code><p class="tv-note">${note}</p></div>`,
+};
+// project: which folder the editor opens. tool: which tab of the workbench starts open (a step can ask for another).
+// home: the page the browser starts on. Every mission only counts on its own page (onlyHere), and steps tick in order (seq).
 const LESSONS = [
   { id: 'html', word: 'html', name: 'Peek behind a page', stands: 'HyperText Markup Language', color: '#ff4d6d', tool: 'term', home: 'https://jelly.fun', onlyHere: true, seq: true,
-    title: 'Every page is a text file in disguise', why: 'Long ago, editors scribbled notes on writers\' pages with a red pen: "make this BIG", "new paragraph here". Those notes were called <b>markup</b>. HTML is the same idea: little notes in angle brackets that tell the browser how to show your words.',
+    title: 'Every page is a text file in disguise', why: 'Long ago, editors scribbled notes on writers\' pages with a red pen: "make this BIG", "new paragraph here". Those notes were called <b>markup</b>. HTML is the same idea: little notes called <b>tags</b> that tell the browser how to show your words.',
     mnem: 'A web page is just text wearing a costume.',
     points: ['HTML = HyperText Markup Language. <b>Hyper</b> means "beyond": text that can jump to other pages.', 'Every website, even the giant ones, is built from HTML.', 'Your browser reads the text and turns it into the page you see.'],
     steps: [
-      { t: 'In the browser, press <b>View source</b> to see what jelly.fun is made of.', ok: (e) => e.type === 'source' },
-      { t: 'Your own page is a file too. Read it: <code>cat site/index.html</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('/site/index.html')) },
+      { t: 'In the browser on the right, press <b>View source</b>. That is what jelly.fun is really made of.', ok: (e) => e.type === 'source' },
+      { t: 'Your own page is a file too. Read it in the terminal: <code>cat site/index.html</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('/site/index.html')) },
       { t: 'Now show it as a page: <code>open site/index.html</code>', ok: (e) => e.type === 'visit' && e.via === 'open' && e.file?.endsWith('/site/index.html') },
     ] },
-  { id: 'h1', word: '<h1>', name: 'Boxes with lids', stands: 'Heading number 1', color: '#ff8a2b', onlyHere: true, seq: true,
-    title: 'Tags are boxes with lids', why: '<code>&lt;h1&gt;</code> opens a box and <code>&lt;/h1&gt;</code> puts the lid on. Everything in between becomes a heading. h1 is the biggest, loudest heading. h6 is so small it is basically a whisper.',
-    mnem: 'Open the box, fill it, put the lid on.',
-    points: ['The lid has a slash: <code>&lt;/h1&gt;</code>.', 'Headings go from <code>h1</code> (shouting) to <code>h6</code> (whispering).', 'The browser updates the page while you type. Watch the right side!'],
+  { id: 'tags', word: '</>', name: 'Boxes with lids', stands: 'Opening tag, closing tag', color: '#ff8a2b', onlyHere: true, seq: true,
+    visual: viz.tag('&lt;h1&gt;', 'Hello!', '&lt;/h1&gt;', ['<b>Opening tag</b><br/>opens the box', '<b>The inside</b><br/>your words', '<b>Closing tag</b><br/>the lid: the <b>/</b> means "stop"']),
+    title: 'Tags are boxes with lids', why: 'A tag is a word in angle brackets, like <code>&lt;h1&gt;</code>. It opens a box. Everything after it goes in the box, until the lid: the same tag with a slash, <code>&lt;/h1&gt;</code>. <b>h1</b> means "heading number 1", the biggest, loudest heading on the page.',
+    mnem: 'Open the box. Fill it. Put the lid on.',
+    points: ['<b>Rule 1:</b> every box gets a lid. <code>&lt;h1&gt;</code> always needs a <code>&lt;/h1&gt;</code>.', 'The lid is the same word with a slash in front: <code>&lt;/h1&gt;</code>.', 'Forget a lid and the browser has to guess where the box ends. It often guesses wrong.', 'The checker under the editor watches every lid for you.'],
     steps: [
-      { t: 'In the editor, change <b>Hello, world!</b> to your own name.', ok: (e) => edits(e, 'index.html') && !!e.doc.querySelector('h1') && !/^hello,? world!?$/i.test(e.doc.querySelector('h1').textContent.trim()) },
-      { t: 'Forget a lid: delete the <code>&lt;/h1&gt;</code> and watch everything go HUGE.', ok: (e) => edits(e, 'index.html') && lidOpen(e.text, 'h1') },
-      { t: 'Put the lid back on: type <code>&lt;/h1&gt;</code> at the end of the heading again.', ok: (e) => edits(e, 'index.html') && lidShut(e.text, 'h1') },
+      { t: 'In the editor, find the <code>&lt;h1&gt;</code> box. Change the words <b>inside</b> it to your name.', ok: (e) => edits(e, 'index.html') && tidyOK(e) && !!e.doc.querySelector('h1') && !/^hello,? world!?$/i.test(e.doc.querySelector('h1').textContent.trim()) },
+      { t: 'Take the lid off: delete <code>&lt;/h1&gt;</code>. Watch the page go HUGE, and the checker turn red.', ok: (e) => edits(e, 'index.html') && lidOpen(e.text, 'h1') },
+      { t: 'Put the lid back on: type <code>&lt;/h1&gt;</code> straight after your name. The checker goes green.', ok: (e) => edits(e, 'index.html') && lidShut(e.text, 'h1') && tidyOK(e) },
     ] },
-  { id: 'p', word: '<p>', name: 'Boxes in boxes', stands: 'Paragraph', color: '#62c934', onlyHere: true, seq: true,
-    title: 'Boxes inside boxes', why: 'A page is boxes inside boxes: <code>&lt;body&gt;</code> holds a <code>&lt;p&gt;</code>, which holds a <code>&lt;b&gt;</code>. Sound familiar? It is a tree, exactly like folders inside folders in Jelly Shell.',
-    mnem: 'A page is a tree of boxes.',
-    points: ['<code>&lt;p&gt;</code> is a paragraph. <code>&lt;b&gt;</code> is bold. <code>&lt;i&gt;</code> is italic.', '<code>&lt;ul&gt;</code> is an "unordered list" (bullet points). Each <code>&lt;li&gt;</code> is a "list item".', 'Close the inside box before the outside one: <code>&lt;p&gt;&lt;b&gt;hi&lt;/b&gt;&lt;/p&gt;</code>.'],
+  { id: 'p', word: '<p>', name: 'Boxes in boxes', stands: 'Paragraph', color: '#62c934', onlyHere: true, seq: true, visual: viz.nest,
+    title: 'Boxes inside boxes', why: 'Boxes can go inside other boxes, like a toy inside a box inside a bigger box. <code>&lt;p&gt;</code> is a paragraph box, and <code>&lt;b&gt;</code> makes words bold. Put a <code>&lt;b&gt;</code> box inside a <code>&lt;p&gt;</code> box, and the inside box must be closed before the outside one.',
+    mnem: 'Last opened, first closed.',
+    points: ['<b>Rule 2:</b> close the inside box first. <code>&lt;p&gt;&lt;b&gt;hi&lt;/b&gt;&lt;/p&gt;</code> is right.', '<code>&lt;p&gt;&lt;b&gt;hi&lt;/p&gt;&lt;/b&gt;</code> is wrong: the lids are crossed.', 'Your whole page is boxes inside boxes: <code>&lt;body&gt;</code> holds everything you see.'],
     steps: [
-      { t: 'Add a second paragraph: <code>&lt;p&gt;I like cheese.&lt;/p&gt;</code>', ok: (e) => edits(e, 'index.html') && e.doc.querySelectorAll('body p').length >= 2 },
-      { t: 'Put a box in a box: make one word bold with <code>&lt;b&gt;</code>…<code>&lt;/b&gt;</code> inside a paragraph.', ok: (e) => edits(e, 'index.html') && !!e.doc.querySelector('p b, p strong') },
-      { t: 'Make a list: a <code>&lt;ul&gt;</code> with two <code>&lt;li&gt;</code> items inside.', ok: (e) => edits(e, 'index.html') && e.doc.querySelectorAll('ul li').length >= 2 },
-      { t: 'In the browser, press <b>Page tree</b> and find your list.', ok: (e) => e.type === 'tree' && /^file:/.test(e.url ?? '') },
+      { t: 'Under your heading, add a new paragraph box: <code>&lt;p&gt;I like cheese.&lt;/p&gt;</code>', ok: (e) => edits(e, 'index.html') && tidyOK(e) && e.doc.querySelectorAll('body p').length >= 2 },
+      { t: 'Put a box inside it: make <b>cheese</b> bold with <code>&lt;b&gt;cheese&lt;/b&gt;</code>', ok: (e) => edits(e, 'index.html') && tidyOK(e) && !!e.doc.querySelector('p b') },
+      { t: 'Cross the lids on purpose: make the end <code>&lt;/p&gt;&lt;/b&gt;</code>. What does the checker say?', ok: (e) => edits(e, 'index.html') && errType(e, 'cross') },
+      { t: 'Fix it: last opened, first closed. <code>&lt;/b&gt;&lt;/p&gt;</code>', ok: (e) => edits(e, 'index.html') && tidyOK(e) && !!e.doc.querySelector('p b') },
+    ] },
+  { id: 'hr', word: '<hr/>', name: 'Tags that stand alone', stands: 'Horizontal Rule', color: '#3a5bff', onlyHere: true, seq: true,
+    visual: viz.alone('&lt;hr/&gt;', 'One tag, nothing inside.<br/>The slash at the end closes it straight away.'),
+    title: 'Tags that stand alone', why: 'Some tags never have anything inside them. <code>&lt;hr/&gt;</code> draws a line across the page ("horizontal rule": a rule is a ruler line). There is nothing to put in the box, so it opens and closes in one go: the slash goes at the <b>end</b>.',
+    mnem: 'Nothing inside? Close it with />.',
+    points: ['<b>Rule 3:</b> a tag that stands alone closes itself: <code>&lt;hr/&gt;</code>.', '<code>&lt;br/&gt;</code> is another one: it breaks a line, like pressing Enter.', 'Slash at the front: a lid. Slash at the end: a tag that closes itself.'],
+    steps: [
+      { t: 'Draw a line across your page: add <code>&lt;hr/&gt;</code> under your heading.', ok: (e) => edits(e, 'index.html') && tidyOK(e) && /<hr\s*\/>/.test(e.text) },
+      { t: 'Break a line in a paragraph: put <code>&lt;br/&gt;</code> in the middle of one.', ok: (e) => edits(e, 'index.html') && tidyOK(e) && !!e.doc.querySelector('p br') },
+      { t: 'Try it without its slash: change it to <code>&lt;hr&gt;</code>. The checker spots it!', ok: (e) => edits(e, 'index.html') && errType(e, 'voidslash', 'hr') },
+      { t: 'Put the slash back: <code>&lt;hr/&gt;</code>. Green again!', ok: (e) => edits(e, 'index.html') && tidyOK(e) && /<hr\s*\/>/.test(e.text) },
+    ] },
+  { id: 'ul', word: '<ul>', name: 'Lists', stands: 'Unordered List', color: '#9b5cff', onlyHere: true, seq: true,
+    visual: `<div class="tagviz"><pre class="tv-code">&lt;ul&gt;
+  &lt;li&gt;pizza&lt;/li&gt;
+  &lt;li&gt;cheese&lt;/li&gt;
+&lt;/ul&gt;</pre><p class="tv-note">A list box, with an item box<br/>for each thing. Every box has a lid.</p></div>`,
+    title: 'Make a list', why: 'A list is a box full of smaller boxes. <code>&lt;ul&gt;</code> is the list ("unordered list": the bullet-point kind). Each thing in it goes in its own <code>&lt;li&gt;</code> box ("list item"), and each <code>&lt;li&gt;</code> gets its own lid.',
+    mnem: 'One big box, one small box per item.',
+    points: ['Every item: <code>&lt;li&gt;</code> … <code>&lt;/li&gt;</code>. No lid, no item.', 'Want numbers instead of bullets? Use <code>&lt;ol&gt;</code>: an ordered list.', 'Spaces at the start of a line do not change the page. They just make your boxes easier to see.'],
+    steps: [
+      { t: 'Under your paragraphs, start a list box: <code>&lt;ul&gt;&lt;/ul&gt;</code>', ok: (e) => edits(e, 'index.html') && tidyOK(e) && !!e.doc.querySelector('ul') },
+      { t: 'Put one item inside, with its lid: <code>&lt;li&gt;pizza&lt;/li&gt;</code>', ok: (e) => edits(e, 'index.html') && tidyOK(e) && e.doc.querySelectorAll('ul li').length >= 1 },
+      { t: 'Add two more items. Every one gets its own lid.', ok: (e) => edits(e, 'index.html') && tidyOK(e) && e.doc.querySelectorAll('ul li').length >= 3 },
+      { t: 'In the browser, press <b>Boxes</b>. Find your list box with its three item boxes.', ok: (e) => e.type === 'boxes' && siteNow().tidy.ok && siteNow().doc.querySelectorAll('ul li').length >= 3 },
     ] },
   { id: 'a', word: '<a>', name: 'Links', stands: 'Anchor', color: '#3a5bff', onlyHere: true, seq: true,
-    title: 'Links make it a web', why: '"a" is for <b>anchor</b>, like a ship\'s anchor that hooks onto another place. <code>href</code> means "hypertext reference": the address to jump to. Billions of pages linking to each other look like a giant spider web. That is why it is called the World Wide Web.',
+    visual: viz.tag('&lt;a <span class="tv-attr">href</span>=<span class="tv-val">"https://jelly.fun"</span>&gt;', 'Jelly Fun', '&lt;/a&gt;', ['<b>An attribute</b><br/>extra info, inside the opening tag', '<b>The words</b><br/>what you click', '<b>The lid</b>']),
+    title: 'Links make it a web', why: '"a" is for <b>anchor</b>, like a ship\'s anchor that hooks onto another place. The opening tag carries extra information called an <b>attribute</b>: <code>href</code> ("hypertext reference") says where to jump. Billions of pages linking to each other look like a giant spider web. That is why it is called the World Wide Web.',
     mnem: 'a hooks on, href says where.',
-    points: ['<code>&lt;a href="https://jelly.fun"&gt;Jelly Fun&lt;/a&gt;</code>. The words in the middle are what you click.', 'A link to a file in the same folder is just its name: <code>href="about.html"</code>.', 'The very first link was made in 1991. Now there are more links than stars in our galaxy.'],
+    points: ['Attributes go inside the opening tag: <code>name="value"</code>, always with quotes.', 'A link to a file in the same folder is just its name: <code>href="about.html"</code>.', 'The lid stays plain: <code>&lt;/a&gt;</code>, no attributes.'],
     steps: [
-      { t: 'Add a link: <code>&lt;a href="https://jelly.fun"&gt;Jelly Fun&lt;/a&gt;</code>', ok: (e) => edits(e, 'index.html') && [...e.doc.querySelectorAll('a[href]')].some((a) => /^https?:\/\//.test(a.getAttribute('href'))) },
+      { t: 'Add a link: <code>&lt;a href="https://jelly.fun"&gt;Jelly Fun&lt;/a&gt;</code>', ok: (e) => edits(e, 'index.html') && tidyOK(e) && [...e.doc.querySelectorAll('a[href]')].some((a) => /^https?:\/\//.test(a.getAttribute('href'))) },
       { t: 'Click your link in the browser.', ok: (e) => e.type === 'visit' && e.via === 'link' && !!e.host },
       { t: 'Press ← to come back. Link to your other page with <code>href="about.html"</code>, then click it.', ok: (e) => e.type === 'visit' && e.via === 'link' && e.file?.endsWith('/about.html') },
     ] },
-  { id: 'img', word: '<img>', name: 'Pictures', stands: 'IMaGe', color: '#9b5cff', onlyHere: true, seq: true,
-    title: 'The box with no lid', why: 'A picture has nothing inside it, so <code>&lt;img&gt;</code> never gets a lid. <code>src</code> means "source": where to find the picture. It is a path, exactly like a <code>cd</code> path: <code>images/gerbil.png</code> means "go into images, take gerbil.png".',
-    mnem: 'img: no lid, src says where.',
-    points: ['<code>&lt;img src="images/gerbil.png" alt="Gerald"&gt;</code>', '<code>alt</code> is what to say instead of the picture. Screen readers read it out loud for people who cannot see the screen.', 'One wrong letter in src and the picture breaks. Computers never guess.'],
+  { id: 'img', word: '<img/>', name: 'Pictures', stands: 'IMaGe', color: '#ff4d6d', onlyHere: true, seq: true,
+    visual: viz.alone('&lt;img <span class="tv-attr">src</span>=<span class="tv-val">"images/gerbil.png"</span> <span class="tv-attr">alt</span>=<span class="tv-val">"Gerald"</span>/&gt;', 'A picture has nothing inside it,<br/>so it stands alone and closes itself.'),
+    title: 'Pictures stand alone too', why: 'A picture has no words inside it, so <code>&lt;img/&gt;</code> stands alone, just like <code>&lt;hr/&gt;</code>. Its attributes do the work. <code>src</code> means "source": where the picture is. It is a path, exactly like a <code>cd</code> path: <code>images/gerbil.png</code> means "go into images, take gerbil.png".',
+    mnem: 'img stands alone. src says where.',
+    points: ['<code>alt</code> is what to say instead of the picture. Screen readers read it out loud for people who cannot see the screen.', 'One wrong letter in src and the picture breaks. Computers never guess.', 'Remember the slash at the end: <code>/&gt;</code>'],
     steps: [
-      { t: 'Add a picture: <code>&lt;img src="images/gerbil.png"&gt;</code>', ok: (e) => edits(e, 'index.html') && pics(e).some((i) => picOK(e, i)) },
-      { t: 'Make a typo in the path, like <code>gerbal.png</code>, and watch it break.', ok: (e) => edits(e, 'index.html') && pics(e).some((i) => !picOK(e, i)) },
-      { t: 'Fix it, and add <code>alt="Gerald the gerbil"</code> in case it ever breaks again.', ok: (e) => edits(e, 'index.html') && pics(e).length > 0 && pics(e).every((i) => picOK(e, i) && i.getAttribute('alt')?.trim()) },
+      { t: 'Add a picture: <code>&lt;img src="images/gerbil.png" alt="Gerald"/&gt;</code>', ok: (e) => edits(e, 'index.html') && tidyOK(e) && pics(e).some((i) => picOK(e, i)) },
+      { t: 'Make a typo in the path, like <code>gerbal.png</code>. The picture breaks and the alt words show instead.', ok: (e) => edits(e, 'index.html') && pics(e).some((i) => !picOK(e, i)) },
+      { t: 'Fix the path. Every picture works, and every one has alt words.', ok: (e) => edits(e, 'index.html') && tidyOK(e) && pics(e).length > 0 && pics(e).every((i) => picOK(e, i) && i.getAttribute('alt')?.trim()) },
     ] },
   { id: 'css', word: 'css', name: 'A splash of style', stands: 'Cascading Style Sheets', color: '#ffc61a', onlyHere: true, seq: true,
-    title: 'Paint it with CSS', why: 'HTML says what things are. CSS says how they look. <b>Cascading</b> means "pouring down like a waterfall": give the <code>body</code> a colour and it pours down into every box inside it.',
+    title: 'Paint it with CSS', why: 'HTML says what things are. CSS says how they look. CSS goes in a <code>&lt;style&gt;</code> box at the top of your page. <b>Cascading</b> means "pouring down like a waterfall": give the <code>body</code> a colour and it pours down into every box inside it.',
     mnem: 'HTML is the bones. CSS is the paint.',
     points: ['Put CSS inside <code>&lt;style&gt;</code>…<code>&lt;/style&gt;</code> in the <code>&lt;head&gt;</code>.', 'A rule is: who, then curly brackets, then what to change: <code>h1 { color: hotpink; }</code>', 'There are 140 colour names. Try <code>papayawhip</code>, <code>tomato</code> or <code>lime</code>.'],
     steps: [
@@ -2634,7 +2791,7 @@ const LESSONS = [
     mnem: 'Fix it, check it, push it.',
     points: ['Look at the page, then at the HTML. What does not match?', 'Use <code>ls</code> in the terminal to check the real file names.', 'When it looks right: <code>cd ~/gerald</code>, then add, commit and push.'],
     steps: [
-      { t: 'Put the lid back on Gerald\'s heading.', ok: (e) => edits(e, 'gerald/index.html') && geraldNow(e).lid },
+      { t: 'Put the lid back on Gerald\'s heading. The checker under the editor shows you where.', ok: (e) => edits(e, 'gerald/index.html') && geraldNow(e).lid },
       { t: 'Fix the broken picture.', ok: (e) => edits(e, 'gerald/index.html') && geraldNow(e).pic && e.doc.querySelector('img') },
       { t: 'Fix the link to the About page.', ok: (e) => edits(e, 'gerald/index.html') && geraldNow(e).link && e.doc.querySelector('a[href]') },
       { t: 'Push it, then check <code>gerald.github.io</code>.', ok: (e) => visited(e, 'gerald.github.io') && e.status === 200 && Object.values(geraldFixed(WEB.pages['gerald.github.io']?.['index.html'] ?? '', (h, pic) => { const k = (h ?? '').replace(/^\.\//, ''); return pic ? /^PNG:/.test(WEB.pages['gerald.github.io'][k] ?? '') : k in WEB.pages['gerald.github.io']; })).every(Boolean) },
@@ -2655,10 +2812,12 @@ const RECAP = {
   line: 'Every page you have ever seen made this trip, there and back, in less than a second.',
   words: {
     html: { does: 'The text that every web page is made of.', ex: 'View source', quiz: 'What is every web page secretly made of?' },
-    h1: { does: 'A heading. Open the box, fill it, put the lid on.', ex: '<h1>Hi!</h1>', quiz: 'Make the biggest heading say "Hi!".' },
-    p: { does: 'A paragraph. Boxes go inside boxes, like a tree.', ex: '<p>I like <b>cheese</b></p>', quiz: 'Write a paragraph with one bold word.' },
+    tags: { does: 'A tag opens a box. The same tag with a slash is its lid.', ex: '<h1>Hi!</h1>', quiz: 'Make the biggest heading say "Hi!".' },
+    p: { does: 'Boxes go inside boxes. Last opened, first closed.', ex: '<p>I like <b>cheese</b></p>', quiz: 'Write a paragraph with one bold word.' },
+    hr: { does: 'A tag with nothing inside closes itself with />.', ex: '<hr/>', quiz: 'Draw a line across the page.' },
+    ul: { does: 'A list box, with an <li></li> box for every item.', ex: '<ul><li>pizza</li></ul>', quiz: 'Make a list with one item: pizza.' },
     a: { does: 'A link. href says where it jumps to.', ex: '<a href="about.html">About</a>', quiz: 'Link to about.html.' },
-    img: { does: 'A picture. No lid. src says where, alt says what.', ex: '<img src="cat.png" alt="A cat">', quiz: 'Show cat.png, with words for when it breaks.' },
+    img: { does: 'A picture. It stands alone: src says where, alt says what.', ex: '<img src="cat.png" alt="A cat"/>', quiz: 'Show cat.png, with words for when it breaks.' },
     css: { does: 'Paints the page. Styles pour down like a waterfall.', ex: 'h1 { color: tomato; }', quiz: 'Make every h1 tomato red.' },
     url: { does: 'An address: how, which computer, which file.', ex: 'https://jelly.fun/snacks/', quiz: 'Which part of a URL is a folder path?' },
     curl: { does: 'Fetches a page and shows it as plain text.', ex: 'curl https://jelly.fun', quiz: 'See the raw HTML of jelly.fun in the terminal.' },
@@ -2677,6 +2836,7 @@ const RECAP = {
 function complete(id) {
   if (store.done[id]) return;
   store.done[id] = true; save(); paintProgress();
+  if (id === 'backstage') $('#p-backstage').dataset.played = '1';
   const item = ALL.find((a) => a.id === id);
   if (!sectionDone(id)) toast(`Jelly collected: ${item.word ? item.word : item.name}!`);
   sound.ding(); confetti(item.color);
@@ -2688,12 +2848,12 @@ function check(ev) {
     const st = store.steps[L.id] ??= L.steps.map(() => false);
     let changed = false;
     L.steps.forEach((s, i) => { if (!st[i] && (!L.seq || st.slice(0, i).every(Boolean)) && s.ok(ev)) { st[i] = true; changed = true; } });
-    if (changed) { save(); if (L === LESSONS[cur]) paintSteps(); if (st.every(Boolean)) complete(L.id); else if (L === LESSONS[cur]) sound.ding(); }
+    if (changed) { save(); if (L === LESSONS[cur]) paintSteps(true); if (st.every(Boolean)) complete(L.id); else if (L === LESSONS[cur]) sound.ding(); }
   }
 }
 function paintProgress() {
   const n = ALL.filter((a) => store.done[a.id]).length;
-  $('#jarCount').textContent = `${n} / ${ALL.length} jellies`;
+  $('#jarCount').textContent = `${n} / ${ALL.length} jellies`; $('#handleCount').textContent = `${n} / ${ALL.length}`;
   $('#beans').innerHTML = ALL.map((a) => `<span class="bean${store.done[a.id] ? ' on' : ''}" title="${esc(a.name)}" style="${store.done[a.id] ? `background:${a.color}` : ''}"></span>`).join('');
   const rec = PANELS.find((p) => p.id !== 'welcome' && !store.done[p.id])?.id;
   document.querySelectorAll('.ni').forEach((t) => { t.classList.toggle('done', !!store.done[t.dataset.id]); t.classList.toggle('up-next', t.dataset.id === rec); });
@@ -2730,18 +2890,38 @@ function go(id) {
   try { history.replaceState(null, '', '#' + P.id); } catch {}
   const el = P.lesson ? $('#p-lesson') : $('#p-' + P.id);
   document.querySelectorAll('.panel').forEach((p) => { p.hidden = p !== el; });
+  $('.app').classList.toggle('focus', !['welcome', 'recap'].includes(P.id)); $('.app').classList.remove('peek');
+  if (store.done.backstage) $('#p-backstage').dataset.played = '1';
   if (P.lesson) showLesson(LESSONS.indexOf(P.lesson));
   if (P.id === 'recap') renderRecap();
   navEl.querySelectorAll('.ni').forEach((a) => { const on = a.dataset.id === P.id; a.classList.toggle('cur', on); if (on) a.scrollIntoView({ block: 'nearest' }); });
   $('#recapBtn').classList.toggle('cur', P.id === 'recap');
-  $('#navPrev').disabled = i === 0; $('#navNext').disabled = i === PANELS.length - 1;
-  if (!REDUCED && from >= 0) el.animate([{ opacity: 0, transform: `translateY(${i >= from ? 28 : -28}px)` }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' }).finished.then(() => placeGuide(), () => {});
-  requestAnimationFrame(() => { fitAll(el); guideStart(P, el); });
+  if (!REDUCED && from >= 0) el.animate([{ opacity: 0, transform: `translateY(${i >= from ? 28 : -28}px)` }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  G.card = false; renderGuide();
+  // Start every section with the big button ready, so the very next Enter carries on.
+  requestAnimationFrame(() => { fitAll(el); const b = primaryButton(); if (b) b.focus({ preventScroll: true }); else document.activeElement?.blur(); });
   paintProgress();
 }
 const step = (d) => go(PANELS[clamp(panelIdx + d, 0, PANELS.length - 1)].id);
-$('#navPrev').onclick = () => step(-1);
-$('#navNext').onclick = () => step(1);
+// The nav waits behind a tab during the tutorial. Click the tab to peek; click anywhere else to tuck it away.
+$('#navHandle').onclick = () => $('.app').classList.toggle('peek');
+$('.stage').addEventListener('pointerdown', () => $('.app').classList.remove('peek'));
+$('.stage').addEventListener('transitionend', (e) => { if (e.target === e.currentTarget) fitNow(); });
+// Enter always means "carry on": it presses the one big button on the screen. Typing boxes keep Enter for themselves.
+function primaryButton() {
+  if (G.card) return $('#unGo');
+  const P = PANELS[panelIdx];
+  const b = P.lesson ? $('#lNext') : { welcome: $('#startBtn'), whole: $('#townNext'), backstage: showBusy ? null : store.done.backstage ? $('#bsNext') : $('#enterKey') }[P.id];
+  return b && !b.hidden && !b.disabled && b.offsetParent ? b : null;
+}
+addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') $('.app').classList.remove('peek');
+  if (e.key !== 'Enter' || e.repeat || e.isComposing || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+  if (e.target.closest?.('input,textarea,select,button,a,[contenteditable]') && e.target.offsetParent) return; // a hidden box has lost its turn
+  const b = primaryButton();
+  if (b) { e.preventDefault(); b.click(); }
+  else if (PANELS[panelIdx]?.lesson && $('#lcard').dataset.phase === 'mission') { e.preventDefault(); (WB.tool === 'edit' ? edText : termIn).focus({ preventScroll: true }); }
+});
 addEventListener('keydown', (e) => {
   if (e.target.closest?.('input,textarea')) return;
   if (e.key === 'PageDown' || e.key === 'ArrowRight') { e.preventDefault(); step(1); }
@@ -2760,13 +2940,34 @@ const fitNow = () => { const P = PANELS[panelIdx]; if (P) fitAll(P.lesson ? $('#
 let fitTimer;
 addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(fitNow, 120); });
 
-/* ---------------- one magic word ---------------- */
-function paintSteps() {
-  const L = LESSONS[cur], st = store.steps[L.id] ?? [];
-  $('#lSteps').innerHTML = L.steps.map((s, i) => `<li class="${st[i] ? 'ok' : ''}"><span class="sb">${st[i] ? '✓' : i + 1}</span><span>${s.t}</span></li>`).join('');
-  const done = !!store.done[L.id], last = cur === LESSONS.length - 1;
-  const nx = $('#lNext'); nx.hidden = last; nx.classList.toggle('pulse', done); nx.classList.toggle('go', done); nx.classList.toggle('alt', !done);
-  if (PANELS[panelIdx]?.lesson) requestAnimationFrame(() => fitAll($('#p-lesson')));
+/* ---------------- one magic word, one thing at a time ---------------- */
+// Three phases: the story, the brain-burner, then the mission, one step at a time. The jelly stays put throughout.
+const ENTER = '<span class="ent">Enter ↵</span>';
+store.phase ??= {};
+let taskTimer, onTask = () => {}; // a guide can swap tools when a mission step needs a different one
+function setPhase(p) {
+  const L = LESSONS[cur]; store.phase[L.id] = p; save();
+  $('#lcard').dataset.phase = p; paintSteps(); sound.blip();
+  requestAnimationFrame(() => { fitAll($('#p-lesson')); if (p === 'mission') termIn.focus({ preventScroll: true }); else $('#lNext').focus({ preventScroll: true }); });
+}
+function paintSteps(celebrate = false) {
+  const L = LESSONS[cur], st = store.steps[L.id] ?? [], i = L.steps.findIndex((s, k) => !st[k]), p = $('#lcard').dataset.phase;
+  $('#lPips').innerHTML = L.steps.map((s, k) => `<span class="pip${st[k] ? ' ok' : ''}${k === i ? ' cur' : ''}">${st[k] ? '✓' : k + 1}</span>`).join('');
+  const show = () => {
+    $('#lTaskN').textContent = i < 0 ? 'Mission complete!' : `Step ${i + 1} of ${L.steps.length}`;
+    $('#lTask').innerHTML = i < 0 ? `You did every step. The <b>${esc(L.word)}</b> jelly is yours!` : L.steps[i].t;
+    if (i >= 0 && p === 'mission') onTask(L, L.steps[i]);
+    if (PANELS[panelIdx]?.lesson) fitAll($('#p-lesson'));
+  };
+  clearTimeout(taskTimer);
+  if (celebrate && p === 'mission' && !REDUCED) { $('#lTaskN').textContent = ''; $('#lTask').innerHTML = '<span class="task-yay">✓ Nice one!</span>'; lessonStage?.hopAll(.7); taskTimer = setTimeout(show, 1100); }
+  else show();
+  const done = !!store.done[L.id], last = cur === LESSONS.length - 1, nx = $('#lNext');
+  nx.hidden = p === 'mission' && (!done || last);
+  nx.innerHTML = (p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next word') + ENTER;
+  nx.classList.toggle('pulse', p === 'mission');
+  $('#lBack').hidden = p === 'meet'; $('#lRestart').hidden = p !== 'mission';
+  document.querySelectorAll('#lPhases li').forEach((li) => li.classList.toggle('on', li.dataset.p === p));
 }
 function showLesson(i) {
   cur = i; const L = LESSONS[i]; store.cur = L.id; save();
@@ -2774,11 +2975,15 @@ function showLesson(i) {
   $('#lcard').style.setProperty('--c', L.color);
   $('#lNum').textContent = `Magic word ${i + 1} of ${LESSONS.length}`;
   $('#lStands').textContent = L.stands; $('#lTitle').textContent = L.title; $('#lWhy').innerHTML = L.why; $('#lMnem').textContent = L.mnem;
+  $('#lVisual').innerHTML = L.visual ?? '';
   $('#lPoints').innerHTML = L.points.map((p) => `<li><span>${p}</span></li>`).join('');
+  $('#lcard').dataset.phase = store.done[L.id] ? 'meet' : store.phase[L.id] ?? 'meet';
   paintSteps();
   if (lessonStage && lessonStage.word !== L.word) { lessonStage.opts.colorOffset = Math.max(0, JELLY.indexOf(L.color)); lessonStage.setWord(L.word); }
 }
-$('#lNext').onclick = () => step(1);
+$('#lNext').onclick = () => { const p = $('#lcard').dataset.phase; if (p === 'meet') setPhase('brain'); else if (p === 'brain') setPhase('mission'); else step(1); };
+$('#lBack').onclick = () => setPhase($('#lcard').dataset.phase === 'mission' ? 'brain' : 'meet');
+$('#lPhases').onclick = (e) => { const li = e.target.closest('[data-p]'); if (li) setPhase(li.dataset.p); };
 // Start over: untick this mission's steps and give the sandbox a fresh start. Jellies already earned stay in the jar.
 $('#lRestart').onclick = () => {
   const L = LESSONS[cur]; store.steps[L.id] = L.steps.map(() => false); save();
@@ -2789,126 +2994,15 @@ $('#lRestart').onclick = () => {
 
 $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; $('#resetBtn').hidden = true; };
 $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; $('#resetBtn').hidden = false; };
-$('#resetYes').onclick = () => { store.done = {}; store.steps = {}; store.tour = {}; store.tipsOff = false; save(); paintProgress(); paintSteps(); $('#resetNo').onclick(); go(PANELS[panelIdx].id); toast('Jar emptied. Fresh start!'); };
+$('#resetYes').onclick = () => { store.done = {}; store.steps = {}; store.phase = {}; save(); paintProgress(); paintSteps(); $('#resetNo').onclick(); go(PANELS[panelIdx].id); toast('Jar emptied. Fresh start!'); };
 $('#startBtn').onclick = () => go('whole');
+$('#bsNext').onclick = () => go(nextUp().id);
 
-/* ---------------- the guide: numbered areas, a moving spotlight, and "next up" ---------------- */
-// Each panel lists its areas in the order a kid should use them. The spotlight suggests; clicking any area moves it there.
-const GUIDES = {
-  welcome: [
-    { sel: '.hero-stage', title: 'Squish a jelly', text: 'These wobbly letters spell web. Grab one, stretch it, fling it!' },
-    { sel: '.hero-side', title: 'Start the tour', text: 'Press the green button when you are ready. You can also jump anywhere with the list on the left.' },
-  ],
-  whole: [
-    { sel: '.cv', title: 'The trip of a web page', text: 'Your computer, the router, the phonebook, the internet and the server. Drag to spin it. Scroll to zoom.' },
-    { sel: '.town-ui', title: 'Follow the jelly bean', text: 'Read the story, then press Next. Follow the bean all the way down and back up.' },
-  ],
-  backstage: [
-    { sel: '.show-wrap', title: 'Press Enter', text: 'Press the yellow Enter key to load gerbil.zone. Then watch the browser flip around!' },
-    { sel: '.show-cap', title: 'Read along', text: 'This box tells you what each character is doing.' },
-    { sel: '.show-btns', title: 'Try all three', text: 'See what happens when a page is missing, and when you ask a teapot for coffee.' },
-  ],
-  recap: [
-    { sel: '.rc-chain', title: 'The big picture, again', text: 'Remember the whole game? Here it is in one line.' },
-    { sel: '.rc-grid', title: 'Your magic words', text: 'Every word you learnt, with its brain-burner. Grey ones are still waiting for you: tap one to learn it.' },
-    { sel: '.rc-mode', title: 'Test yourself', text: 'Press Test me. Each card asks a question. Say the answer out loud, then tap the card to check.' },
-  ],
-  lesson: (L) => [
-    { sel: '.ljelly', title: `Meet ${L.word}`, text: 'Grab the jelly letters and give them a squish. This is the word you are learning.' },
-    { sel: '.ltext', title: 'Why the funny name?', text: 'Read the story. Then say the big coloured line out loud three times. Silly voices count.' },
-    { sel: '.mission', title: 'Your mission', text: `${L.steps.length} things to do, in order. Each one ticks itself when you do it.` },
-    { sel: '.term', title: 'Your workbench', text: 'Write HTML in the Editor tab. Type commands in the Terminal tab. Switch with the green tabs at the top.' },
-    { sel: '.map', title: 'The browser', text: 'Your page shows up here as you type. You can also type addresses in the bar at the top, just like a real browser.' },
-  ],
-};
+/* ---------------- the end of a section: jelly into the jar, then a clear "next up" ---------------- */
 const bean = (color, cls = '') => `<svg class="bean-svg ${cls}" viewBox="0 0 60 70" aria-hidden="true"><path d="M30 4c18 0 26 14 24 32-2 20-12 30-25 30S5 56 6 38C7 18 12 4 30 4z" fill="${color}" stroke="${INK}" stroke-width="4"/><ellipse cx="18" cy="15" rx="5" ry="3" fill="#fff" opacity=".55"/><ellipse cx="22" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><ellipse cx="38" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><g class="pp"><circle cx="22" cy="31" r="3.6" fill="${INK}"/><circle cx="38" cy="31" r="3.6" fill="${INK}"/></g><path d="M22 45q8 7 16 0" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/></svg>`;
-store.tour ??= {};
-const stageEl = $('.stage'), ring = $('#gRing'), coach = $('#coach'), badgesEl = $('#gBadges'), upnext = $('#upnext'), upPill = $('#upPill'), tipsBtn = $('#tipsBtn');
-const G = { id: null, steps: [], targets: [], i: 0, tour: false, color: '#ff4d6d', card: false };
+const upnext = $('#upnext'), G = { card: false };
+function renderGuide() { upnext.hidden = !G.card; }
 
-function guideStart(P, el) {
-  G.targets.forEach((t) => t?.classList.remove('dim'));
-  G.id = P.id; G.color = P.color; G.panel = el;
-  ring.classList.add('snap'); coach.classList.add('snap'); // jump straight to the new panel's areas, no glide from the old one
-  G.steps = P.lesson ? GUIDES.lesson(P.lesson) : GUIDES[P.id] ?? [];
-  G.targets = G.steps.map((s) => el.querySelector(s.sel));
-  guideObserver.disconnect(); G.targets.forEach((t) => t && guideObserver.observe(t));
-  const saved = store.tour[P.id];
-  G.i = typeof saved === 'number' ? clamp(saved, 0, G.steps.length - 1) : 0;
-  G.tour = !store.tipsOff && saved !== 'done' && !store.done[P.id] && G.steps.length > 0;
-  G.card = false;
-  renderGuide();
-  requestAnimationFrame(() => requestAnimationFrame(() => { ring.classList.remove('snap'); coach.classList.remove('snap'); }));
-}
-function guideTo(i) { G.i = clamp(i, 0, G.steps.length - 1); store.tour[G.id] = G.i; save(); renderGuide(); }
-function guideFinish() { G.tour = false; store.tour[G.id] = 'done'; save(); renderGuide(); }
-
-function renderGuide() {
-  const P = PANELS[panelIdx], done = !!store.done[P.id] && ALL.some((a) => a.id === P.id);
-  stageEl.style.setProperty('--gc', G.color);
-  badgesEl.innerHTML = G.steps.map((s, i) => `<span class="gbadge${G.tour && i === G.i ? ' cur' : ''}${G.tour && i < G.i ? ' past' : ''}" title="${esc(s.title)}">${i + 1}</span>`).join('');
-  G.targets.forEach((t, i) => t?.classList.toggle('dim', G.tour && !G.card && i !== G.i));
-  ring.classList.toggle('on', G.tour && !G.card);
-  coach.hidden = !G.tour || G.card;
-  if (G.tour) {
-    const s = G.steps[G.i], last = G.i === G.steps.length - 1;
-    coach.innerHTML = `${bean(G.color, 'coach-bean')}<div class="coach-body"><div class="coach-n">${G.i + 1} of ${G.steps.length}</div><h5>${esc(s.title)}</h5><p>${esc(s.text)}</p>
-      <div class="coach-btns"><button class="btn alt" data-g="back"${G.i === 0 ? ' disabled' : ''}>Back</button><button class="btn go" data-g="next">${last ? 'Got it!' : 'Next'}</button><button class="coach-hide" data-g="hide">Hide tips</button></div></div>`;
-  }
-  upnext.hidden = !G.card;
-  upPill.hidden = G.card || !done;
-  if (done && !G.card) { const n = nextUp(); upPill.innerHTML = n ? `${bean(n.color)}<span>Next up: ${n.lesson ? `<b>${esc(n.tag)}</b> ` : ''}${esc(n.label)}</span>` : `${bean('#ffc61a')}<span>Every jelly collected!</span>`; }
-  tipsBtn.hidden = G.tour || G.card || !G.steps.length || !upPill.hidden;
-  placeGuide();
-}
-function placeGuide() {
-  if (!G.steps.length || panelIdx < 0) return;
-  // Measure against the panel itself, so the panel's slide-in transform cancels out.
-  const S = stageEl.getBoundingClientRect(), PR = G.panel.getBoundingClientRect(), ox = G.panel.offsetLeft, oy = G.panel.offsetTop;
-  const rel = (t) => { const r = t.getBoundingClientRect(), left = r.left - PR.left + ox, top = r.top - PR.top + oy; return { left, top, right: left + r.width, bottom: top + r.height, width: r.width, height: r.height }; };
-  // Corner buttons sit above a panel's own control bar so they never cover Next or the play buttons.
-  const bar = { whole: '.town-ui', backstage: '.show-ui' }[G.id] ?? (PANELS[panelIdx]?.lesson && '.bw-tabs'), br = bar && G.panel.querySelector(bar);
-  const lift = br ? `${S.height - rel(br).top + 12}px` : '';
-  upPill.style.bottom = lift; tipsBtn.style.bottom = lift;
-  [...badgesEl.children].forEach((b, i) => { const t = G.targets[i]; if (!t) return; const r = rel(t); b.style.left = `${r.left - 12}px`; b.style.top = `${r.top - 14}px`; });
-  if (!G.tour || G.card) return;
-  const t = G.targets[G.i]; if (!t) return;
-  const r = rel(t), pad = 6;
-  Object.assign(ring.style, { left: `${r.left - pad}px`, top: `${r.top - pad}px`, width: `${r.width + pad * 2}px`, height: `${r.height + pad * 2}px` });
-  const w = coach.offsetWidth, h = coach.offsetHeight, m = 18, W = S.width, H = S.height;
-  // Wide panels get the card inside their top corner; wide, short bars (full of buttons) get it above or below, never on top.
-  const big = r.width > W * .6, strip = big && r.height < H * .3;
-  const spots = [
-    !big && { side: 'right', x: r.right + m, y: r.top + 8 },
-    !big && { side: 'left', x: r.left - m - w, y: r.top + 8 },
-    (!big || strip) && { side: 'above', x: (strip ? r.right - w - 24 : r.left + 24), y: r.top - m - h },
-    (!big || strip) && { side: 'below', x: (strip ? r.right - w - 24 : r.left + 24), y: r.bottom + m },
-    !strip && { side: 'inside', x: r.right - w - 18, y: r.top + 18 },
-  ].filter(Boolean);
-  const fits = (c) => c.x >= 8 && c.y >= 8 && c.x + w <= W - 8 && c.y + h <= H - 8;
-  const c = spots.find(fits) ?? spots.at(-1);
-  coach.dataset.side = c.side;
-  coach.style.left = `${clamp(c.x, 8, W - w - 8)}px`; coach.style.top = `${clamp(c.y, 8, H - h - 8)}px`;
-}
-const guideObserver = new ResizeObserver(() => placeGuide());
-addEventListener('resize', () => placeGuide());
-coach.addEventListener('click', (e) => {
-  const a = e.target.closest('[data-g]')?.dataset.g;
-  if (a === 'back') guideTo(G.i - 1);
-  if (a === 'next') { sound.blip(); G.i === G.steps.length - 1 ? guideFinish() : guideTo(G.i + 1); }
-  if (a === 'hide') { store.tipsOff = true; save(); G.tour = false; renderGuide(); }
-});
-tipsBtn.onclick = () => { store.tipsOff = false; G.tour = true; guideTo(0); };
-// Touching any numbered area moves the spotlight there: a suggestion, never a cage.
-const follow = (e) => {
-  if (!G.tour || G.card) return;
-  const k = G.targets.findIndex((t) => t?.contains(e.target));
-  if (k >= 0 && k !== G.i) guideTo(k);
-};
-stageEl.addEventListener('pointerdown', follow, true);
-stageEl.addEventListener('focusin', follow);
-
-/* the end of a section: jelly into the jar, then a clear "next up" */
 // The next unfinished section; once everything is done, the recap.
 function nextUp() {
   const open = (p) => ALL.some((a) => a.id === p.id) && !store.done[p.id];
@@ -2917,23 +3011,25 @@ function nextUp() {
 function sectionDone(id) {
   if (PANELS[panelIdx]?.id !== id) return false;
   const item = ALL.find((a) => a.id === id), n = nextUp();
-  G.card = true; G.tour = false; store.tour[id] = 'done'; save();
+  G.card = true;
   upnext.innerHTML = `<div class="un-card">${bean(item.color, 'un-bean')}
     <div class="un-earned">You earned the <b style="color:${item.color}">${esc(item.word ?? item.name)}</b> jelly!</div>
     ${n.id !== 'recap' ? `<div class="un-label">Next up</div><div class="un-word" style="color:${n.color}">${esc(n.lesson ? n.tag : n.label)}</div>${n.lesson ? `<div class="un-name">${esc(n.label)}</div>` : ''}
-    <div class="un-btns"><button class="btn go un-go" id="unGo">Go to ${esc(n.lesson ? n.tag : n.label)} →</button><button class="btn alt" id="unStay">Stay and play</button></div>`
+    <div class="un-btns"><button class="btn go un-go" id="unGo">Go to ${esc(n.lesson ? n.tag : n.label)} →${ENTER}</button><button class="btn alt" id="unStay">Stay and play</button></div>`
     : `<div class="un-word" style="color:var(--berry)">${esc(RECAP.wizard)}</div><div class="un-name">${esc(RECAP.wizardText)}</div>
-    <div class="un-btns"><button class="btn go un-go" id="unGo">See what I’ve learnt →</button><button class="btn alt" id="unStay">Stay and play</button></div>`}</div>`;
+    <div class="un-btns"><button class="btn go un-go" id="unGo">See what I’ve learnt →${ENTER}</button><button class="btn alt" id="unStay">Stay and play</button></div>`}</div>`;
   renderGuide();
   $('#unGo').onclick = () => { G.card = false; go(n.id); };
-  $('#unStay').onclick = () => { G.card = false; renderGuide(); };
+  $('#unStay').onclick = () => { G.card = false; renderGuide(); primaryButton()?.focus({ preventScroll: true }); };
   upnext.querySelector('.un-card').animate([{ transform: 'scale(.4) rotate(-6deg)', opacity: 0 }, { transform: 'scale(1.06) rotate(1deg)', opacity: 1 }, { transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.3,1.4,.5,1)' });
   flyToJar(upnext.querySelector('.un-bean'), item.color);
+  $('#unGo').focus({ preventScroll: true });
   return true;
 }
 function flyToJar(from, color) {
   if (REDUCED || !from) return;
-  const last = [...document.querySelectorAll('.bean.on')].at(-1), jar = last?.offsetParent ? last : $('#jarCount');
+  const app = $('.app'), tucked = app.classList.contains('focus') && !app.classList.contains('peek');
+  const last = [...document.querySelectorAll('.bean.on')].at(-1), jar = tucked ? $('#navHandle') : last?.offsetParent ? last : $('#jarCount');
   const a = from.getBoundingClientRect(), b = jar.getBoundingClientRect();
   const fly = document.createElement('div'); fly.className = 'flyer'; fly.innerHTML = bean(color);
   Object.assign(fly.style, { left: `${a.left + a.width / 2 - 20}px`, top: `${a.top + a.height / 2 - 24}px` });
@@ -2942,7 +3038,6 @@ function flyToJar(from, color) {
   fly.animate([{ transform: 'translate(0,0) scale(1) rotate(0)' }, { transform: `translate(${dx * .5}px,${dy * .5 - 160}px) scale(1.3) rotate(-200deg)`, offset: .5 }, { transform: `translate(${dx}px,${dy}px) scale(.35) rotate(-400deg)` }], { duration: 1100, delay: 350, easing: 'cubic-bezier(.4,0,.3,1)', fill: 'backwards' })
     .finished.then(() => { fly.remove(); jar.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.9)' }, { transform: 'scale(1)' }], { duration: 420 }); sound.boing(700, .25, .1); });
 }
-upPill.onclick = () => go(nextUp().id);
 
 /* ---------------- what I've learnt so far ---------------- */
 // Tell them what you told them: the whole game again in one line, then every magic word learnt so far.
@@ -2991,8 +3086,8 @@ function boot() {
     $('#townWho').textContent = s.who; $('#townText').textContent = s.text;
     [...dots.children].forEach((d, k) => d.classList.toggle('on', k <= i));
     $('#townPrev').disabled = i === 0;
-    $('#townNext').textContent = s.cta ? 'Zoom in on the screen' : 'Next';
-    $('#townNext').classList.toggle('go', !!s.cta);
+    $('#townNext').innerHTML = (s.cta ? 'Zoom in on the screen' : 'Next') + ENTER;
+    $('#townNext').classList.add('go');
     town.setState(i, !s.fly);
     if (s.fly) { town.fly(s.fly[0], s.fly[1], s.fly[2]); sound.boing(500, .3, .08); town.onLand = () => { town.setState(i, true); sound.blip(); }; }
     else { town.curve = null; town.packet.visible = town.packetLabel.visible = false; }
