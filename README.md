@@ -35,13 +35,15 @@ The app is a fixed left nav plus one full-window panel at a time:
 | Welcome | Draggable 3D jelly letters spelling `ls`, `cd` and `cat`. |
 | The whole game | A 3D cutaway of a computer (terminal, shell, kernel, hardware, file tree) that follows `ls` through each layer. |
 | Backstage | A flip-card animation. Press Enter on the "green screen", then watch the shell, `/bin`, the kernel and the disk cooperate. Plays `ls`, `cat` and `mv`. |
-| Lessons | 13 short missions, each with a mnemonic and a live terminal sandbox. |
+| Lessons | 15 short missions, each with a mnemonic and a live terminal sandbox. |
 
-Lessons, in order: the shell is listening, `pwd`, `ls`, `cd`, paths, `cat`, `mkdir`, `cp`, `mv` (and why it also renames), `rm`, Tab and history, `man`, and a final "Great Gerbil Rescue" challenge.
+Lessons, in order: the shell is listening, `pwd`, `ls`, `cd`, `/` (the very top, and the slash's two jobs), `~` (home), a "Jelly hunt" navigation game, `cat`, `mkdir`, `cp`, `mv` (and why it also renames), `rm`, Tab and history, `man`, and a final "Great Gerbil Rescue" challenge.
 
 ### The sandbox terminal
 
 A small fake shell with an in-memory file tree. It supports `ls [-a] [-l]`, `cd`, `pwd`, `cat`, `echo` (including `> file`), `mkdir [-p]`, `touch`, `cp [-r]`, `mv`, `rm [-r]`, `man`, `clear` and `help`.
+
+The sandbox is more forgiving than a real shell. When a path can't be found, Shelly shows how the path was followed (`~ (home) → toys ✓ → robt.txt ✗`) and explains the likely mistake: already inside that folder, wrong capitals, a missing `.txt`, `/` used where `~` was meant, or a backslash. She then offers a corrected command to click. Unknown commands get a "did you mean" suggestion, `cd` says where you landed, and the first `~` or `/` path gets a one-line explanation. In the Jelly hunt, letters hide in folders marked on the file tree; walking there with `cd` catches them, and they drop into the jelly box until they spell a word.
 
 Keyboard: `Tab` completes, `↑`/`↓` recall history, `Ctrl+C` interrupts, `Ctrl+D` ends `cat` input, `Ctrl+L` clears. On-screen helper buttons cover the same keys. "Start over" resets the current mission, and "Reset sandbox" resets the file tree.
 
