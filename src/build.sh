@@ -32,3 +32,6 @@ guide jelly-shell2 titan-shell2.json jellyshell2
 guide jelly-git titan.json jellygit
 guide jelly-web titan-web.json jellyweb
 guide jelly-security titan.json jellysecurity
+
+# 4. Stamp the version and a fingerprint of the guides on the landing page.
+python3 tools/stamp-version.py ../index.html

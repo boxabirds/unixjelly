@@ -1,4 +1,6 @@
-/* ---------------- Jelly Shell 2: users, locks, programs and pipes ---------------- */
+/* ---------------- Jelly Shell 2: people, locks, programs and pipes ---------------- */
+// The shell itself (locks, su, sudo, scripts, the PATH, pipes) is jellysh, in src/shell/jellysh.js.
+// This file gives it the people on this computer and Jelly Shell 2's teaching voice.
 // Three accounts, like a real computer: root (the boss), kid (you) and sib (your little sibling).
 // Everyone also has a group named after them. kid is in sudo, so kid may borrow root's power.
 const USERS = {
@@ -8,18 +10,9 @@ const USERS = {
 };
 const GIDS = { root: 0, sudo: 27, kid: 1000, sib: 1001, family: 1002 };
 const BUILTIN = ['cd', 'exit', 'help', 'history'];
-const own = (n) => n.owner ?? 'root', grp = (n) => n.group ?? 'root';
-const modeOf = (n) => n.mode ?? (n.type === 'dir' ? 0o755 : 0o644);
-// Which of the three sets of keys a user gets for this file.
-const keySet = (n, u = sh.user) => own(n) === u ? 'owner' : USERS[u].groups.includes(grp(n)) ? 'group' : 'others';
-const SHIFT = { owner: 6, group: 3, others: 0 };
-const can = (n, bit, u = sh.user) => u === 'root' || !!((modeOf(n) >> SHIFT[keySet(n, u)]) & bit);
-const triplet = (m, s) => ['r', 'w', 'x'].map((c, i) => (m >> s) & (4 >> i) ? c : '-').join('');
-const modeStr = (n) => {
-  const m = modeOf(n), s = (n.type === 'dir' ? 'd' : '-') + [6, 3, 0].map((k) => triplet(m, k)).join('');
-  return m & 0o1000 ? s.slice(0, -1) + (m & 1 ? 't' : 'T') : s;
-};
-// The same string in colour. The set of keys that applies to whoever is typing is underlined.
+const own = SH.own, grp = SH.grp, modeOf = SH.modeOf, keySet = SH.keySet, can = SH.can, triplet = SH.triplet, modeStr = SH.modeStr, claimNew = SH.claimNew, SHIFT = SH.SHIFT;
+const run1 = (line) => SH.run(line);
+// The lock in colour. The set of keys that applies to whoever is typing is underlined.
 const modeHTML = (n) => {
   const s = modeStr(n), mine = keySet(n);
   return `<span class="perm">${s[0]}<b class="pu${mine === 'owner' ? ' mine' : ''}">${s.slice(1, 4)}</b><b class="pg${mine === 'group' ? ' mine' : ''}">${s.slice(4, 7)}</b><b class="po${mine === 'others' ? ' mine' : ''}">${s.slice(7)}</b></span>`;
@@ -38,192 +31,60 @@ function s2Perms() {
   set(find('/home/kid'), 'kid', 'kid'); set(find('/home/sib'), 'sib', 'sib');
   find('/home/kid/diary.txt').mode = 0o600; find('/home/sib/plans.txt').mode = 0o600;
   find('/tmp').mode = 0o1777; find('/tmp/chest.txt').mode = 0o600;
-  sh.user = 'kid'; sh.su = []; sh.home = find('/home/kid'); sh.sudoAsked = false;
 }
-// Anything made during a command belongs to whoever made it, in their own group.
-function claimNew(n = sh.root) {
-  if (!n.owner) { n.owner = sh.user; n.group = USERS[sh.user].groups[0]; }
-  n.children?.forEach((c) => claimNew(c));
-}
-const unclaim = (n) => { delete n.owner; delete n.group; n.children?.forEach(unclaim); return n; };
-const pathDirs = () => ['/bin', pathOf(sh.home) + '/bin'];
-// Where the shell finds a command: a path like ./hello, or a name it looks up in each PATH folder in turn.
-function locate(cmd) {
-  if (cmd.includes('/')) return find(cmd);
-  for (const d of pathDirs()) { const n = find(`${d}/${cmd}`); if (n?.type === 'file') return n; }
-  return null;
-}
-const isMachineCode = (n) => n.content.startsWith('0100');
 
-/* the commands that need users and locks */
-function chmodRun(rest, say, fail, info, out) {
-  const [spec, ...files] = rest;
-  if (!spec || !files.length) return fail('chmod: missing operand', lockTip('Say who, then + or -, then which keys. Like: chmod u+x hello'));
-  for (const p of files) {
-    const n = find(p);
-    if (!n) { fail(`chmod: cannot access '${p}': No such file or directory`); continue; }
-    if (own(n) !== sh.user && sh.user !== 'root') { fail(`chmod: changing permissions of '${p}': Operation not permitted`, lockTip(`Only the owner (${own(n)}) can change this lock. You are ${sh.user}.`)); continue; }
-    let m = modeOf(n);
-    if (/^\d+$/.test(spec)) {
-      if (!/^[0-7]{3}$/.test(spec)) { info.badNumber = true; fail(`chmod: invalid mode: '${spec}'`, /[89]/.test(spec) ? lockTip('No digit can be bigger than 7. Each digit is three on/off switches (r = 4, w = 2, x = 1), and three switches add up to 7 at most.') : lockTip('The number way needs exactly three digits: owner, group, everyone else. Like 644.')); continue; }
-      m = (m & ~0o777) | parseInt(spec, 8);
-      if (!store.done.binary && LESSONS[cur]?.id !== 'binary' && once('chmodNumber')) say('(The number way is a shortcut that needs binary. The optional lesson "101" explains it. The letter way says the same thing in words: chmod u+x hello)', 'tip');
-    } else {
-      for (const part of spec.split(',')) {
-        const s = part.match(/^([ugoa]*)([+\-=])([rwx]*)$/);
-        if (!s) { fail(`chmod: invalid mode: '${spec}'`, lockTip('Say who (u = owner, g = group, o = others, a = all), then + to give or - to take away, then which keys (r, w, x). Like: chmod go-w hello')); m = null; break; }
-        const bits = [...s[3]].reduce((b, c) => b | { r: 4, w: 2, x: 1 }[c], 0);
-        for (const w of new Set((s[1] || 'a').replace('a', 'ugo'))) {
-          const k = { u: 6, g: 3, o: 0 }[w];
-          m = s[2] === '+' ? m | (bits << k) : s[2] === '-' ? m & ~(bits << k) : (m & ~(7 << k)) | (bits << k);
-        }
+// Jelly Shell 2's voice, on top of Jelly Shell's (which explains paths and typos).
+const base = SH.hooks;
+SH.configure({
+  users: USERS, gids: GIDS,
+  hooks: {
+    modeHTML,
+    before: (c) => {
+      base.before?.(c);
+      if (c.cmd === 'ls' && c.flags.has('l') && once('lsl')) c.say('(How to read each line: the first letter is d for a folder or - for a file. The next nine letters are the lock: three sets of keys, for the owner, the group and everyone else. r = read, w = write, x = run, - = no key. The set that works for you is underlined. Then: the owner, the group, the size and the date.)', 'tip');
+    },
+    // A lock said no. With a ready-made tip: show it, or NOT_YET before the locks are taught. Otherwise Shelly explains.
+    denied: (c, { op, node, tip }) => {
+      if (tip) return lockTip(tip);
+      if (op === 'exec') return c.note(shelly(taught('locks')
+        ? `To <b>run</b> a file you need its <b>x</b> key (x is for eXecute, which means run). You are ${whoYouAre(node)}, and ${setName[keySet(node)]} has no x.${taught('chmod') ? '' : ' The next lesson shows how to change that.'}`
+        : 'The computer refused to run it. Why? That is the cliffhanger: don\'t try to fix it yet! The next lesson explains.'));
+      if (!taught('locks')) return c.say(NOT_YET, 'tip');
+      if (op === 'enter') return c.note(shelly(`Going <b>into</b> a folder needs its <b>x</b> key. You are ${whoYouAre(node)}, and ${setName[keySet(node)]} for ${esc(node.name)} is ${modeHTML(node)}: no x.`));
+      c.note(shelly(`The lock on ${esc(node.name)} is ${modeHTML(node)}. It belongs to ${esc(own(node))}. You are <b>${sh.user}</b>, ${whoYouAre(node)}. So you get ${setName[keySet(node)]}, and it has no <b>r</b> key. No entry!`));
+    },
+    tip: (key, text) => {
+      if (key === 'chmod.number') return !store.done.binary && LESSONS[cur]?.id !== 'binary' && once('chmodNumber') ? '(The number way is a shortcut that needs binary. The optional lesson "101" explains it. The letter way says the same thing in words: chmod u+x hello)' : null;
+      if (key === 'su.root') return 'Nobody is told root\'s password, not even grown-ups who look after the computer. They use sudo instead, one command at a time. (That\'s lesson sudo.)';
+      if (/^(chmod|chgrp|exec)\./.test(key)) return lockTip(text);
+      return base.tip ? base.tip(key, text) : text;
+    },
+    after: (c) => {
+      base.after?.(c);
+      if (c.cmd === 'su' && c.info.user) {
+        c.say(`Password: (the sandbox skips it. On a real computer you would need ${c.info.user}'s password, and you should only ever use your own.)`, 'mute');
+        if (once('su')) c.say(`(su means switch user. Now everything you type happens as ${c.info.user}${taught('locks') ? `, with ${c.info.user}'s keys` : ''}. Look at the prompt. ~ means ${c.info.user}'s home now, so where you are standing shows as a full path.)`, 'tip');
       }
-      if (m === null) continue;
-    }
-    const was = modeHTML(n);
-    n.mode = m; info.mode = m; info.file = pathOf(n);
-    if (taught('locks')) out.push({ h: `<span class="mute">(the lock on ${esc(n.name)}: ${was} → ${modeHTML(n)})</span>`, t: '' });
-  }
-}
-function chgrpRun(rest, fail, info) {
-  const [g, ...files] = rest;
-  if (!g || !files.length) return fail('chgrp: missing operand', 'Say the group, then the file. Like: chgrp family comics');
-  if (GIDS[g] === undefined) return fail(`chgrp: invalid group: '${g}'`, `The groups on this computer are: ${Object.keys(GIDS).join(', ')}.`);
-  for (const p of files) {
-    const n = find(p);
-    if (!n) { fail(`chgrp: cannot access '${p}': No such file or directory`); continue; }
-    if (sh.user !== 'root' && (own(n) !== sh.user || !USERS[sh.user].groups.includes(g))) { fail(`chgrp: changing group of '${p}': Operation not permitted`, lockTip(own(n) !== sh.user ? `Only the owner (${own(n)}) can do that.` : `You can only give things to a group you are in. You are in: ${USERS[sh.user].groups.join(', ')}.`)); continue; }
-    n.group = g; info.group = g; info.file = pathOf(n);
-  }
-}
-function suRun(rest, say, fail, info) {
-  const u = rest[0] ?? 'root';
-  if (u === 'root') return fail('su: Authentication failure', 'Nobody is told root\'s password, not even grown-ups who look after the computer. They use sudo instead, one command at a time. (That\'s lesson sudo.)');
-  if (!USERS[u]) return fail(`su: user ${u} does not exist`, 'The people on this computer are kid and sib.');
-  sh.su.push({ user: sh.user, home: sh.home });
-  sh.user = u; sh.home = find(`/home/${u}`); info.user = u;
-  say(`Password: (the sandbox skips it. On a real computer you would need ${u}'s password, and you should only ever use your own.)`, 'mute');
-  if (once('su')) say(`(su means switch user. Now everything you type happens as ${u}${taught('locks') ? `, with ${u}'s keys` : ''}. Look at the prompt. ~ means ${u}'s home now, so where you are standing shows as a full path.)`, 'tip');
-}
-function sudoRun(rest, line, say, fail, info, out) {
-  if (!rest.length) return fail('usage: sudo command', 'Put the command you want to run as root after it. Like: sudo whoami');
-  if (!USERS[sh.user].groups.includes('sudo')) return fail(`${sh.user} is not in the sudoers file. This incident will be reported.`, `Only people in the sudo group may use sudo. ${sh.user} isn't. (Check with: id)`);
-  if (rest[0] === 'su' || rest[0] === 'sudo') return fail('Let\'s not do that.', 'Staying root is how accidents happen. Use sudo for one command at a time.');
-  if (!sh.sudoAsked) { sh.sudoAsked = true; say(`[sudo] password for ${sh.user}: ●●●●●●`, 'mute'); say(`(sudo asks for YOUR password, not root's. That proves it really is you at the keyboard. The sandbox typed it for you.)`, 'tip'); }
-  const was = sh.user; sh.user = 'root';
-  const r = run1(line.replace(/^\s*sudo\s+/, ''));
-  claimNew(); sh.user = was;
-  out.push(...r.out); info.sudo = true; info.inner = r;
-  if (!r.ok) fail(null);
-}
-function whichRun(rest, say, fail) {
-  if (!rest.length) return fail('which: what should I look for?', 'Like: which ls');
-  for (const c of rest) {
-    const n = BUILTIN.includes(c) ? null : locate(c);
-    if (n) { say(pathOf(n)); continue; }
-    fail(`which: no ${c} in (${pathDirs().join(':')})`, BUILTIN.includes(c) ? `${c} isn't a program in a folder at all. It is built into the shell itself. It has to be: cd changes where the shell is standing, and a separate program can't move the shell.` : null);
-  }
-}
-// grep, wc, sort and head read files, or whatever comes down the pipe.
-function textIn(rest, stdin, name, fail) {
-  if (!rest.length) return stdin === undefined ? (fail(`${name}: which file?`, `Give it a file, like: ${name} diary.txt. Or pipe something into it with |`), null) : [{ label: '', text: stdin }];
-  return rest.map((p) => {
-    const n = find(p);
-    if (!n) return fail(`${name}: ${p}: No such file or directory`), null;
-    if (n.type === 'dir') return fail(`${name}: ${p}: Is a directory`), null;
-    if (!can(n, 4)) return fail(`${name}: ${p}: Permission denied`, lockTip(`You have no r (read) key for ${n.name}.`)), null;
-    return { label: p, text: n.content };
-  }).filter(Boolean);
-}
-function grepRun(args, flags, stdin, say, fail, info) {
-  const words = args.filter((a) => !/^-[a-z]+$/i.test(a)), pat = words[0];
-  if (pat === undefined) return fail('grep: what should I search for?', 'Like: grep cookie diary.txt');
-  const srcs = textIn(words.slice(1), stdin, 'grep', fail); if (!srcs) return;
-  const norm = (s) => flags.has('i') ? s.toLowerCase() : s;
-  info.matches = 0;
-  for (const s of srcs) {
-    const hits = s.text.split('\n').map((l, i) => [l, i + 1]).filter(([l]) => norm(l).includes(norm(pat)) !== flags.has('v'));
-    info.matches += hits.length;
-    if (flags.has('c')) { say((srcs.length > 1 ? s.label + ':' : '') + hits.length); continue; }
-    hits.forEach(([l, i]) => say((srcs.length > 1 ? s.label + ':' : '') + (flags.has('n') ? i + ':' : '') + l));
-  }
-  if (!info.matches && !flags.has('c')) say(`(no lines contain "${pat}"${flags.has('i') ? '' : '. grep cares about capitals: add -i to ignore them'})`, 'mute');
-}
-function wcRun(rest, flags, stdin, say, fail) {
-  const srcs = textIn(rest, stdin, 'wc', fail); if (!srcs) return;
-  for (const s of srcs) {
-    const t = s.text, n = { l: t ? t.split('\n').length : 0, w: t.split(/\s+/).filter(Boolean).length, c: t.length };
-    const cols = flags.size ? ['l', 'w', 'c'].filter((k) => flags.has(k)) : ['l', 'w', 'c'];
-    say(cols.map((k) => n[k]).join(' ') + (s.label ? ' ' + s.label : ''));
-  }
-}
-// Run a program file: a script is just commands, one per line, run in order.
-function runProgram(n, cmd, args, say, fail, info, out) {
-  if (n.type === 'dir') return fail(`bash: ${cmd}: Is a directory`);
-  if (!can(n, 1)) {
-    info.denied = true; fail(`bash: ${cmd}: Permission denied`);
-    out.push({ h: shelly(taught('locks')
-      ? `To <b>run</b> a file you need its <b>x</b> key (x is for eXecute, which means run). You are ${whoYouAre(n)}, and ${setName[keySet(n)]} has no x.${taught('chmod') ? '' : ' The next lesson shows how to change that.'}`
-      : 'The computer refused to run it. Why? That is the cliffhanger: don\'t try to fix it yet! The next lesson explains.'), t: '' });
-    return;
-  }
-  if (n.parent && pathOf(n.parent) === '/bin' && isMachineCode(n)) { const r = run1([n.name, ...args].join(' ')); out.push(...r.out); if (!r.ok) fail(null); info.ran = pathOf(n); return; }
-  if (!can(n, 4)) { info.denied = true; return fail(`bash: ${cmd}: Permission denied`, lockTip('This program is a script: the shell has to read it to run it, so you need the r key too.')); }
-  if ((sh.depth ?? 0) > 3) return fail(`${cmd}: too many programs running programs`, 'Your program keeps starting itself. Ctrl+C!');
-  info.ran = pathOf(n);
-  sh.depth = (sh.depth ?? 0) + 1;
-  for (const [k, raw] of n.content.split('\n').entries()) {
-    const l = raw.trim(); if (!l || l.startsWith('#')) continue;
-    const r = run(l.replace(/\$(\d)/g, (_, d) => args[d - 1] ?? ''));
-    // inside a program, only its own output shows; errors name the program and line, as bash does
-    out.push(...r.out.filter((o) => !o.c || o.c === 'er').filter((o) => o.h === undefined && (o.t || !o.c)).map((o) => o.c === 'er' ? { ...o, t: `${cmd}: line ${k + 1}: ${o.t}` } : o));
-    if (!r.ok) {
-      fail(null); info.lineFailed = k + 1;
-      out.push({ h: shelly(`Your program <b>did</b> run! But line ${k + 1} of it says <b>${esc(l)}</b>, and that isn't a command the shell can do. Every line of a program has to be a command, like <b>echo Hello!</b> Fix it with <b>nano ${esc(n.name)}</b>.`), t: '' });
-      break;
-    }
-  }
-  sh.depth--;
-  if (!info.lineFailed && once('ran')) out.push({ h: shelly('Your program ran! The shell read it one line at a time and did each command. That is all a script is.'), t: '' });
-}
+      if (c.cmd === 'exit' && c.info.left) c.say(`(exit: you are ${sh.user} again${taught('locks') ? `, with ${sh.user}'s keys` : ''}.)`, 'mute');
+      if (c.cmd === 'id' && !c.status && once('id')) c.say('(uid is the user number: computers prefer numbers to names. gid is your own group. groups lists every club you are in.)', 'tip');
+      if (c.cmd === 'chmod' && c.info.file && taught('locks')) { const n = find(c.info.file); c.note(`<span class="mute">(the lock on ${esc(n.name)}: ${modeHTML({ ...n, mode: c.info.was })} → ${modeHTML(n)})</span>`); }
+      if (c.info.ran && !c.info.ran.startsWith('/bin/') && !c.info.lineFailed && once('ran')) c.note(shelly('Your program ran! The shell read it one line at a time and did each command. That is all a script is.'));
+    },
+    scriptFailed: (c, { line, number, node }) => c.note(shelly(`Your program <b>did</b> run! But line ${number} of it says <b>${esc(line)}</b>, and that isn't a command the shell can do. Every line of a program has to be a command, like <b>echo Hello!</b> Fix it with <b>nano ${esc(node.name)}</b>.`)),
+    // A file of that name is right here, but the shell only runs programs from the folders on its PATH.
+    notFound: (c) => {
+      const here = sh.cwd.children.find((x) => x.name === c.cmd && x.type === 'file');
+      if (!here) return base.notFound(c);
+      c.fail(`${c.cmd}: command not found`, null, 127);
+      c.note(shelly(`There is a file called <b>${esc(c.cmd)}</b> right here, but the shell only looks for programs in the folders on its list (${SH.pathDirs().join(' and ')}). To run one from this folder, say where it is: <b>./${esc(c.cmd)}</b>`));
+      c.note(tryCmd('./' + c.cmd));
+      return true;
+    },
+  },
+});
+SH.define('help', (c) => { c.say('New words: ' + ['whoami', 'hostname', '>', '>>', 'nano', 'which', './', 'ls -l', 'chmod', 'echo $PATH', 'id', 'groups', 'chgrp', 'su', 'exit', 'sudo', 'grep', 'wc', 'sort', 'head', '|'].join('  ')); c.say('Jelly Shell words: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  ')); });
+SH.define('nano', (c) => nanoOpen(c.rest[0], c.fail, c.info));
 
-/* pipes: the words on the left of | go in one end, and come out of the command on the right */
-function splitTop(line, sep) {
-  const parts = []; let cur = '', q = '';
-  for (const ch of line) {
-    if (q) { if (ch === q) q = ''; cur += ch; continue; }
-    if (ch === '"' || ch === '\'') { q = ch; cur += ch; continue; }
-    if (ch === sep) { parts.push(cur); cur = ''; continue; }
-    cur += ch;
-  }
-  return [...parts, cur];
-}
-function run(raw) {
-  const line = raw.replace(/\$(PATH|HOME|USER)\b/g, (_, v) => ({ PATH: pathDirs().join(':'), HOME: pathOf(sh.home), USER: sh.user })[v]);
-  const seqs = splitTop(line, ';').map((s) => s.trim()).filter(Boolean);
-  if (seqs.length > 1) {
-    const rs = seqs.map((s) => run(s)), last = rs.at(-1);
-    return { ...last, out: rs.flatMap((r) => r.out), ok: rs.every((r) => r.ok), line: raw, user: sh.user };
-  }
-  const segs = splitTop(line, '|').map((s) => s.trim());
-  if (segs.length > 1 && segs.some((s) => !s)) {
-    const r = run1(''); r.ok = false; r.out.push({ t: 'syntax error: | needs a command on both sides', c: 'er' }, { t: 'Like: grep cookie kitchen.log | wc -l', c: 'tip' });
-    return { ...r, line: raw, user: sh.user };
-  }
-  let stdin, r, side = [];
-  for (const [i, s] of segs.entries()) {
-    const toks = s.split(/\s+/);
-    r = toks[0] === 'cat' && toks.length === 1 && i > 0 ? { out: stdin.split('\n').map((t) => ({ t, c: '' })), ok: true, info: {}, cmd: 'cat', args: [], toks } : run1(s, i > 0 ? stdin : undefined);
-    claimNew();
-    if (i < segs.length - 1) {
-      // only plain output flows down the pipe; errors and Shelly's tips stay on the screen
-      stdin = r.out.filter((o) => !o.c && o.h === undefined).map((o) => o.t).join('\n');
-      side.push(...r.out.filter((o) => o.c || o.h !== undefined));
-    }
-  }
-  if (segs.length > 1) r = { ...r, out: [...side, ...r.out], info: { ...r.info, pipe: segs.map((s) => s.split(/\s+/)[0]) } };
-  return { ...r, line: raw, user: sh.user };
-}
 // Missions build on each other. If an earlier one's file is missing (say, after Start over), put it back.
 function ensure(path, make, note) {
   if (find(path)) return;
@@ -237,12 +98,21 @@ function backToKid() {
   print('<span class="tip">(You are kid again. Missions start as you.)</span>');
 }
 
-/* file tree: programs get a ▶ tag once scripts are taught. Once the locks are taught, every row also shows YOUR keys for it. */
+/* file tree: programs get a ▶ tag once scripts are taught. Once the locks are taught, a row shows a padlock for each
+   key YOU are missing: an eye (can't read it), a pencil (can't change it) and, for folders, a door (can't go in).
+   A file with no x key gets no padlock, because most files aren't programs. */
 const keysOn = () => taught('locks');
 const myKeys = (n) => sh.user === 'root' ? 'rwx' : triplet(modeOf(n), SHIFT[keySet(n)]);
+const SHACKLE = '<path d="M3.5 7.5V5.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="#24133b" stroke-width="1.8"/><rect x="1.5" y="7.5" width="11" height="8" rx="2" fill="#ff4d6d" stroke="#24133b" stroke-width="1.6"/>';
+const PADLOCK = {
+  r: ['can\'t read it', '<path d="M14 10.5Q19.5 4.5 25 10.5Q19.5 16.5 14 10.5Z" fill="#fff" stroke="#24133b" stroke-width="1.5"/><circle cx="19.5" cy="10.5" r="2" fill="#24133b"/>'],
+  w: ['can\'t change it', '<path d="M15 15.5l.6-3.4 7.2-7.2 2.8 2.8-7.2 7.2z" fill="#ffc61a" stroke="#24133b" stroke-width="1.4" stroke-linejoin="round"/><path d="M15 15.5l.6-3.4 2.8 2.8z" fill="#24133b"/>'],
+  x: ['can\'t go in', '<rect x="15" y="3.5" width="9" height="12" rx="1" fill="#b98a5e" stroke="#24133b" stroke-width="1.5"/><circle cx="21.6" cy="10" r="1" fill="#24133b"/>'],
+};
+const padlock = (k, who) => `<svg viewBox="0 0 26 17" class="lock-ico" role="img" aria-label="${who} ${PADLOCK[k][0]}"><title>${who} ${PADLOCK[k][0]}</title>${SHACKLE}${PADLOCK[k][1]}</svg>`;
 const mapTags = (n) => (taught('scripts') && n.type === 'file' && modeOf(n) & 0o111 && !(n.parent && pathOf(n.parent) === '/bin') ? '<i class="mtag run">▶ program</i>' : '')
-  + (keysOn() && n !== sh.root ? `<i class="mtag keys" title="${sh.user}'s keys for this">${[...myKeys(n)].map((c) => `<b class="${c === '-' ? 'no' : ''}">${c}</b>`).join('')}</i>` : '');
-$('.map-head').insertAdjacentHTML('beforeend', '<small class="keys-legend" id="keysLegend" hidden>Letters = <b>your</b> keys: <b>r</b> read · <b>w</b> write · <b>x</b> run or go in</small>');
+  + (keysOn() && n !== sh.root ? [...myKeys(n)].map((c, i) => c === '-' && (i < 2 || n.type === 'dir') ? padlock('rwx'[i], sh.user) : '').join('') : '');
+$('.map-head').insertAdjacentHTML('beforeend', `<small class="keys-legend" id="keysLegend" hidden>Padlocks show what <b>you</b> can't do: ${padlock('r', 'you')} read · ${padlock('w', 'you')} change · ${padlock('x', 'you')} go in</small>`);
 
 /* nano: a small text editor inside the terminal window. ^ means the Ctrl key. */
 const NANO = { open: false };

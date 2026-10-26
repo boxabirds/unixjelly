@@ -6,7 +6,7 @@
     "programs": { "code": ["\\bwhich\\b"] },
     "scripts": { "code": ["(^|\\s)\\./[a-z]"], "selectors": [".mtag.run"] },
     "locks": {
-      "selectors": [".mtag.keys", ".term-body .perm"],
+      "selectors": [".lock-ico", ".term-body .perm"],
       "code": ["\\b(rwx|rw-|r-x|r--|-w-|--x|-wx)\\b"],
       "words": ["\\b[rwx] key\\b", "owner's (set|keys)", "group's (set|keys)", "everyone else's (set|keys)", "\\b(three|middle|last) sets? of keys\\b"]
     },

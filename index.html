@@ -55,9 +55,13 @@ h1 em{font-style:normal;color:var(--berry)}
 .repo{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-weight:700;color:var(--ink);text-decoration:none;margin-right:10px;vertical-align:middle}
 .repo svg{width:16px;height:16px;flex:none}
 .repo:hover span{text-decoration:underline}
+/* which build this is: stamped by src/build.sh, for checking a deploy is up to date */
+body{position:relative}
+.version{position:absolute;top:10px;right:max(14px,env(safe-area-inset-right,0px));margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--ink-soft);opacity:.75;user-select:all}
 </style>
 </head>
 <body>
+<p class="version" title="Version and build fingerprint">v1.1.0 · 5713fce</p>
 <main>
   <header>
     <div class="eyebrow">Five wobbly guides to the tools developers live in</div>

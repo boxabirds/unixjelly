@@ -107,16 +107,6 @@ region('  const spec = {', '  const make = (name, content, parent) => {', '''  c
   };
 ''')
 rep("const MAN = {\n", "const MAN = {\n  git: ['git - a time machine for your code', 'git <word> [options]', 'Takes photos (commits) of your project so you can go back in time, and sends them to GitHub. Type git on its own to see the everyday words.', 'git status'],\n")
-rep("    case 'help': say('Words I know: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history', 'whoami', 'date'].join('  '));",
-    "    case 'git': gitRun(args, say, fail, info, out); break;\n    case 'help': say('Words I know: ' + ['git', 'pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  ')); say('For git words, type git on its own.', 'tip');")
-rep("  return { out, ok, info, cmd, args, toks };\n}\n", """  if (redirect && ok && redirect.path) {
-    // tell the lessons when a file inside a repository was written, and whether git already knew it
-    const node = find(redirect.path), r = node && repoOf(node.parent), rel = r && relTo(r, node);
-    if (node) info.wrote = { name: node.name, mode: redirect.mode, inRepo: !!r, tracked: !!r && (r.index.has(rel) || headTree(r).has(rel)), content: node.content };
-  }
-  return { out, ok, info, cmd, args, toks };
-}
-""")
 rep("    if (lessonStage && lessonStage.word.replace(/ /g, '') === (r.toks.join('')).slice(0, lessonStage.word.replace(/ /g, '').length) && r.ok) lessonStage.hopAll(.8);",
     "    if (lessonStage && r.ok && r.toks.join(' ').includes(lessonStage.word)) lessonStage.hopAll(.8);")
 rep("  if (first) options = [...BIN, 'cd', 'help', 'history', 'whoami'].filter((c) => c.startsWith(cur)).map((c) => ({ name: c, dir: false }));",

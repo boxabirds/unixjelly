@@ -1,4 +1,12 @@
 /* ---------------- the pretend internet ---------------- */
+// The commands this guide adds to the shell (src/shell/jellysh.js).
+SH.define('curl', (c) => curlRun(c.args, c.say, c.fail, c.info));
+['nslookup', 'dig', 'host'].forEach((name) => SH.define(name, (c) => lookupRun(c.rest, c.say, c.fail, c.info)));
+SH.define('ping', (c) => pingRun(c.args, c.say, c.fail, c.info));
+['open', 'xdg-open'].forEach((name) => SH.define(name, (c) => openRun(c.rest, c.fail, c.info)));
+SH.define('git', (c) => webGit(c.args, c.say, c.fail, c.info));
+SH.define('wget', (c) => c.fail('wget: command not found', 'wget is curl\'s cousin. Here we use curl.', 127));
+SH.define('help', (c) => { c.say('Web words: ' + ['curl', 'ping', 'nslookup', 'open', 'git'].join('  ')); c.say('Shell words: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  ')); });
 // Every website in this guide lives in this file. Nothing here ever touches the real internet.
 const ART = {
   gerbil: `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="120" viewBox="0 0 160 120"><rect width="160" height="120" fill="#d4eeff"/><g stroke="#24133b" stroke-width="4" stroke-linejoin="round"><path d="M30 96 q-26 -4 -22 -30" fill="none" stroke-linecap="round"/><ellipse cx="78" cy="78" rx="48" ry="30" fill="#e3b27a"/><circle cx="112" cy="58" r="24" fill="#e3b27a"/><ellipse cx="104" cy="34" rx="9" ry="12" fill="#ffc9b5"/><circle cx="120" cy="54" r="5" fill="#24133b"/><circle cx="135" cy="64" r="4" fill="#ff4d6d"/><path d="M60 104 v8 M92 104 v8" stroke-linecap="round"/></g><path d="M138 66 l14 -4 M138 68 l14 4" stroke="#24133b" stroke-width="2"/></svg>`,

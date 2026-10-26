@@ -38,7 +38,8 @@ export const leaks = (p, guide, { earlier = false } = {}) => !CONCEPTS[guide] ? 
     list('teaches').forEach((c) => { owner[c] = a.dataset.id; if (done[a.dataset.id] || i === at || (earlier && i < at)) allowed.add(c); });
     if (i === at) list('previews').forEach((c) => allowed.add(c));
   });
-  const shown = (el) => el.offsetParent !== null || el.getClientRects().length > 0;
+  // getClientRects is empty for anything inside display:none. (offsetParent can't be used: SVG elements don't have one.)
+  const shown = (el) => el.getClientRects().length > 0;
   const lessonEls = ['#lStands', '#lTitle', '#lWhy', '#lVisual', '#lPoints', '#lMnem', '#lTaskN', '#lTask'].map((s) => document.querySelector(s)).filter((el) => el && shown(el));
   // the guide's own words in the terminal: Shelly, tips and notes. Real command output and typed commands don't count.
   // A guide line starts with Shelly, a tip or a note. Real output (like an ls -l row) starts with the command's own text.

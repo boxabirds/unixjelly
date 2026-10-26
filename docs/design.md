@@ -106,9 +106,9 @@ Each lesson's story phase has one picture, made in HTML and CSS rather than imag
 | **YOU ARE HERE** | the folder you are standing in |
 | `~ home` and `the very top` | home and `/` |
 | **▶ program** | a file that has an `x` key, in Jelly Shell 2 |
-| the keys you hold, like `r w -` | only once "Read the locks" has been taught (`taught('locks')`); a grey `-` means no key |
+| padlocks for the keys you're missing | Jelly Shell 2, only once "Read the locks" has been taught (`taught('locks')`). Padlock + eye: you can't read it. Padlock + pencil: you can't change it. Padlock + door: you can't go into this folder. A file with no `x` gets no padlock, because most files aren't programs |
 
-There is no padlock, because it could mean "can't read" or "can't change". Clicking a folder types its `cd` command for you.
+A plain padlock is never used: it could mean "can't read" or "can't change", and testers asked which. Each padlock carries the thing you can't do, and the legend under the map says so. Clicking a folder types its `cd` command for you.
 
 ## Motion and sound
 

@@ -1,4 +1,9 @@
 /* ---------------- the pretend git, and a pretend GitHub ---------------- */
+// git is a command this guide adds to the shell. The shell module lives in src/shell/jellysh.js.
+SH.define('git', (c) => gitRun(c.args, c.say, c.fail, c.info, c.out));
+SH.define('help', (c) => { c.say('Words I know: ' + ['git', 'pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  ')); c.say('For git words, type git on its own.', 'tip'); });
+// Tell the lessons when a file inside a repository was written, and whether git already knew it.
+SH.configure({ hooks: { afterWrite: (c, node, mode) => { const r = repoOf(node.parent), rel = r && relTo(r, node); c.info.wrote = { name: node.name, mode, inRepo: !!r, tracked: !!r && (r.index.has(rel) || headTree(r).has(rel)), content: node.content }; } } });
 // Each repository has the three places git keeps: the folder (real files), the stage (index) and the album (commits).
 // GitHub lives "far away" and is shared by every repository that points at it.
 const GH_USER = 'kid', GH_URL = 'https://github.com/kid/my-game.git';

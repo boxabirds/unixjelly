@@ -246,3 +246,6 @@ function taught(concept) {
   return k < 0 || !!store.done[LESSONS[k].id] || (!!PANELS[panelIdx]?.lesson && cur === k);
 }
 function complete(id) {""")
+
+# The shell itself moves into its own module (src/shell/jellysh.js).
+exec(open('engine/use-jellysh.py').read())

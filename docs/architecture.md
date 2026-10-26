@@ -34,7 +34,8 @@ Each guide is one `<script type="module">`, in these sections:
 | 3D font | `makeLetter()` turns a glyph from the built-in font subset into a 3D shape |
 | The whole game | `Town`: the 3D tour (Shell, Git and Web only) |
 | Backstage | the flip-card animation of a command's journey (Shell, Git and Web only) |
-| The pretend computer | the file tree (`find`, `pathOf`), the shell (`run`), the commands, and Shelly's explanations (`explainPath`) |
+| The shell | **jellysh** (`src/shell/jellysh.js`), a self-contained module: the file tree, quoting, variables, wildcards, `;` `&&` `\|\|` `\|`, redirects, exit codes, the Unix commands, and people and locks. The page gets it as `SH`; `run(line)` is `SH.run(line)`, and `sh`, `find`, `pathOf` and the rest point at it. See `src/shell/README.md` |
+| The pretend computer | the starting files (`seed()`), and Shelly's explanations (`explainPath`), which reach the shell through hooks |
 | Terminal and file tree | typing, Tab, history, Ctrl keys, helper buttons, and drawing the tree |
 | Lessons and progress | `LESSONS`, `check(event)`, the saved `store`, and `taught(concept)`, which says whether a concept's lesson has been reached |
 | Panels and navigation | `PANELS`, `go()`, the Enter-means-carry-on handler (`primaryButton()`), `fitAll()` |
@@ -79,12 +80,21 @@ This makes every guide's dependence on the engine explicit. If you change engine
 
 *Why patches, rather than one clean engine?* History. Jelly Shell came first, and each later guide was built by changing a copy of it. A worthwhile clean-up would be to fold `base-patch.py` and `shelly-patch.py` into `shell.html`. The guide builds would keep working as long as the text they patch stays the same.
 
+### The shell is shared by plugging in, not patching
+
+No guide edits the shell. Each one plugs into it from its own engine file:
+- **Its own commands**, with `SH.define()`: Git's `git`, Web's `curl`, `ping` and `nslookup`, Shell 2's `nano`, Security's `sign`.
+- **Its people**, with `SH.configure({ users, gids })`. This is what switches on locks, in Shell 2 and Security.
+- **Its teaching voice**, through hooks: Shelly's lock explanations, first-time tips, and rewording the shell's built-in tips.
+
+The engine adds Jelly Shell's own voice in `src/engine/use-jellysh.py`. A guide that wants to build on it keeps the old hooks (`const base = SH.hooks`) and calls them from its own.
+
 ### What each guide changes
 
 | Guide | Files | What it swaps or adds |
 |---|---|---|
 | Jelly Shell | `engine/` | the original. 15 lessons, the 3D tour and Backstage |
-| Jelly Shell 2 | `guides/shell2/` | removes the tour and Backstage. Adds users, groups and file locks (`s2.js`), programs and the PATH, `sudo`, `grep` and pipes, the `nano` editor, and your keys on the file tree. 15 lessons |
+| Jelly Shell 2 | `guides/shell2/` | removes the tour and Backstage. Adds users, groups and file locks (`s2.js`), programs and the PATH, `sudo`, `grep` and pipes, the `nano` editor, and padlocks for your missing keys on the file tree. 15 lessons |
 | Jelly Git | `guides/git/` | replaces the file tree with the git map (desk → stage → album → GitHub) and adds a pretend `git` (`git.js`). Has its own tour (`town.js`), Backstage (`show.js`) and 14 lessons. Each lesson's `need` sets up the sandbox for that point in the story |
 | Jelly Web | `guides/web/` | adds a pretend internet, a browser, an HTML editor with the tags checker, a Boxes view, and a small git with GitHub Pages (`web.js`). Has its own tour and Backstage, and 17 lessons. A lesson's `tool`, `home` and `project` pick the starting tool, page and folder |
 | Jelly Security | `guides/security/` | Shell plus users and locks (`sec.js`), the black hat / white hat swap, and choice cards for the dilemmas. 3 prototype missions |
@@ -129,6 +139,14 @@ This writes `jellyshell/`, `jellyshell2/`, `jellygit/`, `jellyweb/` and `jellyse
 
 The built guides are committed, so the site works with no build step: open `index.html`, or serve the folder.
 
+### The version label
+
+The landing page shows a small label in its top-right corner, like `v1.0.0 · 3076c59`. Use it to check that a deployed copy is up to date.
+- **The number** comes from `src/VERSION`. Bump it by hand when you release.
+- **The seven characters after it** are a fingerprint of all five built guides. It changes whenever anything in any guide changes, even if nobody bumped the number.
+
+`build.sh` stamps the label as its last step, using `tools/stamp-version.py`.
+
 ## Testing
 
 The tests drive a real browser with Playwright.
@@ -146,6 +164,7 @@ CHROMIUM=/path/to/chromium npm test                # or leave CHROMIUM unset to 
 | `shell.mjs`, `shell2.mjs`, `git.mjs`, `web.mjs`, `security.mjs` | plays every mission of that guide in order, typing the commands a child would, then checks every lesson earned its jelly and nothing threw an error |
 | `fit.mjs` | opens every panel and lesson phase of every guide at 900 × 560, 1024 × 640, 1366 × 768, 1440 × 900 and 1920 × 1080, and fails if anything needs scrolling. `node tests/fit.mjs jellyweb 1366` checks one guide and saves screenshots at that width |
 | `prereqs.mjs` | opens every lesson of each guide that declares `teaches` (Shell 2 and Security so far), as a child jumping ahead would. Fails if any phase shows a concept before the lesson that teaches it. The Shell 2 and Security play-throughs run the same check after every command. Detectors are in `tests/concepts.json` |
+| `jellysh.mjs` | the shell module on its own, in Node with no browser: 81 checks of wildcards, exit codes, `&&` and `\|\|`, quoting, variables, pipes, redirects, scripts, the PATH, people and locks. Each check states what real bash does |
 | `letters.mjs` | drops some jelly words eight times each and fails if any letter falls over more than half the time. This is the test that caught the falling i |
 
 Screenshots go to `src/tests/out/`.

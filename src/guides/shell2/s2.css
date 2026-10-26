@@ -21,11 +21,10 @@
 .terms tr:last-child td{border-bottom:0}
 .terms.bin td{font-family:var(--mono)}
 .mtag.run{background:var(--lime);color:var(--ink)}
-.lock-ico{width:15px;height:15px;margin-left:.3em;vertical-align:-2px;flex:none}
-/* your keys on the file tree */
-.mtag.keys{font-family:var(--mono);font-size:max(11px,.85em);background:#fff;border:2px solid var(--ink);padding:0 .3em;letter-spacing:.04em;line-height:1.2}
-.mtag.keys b{color:var(--ink)}.mtag.keys b.no{color:#8a83a0}
+/* padlocks on the file tree: the keys you are missing */
+.mrow .lock-ico{width:1.9em;height:1.25em;margin-left:.25em;flex:none}
 .keys-legend{display:block;margin-top:.2em}
+.keys-legend .lock-ico{width:1.9em;height:1.25em;margin-left:.1em;vertical-align:-.3em}
 /* nano */
 .term.editing #termBody,.term.editing .keys{display:none}
 .nano{flex:1;min-height:0;display:flex;flex-direction:column;background:#0f2a1c;color:#e8fff0;font-family:var(--mono)}

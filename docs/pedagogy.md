@@ -130,7 +130,7 @@ Nothing replaces watching a real child. Treat every moment of confusion as a bug
 | "What does sign mean? How did they make that command?" | A made-up command, never explained | Jelly Shell 2 teaches making your own command and putting it on the PATH |
 | "What is Shelly?" | Shelly was introduced only in a 3D tour that Shell 2 doesn't have | Shelly introduces herself the first time she speaks |
 | "Prompt?" | The word was used before it was explained, and it means something else to chatbot users | Explained at first use, including the chatbot meaning |
-| "What does the lock mean?" | A padlock on a file could mean "can't read" or "can't change" | The file tree shows your actual keys (`r w -`), and only after `ls -l` has been taught |
+| "What does the lock mean?" | A padlock on a file could mean "can't read" or "can't change" | Each padlock shows what it stops: an eye (can't read), a pencil (can't change), a door (can't go in). Only after `ls -l` has been taught. Testers liked the padlocks; they only needed to know which kind |
 | "How do you change a file?" | Only `>` and `>>` had been taught | A `nano` lesson; programs are now written in nano |
 | Wrote `hello` into the program, then reached for `chmod` early | No feedback when the file wasn't a command; the cliffhanger wasn't flagged | Shelly checks the file, the cliffhanger is flagged, and script errors name the line |
 | The last step's output vanished behind the "you earned a jelly" card | The card appeared the moment the mission finished | The output stays on screen; the big button becomes **Collect your jelly** |

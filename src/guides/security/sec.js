@@ -1,16 +1,12 @@
 /* ---------------- security: users, locks and hats ---------------- */
-// Every file has an owner, a group and a lock (its mode). Three sets of keys: owner, group, everyone else.
-const GROUPS = { kid: ['family'], sib: ['family'] };
-const own = (n) => n.owner ?? sh.user, grp = (n) => n.group ?? 'family';
-const modeOf = (n) => n.mode ?? (n.type === 'dir' ? 0o755 : 0o644);
-function can(n, bit) {
-  const u = sh.user, shift = own(n) === u ? 6 : GROUPS[u]?.includes(grp(n)) ? 3 : 0;
-  return !!((modeOf(n) >> shift) & bit);
-}
-const triplet = (m, s) => ['r', 'w', 'x'].map((c, i) => (m >> s) & (4 >> i) ? c : '-').join('');
-const modeStr = (n) => (n.type === 'dir' ? 'd' : '-') + [6, 3, 0].map((s) => triplet(modeOf(n), s)).join('');
-// The same string, coloured so the three sets of keys stand apart (everyone-else keys glow when they let anyone in).
+// The shell (locks, su, chmod) is jellysh, in src/shell/jellysh.js. This file gives it the two people on this
+// pretend computer, the made-up sign command, and Jelly Security's voice.
+// Everything at home belongs to the family group, so kid and sib share the middle set of keys.
+const SEC_USERS = { root: { uid: 0, groups: ['root'] }, kid: { uid: 1000, groups: ['family'] }, sib: { uid: 1001, groups: ['family'] } };
+const own = SH.own, grp = SH.grp, modeOf = SH.modeOf, can = SH.can, triplet = SH.triplet, modeStr = SH.modeStr;
+// The lock in colour, so the three sets of keys stand apart (everyone-else keys glow when they let anyone in).
 const modeHTML = (n) => { const m = modeOf(n); return `<span class="perm">${n.type === 'dir' ? 'd' : '-'}<b class="pu">${triplet(m, 6)}</b><b class="pg">${triplet(m, 3)}</b><b class="po${m & 0o6 ? ' open' : ''}">${triplet(m, 0)}</b></span>`; };
+const inFamily = (n) => SEC_USERS[sh.user]?.groups.includes(grp(n));
 // Who owns what when the pretend computer starts. The diary is the hole: its lock gives everyone the keys.
 function secPerms() {
   const set = (n, owner, group) => { n.owner = owner; n.group = group; n.children?.forEach((c) => set(c, owner, group)); };
@@ -20,44 +16,64 @@ function secPerms() {
   find('/home/sib/plans.txt').mode = 0o600;
   // sign is a made-up command, so its program is readable text: proof that anyone can write one.
   find('/bin/sign').content = '# sign: a tiny program written by Jelly Security HQ.\n# It adds your name to the end of a file.\n# The shell runs these lines one by one.\necho "  Signed: kid, ethical hacker (white hat)" >> permission-slip.txt\necho "Signed! You may now test this pretend computer."';
-  sh.user = 'kid';
 }
 // Explain a new idea the first time it turns up, not every time.
 const once = (k) => !store.seen?.[k] && ((store.seen ??= {})[k] = true, save(), true);
-function chmodRun(rest, say, fail, info, out) {
-  const [spec, ...files] = rest;
-  if (!spec || !files.length) return fail('chmod: missing operand', 'Try: chmod 600 diary.txt');
-  for (const p of files) {
-    const n = find(p);
-    if (!n) { fail(`chmod: cannot access '${p}': No such file or directory`); continue; }
-    if (own(n) !== sh.user) { fail(`chmod: changing permissions of '${p}': Operation not permitted`, `Only the owner (${own(n)}) can change this lock. You are ${sh.user}.`); continue; }
-    let m = modeOf(n);
-    if (/^\d+$/.test(spec) && !/^[0-7]{3}$/.test(spec)) { fail(`chmod: invalid mode: '${spec}'`, 'The number way is three digits, one for each set of keys, and no digit can be bigger than 7. Each digit is really three on/off switches (r, w, x) in binary, and three switches can only count up to 7. Use the letters instead: chmod go-rw diary.txt'); continue; }
-    if (/^[0-7]{3}$/.test(spec)) { m = parseInt(spec, 8); say('(The number way is a shortcut that needs binary: each digit is three on/off switches, r = 4, w = 2, x = 1. The letter way says the same thing in words: chmod go-rw diary.txt)', 'tip'); }
-    else {
-      const s = spec.match(/^([ugoa]*)([+\-=])([rwx]*)$/);
-      if (!s) { fail(`chmod: invalid mode: '${spec}'`, 'Say who (u = owner, g = group, o = others), then + or -, then which keys (r, w, x). Like: chmod go-rw diary.txt'); continue; }
-      const who = (s[1] || 'a').replace('a', 'ugo'), bits = [...s[3]].reduce((b, c) => b | { r: 4, w: 2, x: 1 }[c], 0);
-      for (const w of new Set(who)) {
-        const sh_ = { u: 6, g: 3, o: 0 }[w], mask = 7 << sh_;
-        m = s[2] === '+' ? m | (bits << sh_) : s[2] === '-' ? m & ~(bits << sh_) : (m & ~mask) | (bits << sh_);
+
+const base = SH.hooks;
+SH.configure({
+  users: SEC_USERS, gids: { root: 0, family: 1002 },
+  hooks: {
+    modeHTML,
+    before: (c) => {
+      base.before?.(c);
+      if (c.cmd === 'ls' && c.flags.has('l') && once('perm')) c.say('(How to read a line: the first letter is d for a folder or - for a file. The next nine letters are the lock: three sets of keys, for the owner, the group and everyone else. r = read, w = write, x = run (on a folder: go inside), - = no key. Then come the owner, the group, the size, the date and the name.)', 'tip');
+    },
+    denied: (c, { op, node, tip }) => {
+      if (tip) return op === 'write' ? `You are ${sh.user}, and that set of keys has no w (write) key.` : tip;
+      if (op === 'read') c.note(`<span class="shelly">Shelly:</span> The lock on ${esc(node.name)} is ${modeHTML(node)}, owned by ${own(node)}. You are <b>${sh.user}</b>, ${own(node) === sh.user ? 'the owner' : inFamily(node) ? `in the ${grp(node)} group` : 'everyone else'}, and that set has no <b>r</b> key. No entry!`);
+    },
+    tip: (key, text) => ({
+      'chmod.usage': 'Try: chmod go-rw diary.txt',
+      'chmod.digits': 'The number way is three digits, one for each set of keys, and no digit can be bigger than 7. Each digit is really three on/off switches (r, w, x) in binary, and three switches can only count up to 7. Use the letters instead: chmod go-rw diary.txt',
+      'chmod.count': 'The number way is three digits, one for each set of keys, and no digit can be bigger than 7. Use the letters instead: chmod go-rw diary.txt',
+      'chmod.number': '(The number way is a shortcut that needs binary: each digit is three on/off switches, r = 4, w = 2, x = 1. The letter way says the same thing in words: chmod go-rw diary.txt)',
+      'chmod.letters': 'Say who (u = owner, g = group, o = others), then + or -, then which keys (r, w, x). Like: chmod go-rw diary.txt',
+      'su.root': 'root is the boss user of the whole computer, and being root is not part of this mission. Yes, root again! It is also the name of the very top folder, /. Same word, two meanings. Try: su sib',
+      'su.who': 'The users on this computer are kid and sib.',
+    })[key] ?? (base.tip ? base.tip(key, text) : text),
+    after: (c) => {
+      base.after?.(c);
+      if (c.cmd === 'cat' && c.info.hits?.length) for (const p of c.info.hits) {
+        const n = find(p);
+        if (own(n) !== sh.user && SEC_USERS[own(n)] && own(n) !== 'root') c.note(shelly(`You got in! ${esc(n.name)} belongs to ${own(n)}, but you are <b>${sh.user}</b>, ${inFamily(n) ? `in the <b>${grp(n)}</b> group, so you get the middle set of keys in ${modeHTML(n)}. That set has an <b>r</b> key` : 'everyone else, so you get the last set of keys, and it has an <b>r</b> key'}.`));
       }
-    }
-    const was = modeHTML(n);
-    n.mode = m; info.mode = m; info.file = pathOf(n);
-    out.push({ h: `<span class="mute">(lock on ${esc(n.name)}: ${was} → ${modeHTML(n)})</span>`, t: "" });
-    say(`(${n.name} is now ${modeStr(n)}: ${!(m & 0o077) ? `only ${own(n)} has any keys` : m & 0o006 ? 'everyone still has keys' : 'the family has keys, strangers don\'t'}.)`, 'mute');
-  }
-}
-function suRun(rest, say, fail, info) {
-  const u = rest[0];
-  if (!u || u === 'root') return fail('su: Authentication failure', 'root is the boss user of the whole computer, and being root is not part of this mission. Yes, root again! It is also the name of the very top folder, /. Same word, two meanings. Try: su sib');
-  if (!GROUPS[u]) return fail(`su: user ${u} does not exist`, 'The users on this computer are kid and sib.');
-  if (u === sh.user) return say(`(You are already ${u}.)`, 'mute');
-  sh.user = u; info.user = u;
-  say(`(su means switch user. You are now ${u}, so you only have ${u}'s keys. Look at the prompt: it says ${u}@jelly. Type exit to go back.)`, 'mute');
-  say('(On a real computer, su asks for that person\'s password. The sandbox skips it so you can practise.)', 'tip');
-}
+      if (c.cmd === 'whoami') {
+        if (once('whoami')) c.note(shelly('<b>whoami</b> asks: which <b>account</b> am I using? One computer can have lots of users, each with their own home folder. Your prompt says it too: the bit before the <b>@</b> is you.'));
+        c.say(sh.user === 'kid' ? (store.signed ? '(An ethical hacker, white hat, with a signed permission slip.)' : '(No permission slip signed yet.)') : '(You borrowed sib\'s account. Type exit to go back to being kid.)', 'tip');
+      }
+      if (c.cmd === 'id' && !c.status) c.say('(uid is your user number. groups are the clubs you belong to. If a file belongs to one of your groups, you get its middle set of keys.)', 'tip');
+      if (c.cmd === 'chmod' && c.info.file) {
+        const n = find(c.info.file), m = modeOf(n);
+        c.note(`<span class="mute">(lock on ${esc(n.name)}: ${modeHTML({ ...n, mode: c.info.was })} → ${modeHTML(n)})</span>`);
+        c.say(`(${n.name} is now ${modeStr(n)}: ${!(m & 0o077) ? `only ${own(n)} has any keys` : m & 0o006 ? 'everyone still has keys' : 'the family has keys, strangers don\'t'}.)`, 'mute');
+      }
+      if (c.cmd === 'su' && c.info.user) {
+        c.say(`(su means switch user. You are now ${c.info.user}, so you only have ${c.info.user}'s keys. Look at the prompt: it says ${c.info.user}@jelly. Type exit to go back.)`, 'mute');
+        c.say('(On a real computer, su asks for that person\'s password. The sandbox skips it so you can practise.)', 'tip');
+      }
+      if (c.cmd === 'exit' && c.info.left) c.say('(exit leaves sib\'s shell, so you are back to being kid, with kid\'s keys. Look at the prompt.)', 'mute');
+    },
+  },
+});
+SH.define('sign', (c) => {
+  const n = find(c.rest[0] ?? '');
+  if (!n || !n.name.startsWith('permission-slip')) return c.fail('sign: what should I sign?', 'Try: sign permission-slip.txt');
+  if (!store.signed) { n.content += '\n  Signed: kid, ethical hacker (white hat)'; store.signed = true; save(); }
+  c.say('Signed! You may now test this pretend computer. Only this one.', 'tip'); c.info.signed = true;
+  if (once('sign')) { c.note(shelly('Where did <b>sign</b> come from? Jelly Security HQ wrote it! A command is just a program, and programs live in <b>/bin</b>. Anyone can write a program and call it whatever they like. This one is only a few lines of text: peek inside with <b>cat /bin/sign</b>')); c.note(tryCmd('cat /bin/sign')); }
+});
+SH.define('help', (c) => { c.say('Security words: ' + ['ls -l', 'chmod', 'su', 'exit', 'whoami', 'id', 'sign'].join('  ')); c.say('Shell words: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  ')); });
 
 /* the hats: each mission step says which hat you are wearing */
 const HATS = {

@@ -99,11 +99,12 @@ The full list for each guide is in its `run` / `run1` function. Search for `info
 If the lesson introduces a command, add it everywhere the shell needs to know about it:
 
 1. **`BIN`**: the list of programs in `/bin`. It drives `ls /bin`, Tab completion and "did you mean".
-2. **A `case` in `run1`** (Shell 2) or `run` (other guides), or a helper function in the guide's engine file such as `s2.js`.
+2. **The command itself.** If every Unix computer has it (`tail`, `uniq`…), add it to the shell module, `src/shell/jellysh.js`, with a check in `tests/jellysh.mjs` against real bash. If it belongs to the guide (`git`, `nano`), add it in the guide's engine file with `SH.define('name', (c) => …)`. See `src/shell/README.md`.
 3. **A `MAN` entry**: name, how to use it, a description and an example. That gives you `man` and `--help` for free.
 4. **The `help` list.**
-5. **Locks**, if it reads, writes, runs or enters something: check with `can(node, 4 | 2 | 1)` and fail with the real error message (`Permission denied`).
-6. **Real messages.** Copy real error text where there is one (`which: no cd in (/bin:/home/kid/bin)`). Add a tip or a Shelly explanation underneath.
+5. **Locks**, if it reads, writes, runs or enters something: check with `can(node, 4 | 2 | 1)`, fail with the real error message (`Permission denied`), and give the guide's `denied` hook the chance to explain.
+6. **Exit code:** `c.fail(message, tip, code)`. Use `0` for success, usually `1` for failure, and match real bash where it differs.
+7. **Real messages.** Copy real error text where there is one (`which: no cd in (/bin:/home/kid/bin)`). Add a tip or a Shelly explanation underneath.
 
 ## 5. Help with likely mistakes
 

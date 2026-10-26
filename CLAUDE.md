@@ -51,10 +51,15 @@ Jelly Security and Jelly Shell 2 declare `teaches`. **Jelly Shell, Jelly Git and
 2. `./src/build.sh` succeeds, and the build output is committed with the source.
 3. `cd src && CHROMIUM=/path/to/chromium npm test` prints PASS for every test. That includes `prereqs`, `fit` and `letters`.
 4. You looked at screenshots of every changed screen at 900 × 560 and 1366 × 768.
-5. Docs are updated:
+5. `src/VERSION` is bumped for a release. The build stamps it, with a fingerprint of the guides, on the landing page.
+6. Docs are updated:
    - the prerequisite map, if something new is taught;
    - the "what testers found" table in `docs/pedagogy.md`, if this came from a child's confusion;
    - `docs/new-lesson.md`, if the process changed.
+
+## The shell
+
+All five guides share one shell: `src/shell/jellysh.js`, a self-contained module with its own Node test (`tests/jellysh.mjs`, checked against real bash). Guides plug in commands with `SH.define()` and their teaching voice with hooks. They never patch the shell. Its deliberate differences from bash are listed in `src/shell/README.md`.
 
 ## Other house rules
 

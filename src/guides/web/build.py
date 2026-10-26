@@ -125,8 +125,8 @@ region('  const spec = {', '  const make = (name, content, parent) => {', f'''  
     'tmp/': {{}},
   }};
 ''')
-rep("function resetFS() {\n  sh.root = seed(); sh.home = find('/home/kid'); sh.cwd = sh.home; sh.userDirs.clear(); sh.showHidden = false;\n}",
-    "function resetFS(fresh = true) {\n  const saved = !fresh && loadFS();\n  sh.root = saved || seed(); sh.home = find('/home/kid'); sh.cwd = (saved && find(store.web.cwd)) || sh.home; sh.userDirs.clear(); sh.showHidden = false;\n  if (!saved) webSeed();\n}")
+rep("function resetFS() {\n  SH.reset(seed());\n}",
+    "function resetFS(fresh = true) {\n  const saved = !fresh && loadFS();\n  SH.reset(saved || seed());\n  if (saved) sh.cwd = find(store.web.cwd) || sh.home;\n  if (!saved) webSeed();\n}")
 rep("const MAN = {\n", """const MAN = {
   curl: ['curl - see URL: fetch a web page as text', 'curl [-I] [-v] [-L] address', 'Asks a server for a page and prints what comes back. -I shows only the envelope (headers). -v shows the letters going both ways. -L follows "moved" replies.', 'curl https://jelly.fun'],
   ping: ['ping - sonar for computers', 'ping [-c count] name', 'Sends tiny messages to a computer and times how long each echo takes to come back. Ctrl+C stops it.', 'ping jelly.fun'],
@@ -134,14 +134,6 @@ rep("const MAN = {\n", """const MAN = {
   open: ['open - open something in the browser', 'open file-or-address', 'Shows a file or a web address in the browser on the right.', 'open site/index.html'],
   git: ['git - a time machine for your code', 'git <word>', 'Here we only need the publishing words: status, add, commit, push.', 'git status'],
 """)
-rep("    case 'help': say('Words I know: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history', 'whoami', 'date'].join('  '));",
-    """    case 'curl': curlRun(args, say, fail, info); break;
-    case 'nslookup': case 'dig': case 'host': lookupRun(rest, say, fail, info); break;
-    case 'ping': pingRun(args, say, fail, info); break;
-    case 'open': case 'xdg-open': openRun(rest, fail, info); break;
-    case 'git': webGit(args, say, fail, info); break;
-    case 'wget': fail('wget: command not found', 'wget is curl\\'s cousin. Here we use curl.'); break;
-    case 'help': say('Web words: ' + ['curl', 'ping', 'nslookup', 'open', 'git'].join('  ')); say('Shell words: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  '));""")
 # terminal: ping keeps running until Ctrl+C; the line typed goes along with each event
 rep("const paintPrompt = () => { termPrompt.textContent = sh.catMode ? '' : promptText();", "const paintPrompt = () => { termPrompt.textContent = sh.catMode || sh.ping ? '' : promptText();")
 rep("  const line = termIn.value; termIn.value = '';\n", "  const line = termIn.value; termIn.value = '';\n  if (sh.ping) return; // ping is still talking; Ctrl+C stops it\n")
