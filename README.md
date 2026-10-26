@@ -99,7 +99,8 @@ The prototype has 3 missions: picking your hat and signing a permission slip, le
 
 - During the tutorial the section list slides away; a tab on the left edge brings it back.
 - Each magic word runs one thing at a time: the story, then "remember it", then the mission one step at a time, with the jelly letters in the top left throughout.
-- Enter always means "carry on": it presses the one big green button on screen (marked "Enter ↵"). Inside the terminal or editor, Enter keeps its usual meaning.
+- Enter always means "carry on": it presses the one big green button on screen (marked "Enter ↵"). Inside the terminal or editor, Enter keeps its usual meaning. → does the same, and ← goes back a phase.
+- When a mission is finished, its last output stays on screen until you press **Collect your jelly**.
 
 ## Contributing
 
@@ -107,6 +108,7 @@ The guides are built from the source in `src/`. The rules for how they teach and
 
 | Document | What it covers |
 | --- | --- |
+| [CLAUDE.md](CLAUDE.md) | Rules for anyone, human or AI, changing the guides. Every change starts with a pedagogical assessment |
 | [docs/pedagogy.md](docs/pedagogy.md) | How the guides teach: the rules, what testing with children taught us, and which guide teaches which command |
 | [docs/design.md](docs/design.md) | How they look: colours, fonts, layout, story pictures, motion |
 | [docs/architecture.md](docs/architecture.md) | The technology, how the five guides share one engine, building and testing |

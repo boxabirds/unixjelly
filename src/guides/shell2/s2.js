@@ -26,6 +26,9 @@ const modeHTML = (n) => {
 };
 const setName = { owner: 'the owner\'s set (the first three letters)', group: 'the group\'s set (the middle three letters)', others: 'everyone else\'s set (the last three letters)' };
 const whoYouAre = (n) => ({ owner: 'the owner', group: `in the <b>${esc(grp(n))}</b> group`, others: 'not the owner and not in its group, so you count as <b>everyone else</b>' })[keySet(n)];
+// Before "Read the locks", a refusal is explained without keys, owners or r/w/x: that lesson is where they're taught.
+const NOT_YET = 'The computer said no. The lesson "Read the locks" explains why.';
+const lockTip = (tip) => taught('locks') ? tip : NOT_YET;
 const once = (k) => !store.seen?.[k] && ((store.seen ??= {})[k] = true, save(), true);
 
 function s2Perms() {
@@ -55,20 +58,20 @@ const isMachineCode = (n) => n.content.startsWith('0100');
 /* the commands that need users and locks */
 function chmodRun(rest, say, fail, info, out) {
   const [spec, ...files] = rest;
-  if (!spec || !files.length) return fail('chmod: missing operand', 'Say who, then + or -, then which keys. Like: chmod u+x hello');
+  if (!spec || !files.length) return fail('chmod: missing operand', lockTip('Say who, then + or -, then which keys. Like: chmod u+x hello'));
   for (const p of files) {
     const n = find(p);
     if (!n) { fail(`chmod: cannot access '${p}': No such file or directory`); continue; }
-    if (own(n) !== sh.user && sh.user !== 'root') { fail(`chmod: changing permissions of '${p}': Operation not permitted`, `Only the owner (${own(n)}) can change this lock. You are ${sh.user}.`); continue; }
+    if (own(n) !== sh.user && sh.user !== 'root') { fail(`chmod: changing permissions of '${p}': Operation not permitted`, lockTip(`Only the owner (${own(n)}) can change this lock. You are ${sh.user}.`)); continue; }
     let m = modeOf(n);
     if (/^\d+$/.test(spec)) {
-      if (!/^[0-7]{3}$/.test(spec)) { info.badNumber = true; fail(`chmod: invalid mode: '${spec}'`, /[89]/.test(spec) ? 'No digit can be bigger than 7. Each digit is three on/off switches (r = 4, w = 2, x = 1), and three switches add up to 7 at most.' : 'The number way needs exactly three digits: owner, group, everyone else. Like 644.'); continue; }
+      if (!/^[0-7]{3}$/.test(spec)) { info.badNumber = true; fail(`chmod: invalid mode: '${spec}'`, /[89]/.test(spec) ? lockTip('No digit can be bigger than 7. Each digit is three on/off switches (r = 4, w = 2, x = 1), and three switches add up to 7 at most.') : lockTip('The number way needs exactly three digits: owner, group, everyone else. Like 644.')); continue; }
       m = (m & ~0o777) | parseInt(spec, 8);
       if (!store.done.binary && LESSONS[cur]?.id !== 'binary' && once('chmodNumber')) say('(The number way is a shortcut that needs binary. The optional lesson "101" explains it. The letter way says the same thing in words: chmod u+x hello)', 'tip');
     } else {
       for (const part of spec.split(',')) {
         const s = part.match(/^([ugoa]*)([+\-=])([rwx]*)$/);
-        if (!s) { fail(`chmod: invalid mode: '${spec}'`, 'Say who (u = owner, g = group, o = others, a = all), then + to give or - to take away, then which keys (r, w, x). Like: chmod go-w hello'); m = null; break; }
+        if (!s) { fail(`chmod: invalid mode: '${spec}'`, lockTip('Say who (u = owner, g = group, o = others, a = all), then + to give or - to take away, then which keys (r, w, x). Like: chmod go-w hello')); m = null; break; }
         const bits = [...s[3]].reduce((b, c) => b | { r: 4, w: 2, x: 1 }[c], 0);
         for (const w of new Set((s[1] || 'a').replace('a', 'ugo'))) {
           const k = { u: 6, g: 3, o: 0 }[w];
@@ -79,7 +82,7 @@ function chmodRun(rest, say, fail, info, out) {
     }
     const was = modeHTML(n);
     n.mode = m; info.mode = m; info.file = pathOf(n);
-    out.push({ h: `<span class="mute">(the lock on ${esc(n.name)}: ${was} → ${modeHTML(n)})</span>`, t: '' });
+    if (taught('locks')) out.push({ h: `<span class="mute">(the lock on ${esc(n.name)}: ${was} → ${modeHTML(n)})</span>`, t: '' });
   }
 }
 function chgrpRun(rest, fail, info) {
@@ -89,7 +92,7 @@ function chgrpRun(rest, fail, info) {
   for (const p of files) {
     const n = find(p);
     if (!n) { fail(`chgrp: cannot access '${p}': No such file or directory`); continue; }
-    if (sh.user !== 'root' && (own(n) !== sh.user || !USERS[sh.user].groups.includes(g))) { fail(`chgrp: changing group of '${p}': Operation not permitted`, own(n) !== sh.user ? `Only the owner (${own(n)}) can do that.` : `You can only give things to a group you are in. You are in: ${USERS[sh.user].groups.join(', ')}.`); continue; }
+    if (sh.user !== 'root' && (own(n) !== sh.user || !USERS[sh.user].groups.includes(g))) { fail(`chgrp: changing group of '${p}': Operation not permitted`, lockTip(own(n) !== sh.user ? `Only the owner (${own(n)}) can do that.` : `You can only give things to a group you are in. You are in: ${USERS[sh.user].groups.join(', ')}.`)); continue; }
     n.group = g; info.group = g; info.file = pathOf(n);
   }
 }
@@ -100,7 +103,7 @@ function suRun(rest, say, fail, info) {
   sh.su.push({ user: sh.user, home: sh.home });
   sh.user = u; sh.home = find(`/home/${u}`); info.user = u;
   say(`Password: (the sandbox skips it. On a real computer you would need ${u}'s password, and you should only ever use your own.)`, 'mute');
-  if (once('su')) say(`(su means switch user. Now everything you type happens as ${u}, with ${u}'s keys. Look at the prompt. ~ means ${u}'s home now, so where you are standing shows as a full path.)`, 'tip');
+  if (once('su')) say(`(su means switch user. Now everything you type happens as ${u}${taught('locks') ? `, with ${u}'s keys` : ''}. Look at the prompt. ~ means ${u}'s home now, so where you are standing shows as a full path.)`, 'tip');
 }
 function sudoRun(rest, line, say, fail, info, out) {
   if (!rest.length) return fail('usage: sudo command', 'Put the command you want to run as root after it. Like: sudo whoami');
@@ -128,7 +131,7 @@ function textIn(rest, stdin, name, fail) {
     const n = find(p);
     if (!n) return fail(`${name}: ${p}: No such file or directory`), null;
     if (n.type === 'dir') return fail(`${name}: ${p}: Is a directory`), null;
-    if (!can(n, 4)) return fail(`${name}: ${p}: Permission denied`, `You have no r (read) key for ${n.name}.`), null;
+    if (!can(n, 4)) return fail(`${name}: ${p}: Permission denied`, lockTip(`You have no r (read) key for ${n.name}.`)), null;
     return { label: p, text: n.content };
   }).filter(Boolean);
 }
@@ -159,11 +162,13 @@ function runProgram(n, cmd, args, say, fail, info, out) {
   if (n.type === 'dir') return fail(`bash: ${cmd}: Is a directory`);
   if (!can(n, 1)) {
     info.denied = true; fail(`bash: ${cmd}: Permission denied`);
-    out.push({ h: shelly(`To <b>run</b> a file you need its <b>x</b> key (x is for eXecute, which means run). You are ${whoYouAre(n)}, and ${setName[keySet(n)]} has no x.${store.done.chmod ? '' : ' That is the cliffhanger: don\'t try to fix it yet! The next lesson shows the keys, and the one after shows how to change them.'}`), t: '' });
+    out.push({ h: shelly(taught('locks')
+      ? `To <b>run</b> a file you need its <b>x</b> key (x is for eXecute, which means run). You are ${whoYouAre(n)}, and ${setName[keySet(n)]} has no x.${taught('chmod') ? '' : ' The next lesson shows how to change that.'}`
+      : 'The computer refused to run it. Why? That is the cliffhanger: don\'t try to fix it yet! The next lesson explains.'), t: '' });
     return;
   }
   if (n.parent && pathOf(n.parent) === '/bin' && isMachineCode(n)) { const r = run1([n.name, ...args].join(' ')); out.push(...r.out); if (!r.ok) fail(null); info.ran = pathOf(n); return; }
-  if (!can(n, 4)) { info.denied = true; return fail(`bash: ${cmd}: Permission denied`, 'This program is a script: the shell has to read it to run it, so you need the r key too.'); }
+  if (!can(n, 4)) { info.denied = true; return fail(`bash: ${cmd}: Permission denied`, lockTip('This program is a script: the shell has to read it to run it, so you need the r key too.')); }
   if ((sh.depth ?? 0) > 3) return fail(`${cmd}: too many programs running programs`, 'Your program keeps starting itself. Ctrl+C!');
   info.ran = pathOf(n);
   sh.depth = (sh.depth ?? 0) + 1;
@@ -232,10 +237,10 @@ function backToKid() {
   print('<span class="tip">(You are kid again. Missions start as you.)</span>');
 }
 
-/* file tree: programs get a ▶ tag. Once ls -l has been taught, every row also shows YOUR keys for it. */
-const keysOn = () => !!store.done.lsl || cur >= LESSONS.findIndex((l) => l.id === 'lsl');
+/* file tree: programs get a ▶ tag once scripts are taught. Once the locks are taught, every row also shows YOUR keys for it. */
+const keysOn = () => taught('locks');
 const myKeys = (n) => sh.user === 'root' ? 'rwx' : triplet(modeOf(n), SHIFT[keySet(n)]);
-const mapTags = (n) => (n.type === 'file' && modeOf(n) & 0o111 && !(n.parent && pathOf(n.parent) === '/bin') ? '<i class="mtag run">▶ program</i>' : '')
+const mapTags = (n) => (taught('scripts') && n.type === 'file' && modeOf(n) & 0o111 && !(n.parent && pathOf(n.parent) === '/bin') ? '<i class="mtag run">▶ program</i>' : '')
   + (keysOn() && n !== sh.root ? `<i class="mtag keys" title="${sh.user}'s keys for this">${[...myKeys(n)].map((c) => `<b class="${c === '-' ? 'no' : ''}">${c}</b>`).join('')}</i>` : '');
 $('.map-head').insertAdjacentHTML('beforeend', '<small class="keys-legend" id="keysLegend" hidden>Letters = <b>your</b> keys: <b>r</b> read · <b>w</b> write · <b>x</b> run or go in</small>');
 
@@ -247,7 +252,7 @@ function nanoOpen(path, fail, info) {
   if (!path) return fail('nano: which file?', 'Like: nano note.txt');
   const n = find(path);
   if (n?.type === 'dir') return fail(`nano: ${path}: Is a directory`, 'nano edits files. To look inside a folder, use ls.');
-  if (n && !can(n, 4)) { info.denied = true; return fail(`nano: ${path}: Permission denied`, `Opening a file needs its r key, and ${sh.user} has none for ${n.name}.`); }
+  if (n && !can(n, 4)) { info.denied = true; return fail(`nano: ${path}: Permission denied`, lockTip(`Opening a file needs its r key, and ${sh.user} has none for ${n.name}.`)); }
   const [dp, name] = splitPath(path), d = n ? n.parent : find(dp);
   if (!d || d.type !== 'dir') return fail(`nano: ${path}: No such file or directory`, 'nano can start a new file, but the folder it goes in has to exist already.');
   Object.assign(NANO, { open: true, node: n, dir: d, name: n?.name ?? name, start: n?.content ?? '', saved: n?.content ?? '', asking: false });

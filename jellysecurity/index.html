@@ -2064,7 +2064,7 @@ const chose = (k) => (e) => e.type === 'choice' && e.k === k;
 // Each mission step says which hat you wear: black (think like the attacker) or white (fix it).
 // In the sandbox both are allowed: Jelly Security HQ signed your permission slip, so you are a red team, not a criminal.
 const LESSONS = [
-  { id: 'hats', word: 'hats', name: 'Pick your hat', stands: 'Ethical hacking', color: '#ff4d6d', tool: 'term', seq: true, onlyHere: true,
+  { id: 'hats', teaches: ['hats', 'permission'], word: 'hats', name: 'Pick your hat', stands: 'Ethical hacking', color: '#ff4d6d', tool: 'term', seq: true, onlyHere: true,
     visual: `<table class="terms"><thead><tr><th>You will hear</th><th>Grown-ups now say</th></tr></thead><tbody>
       <tr><td><b class="hat-chip black">black hat</b></td><td>malicious hacker, attacker, criminal</td></tr>
       <tr><td><b class="hat-chip white">white hat</b></td><td>ethical hacker, security researcher, penetration tester ("pentester": paid to break in, with permission)</td></tr>
@@ -2078,7 +2078,7 @@ const LESSONS = [
       { t: 'Sign it with the little program HQ made for you: <code>sign permission-slip.txt</code>', ok: (e) => isCmd(e, 'sign') && e.ok },
       { t: 'Ask the computer which account you are using: <code>whoami</code>', ok: (e) => isCmd(e, 'whoami') && store.signed },
     ] },
-  { id: 'keys', word: 'chmod', name: 'Keys you don\'t need', stands: 'Least privilege', color: '#9b5cff', tool: 'term', seq: true, onlyHere: true,
+  { id: 'keys', teaches: ['least-privilege'], word: 'chmod', name: 'Keys you don\'t need', stands: 'Least privilege', color: '#9b5cff', tool: 'term', seq: true, onlyHere: true,
     visual: `<div class="permviz"><p class="tv-note">Your diary, as <code>ls -l</code> shows it:</p><div class="lsl"><span class="pv t">-</span><span class="pv u">rw-</span><span class="pv g">rw-</span><span class="pv o">rw-</span><span class="pv n">kid</span><span class="pv n">family</span><span class="pv n">diary.txt</span>
       <small>file</small><small>owner's keys</small><small>family's keys</small><small>everyone else's keys</small><small>owner</small><small>group</small><small>name</small></div><p class="tv-note"><b>r</b> read · <b>w</b> write · <b>x</b> run · <b>-</b> no key</p></div>`,
     title: 'Only the keys you need', why: 'Look at your diary in the picture. Every file has a lock with three sets of keys: one for its <b>owner</b> (you, kid), one for its <b>group</b> (the family: you and your sibling), and one for <b>everyone else</b>. All three sets say <b>rw-</b>: read and write. So the diary\'s lock hands keys to everybody. Security engineers have a rule for this, called <b>least privilege</b>: give each person only the keys they really need. Nobody needs to read your diary except you.',
@@ -2092,7 +2092,7 @@ const LESSONS = [
       { hat: 'white', t: 'Take the keys away from the group and everyone else: <code>chmod go-rw diary.txt</code>', ok: (e) => isCmd(e, 'chmod') && e.ok && !(modeOf(find('/home/kid/diary.txt')) & 0o077) },
       { hat: 'black', t: 'Black hat back on. Try the attack again: <code>su sib</code>, then <code>cat diary.txt</code>', ok: (e) => isCmd(e, 'cat') && sh.user === 'sib' && e.info.denied },
     ] },
-  { id: 'grey', word: 'grey', name: 'The grey zone', stands: 'Doing the right thing', color: '#ffc61a', tool: 'term', seq: true, onlyHere: true,
+  { id: 'grey', teaches: ['disclosure', 'grey-zone'], word: 'grey', name: 'The grey zone', stands: 'Doing the right thing', color: '#ffc61a', tool: 'term', seq: true, onlyHere: true,
     visual: `<div class="permviz"><div class="tz-eq">Found a way in <b>≠</b> allowed in</div><p class="tv-note">Stop. Don't peek. Tell the owner.</p></div>`,
     title: 'What would a white hat do?', why: 'Sometimes you stumble on a way in without even trying. A <b>grey hat</b> goes through anyway, even if they mean well. That is still breaking in, and still against the law. A white hat stops, doesn\'t look around, and tells the owner the right way. Nobody here is in trouble: these are choices to practise.',
     mnem: 'Stop. Don\'t peek. Tell the owner.',
@@ -2140,14 +2140,23 @@ const RECAP = {
 /* end recap data */
 
 
+// Has this child been taught this concept yet? Yes once they've finished the lesson that teaches it, or while they're in it.
+// Concepts this guide doesn't teach come from an earlier guide, so they count as taught.
+function taught(concept) {
+  const k = LESSONS.findIndex((L) => L.teaches?.includes(concept));
+  return k < 0 || !!store.done[LESSONS[k].id] || (!!PANELS[panelIdx]?.lesson && cur === k);
+}
 function complete(id) {
   if (store.done[id]) return;
   store.done[id] = true; save(); paintProgress();
   if (id === 'backstage') $('#p-backstage').dataset.played = '1';
   const item = ALL.find((a) => a.id === id);
-  if (!sectionDone(id)) toast(`Jelly collected: ${item.word ? item.word : item.name}!`);
+  const reviewing = PANELS[panelIdx]?.lesson?.id === id && $('#lcard').dataset.phase === 'mission';
+  if (reviewing) G.review = id; // look at what happened first, then press the button to collect
+  else if (!sectionDone(id)) toast(`Jelly collected: ${item.word ? item.word : item.name}!`);
   sound.ding(); confetti(item.color);
   if (LESSONS[cur]?.id === id) { paintSteps(); lessonStage?.hopAll(1.2); }
+  if (G.review === id) setTimeout(() => $('#lNext').focus({ preventScroll: true }), REDUCED ? 0 : 1200);
 }
 function check(ev) {
   if ((ev.type === 'cmd' || ev.type === 'edit') && !touched && PANELS[panelIdx]?.lesson) { touched = true; paintRestart(); }
@@ -2187,7 +2196,7 @@ const PANELS = [
 ];
 let cur = clamp(LESSONS.findIndex((l) => l.id === store.cur), 0, LESSONS.length - 1), lessonStage = null, panelIdx = -1;
 const navEl = $('#nav');
-navEl.innerHTML = PANELS.filter((p) => !p.ownButton).map((p, i, list) => `${i === 0 || list[i - 1].group !== p.group ? `<div class="ng">${esc(p.group)}</div>` : ''}<a class="ni" href="#${p.id}" data-id="${p.id}" style="--c:${p.color}"><span class="nd"></span><span class="nw">${esc(p.tag)}</span><span class="nl">${esc(p.label)}</span></a>`).join('');
+navEl.innerHTML = PANELS.filter((p) => !p.ownButton).map((p, i, list) => `${i === 0 || list[i - 1].group !== p.group ? `<div class="ng">${esc(p.group)}</div>` : ''}<a class="ni" href="#${p.id}" data-id="${p.id}" data-teaches="${(p.lesson?.teaches ?? []).join(' ')}" data-previews="${(p.lesson?.previews ?? []).join(' ')}" style="--c:${p.color}"><span class="nd"></span><span class="nw">${esc(p.tag)}</span><span class="nl">${esc(p.label)}</span></a>`).join('');
 navEl.addEventListener('click', (e) => { const a = e.target.closest('.ni'); if (!a) return; e.preventDefault(); go(a.dataset.id); });
 
 function go(id) {
@@ -2203,7 +2212,7 @@ function go(id) {
   navEl.querySelectorAll('.ni').forEach((a) => { const on = a.dataset.id === P.id; a.classList.toggle('cur', on); if (on) a.scrollIntoView({ block: 'nearest' }); });
   $('#recapBtn').classList.toggle('cur', P.id === 'recap');
   if (!REDUCED && from >= 0) el.animate([{ opacity: 0, transform: `translateY(${i >= from ? 28 : -28}px)` }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
-  G.card = false; renderGuide();
+  G.card = false; G.review = null; renderGuide();
   // Start every section with the big button ready, so the very next Enter carries on.
   requestAnimationFrame(() => { fitAll(el); const b = primaryButton(); if (b) b.focus({ preventScroll: true }); else document.activeElement?.blur(); });
   paintProgress();
@@ -2230,8 +2239,14 @@ addEventListener('keydown', (e) => {
 });
 addEventListener('keydown', (e) => {
   if (e.target.closest?.('input,textarea')) return;
-  if (e.key === 'PageDown' || e.key === 'ArrowRight') { e.preventDefault(); step(1); }
-  if (e.key === 'PageUp' || e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+  const fwd = e.key === 'PageDown' || e.key === 'ArrowRight', back = e.key === 'PageUp' || e.key === 'ArrowLeft';
+  if (!fwd && !back) return;
+  e.preventDefault();
+  if (G.card) return (fwd ? $('#unGo') : $('#unStay'))?.click();
+  if (!PANELS[panelIdx]?.lesson) return fwd ? (primaryButton() ?? { click: () => step(1) }).click() : step(-1);
+  if (back) { if (!$('#lBack').hidden) $('#lBack').click(); return; }
+  const b = primaryButton();
+  if (b) b.click(); else toast('Finish the mission first, or press ← to go back.');
 });
 addEventListener('hashchange', () => { const id = location.hash.slice(1); if (id && id !== PANELS[panelIdx]?.id) go(id); });
 
@@ -2271,7 +2286,7 @@ function paintSteps(celebrate = false) {
   $('#lPips').innerHTML = L.steps.map((s, k) => `<span class="pip${st[k] ? ' ok' : ''}${k === i ? ' cur' : ''}">${st[k] ? '✓' : k + 1}</span>`).join('');
   const show = () => {
     $('#lTaskN').textContent = i < 0 ? 'Mission complete!' : `Step ${i + 1} of ${L.steps.length}`;
-    $('#lTask').innerHTML = i < 0 ? `You did every step. The <b>${esc(L.word)}</b> jelly is yours!` : L.steps[i].t;
+    $('#lTask').innerHTML = i < 0 ? (G.review === L.id ? `You did every step! Take a look at what happened. When you're ready, press <b>Collect your jelly</b>.` : `You did every step. The <b>${esc(L.word)}</b> jelly is yours!`) : L.steps[i].t;
     if (i >= 0 && p === 'mission') onTask(L, L.steps[i]);
     if (PANELS[panelIdx]?.lesson) fitAll($('#p-lesson'));
   };
@@ -2285,8 +2300,9 @@ function paintSteps(celebrate = false) {
   if (celebrate && p === 'mission' && !REDUCED) { $('#lTaskN').textContent = ''; $('#lTask').innerHTML = '<span class="task-yay">✓ Nice one!</span>'; lessonStage?.hopAll(.7); taskTimer = setTimeout(show, 1100); }
   else show();
   const done = !!store.done[L.id], last = cur === LESSONS.length - 1, nx = $('#lNext');
-  nx.hidden = p === 'mission' && (!done || last);
-  nx.innerHTML = (p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next mission') + ENTER;
+  const collect = p === 'mission' && G.review === L.id;
+  nx.hidden = p === 'mission' && (!done || last) && !collect;
+  nx.innerHTML = (collect ? 'Collect your jelly' : p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next mission') + ENTER;
   nx.classList.toggle('pulse', p === 'mission');
   $('#lBack').hidden = p === 'meet'; paintRestart();
   document.querySelectorAll('#lPhases li').forEach((li) => li.classList.toggle('on', li.dataset.p === p));
@@ -2302,7 +2318,11 @@ function showLesson(i) {
   $('#lcard').dataset.phase = store.done[L.id] ? 'meet' : store.phase[L.id] ?? 'meet';
   paintSteps();
 }
-$('#lNext').onclick = () => { const p = $('#lcard').dataset.phase; if (p === 'meet') setPhase('brain'); else if (p === 'brain') setPhase('mission'); else step(1); };
+$('#lNext').onclick = () => {
+  const p = $('#lcard').dataset.phase, L = LESSONS[cur];
+  if (p === 'mission' && G.review === L.id) { G.review = null; paintSteps(); sectionDone(L.id); return; }
+  if (p === 'meet') setPhase('brain'); else if (p === 'brain') setPhase('mission'); else step(1);
+};
 $('#lBack').onclick = () => setPhase($('#lcard').dataset.phase === 'mission' ? 'brain' : 'meet');
 $('#lPhases').onclick = (e) => { const li = e.target.closest('[data-p]'); if (li) setPhase(li.dataset.p); };
 // Start over: untick this mission's steps and give the sandbox a fresh start. Jellies already earned stay in the jar.

@@ -3,7 +3,7 @@ const chose = (k) => (e) => e.type === 'choice' && e.k === k;
 // Each mission step says which hat you wear: black (think like the attacker) or white (fix it).
 // In the sandbox both are allowed: Jelly Security HQ signed your permission slip, so you are a red team, not a criminal.
 const LESSONS = [
-  { id: 'hats', word: 'hats', name: 'Pick your hat', stands: 'Ethical hacking', color: '#ff4d6d', tool: 'term', seq: true, onlyHere: true,
+  { id: 'hats', teaches: ['hats', 'permission'], word: 'hats', name: 'Pick your hat', stands: 'Ethical hacking', color: '#ff4d6d', tool: 'term', seq: true, onlyHere: true,
     visual: `<table class="terms"><thead><tr><th>You will hear</th><th>Grown-ups now say</th></tr></thead><tbody>
       <tr><td><b class="hat-chip black">black hat</b></td><td>malicious hacker, attacker, criminal</td></tr>
       <tr><td><b class="hat-chip white">white hat</b></td><td>ethical hacker, security researcher, penetration tester ("pentester": paid to break in, with permission)</td></tr>
@@ -17,7 +17,7 @@ const LESSONS = [
       { t: 'Sign it with the little program HQ made for you: <code>sign permission-slip.txt</code>', ok: (e) => isCmd(e, 'sign') && e.ok },
       { t: 'Ask the computer which account you are using: <code>whoami</code>', ok: (e) => isCmd(e, 'whoami') && store.signed },
     ] },
-  { id: 'keys', word: 'chmod', name: 'Keys you don\'t need', stands: 'Least privilege', color: '#9b5cff', tool: 'term', seq: true, onlyHere: true,
+  { id: 'keys', teaches: ['least-privilege'], word: 'chmod', name: 'Keys you don\'t need', stands: 'Least privilege', color: '#9b5cff', tool: 'term', seq: true, onlyHere: true,
     visual: `<div class="permviz"><p class="tv-note">Your diary, as <code>ls -l</code> shows it:</p><div class="lsl"><span class="pv t">-</span><span class="pv u">rw-</span><span class="pv g">rw-</span><span class="pv o">rw-</span><span class="pv n">kid</span><span class="pv n">family</span><span class="pv n">diary.txt</span>
       <small>file</small><small>owner's keys</small><small>family's keys</small><small>everyone else's keys</small><small>owner</small><small>group</small><small>name</small></div><p class="tv-note"><b>r</b> read · <b>w</b> write · <b>x</b> run · <b>-</b> no key</p></div>`,
     title: 'Only the keys you need', why: 'Look at your diary in the picture. Every file has a lock with three sets of keys: one for its <b>owner</b> (you, kid), one for its <b>group</b> (the family: you and your sibling), and one for <b>everyone else</b>. All three sets say <b>rw-</b>: read and write. So the diary\'s lock hands keys to everybody. Security engineers have a rule for this, called <b>least privilege</b>: give each person only the keys they really need. Nobody needs to read your diary except you.',
@@ -31,7 +31,7 @@ const LESSONS = [
       { hat: 'white', t: 'Take the keys away from the group and everyone else: <code>chmod go-rw diary.txt</code>', ok: (e) => isCmd(e, 'chmod') && e.ok && !(modeOf(find('/home/kid/diary.txt')) & 0o077) },
       { hat: 'black', t: 'Black hat back on. Try the attack again: <code>su sib</code>, then <code>cat diary.txt</code>', ok: (e) => isCmd(e, 'cat') && sh.user === 'sib' && e.info.denied },
     ] },
-  { id: 'grey', word: 'grey', name: 'The grey zone', stands: 'Doing the right thing', color: '#ffc61a', tool: 'term', seq: true, onlyHere: true,
+  { id: 'grey', teaches: ['disclosure', 'grey-zone'], word: 'grey', name: 'The grey zone', stands: 'Doing the right thing', color: '#ffc61a', tool: 'term', seq: true, onlyHere: true,
     visual: `<div class="permviz"><div class="tz-eq">Found a way in <b>≠</b> allowed in</div><p class="tv-note">Stop. Don't peek. Tell the owner.</p></div>`,
     title: 'What would a white hat do?', why: 'Sometimes you stumble on a way in without even trying. A <b>grey hat</b> goes through anyway, even if they mean well. That is still breaking in, and still against the law. A white hat stops, doesn\'t look around, and tells the owner the right way. Nobody here is in trouble: these are choices to practise.',
     mnem: 'Stop. Don\'t peek. Tell the owner.',

@@ -36,7 +36,7 @@ Each guide is one `<script type="module">`, in these sections:
 | Backstage | the flip-card animation of a command's journey (Shell, Git and Web only) |
 | The pretend computer | the file tree (`find`, `pathOf`), the shell (`run`), the commands, and Shelly's explanations (`explainPath`) |
 | Terminal and file tree | typing, Tab, history, Ctrl keys, helper buttons, and drawing the tree |
-| Lessons and progress | `LESSONS`, `check(event)`, the saved `store` |
+| Lessons and progress | `LESSONS`, `check(event)`, the saved `store`, and `taught(concept)`, which says whether a concept's lesson has been reached |
 | Panels and navigation | `PANELS`, `go()`, the Enter-means-carry-on handler (`primaryButton()`), `fitAll()` |
 | One lesson at a time | `setPhase()`, `paintSteps()`, `showLesson()`, Start over |
 | Recap | "What I've learnt", with its Test me mode |
@@ -145,6 +145,7 @@ CHROMIUM=/path/to/chromium npm test                # or leave CHROMIUM unset to 
 |---|---|
 | `shell.mjs`, `shell2.mjs`, `git.mjs`, `web.mjs`, `security.mjs` | plays every mission of that guide in order, typing the commands a child would, then checks every lesson earned its jelly and nothing threw an error |
 | `fit.mjs` | opens every panel and lesson phase of every guide at 900 × 560, 1024 × 640, 1366 × 768, 1440 × 900 and 1920 × 1080, and fails if anything needs scrolling. `node tests/fit.mjs jellyweb 1366` checks one guide and saves screenshots at that width |
+| `prereqs.mjs` | opens every lesson of each guide that declares `teaches` (Shell 2 and Security so far), as a child jumping ahead would. Fails if any phase shows a concept before the lesson that teaches it. The Shell 2 and Security play-throughs run the same check after every command. Detectors are in `tests/concepts.json` |
 | `letters.mjs` | drops some jelly words eight times each and fails if any letter falls over more than half the time. This is the test that caught the falling i |
 
 Screenshots go to `src/tests/out/`.

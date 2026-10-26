@@ -1,4 +1,4 @@
-import { launch, guideUrl, unfinished, verdict } from './lib.mjs';
+import { launch, guideUrl, unfinished, verdict, leaks } from './lib.mjs';
 const b = await launch();
 const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
 const errs = []; p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (m) => m.type() === 'error' && errs.push(m.text()));
@@ -9,7 +9,7 @@ let mark = 0;
 const run = async (...cs) => { for (const c of cs) {
   if (c.startsWith('@type:')) { await p.fill('#nanoText', c.slice(6).replace(/\\n/g, '\n')); await p.waitForTimeout(150); continue; }
   if (c.startsWith('@key:')) { await p.press(c.includes('Ctrl') || c.includes('Control') ? '#nanoText' : '#nanoText', c.slice(5)); await p.waitForTimeout(350); continue; }
-  await t.fill(c); await t.press('Enter'); await p.waitForTimeout(450); } };
+  await t.fill(c); await t.press('Enter'); await p.waitForTimeout(450); errs.push(...await leaks(p, 'jellyshell2')); } };
 const fresh = () => p.evaluate((m) => { const all = [...document.querySelectorAll('#termOut .ln')]; return all.map((l) => '   ' + l.textContent).join('\n'); });
 const PLAN = {
   whoami: ['whoami', 'hostname', 'ls /home'],

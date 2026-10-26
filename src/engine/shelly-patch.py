@@ -206,3 +206,43 @@ rep("const shelly = (h) => `<span class=\"shelly\">Shelly:</span> ${h}`;",
 # Say what the prompt is before relying on the word.
 rep("""'The <code>$</code> at the end of the prompt means: "Ready, boss."'""",
     """'The line where you type starts with <code>kid@jelly:~$</code>. That is the <b>prompt</b>: the shell\\'s way of saying "your turn". The <code>$</code> means "Ready, boss." (Chatbots use the word prompt for what <i>you</i> type to them. Here, the prompt is what the shell shows <i>you</i>.)'""")
+
+# ---------- tester feedback, round 3 (every guide) ----------
+# 1. Finishing a mission no longer jumps straight to the "you earned a jelly" card, which hid the last step's output.
+#    The task card says the mission is done, the output stays on screen, and the big button collects the jelly.
+rep("  if (!sectionDone(id)) toast(`Jelly collected: ${item.word ? item.word : item.name}!`);",
+    "  const reviewing = PANELS[panelIdx]?.lesson?.id === id && $('#lcard').dataset.phase === 'mission';\n  if (reviewing) G.review = id; // look at what happened first, then press the button to collect\n  else if (!sectionDone(id)) toast(`Jelly collected: ${item.word ? item.word : item.name}!`);")
+rep("    $('#lTask').innerHTML = i < 0 ? `You did every step. The <b>${esc(L.word)}</b> jelly is yours!` : L.steps[i].t;",
+    "    $('#lTask').innerHTML = i < 0 ? (G.review === L.id ? `You did every step! Take a look at what happened. When you're ready, press <b>Collect your jelly</b>.` : `You did every step. The <b>${esc(L.word)}</b> jelly is yours!`) : L.steps[i].t;")
+rep("  nx.hidden = p === 'mission' && (!done || last);\n  nx.innerHTML = (p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next word') + ENTER;",
+    "  const collect = p === 'mission' && G.review === L.id;\n  nx.hidden = p === 'mission' && (!done || last) && !collect;\n  nx.innerHTML = (collect ? 'Collect your jelly' : p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next word') + ENTER;")
+rep("$('#lNext').onclick = () => { const p = $('#lcard').dataset.phase; if (p === 'meet') setPhase('brain'); else if (p === 'brain') setPhase('mission'); else step(1); };",
+    "$('#lNext').onclick = () => {\n  const p = $('#lcard').dataset.phase, L = LESSONS[cur];\n  if (p === 'mission' && G.review === L.id) { G.review = null; paintSteps(); sectionDone(L.id); return; }\n  if (p === 'meet') setPhase('brain'); else if (p === 'brain') setPhase('mission'); else step(1);\n};")
+# Once the review starts, Enter means "collect": move focus from the terminal to the button.
+rep("  if (LESSONS[cur]?.id === id) { paintSteps(); lessonStage?.hopAll(1.2); }",
+    "  if (LESSONS[cur]?.id === id) { paintSteps(); lessonStage?.hopAll(1.2); }\n  if (G.review === id) setTimeout(() => $('#lNext').focus({ preventScroll: true }), REDUCED ? 0 : 1200);")
+# Leaving the lesson drops the review; the jelly is already counted.
+rep("  G.card = false; renderGuide();\n  // Start every section", "  G.card = false; G.review = null; renderGuide();\n  // Start every section")
+# 2. Arrow keys follow the screen you are on: → does what Enter does (the big button), ← does what Back does.
+#    They never skip ahead to another lesson mid-way through this one.
+rep("""  if (e.key === 'PageDown' || e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+  if (e.key === 'PageUp' || e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }""",
+    """  const fwd = e.key === 'PageDown' || e.key === 'ArrowRight', back = e.key === 'PageUp' || e.key === 'ArrowLeft';
+  if (!fwd && !back) return;
+  e.preventDefault();
+  if (G.card) return (fwd ? $('#unGo') : $('#unStay'))?.click();
+  if (!PANELS[panelIdx]?.lesson) return fwd ? (primaryButton() ?? { click: () => step(1) }).click() : step(-1);
+  if (back) { if (!$('#lBack').hidden) $('#lBack').click(); return; }
+  const b = primaryButton();
+  if (b) b.click(); else toast('Finish the mission first, or press ← to go back.');""")
+# 3. Prerequisites as data. A lesson lists the concepts it `teaches` (and any it deliberately `previews`).
+#    Engine and guide code ask taught(concept) before showing anything that depends on one, and tests/prereqs.mjs
+#    checks every screen for concepts shown before their lesson. See docs/pedagogy.md, rule 1.
+rep('<a class="ni" href="#${p.id}" data-id="${p.id}"', '<a class="ni" href="#${p.id}" data-id="${p.id}" data-teaches="${(p.lesson?.teaches ?? []).join(\' \')}" data-previews="${(p.lesson?.previews ?? []).join(\' \')}"')
+rep("function complete(id) {", """// Has this child been taught this concept yet? Yes once they've finished the lesson that teaches it, or while they're in it.
+// Concepts this guide doesn't teach come from an earlier guide, so they count as taught.
+function taught(concept) {
+  const k = LESSONS.findIndex((L) => L.teaches?.includes(concept));
+  return k < 0 || !!store.done[LESSONS[k].id] || (!!PANELS[panelIdx]?.lesson && cur === k);
+}
+function complete(id) {""")

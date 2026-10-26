@@ -26,6 +26,18 @@ Examples from testing:
 
 Before a lesson ships, check every command, symbol and term it uses against the prerequisite map. If something isn't taught yet, teach it first, in an earlier lesson or an earlier guide. Don't explain it in passing.
 
+**How the rule is enforced:**
+- **A written assessment first.** Every change to what a learner sees starts with a pedagogical assessment, before any code (see `CLAUDE.md`). That applies to the owner's own suggestions too.
+- **Lessons say what they teach.** Each lesson lists the concepts it `teaches`. It can also list concepts it deliberately `previews`; those mentions are on purpose and explained.
+- **Code asks before showing.** Code that shows a concept asks `taught('concept')` first. Until the lesson is reached, it says something that doesn't need the concept. For example: "The computer said no. The lesson Read the locks explains why."
+- **Tests check every screen.**
+  - `tests/prereqs.mjs` opens every lesson cold, as a child jumping ahead would.
+  - The play-through tests check the screen after every command.
+  - Both fail if anything appears before the lesson that teaches it.
+
+  How each concept is spotted is in `src/tests/concepts.json`. Real command output isn't checked, but everything the guide itself says is.
+- **Not every guide is covered yet.** Jelly Shell 2 and Jelly Security declare `teaches`. Jelly Shell, Jelly Git and Jelly Web don't yet.
+
 ### 2. Each guide teaches its own topic, not someone else's
 
 When a guide needs a skill from another topic, that skill belongs in the other guide. Jelly Security once taught users, groups and file locks on the side, as well as security. Children ended up learning two things at once and understanding neither. Those topics moved into Jelly Shell 2. The rule for Jelly Security is now strict: it teaches **no new commands**. It only adds ways of thinking, such as the hats, the attacker's goals and the security principles. It can also add pretend props that aren't commands, such as a permission slip or a robot.
@@ -121,6 +133,9 @@ Nothing replaces watching a real child. Treat every moment of confusion as a bug
 | "What does the lock mean?" | A padlock on a file could mean "can't read" or "can't change" | The file tree shows your actual keys (`r w -`), and only after `ls -l` has been taught |
 | "How do you change a file?" | Only `>` and `>>` had been taught | A `nano` lesson; programs are now written in nano |
 | Wrote `hello` into the program, then reached for `chmod` early | No feedback when the file wasn't a command; the cliffhanger wasn't flagged | Shelly checks the file, the cliffhanger is flagged, and script errors name the line |
+| The last step's output vanished behind the "you earned a jelly" card | The card appeared the moment the mission finished | The output stays on screen; the big button becomes **Collect your jelly** |
+| Arrow keys jumped to another lesson | → and ← moved between lessons, not through the current one | → does what the big button does, ← goes back a phase; mid-mission, → says to finish first |
+| `r w x` keys appeared before they were taught | Refusals were explained with keys and owners, and key letters showed on the file tree when jumping ahead | Everything about keys waits for `taught('locks')`; `tests/prereqs.mjs` and the play-throughs now catch any concept shown early |
 | "The i keeps falling over" | Thin letters had no base to stand on | Heavier base for thin letters; `tests/letters.mjs` catches it if it comes back |
 | `>>` looked like `>`, `../` like `./` | The code font was joining some symbols into one shape | Font ligatures switched off everywhere |
 

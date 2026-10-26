@@ -1,4 +1,4 @@
-import { launch, guideUrl, unfinished, verdict } from './lib.mjs';
+import { launch, guideUrl, unfinished, verdict, leaks } from './lib.mjs';
 const b = await launch();
 const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
 const errs = []; p.on('pageerror', (e) => errs.push(e.message));
@@ -8,7 +8,7 @@ await p.keyboard.press('Enter'); await p.waitForTimeout(1200);
 await p.screenshot({ path: 'sec-hats-meet.png' });
 const t = p.locator('#termIn');
 const toMission = async () => { for (let k = 0; k < 2; k++) await p.evaluate(() => { if (document.querySelector('#lcard').dataset.phase !== 'mission') document.querySelector('#lNext').click(); }); await p.waitForTimeout(600); };
-const run = async (...cs) => { for (const c of cs) { await t.fill(c); await t.press('Enter'); await p.waitForTimeout(1300); } };
+const run = async (...cs) => { for (const c of cs) { await t.fill(c); await t.press('Enter'); await p.waitForTimeout(1300); errs.push(...await leaks(p, 'jellysecurity')); } };
 const lines = (n) => p.evaluate((n) => [...document.querySelectorAll('#termOut .ln')].slice(-n).map((l) => '   ' + l.textContent).join('\n'), n);
 await toMission(); await run('cat permission-slip.txt', 'sign permission-slip.txt', 'cat /bin/sign', 'whoami'); console.log(await lines(14));
 await p.evaluate(() => { location.hash = 'keys'; }); await p.waitForTimeout(1500); await p.screenshot({ path: 'sec-keys-meet.png' }); await toMission();

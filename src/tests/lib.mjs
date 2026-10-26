@@ -23,3 +23,35 @@ export function verdict(problems) {
   console.log(problems.length ? `FAIL ${problems.join('; ')}` : 'PASS');
   process.exitCode = problems.length ? 1 : 0;
 }
+
+// Prerequisite leaks: is anything on the lesson screen from a concept this child hasn't been taught yet?
+// Allowed: concepts taught by lessons already finished, the open lesson's own concepts and its deliberate previews.
+// With earlier: true (used when jumping straight to a lesson), every lesson before this one counts as taught.
+const CONCEPTS = JSON.parse(fs.readFileSync(path.join(here, 'concepts.json'), 'utf8'));
+export const leaks = (p, guide, { earlier = false } = {}) => !CONCEPTS[guide] ? [] : p.evaluate(({ C, key, earlier }) => {
+  const panel = document.querySelector('#p-lesson');
+  if (!panel || panel.hidden) return [];
+  const done = JSON.parse(localStorage.getItem(key) ?? '{}').done ?? {}, here = location.hash.slice(1), allowed = new Set(), owner = {};
+  const items = [...document.querySelectorAll('.ni')], at = items.findIndex((a) => a.dataset.id === here);
+  items.forEach((a, i) => {
+    const list = (k) => (a.dataset[k] || '').split(' ').filter(Boolean);
+    list('teaches').forEach((c) => { owner[c] = a.dataset.id; if (done[a.dataset.id] || i === at || (earlier && i < at)) allowed.add(c); });
+    if (i === at) list('previews').forEach((c) => allowed.add(c));
+  });
+  const shown = (el) => el.offsetParent !== null || el.getClientRects().length > 0;
+  const lessonEls = ['#lStands', '#lTitle', '#lWhy', '#lVisual', '#lPoints', '#lMnem', '#lTaskN', '#lTask'].map((s) => document.querySelector(s)).filter((el) => el && shown(el));
+  // the guide's own words in the terminal: Shelly, tips and notes. Real command output and typed commands don't count.
+  // A guide line starts with Shelly, a tip or a note. Real output (like an ls -l row) starts with the command's own text.
+  const guideLines = [...panel.querySelectorAll('#termOut .ln')].filter((l) => l.firstChild === l.firstElementChild && l.firstElementChild?.matches('.shelly, .tip, .mute'));
+  const codeText = [...lessonEls.flatMap((el) => [...el.querySelectorAll('code, kbd')].map((c) => c.textContent)), ...guideLines.map((l) => l.textContent)];
+  const wordText = [...lessonEls.map((el) => el.textContent), ...guideLines.map((l) => l.textContent)];
+  const out = [];
+  for (const [c, d] of Object.entries(C)) {
+    if (allowed.has(c) || !owner[c]) continue;
+    const say = (where, what) => out.push(`"${c}" (taught in ${owner[c]}) shown in ${here}: ${where} ${JSON.stringify(what.trim().slice(0, 90))}`);
+    for (const sel of d.selectors ?? []) { const el = [...panel.querySelectorAll(sel)].find(shown); if (el) say(`element ${sel}`, el.textContent); }
+    for (const re of d.code ?? []) { const t = codeText.find((x) => new RegExp(re).test(x)); if (t !== undefined) say('code', t); }
+    for (const re of d.words ?? []) { const t = wordText.find((x) => new RegExp(re, 'i').test(x)); if (t !== undefined) say('text', t); }
+  }
+  return [...new Set(out)];
+}, { C: CONCEPTS[guide], key: guide + '.v1', earlier });

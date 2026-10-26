@@ -76,7 +76,7 @@ region('        <div class="term box" id="term">', '        <!-- /tools -->', ''
         </div>
 ''')
 rep('</style>', open(V + 'web.css').read() + '</style>', 1)
-rep('<a class="ni" href="#${p.id}" data-id="${p.id}" style="--c:${p.color}">', '<a class="ni" href="#${p.id}" data-id="${p.id}" title="${esc(p.label)}" style="--c:${p.color}">')
+rep('<a class="ni" href="#${p.id}" data-id="${p.id}" data-teaches=', '<a class="ni" href="#${p.id}" data-id="${p.id}" title="${esc(p.label)}" data-teaches=')
 
 # ---------- script ----------
 rep("const KEY = 'jellyshell.v1';", "const KEY = 'jellyweb.v1';")

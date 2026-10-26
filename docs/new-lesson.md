@@ -22,6 +22,8 @@ Lessons live in `src/guides/<guide>/lessons.js`. Jelly Shell's lessons are in `s
   name: 'Find the needle',          // shown in the menu
   stands: 'Global Regular Expression Print',  // the label on the jelly box: what the word stands for
   color: '#62c934',                 // one of the six jelly colours
+  teaches: ['grep'],                // concept ids this lesson introduces (see step 3a)
+  previews: [],                     // concepts it mentions on purpose before their own lesson, with an explanation
   seq: true,                        // steps must be done in order
   onlyHere: true,                   // steps only count while this lesson is open
   visual: `…`,                      // the story picture (see design.md, Story pictures)
@@ -82,6 +84,16 @@ Events your `ok` can receive:
 
 The full list for each guide is in its `run` / `run1` function. Search for `info.`.
 
+### 3a. Declare what the lesson teaches, and guard what it shows
+
+1. Give every new concept an id and put it in the lesson's `teaches`.
+2. Add how to spot it on screen in `src/tests/concepts.json`. That can be selectors, patterns in commands, or patterns in words.
+3. Anywhere the guide shows that concept **outside its own lesson**, ask `taught('id')` first, and say something simpler until it's taught. That covers Shelly messages, tips, notes and file tree markers. Example from Jelly Shell 2:
+   ```js
+   const lockTip = (tip) => taught('locks') ? tip : 'The computer said no. The lesson "Read the locks" explains why.';
+   ```
+4. If the lesson must mention a later concept, say so in `previews` and explain it on screen ("That one is a secret for later").
+
 ## 4. Add any new command to the pretend computer
 
 If the lesson introduces a command, add it everywhere the shell needs to know about it:
@@ -128,7 +140,7 @@ cd src && CHROMIUM=/path/to/chromium npm test
 ```
 
 1. Add the lesson's commands to the guide's test plan, in the same order a child would type them. Include at least one likely mistake, so the help messages run too. For example, `tests/shell2.mjs` writes `hello` wrongly first, then fixes it.
-2. All tests must say PASS.
+2. All tests must say PASS, including `prereqs`, which opens every lesson cold and fails if anything appears before it's taught.
 3. Run `node tests/fit.mjs <guide-folder> 900` and `… 1366`. Look at the screenshots of your lesson in `src/tests/out/`, every phase, both sizes. Nothing should be cut off, and text should stay readable.
 4. Play the lesson yourself in a browser, typing, not pasting.
 
@@ -147,7 +159,9 @@ Sit with a child from the 9–14 age range, and say as little as you can:
 ## Checklist
 
 - [ ] One idea, in the right guide.
+- [ ] A written pedagogical assessment came first (`CLAUDE.md`), and any gaps were agreed.
 - [ ] Every command, symbol and word it uses is taught earlier, or in this lesson before it's needed.
+- [ ] `teaches` (and any `previews`) are filled in; new concepts have detectors in `tests/concepts.json`; anything shown elsewhere asks `taught()`.
 - [ ] It's used again later, in this guide or the next.
 - [ ] Story, picture, memory hook and three points. The picture shows the real thing.
 - [ ] Two to five steps, each one action, each checked by result.

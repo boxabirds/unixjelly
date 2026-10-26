@@ -56,29 +56,29 @@ rep("function run(line) {\n  const out = [], info = {}", "function run1(line, st
 rep("  const fail = (t, tip) => { ok = false; say(t, 'er'); if (tip) say(tip, 'tip'); };", "  const fail = (t, tip) => { ok = false; if (t) say(t, 'er'); if (tip) say(tip, 'tip'); };")
 # ls: reading a folder needs r; -l shows the real locks
 rep("        if (n.type === 'file') return say(n.name);",
-    "        if (n.type === 'file') return flags.has('l') ? out.push({ h: `${modeHTML(n)} <span class=\"mute\">${own(n).padEnd(4)} ${grp(n).padEnd(6)} ${String(n.content.length).padStart(5)} Oct 18</span> ${esc(n.name)}`, t: n.name }) : say(n.name);\n        if (!can(n, 4)) { fail(`ls: cannot open directory '${p}': Permission denied`, `Listing a folder needs its r key. You are ${sh.user}, and your set of keys for it has no r.`); return; }")
+    "        if (n.type === 'file') return flags.has('l') ? out.push({ h: `${modeHTML(n)} <span class=\"mute\">${own(n).padEnd(4)} ${grp(n).padEnd(6)} ${String(n.content.length).padStart(5)} Oct 18</span> ${esc(n.name)}`, t: n.name }) : say(n.name);\n        if (!can(n, 4)) { fail(`ls: cannot open directory '${p}': Permission denied`, lockTip(`Listing a folder needs its r key. You are ${sh.user}, and your set of keys for it has no r.`)); return; }")
 rep("        if (flags.has('l')) names.forEach((c) => out.push({ h: `<span class=\"mute\">${c.type === 'dir' ? 'drwxr-xr-x' : '-rw-r--r--'} kid kid ${String(c.type === 'dir' ? 4096 : (c.content || '').length).padStart(5)} Oct 18</span> ${c.type === 'dir' ? `<span class=\"dir\">${esc(c.name)}</span>` : esc(c.name)}`, t: c.name }));",
     """        if (flags.has('l') && once('lsl')) say('(How to read each line: the first letter is d for a folder or - for a file. The next nine letters are the lock: three sets of keys, for the owner, the group and everyone else. r = read, w = write, x = run, - = no key. The set that works for you is underlined. Then: the owner, the group, the size and the date.)', 'tip');
         if (flags.has('l')) names.forEach((c) => { const m = c.id ? c : c.name === '.' ? n : n.parent ?? n; out.push({ h: `${modeHTML(m)} <span class="mute">${own(m).padEnd(4)} ${grp(m).padEnd(6)} ${String(c.type === 'dir' ? 4096 : (c.content || '').length).padStart(5)} Oct 18</span> ${c.type === 'dir' ? `<span class="dir">${esc(c.name)}</span>` : esc(c.name)}${c.type === 'file' && modeOf(c) & 0o111 ? '<span class="exe">*</span>' : ''}`, t: c.name }); });""")
 # cd: going into a folder needs x
 rep("      else if (n === sh.cwd && target !== '.') say(`(You are already in ${pretty(n)}.)`, 'mute');",
-    "      else if (!can(n, 1)) { fail(`cd: ${target}: Permission denied`); out.push({ h: shelly(`Going <b>into</b> a folder needs its <b>x</b> key. You are ${whoYouAre(n)}, and ${setName[keySet(n)]} for ${esc(n.name)} is ${modeHTML(n)}: no x.`), t: '' }); }\n      else if (n === sh.cwd && target !== '.') say(`(You are already in ${pretty(n)}.)`, 'mute');")
+    "      else if (!can(n, 1)) { fail(`cd: ${target}: Permission denied`); if (!taught('locks')) say(NOT_YET, 'tip'); else out.push({ h: shelly(`Going <b>into</b> a folder needs its <b>x</b> key. You are ${whoYouAre(n)}, and ${setName[keySet(n)]} for ${esc(n.name)} is ${modeHTML(n)}: no x.`), t: '' }); }\n      else if (n === sh.cwd && target !== '.') say(`(You are already in ${pretty(n)}.)`, 'mute');")
 # cat: reading needs r. Piped words come in too.
 rep("      if (!rest.length) { sh.catMode = true;", "      if (!rest.length && stdin !== undefined) { stdin.split('\\n').forEach((l) => say(l)); break; }\n      if (!rest.length) { sh.catMode = true;")
 rep("        else { info.hits.push(pathOf(n)); n.content.split('\\n').forEach((l) => say(l)); }",
-    """        else if (!can(n, 4)) { info.denied = true; fail(`cat: ${p}: Permission denied`); out.push({ h: shelly(`The lock on ${esc(n.name)} is ${modeHTML(n)}. It belongs to ${esc(own(n))}. You are <b>${sh.user}</b>, ${whoYouAre(n)}. So you get ${setName[keySet(n)]}, and it has no <b>r</b> key. No entry!`), t: '' }); }
+    """        else if (!can(n, 4)) { info.denied = true; fail(`cat: ${p}: Permission denied`); if (!taught('locks')) say(NOT_YET, 'tip'); else out.push({ h: shelly(`The lock on ${esc(n.name)} is ${modeHTML(n)}. It belongs to ${esc(own(n))}. You are <b>${sh.user}</b>, ${whoYouAre(n)}. So you get ${setName[keySet(n)]}, and it has no <b>r</b> key. No entry!`), t: '' }); }
         else { info.hits.push(pathOf(n)); n.content.split('\\n').forEach((l) => say(l)); }""")
 # making things needs a w key on the folder they go in
 rep("            next = { id: 'n' + nid++, name: part, type: 'dir', content: '', children: [], parent: n };",
-    "            if (!can(n, 2)) { fail(`mkdir: cannot create directory '${p}': Permission denied`, `Making something inside ${pretty(n)} needs a w key for that folder, and ${sh.user} doesn't have one.`); n = null; break; }\n            next = { id: 'n' + nid++, name: part, type: 'dir', content: '', children: [], parent: n };")
+    "            if (!can(n, 2)) { fail(`mkdir: cannot create directory '${p}': Permission denied`, lockTip(`Making something inside ${pretty(n)} needs a w key for that folder, and ${sh.user} doesn't have one.`)); n = null; break; }\n            next = { id: 'n' + nid++, name: part, type: 'dir', content: '', children: [], parent: n };")
 rep("        const f = { id: 'n' + nid++, name, type: 'file', content: '', children: null, parent: d };",
-    "        if (!can(d, 2)) { fail(`touch: cannot touch '${p}': Permission denied`, `Making a file inside ${pretty(d)} needs a w key for that folder, and ${sh.user} doesn't have one.`); continue; }\n        const f = { id: 'n' + nid++, name, type: 'file', content: '', children: null, parent: d };")
+    "        if (!can(d, 2)) { fail(`touch: cannot touch '${p}': Permission denied`, lockTip(`Making a file inside ${pretty(d)} needs a w key for that folder, and ${sh.user} doesn't have one.`)); continue; }\n        const f = { id: 'n' + nid++, name, type: 'file', content: '', children: null, parent: d };")
 rep("        const from = s.parent, clash = parent.children.find((c) => c.name === newName);",
-    "        if (!can(parent, 2) || (cmd === 'mv' && !can(s.parent, 2))) { fail(`${cmd}: cannot ${cmd === 'cp' ? 'create' : 'move'} '${sp}': Permission denied`, `That needs a w key on the folder${cmd === 'mv' ? 's it moves between' : ' it goes into'}.`); continue; }\n        const from = s.parent, clash = parent.children.find((c) => c.name === newName);")
+    "        if (!can(parent, 2) || (cmd === 'mv' && !can(s.parent, 2))) { fail(`${cmd}: cannot ${cmd === 'cp' ? 'create' : 'move'} '${sp}': Permission denied`, lockTip(`That needs a w key on the folder${cmd === 'mv' ? 's it moves between' : ' it goes into'}.`)); continue; }\n        const from = s.parent, clash = parent.children.find((c) => c.name === newName);")
 rep("        if (cmd === 'cp') { const c = fixParents(clone(s, parent)); c.name = newName; parent.children.push(c); }",
     "        if (cmd === 'cp') { const c = unclaim(fixParents(clone(s, parent))); c.name = newName; parent.children.push(c); }")
 rep("        info.removed.push(pathOf(n)); n.parent.children.splice(n.parent.children.indexOf(n), 1);",
-    "        if (!can(n.parent, 2)) { fail(`rm: cannot remove '${p}': Permission denied`, `Deleting needs a w key on the folder ${pretty(n.parent)}, and ${sh.user} doesn't have one.`); continue; }\n        info.removed.push(pathOf(n)); n.parent.children.splice(n.parent.children.indexOf(n), 1);")
+    "        if (!can(n.parent, 2)) { fail(`rm: cannot remove '${p}': Permission denied`, lockTip(`Deleting needs a w key on the folder ${pretty(n.parent)}, and ${sh.user} doesn't have one.`)); continue; }\n        info.removed.push(pathOf(n)); n.parent.children.splice(n.parent.children.indexOf(n), 1);")
 # the new commands
 rep("    case 'help': say('Words I know: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history', 'whoami', 'date'].join('  ')); say('There might be a few secret ones too...', 'tip'); break;",
     """    case 'help': say('New words: ' + ['whoami', 'hostname', '>', '>>', 'nano', 'which', './', 'ls -l', 'chmod', 'echo $PATH', 'id', 'groups', 'chgrp', 'su', 'exit', 'sudo', 'grep', 'wc', 'sort', 'head', '|'].join('  ')); say('Jelly Shell words: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  ')); break;
@@ -103,7 +103,7 @@ rep("    case 'whoami': say('kid'); break;", "    case 'whoami': say(sh.user); b
 rep("""    case 'sudo': fail('kid is not in the sudoers file. This incident will be reported.', 'sudo means "super-user do". Only the computer\\'s boss account is allowed. (We told your mum.)'); break;
     case 'exit': say('There is no exit. Only more learning.', 'tip');""",
     """    case 'sudo': sudoRun(rest, line, say, fail, info, out); break;
-    case 'exit': if (sh.su.length) { const b = sh.su.pop(); sh.user = b.user; sh.home = b.home; say(`(exit: you are ${sh.user} again, with ${sh.user}'s keys.)`, 'mute'); break; } say('There is no exit. Only more learning.', 'tip');""")
+    case 'exit': if (sh.su.length) { const b = sh.su.pop(); sh.user = b.user; sh.home = b.home; say(`(exit: you are ${sh.user} again${taught('locks') ? `, with ${sh.user}'s keys` : ''}.)`, 'mute'); break; } say('There is no exit. Only more learning.', 'tip');""")
 # anything else might be a program: a path like ./hello, or a name on the PATH
 rep("""    default: {
       if (BIN.includes(cmd.toLowerCase())""", """    default: {
@@ -120,13 +120,13 @@ rep("""      const existing = find(redirect.path);
       else if (existing) existing.content""", """      const existing = find(redirect.path), [rdp, rname] = splitPath(redirect.path), rd = existing ? existing.parent : find(rdp);
       info.wrote = { name: existing?.name ?? rname, mode: redirect.mode };
       if (existing?.type === 'dir') fail(`${redirect.path}: Is a directory`);
-      else if (existing && !can(existing, 2)) fail(`${redirect.path}: Permission denied`, `Writing needs the w key, and your set of keys for ${existing.name} has none.`);
-      else if (!existing && rd?.type === 'dir' && !can(rd, 2)) fail(`${redirect.path}: Permission denied`, `Making a new file in ${pretty(rd)} needs a w key for that folder.`);
+      else if (existing && !can(existing, 2)) fail(`${redirect.path}: Permission denied`, lockTip(`Writing needs the w key, and your set of keys for ${existing.name} has none.`));
+      else if (!existing && rd?.type === 'dir' && !can(rd, 2)) fail(`${redirect.path}: Permission denied`, lockTip(`Making a new file in ${pretty(rd)} needs a w key for that folder.`));
       else if (existing) existing.content""")
 rep("  return { out, ok, info, cmd, args, toks };\n}\n\n/* terminal UI */", "  return { out, ok, info, cmd, args, toks };\n}\n\n/* terminal UI */")
 # Tab: a first word with a slash in it is a path, like ./hello
 rep("  if (first) options = [...BIN, 'cd', 'help', 'history', 'whoami'].filter", "  if (first && !cur.includes('/')) options = [...new Set([...BIN, ...BUILTIN, ...(find(pathOf(sh.home) + '/bin')?.children ?? []).map((c) => c.name)])].filter")
-# file tree: a ▶ for programs and a padlock where your keys don't work
+# file tree: a ▶ for programs, and your keys once they've been taught
 rep("${pathOf(n) === spot ? `<i class=\"jelly-spot\">${bean(spotColor)}</i>` : ''}${here ?", "${mapTags(n)}${pathOf(n) === spot ? `<i class=\"jelly-spot\">${bean(spotColor)}</i>` : ''}${here ?")
 rep("const MAN = {\n", """const MAN = {
   whoami: ['whoami - who am I?', 'whoami', 'Prints the name of the account you are using right now.', 'whoami'],

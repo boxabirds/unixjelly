@@ -78,6 +78,11 @@ The set of keys that applies to the person typing is underlined.
   - The mission phase shows the terminal on the left and the file tree (or browser, or git map) on the right.
 
   The footer holds Back, Start over (only once there is something to undo), the three phase pills and the main button.
+- **Keys:**
+  - **Enter** and **→** do what the main button does.
+  - **←** goes back a phase in the same lesson.
+  - Mid-mission, → says to finish first rather than leaving.
+- **The end of a mission** keeps the last output on screen. The task card says the mission is done, and the main button becomes **Collect your jelly**. Only that button opens the "you earned a jelly" card.
 
 ## Story pictures
 
@@ -101,7 +106,7 @@ Each lesson's story phase has one picture, made in HTML and CSS rather than imag
 | **YOU ARE HERE** | the folder you are standing in |
 | `~ home` and `the very top` | home and `/` |
 | **▶ program** | a file that has an `x` key, in Jelly Shell 2 |
-| the keys you hold, like `r w -` | from the `ls -l` lesson onwards; a grey `-` means no key |
+| the keys you hold, like `r w -` | only once "Read the locks" has been taught (`taught('locks')`); a grey `-` means no key |
 
 There is no padlock, because it could mean "can't read" or "can't change". Clicking a folder types its `cd` command for you.
 

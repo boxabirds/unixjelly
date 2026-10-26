@@ -1744,7 +1744,7 @@ function run1(line, stdin) {
         const n = find(p);
         if (!n) { fail(`ls: cannot access '${p}': No such file or directory`); return why(p); }
         if (n.type === 'file') return flags.has('l') ? out.push({ h: `${modeHTML(n)} <span class="mute">${own(n).padEnd(4)} ${grp(n).padEnd(6)} ${String(n.content.length).padStart(5)} Oct 18</span> ${esc(n.name)}`, t: n.name }) : say(n.name);
-        if (!can(n, 4)) { fail(`ls: cannot open directory '${p}': Permission denied`, `Listing a folder needs its r key. You are ${sh.user}, and your set of keys for it has no r.`); return; }
+        if (!can(n, 4)) { fail(`ls: cannot open directory '${p}': Permission denied`, lockTip(`Listing a folder needs its r key. You are ${sh.user}, and your set of keys for it has no r.`)); return; }
         info.target = pathOf(n); if (n !== sh.cwd) info.peek = true;
         if (targets.length > 1) say(`${p}:`, 'mute');
         const kids = [...n.children].filter((c) => info.all || !c.name.startsWith('.')).sort((a, b) => a.name.localeCompare(b.name));
@@ -1762,7 +1762,7 @@ function run1(line, stdin) {
       const target = rest[0] ?? '~', n = find(target);
       if (!n) { fail(`cd: ${target}: No such file or directory`); why(target); }
       else if (n.type !== 'dir') fail(`cd: ${target}: Not a directory`, `Tip: ${target} is a file. You can't walk into a file, but you can read it with cat.`);
-      else if (!can(n, 1)) { fail(`cd: ${target}: Permission denied`); out.push({ h: shelly(`Going <b>into</b> a folder needs its <b>x</b> key. You are ${whoYouAre(n)}, and ${setName[keySet(n)]} for ${esc(n.name)} is ${modeHTML(n)}: no x.`), t: '' }); }
+      else if (!can(n, 1)) { fail(`cd: ${target}: Permission denied`); if (!taught('locks')) say(NOT_YET, 'tip'); else out.push({ h: shelly(`Going <b>into</b> a folder needs its <b>x</b> key. You are ${whoYouAre(n)}, and ${setName[keySet(n)]} for ${esc(n.name)} is ${modeHTML(n)}: no x.`), t: '' }); }
       else if (n === sh.cwd && target !== '.') say(`(You are already in ${pretty(n)}.)`, 'mute');
       else { sh.cwd = n; say(`(You are now in ${pretty(n)}${n === sh.home ? ', your home' : n === sh.root ? ', the very top' : ''}.)`, 'mute'); }
       break;
@@ -1775,7 +1775,7 @@ function run1(line, stdin) {
         const n = find(p);
         if (!n) { fail(`cat: ${p}: No such file or directory`); why(p); }
         else if (n.type === 'dir') fail(`cat: ${p}: Is a directory`, 'Tip: cat reads files. To look inside a folder, use ls.');
-        else if (!can(n, 4)) { info.denied = true; fail(`cat: ${p}: Permission denied`); out.push({ h: shelly(`The lock on ${esc(n.name)} is ${modeHTML(n)}. It belongs to ${esc(own(n))}. You are <b>${sh.user}</b>, ${whoYouAre(n)}. So you get ${setName[keySet(n)]}, and it has no <b>r</b> key. No entry!`), t: '' }); }
+        else if (!can(n, 4)) { info.denied = true; fail(`cat: ${p}: Permission denied`); if (!taught('locks')) say(NOT_YET, 'tip'); else out.push({ h: shelly(`The lock on ${esc(n.name)} is ${modeHTML(n)}. It belongs to ${esc(own(n))}. You are <b>${sh.user}</b>, ${whoYouAre(n)}. So you get ${setName[keySet(n)]}, and it has no <b>r</b> key. No entry!`), t: '' }); }
         else { info.hits.push(pathOf(n)); n.content.split('\n').forEach((l) => say(l)); }
       }
       break;
@@ -1794,7 +1794,7 @@ function run1(line, stdin) {
           let next = n.children.find((c) => c.name === part);
           if (!next) {
             if (i < parts.length - 1 && !flags.has('p')) { fail(`mkdir: cannot create directory '${p}': No such file or directory`, 'Tip: add -p to build all the folders on the way.'); n = null; break; }
-            if (!can(n, 2)) { fail(`mkdir: cannot create directory '${p}': Permission denied`, `Making something inside ${pretty(n)} needs a w key for that folder, and ${sh.user} doesn't have one.`); n = null; break; }
+            if (!can(n, 2)) { fail(`mkdir: cannot create directory '${p}': Permission denied`, lockTip(`Making something inside ${pretty(n)} needs a w key for that folder, and ${sh.user} doesn't have one.`)); n = null; break; }
             next = { id: 'n' + nid++, name: part, type: 'dir', content: '', children: [], parent: n }; n.children.push(next); sortKids(n); sh.userDirs.add(next.id);
           }
           if (next.type !== 'dir') { fail(`mkdir: '${part}' is a file`); n = null; break; }
@@ -1811,7 +1811,7 @@ function run1(line, stdin) {
         if (find(p)) continue;
         const [dp, name] = splitPath(p), d = find(dp);
         if (!d || d.type !== 'dir') { fail(`touch: cannot touch '${p}': No such file or directory`); continue; }
-        if (!can(d, 2)) { fail(`touch: cannot touch '${p}': Permission denied`, `Making a file inside ${pretty(d)} needs a w key for that folder, and ${sh.user} doesn't have one.`); continue; }
+        if (!can(d, 2)) { fail(`touch: cannot touch '${p}': Permission denied`, lockTip(`Making a file inside ${pretty(d)} needs a w key for that folder, and ${sh.user} doesn't have one.`)); continue; }
         const f = { id: 'n' + nid++, name, type: 'file', content: '', children: null, parent: d }; d.children.push(f); sortKids(d); info.created.push(pathOf(f));
       }
       break;
@@ -1828,7 +1828,7 @@ function run1(line, stdin) {
         if (!parent || parent.type !== 'dir') { fail(`${cmd}: cannot ${cmd === 'cp' ? 'create' : 'move to'} '${dst}': No such file or directory`); continue; }
         if (cmd === 'mv' && s.type === 'dir' && within(parent, s)) { fail(`mv: cannot move '${sp}' into itself`, 'Nice try! A folder cannot fit inside itself. That would be like a box inside the same box.'); continue; }
         if (s === sh.root || s === sh.home) { fail(`${cmd}: let's not move that one. It holds everything!`); continue; }
-        if (!can(parent, 2) || (cmd === 'mv' && !can(s.parent, 2))) { fail(`${cmd}: cannot ${cmd === 'cp' ? 'create' : 'move'} '${sp}': Permission denied`, `That needs a w key on the folder${cmd === 'mv' ? 's it moves between' : ' it goes into'}.`); continue; }
+        if (!can(parent, 2) || (cmd === 'mv' && !can(s.parent, 2))) { fail(`${cmd}: cannot ${cmd === 'cp' ? 'create' : 'move'} '${sp}': Permission denied`, lockTip(`That needs a w key on the folder${cmd === 'mv' ? 's it moves between' : ' it goes into'}.`)); continue; }
         const from = s.parent, clash = parent.children.find((c) => c.name === newName);
         if (clash === s) continue;
         if (clash) parent.children.splice(parent.children.indexOf(clash), 1);
@@ -1848,7 +1848,7 @@ function run1(line, stdin) {
         if (n === sh.root) { fail('WHOA. That would delete the ENTIRE computer.', 'The jelly police have stopped you. On a real computer, never type that.'); continue; }
         if (n.type === 'dir' && !flags.has('r')) { info.dirError = true; fail(`rm: cannot remove '${p}': Is a directory`, 'rm refuses to delete folders unless you add -r. That is rm being careful for once.'); continue; }
         if (within(sh.cwd, n)) { fail(`rm: you are standing inside '${p}'!`, 'Step out first with cd .. so you do not fall in.'); continue; }
-        if (!can(n.parent, 2)) { fail(`rm: cannot remove '${p}': Permission denied`, `Deleting needs a w key on the folder ${pretty(n.parent)}, and ${sh.user} doesn't have one.`); continue; }
+        if (!can(n.parent, 2)) { fail(`rm: cannot remove '${p}': Permission denied`, lockTip(`Deleting needs a w key on the folder ${pretty(n.parent)}, and ${sh.user} doesn't have one.`)); continue; }
         info.removed.push(pathOf(n)); n.parent.children.splice(n.parent.children.indexOf(n), 1);
       }
       if (info.removed.length) say(`(${info.removed.length === 1 ? 'gone' : 'all gone'}. Forever. There is no recycle bin.)`, 'mute');
@@ -1887,7 +1887,7 @@ function run1(line, stdin) {
     case 'hostname': say('jelly'); break;
     case 'date': say(new Date().toString().slice(0, 24)); break;
     case 'sudo': sudoRun(rest, line, say, fail, info, out); break;
-    case 'exit': if (sh.su.length) { const b = sh.su.pop(); sh.user = b.user; sh.home = b.home; say(`(exit: you are ${sh.user} again, with ${sh.user}'s keys.)`, 'mute'); break; } say('There is no exit. Only more learning.', 'tip'); say('(On a real computer, exit closes the terminal window.)', 'mute'); break;
+    case 'exit': if (sh.su.length) { const b = sh.su.pop(); sh.user = b.user; sh.home = b.home; say(`(exit: you are ${sh.user} again${taught('locks') ? `, with ${sh.user}'s keys` : ''}.)`, 'mute'); break; } say('There is no exit. Only more learning.', 'tip'); say('(On a real computer, exit closes the terminal window.)', 'mute'); break;
     case 'sl': out.push({ h: `<div class="train">${esc(String.raw`      ====        ________
   _D _|  |_______/        \__I_I_____
    |(_)---  |   H\________/ |   |
@@ -1933,8 +1933,8 @@ function run1(line, stdin) {
       const existing = find(redirect.path), [rdp, rname] = splitPath(redirect.path), rd = existing ? existing.parent : find(rdp);
       info.wrote = { name: existing?.name ?? rname, mode: redirect.mode };
       if (existing?.type === 'dir') fail(`${redirect.path}: Is a directory`);
-      else if (existing && !can(existing, 2)) fail(`${redirect.path}: Permission denied`, `Writing needs the w key, and your set of keys for ${existing.name} has none.`);
-      else if (!existing && rd?.type === 'dir' && !can(rd, 2)) fail(`${redirect.path}: Permission denied`, `Making a new file in ${pretty(rd)} needs a w key for that folder.`);
+      else if (existing && !can(existing, 2)) fail(`${redirect.path}: Permission denied`, lockTip(`Writing needs the w key, and your set of keys for ${existing.name} has none.`));
+      else if (!existing && rd?.type === 'dir' && !can(rd, 2)) fail(`${redirect.path}: Permission denied`, lockTip(`Making a new file in ${pretty(rd)} needs a w key for that folder.`));
       else if (existing) existing.content = redirect.mode === '>>' && existing.content ? existing.content + '\n' + text : text;
       else {
         const [dp, name] = splitPath(redirect.path), d = find(dp);
@@ -2093,8 +2093,10 @@ const isCmd = (e, c) => e.type === 'cmd' && e.cmd === c;
 const kidFile = (name) => find(`/home/kid/${name}`);
 const lab = (parts, size = 1.1) => `<div class="lsl" style="--n:${parts.length};--s:${size}em;--v:${size * 1.5}vw">${parts.map(([t, c]) => `<span class="pv ${c}">${t}</span>`).join('')}${parts.map(([, , l]) => `<small>${l}</small>`).join('')}</div>`;
 // Every lesson only uses what Jelly Shell or an earlier lesson here has taught.
+// teaches: the concepts this lesson introduces. previews: ones it mentions on purpose before their own lesson.
+// Code that shows a concept checks taught(concept) first; tests/prereqs.mjs checks every screen. See docs/pedagogy.md.
 const LESSONS = [
-  { id: 'whoami', word: 'whoami', name: 'Who am I?', stands: 'Users and accounts', color: '#9b5cff', seq: true, onlyHere: true,
+  { id: 'whoami', teaches: ['accounts', 'prompt'], word: 'whoami', name: 'Who am I?', stands: 'Users and accounts', color: '#9b5cff', seq: true, onlyHere: true,
     visual: `<div class="permviz"><p class="tv-note">The prompt, taken apart:</p>${lab([['kid', 'u', 'who you are'], ['@', 'n', 'at'], ['jelly', 'g', 'which computer'], [':', 'n', ''], ['~', 'o', 'where you are'], ['$', 'n', 'ready!']], 1.6)}</div>`,
     title: 'One computer, lots of people', why: 'A computer can be shared. Everyone who uses it gets an <b>account</b>: a name, and a home folder. Here there are two people: <b>kid</b> (you) and <b>sib</b>, your little sibling. The start of the line where you type, <code>kid@jelly:~$</code>, is the <b>prompt</b>: the shell\'s way of saying "your turn". It says who you are, which computer, and where you are. (To a chatbot, a prompt is what <i>you</i> type. In the shell, it\'s what the shell shows <i>you</i>.)',
     mnem: 'who @ which computer : where $',
@@ -2104,7 +2106,7 @@ const LESSONS = [
       { t: 'Ask the computer its own name: <code>hostname</code>', ok: (e) => isCmd(e, 'hostname') },
       { t: 'Peek into the folder where everyone\'s homes are: <code>ls /home</code>. Who else lives here?', ok: (e) => isCmd(e, 'ls') && e.info.target === '/home' },
     ] },
-  { id: 'redirect', word: '>', name: 'Write into files', stands: 'Redirect: > and >>', color: '#ff8a2b', seq: true, onlyHere: true,
+  { id: 'redirect', teaches: ['redirect'], word: '>', name: 'Write into files', stands: 'Redirect: > and >>', color: '#ff8a2b', seq: true, onlyHere: true,
     visual: `<div class="treeviz"><div class="tz-eq"><code>echo hi</code> → the screen</div><div class="tz-eq"><code>echo hi &gt; note.txt</code> → into note.txt</div><div class="tz-eq"><code>echo more &gt;&gt; note.txt</code> → onto the end</div></div>`,
     title: 'Point the words into a file', why: 'Normally a command\'s words go to the screen. The arrow <code>&gt;</code> points them somewhere else: into a file. So <code>echo</code> can write files! You will need this in the next lessons, to write your very own program.',
     mnem: 'One arrow wipes. Two arrows add.',
@@ -2115,7 +2117,7 @@ const LESSONS = [
       { t: 'Add a line to the end: <code>echo and jelly &gt;&gt; note.txt</code>', ok: (e) => e.info.wrote?.name === 'note.txt' && e.info.wrote.mode === '>>' },
       { t: 'Read it again: <code>cat note.txt</code>. Both lines are there!', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('/note.txt')) && kidFile('note.txt')?.content.includes('\n') },
     ] },
-  { id: 'nano', word: 'nano', name: 'Change a file', stands: 'nano: a little text editor', color: '#3a5bff', seq: true, onlyHere: true,
+  { id: 'nano', teaches: ['nano'], word: 'nano', name: 'Change a file', stands: 'nano: a little text editor', color: '#3a5bff', seq: true, onlyHere: true,
     setup: () => ensure('/home/kid/note.txt', () => { run1('echo I like cheese > /home/kid/note.txt'); run1('echo and jelly >> /home/kid/note.txt'); }, 'note.txt wasn\'t here, so Shelly wrote it again.'),
     visual: `<div class="nanoviz"><div class="t"><span>GNU nano</span><span>note.txt</span></div><div class="b">I like cheese<br/>and jelly<span class="cur">▌</span></div><div class="k"><b>^O</b> Save &nbsp; <b>^X</b> Exit</div></div><p class="tv-note" style="text-align:center">The <b>^</b> means the <kbd>Ctrl</kbd> key.</p>`,
     title: 'How do you change a file?', why: 'With <code>&gt;</code> you can only start a file again or add to the end. To change what is already there, you need a <b>text editor</b>. <b>nano</b> is a small one that lives right inside the terminal. Move around with the arrow keys and type as normal. There is no menu to click: you use the <kbd>Ctrl</kbd> key, and the bottom line tells you which.',
@@ -2127,7 +2129,7 @@ const LESSONS = [
       { t: 'Leave nano: <kbd>Ctrl</kbd>+<kbd>X</kbd>', ok: (e) => e.type === 'nano' && e.exit },
       { t: 'Check your change: <code>cat note.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.includes('/home/kid/note.txt') },
     ] },
-  { id: 'which', word: 'which', name: 'Programs are files', stands: 'which = where is that program?', color: '#3a5bff', seq: true, onlyHere: true,
+  { id: 'which', teaches: ['programs'], word: 'which', name: 'Programs are files', stands: 'which = where is that program?', color: '#3a5bff', seq: true, onlyHere: true,
     visual: `<div class="treeviz"><div class="tz-eq">you type <code>ls</code></div><div class="tz-eq">the shell runs <code>/bin/ls</code></div><p class="tv-note">/bin is short for binaries: programs.</p></div>`,
     title: 'Every command is a file', why: 'Remember Backstage in Jelly Shell? When you type <code>ls</code>, the shell looks in a folder called <code>/bin</code> and finds a file called <b>ls</b>. That file is the program. Every command you know is just a file in a folder. <code>which</code> tells you where.',
     mnem: 'A command is a file. which says where.',
@@ -2137,7 +2139,7 @@ const LESSONS = [
       { t: 'Look at all the programs: <code>ls /bin</code>', ok: (e) => isCmd(e, 'ls') && e.info.target === '/bin' },
       { t: 'Now look for cd: <code>which cd</code>. Where is it?', ok: (e) => isCmd(e, 'which') && e.args.includes('cd') },
     ] },
-  { id: 'dotslash', word: './', name: 'Make your own command', stands: './ = the one in this folder', color: '#62c934', seq: true, onlyHere: true,
+  { id: 'dotslash', teaches: ['scripts'], word: './', name: 'Make your own command', stands: './ = the one in this folder', color: '#62c934', seq: true, onlyHere: true,
     visual: `<div class="treeviz"><div class="tz-eq"><code>./hello</code></div><p class="tv-note"><b>.</b> means this folder (like <code>git add .</code>). <b>/</b> means go inside. So: the hello right here.</p></div>`,
     title: 'Write a program', why: 'If commands are just files, you can make one! The simplest kind of program is a <b>script</b>: a file full of commands, one per line. The shell reads it and does each line in order. Let\'s write one with nano, then try to run it. Something will go wrong. That is the cliffhanger: the next two lessons explain it.',
     mnem: 'A script is a list of commands.',
@@ -2149,7 +2151,7 @@ const LESSONS = [
       { t: 'Run it by its name: <code>hello</code>', ok: (e) => e.cmd === 'hello' && !e.ok },
       { t: 'The shell didn\'t look here. Say where it is: <code>./hello</code>', ok: (e) => e.cmd === './hello' && e.info.denied },
     ] },
-  { id: 'lsl', word: 'ls -l', name: 'Read the locks', stands: 'ls -l = the long list', color: '#ff4d6d', seq: true, onlyHere: true,
+  { id: 'lsl', teaches: ['locks'], word: 'ls -l', name: 'Read the locks', stands: 'ls -l = the long list', color: '#ff4d6d', seq: true, onlyHere: true,
     setup: () => ensure('/home/kid/hello', () => run1(`echo "${HELLO}" > /home/kid/hello`), 'Your hello program wasn\'t here, so Shelly wrote it again.'),
     visual: `<div class="permviz"><p class="tv-note">Your hello program, as <code>ls -l</code> shows it:</p>${lab([['-', 't', 'file'], ['rw-', 'u', 'owner\'s keys'], ['r--', 'g', 'group\'s keys'], ['r--', 'o', 'everyone else\'s keys'], ['kid', 'n', 'owner'], ['kid', 'n', 'group'], ['hello', 'n', 'name']])}<p class="tv-note"><b>r</b> read · <b>w</b> write · <b>x</b> run · <b>-</b> no key</p></div>`,
     title: 'Every file has a lock', why: 'Here is why <code>./hello</code> said Permission denied. Every file has a <b>lock</b> with three sets of keys: one set for its <b>owner</b>, one for its <b>group</b>, and one for <b>everyone else</b>. Each set can have up to three keys: <b>r</b> to read, <b>w</b> to write, <b>x</b> to run. Look at hello\'s lock in the picture. Nobody has an <b>x</b>, not even you!',
@@ -2160,7 +2162,7 @@ const LESSONS = [
       { t: 'Now look at the real programs: <code>ls -l /bin</code>. What do they have that hello doesn\'t?', ok: (e) => isCmd(e, 'ls') && e.args.some((a) => /^-\w*l/.test(a)) && e.info.target === '/bin' },
       { t: 'Who owns the homes? <code>ls -l /home</code>', ok: (e) => isCmd(e, 'ls') && e.args.some((a) => /^-\w*l/.test(a)) && e.info.target === '/home' },
     ] },
-  { id: 'chmod', word: 'chmod', name: 'Change the lock', stands: 'CHange MODe', color: '#ffc61a', seq: true, onlyHere: true,
+  { id: 'chmod', teaches: ['chmod'], word: 'chmod', name: 'Change the lock', stands: 'CHange MODe', color: '#ffc61a', seq: true, onlyHere: true,
     setup: () => ensure('/home/kid/hello', () => run1(`echo "${HELLO}" > /home/kid/hello`), 'Your hello program wasn\'t here, so Shelly wrote it again.'),
     visual: `<div class="permviz"><p class="tv-note"><code>chmod u+x hello</code> means:</p>${lab([['u', 'u', 'who: u = owner'], ['+', 'n', '+ give, - take'], ['x', 'g', 'which keys'], ['hello', 'n', 'which file']], 1.6)}<p class="tv-note"><b>u</b> owner (it means user) · <b>g</b> group · <b>o</b> others · <b>a</b> all</p></div>`,
     title: 'Give yourself the x key', why: 'The owner of a file can change its lock. The command is <code>chmod</code>: CHange MODe. (Mode is the computer\'s word for the lock.) You say <b>who</b>, then <b>+</b> to give keys or <b>-</b> to take them away, then <b>which keys</b>.',
@@ -2171,7 +2173,7 @@ const LESSONS = [
       { t: 'Check the lock: <code>ls -l</code>. Spot the new x.', ok: (e) => isCmd(e, 'ls') && e.args.some((a) => /^-\w*l/.test(a)) },
       { t: 'Run your program: <code>./hello</code>', ok: (e) => e.info.ran?.endsWith('/hello') && e.ok },
     ] },
-  { id: 'path', word: 'PATH', name: 'Name it anything', stands: 'PATH: where the shell looks', color: '#9b5cff', seq: true, onlyHere: true,
+  { id: 'path', teaches: ['path'], word: 'PATH', name: 'Name it anything', stands: 'PATH: where the shell looks', color: '#9b5cff', seq: true, onlyHere: true,
     setup: () => { if (!find('/home/kid/bin/hi')) ensure('/home/kid/hello', () => { run1(`echo "${HELLO}" > /home/kid/hello`); run1('chmod u+x /home/kid/hello'); }, 'Your hello program wasn\'t here, so Shelly wrote it again and gave you the x key.'); },
     visual: `<div class="treeviz"><div class="tz-eq"><code>$PATH</code> = <code>/bin:/home/kid/bin</code></div><p class="tv-note">The shell looks in /bin first, then in your own bin. The : just separates them.</p></div>`,
     title: 'Your own command, from anywhere', why: 'How does the shell know to look in /bin? It has a list of folders to search, called the <b>PATH</b>. On this computer (and on lots of real ones, like Ubuntu), the list includes a <code>bin</code> folder in your home. Put a program in there, and you can run it from anywhere, just by its name. Like a real command. Because it is one!',
@@ -2183,7 +2185,7 @@ const LESSONS = [
       { t: 'Move hello in there, and give it a new name: <code>mv hello ~/bin/hi</code>', ok: (e) => isCmd(e, 'mv') && (find('/home/kid/bin')?.children ?? []).some((c) => c.type === 'file' && modeOf(c) & 0o100) },
       { t: 'Go to the very top (<code>cd /</code>), then run it just by its name: <code>hi</code>', ok: (e) => !e.cmd.includes('/') && e.info.ran?.startsWith('/home/kid/bin/') },
     ] },
-  { id: 'groups', word: 'id', name: 'Groups', stands: 'id = my ID card', color: '#ff8a2b', seq: true, onlyHere: true,
+  { id: 'groups', teaches: ['groups'], previews: ['sudo'], word: 'id', name: 'Groups', stands: 'id = my ID card', color: '#ff8a2b', seq: true, onlyHere: true,
     visual: `<div class="permviz"><div class="grp-row"><b>kid</b> is in <span class="gchip">kid</span><span class="gchip">sudo</span><span class="gchip fam">family</span></div><div class="grp-row"><b>sib</b> is in <span class="gchip">sib</span><span class="gchip fam">family</span></div><p class="tv-note">A file that belongs to the <b>family</b> group gives its middle keys to both of you.</p></div>`,
     title: 'Clubs for sharing', why: 'A <b>group</b> is a club of users. Everyone has a group of their own, and people can join more. You and sib are both in the <b>family</b> group. Give a folder to the family group, and its middle set of keys works for both of you. That is how people share things without giving keys to everybody.',
     mnem: 'Owner keys for me. Group keys for my club.',
@@ -2195,7 +2197,7 @@ const LESSONS = [
       { t: 'Give it to the family: <code>chgrp family comics</code>', ok: (e) => isCmd(e, 'chgrp') && grp(kidFile('comics') ?? {}) === 'family' },
       { t: 'Let the family add comics too: <code>chmod g+w comics</code>', ok: (e) => isCmd(e, 'chmod') && !!(modeOf(kidFile('comics') ?? {}) & 0o020) },
     ] },
-  { id: 'su', word: 'su', name: 'Be someone else', stands: 'su = Switch User', color: '#3a5bff', seq: true, onlyHere: true, keepUser: true,
+  { id: 'su', teaches: ['su'], word: 'su', name: 'Be someone else', stands: 'su = Switch User', color: '#3a5bff', seq: true, onlyHere: true, keepUser: true,
     setup: () => ensure('/home/kid/comics', () => { run1('mkdir /home/kid/comics'); claimNew(); run1('chgrp family /home/kid/comics'); run1('chmod g+w /home/kid/comics'); }, 'Your family comics folder wasn\'t here, so Shelly made it again.'),
     visual: `<div class="treeviz"><div class="tz-eq"><code>kid@jelly:~$</code> su sib</div><div class="tz-eq"><code>sib@jelly:/home/kid$</code></div><p class="tv-note">Same folder. Different person. Different keys.</p></div>`,
     title: 'See it through sib\'s eyes', why: 'Locks look different depending on who you are. <code>su</code> means <b>switch user</b>: for a while, everything you type happens as somebody else, with their keys. On a real computer it asks for their password, and you should only ever use your own. This pretend computer skips it, so you can see how your locks look from your sibling\'s side.',
@@ -2208,7 +2210,7 @@ const LESSONS = [
       { t: 'Now add a comic to the family folder: <code>touch comics/kapow.txt</code>', ok: (e) => isCmd(e, 'touch') && sh.user === 'sib' && e.info.created?.length },
       { t: 'Be you again: <code>exit</code>', ok: (e) => isCmd(e, 'exit') && sh.user === 'kid' },
     ] },
-  { id: 'sudo', word: 'sudo', name: 'The boss', stands: 'sudo = SUperuser DO', color: '#ff4d6d', seq: true, onlyHere: true,
+  { id: 'sudo', teaches: ['sudo', 'root-user'], word: 'sudo', name: 'The boss', stands: 'sudo = SUperuser DO', color: '#ff4d6d', seq: true, onlyHere: true,
     visual: `<div class="treeviz"><div class="tz-eq"><code>/</code> = the root <b>folder</b>: the very top</div><div class="tz-eq"><code>root</code> = the root <b>user</b>: the boss</div><p class="tv-note">Same word, two meanings. Sorry. Computer people love that word.</p></div>`,
     title: 'Root has two meanings', why: 'In Jelly Shell, <b>root</b> meant <code>/</code>, the folder at the very top. Here comes its second meaning: <b>root</b> is also the name of the <b>boss user</b>. Locks don\'t stop root. Root can read, change or delete anything. That is too much power to use all the time, so grown-ups who look after a computer borrow it for one command at a time, with <code>sudo</code>.',
     mnem: 'sudo: one command as the boss. Think first!',
@@ -2218,7 +2220,7 @@ const LESSONS = [
       { t: 'Who would you be with sudo? <code>sudo whoami</code>', ok: (e) => isCmd(e, 'sudo') && e.info.inner?.cmd === 'whoami' },
       { t: 'Open the chest as the boss: <code>sudo cat /tmp/chest.txt</code>', ok: (e) => isCmd(e, 'sudo') && e.info.inner?.info.hits?.includes('/tmp/chest.txt') },
     ] },
-  { id: 'grep', word: 'grep', name: 'Find the needle', stands: 'Global Regular Expression Print', color: '#62c934', seq: true, onlyHere: true,
+  { id: 'grep', teaches: ['grep'], word: 'grep', name: 'Find the needle', stands: 'Global Regular Expression Print', color: '#62c934', seq: true, onlyHere: true,
     visual: `<div class="grepviz"><div>Once upon a time</div><div class="hit">there was a <b>gerbil</b></div><div>who loved the dark.</div><div class="hit">The <b>gerbil</b> was called Gerald.</div></div>`,
     title: 'Search inside files', why: 'Its name is a mouthful from 1973: Global Regular Expression Print. Just remember: <b>grep</b> finds a word inside files, and prints every line that has it. Perfect for long files, like a story or a log of everything that happened in the kitchen.',
     mnem: 'grep: the word first, then where to look.',
@@ -2228,7 +2230,7 @@ const LESSONS = [
       { t: 'Find Gerald in the story: <code>grep gerald story.txt</code>. Hmm…', ok: (e) => isCmd(e, 'grep') && e.args.includes('story.txt') && e.info.matches === 0 },
       { t: 'Ignore the capitals: <code>grep -i gerald story.txt</code>', ok: (e) => isCmd(e, 'grep') && e.args.includes('-i') && e.info.matches > 0 },
     ] },
-  { id: 'pipe', word: '|', name: 'Pipes', stands: 'The pipe: | ', color: '#ffc61a', seq: true, onlyHere: true,
+  { id: 'pipe', teaches: ['pipe'], word: '|', name: 'Pipes', stands: 'The pipe: | ', color: '#ffc61a', seq: true, onlyHere: true,
     visual: `<div class="pipeviz"><span class="pv n">grep cookie kitchen.log</span><b>|</b><span class="pv n">wc -l</span><b>→</b><span class="pv u">5</span></div><p class="tv-note" style="text-align:center">The words come out of the left command and pour into the right one.</p>`,
     title: 'Who ate the cookies?', why: 'Your diary says somebody keeps eating your cookies. The kitchen keeps a <b>log</b>: a file with a line for everything that happens. The <b>pipe</b>, <code>|</code>, joins two commands: the words that come out of the first one pour into the second, instead of onto the screen. Small commands, joined with pipes, can answer big questions.',
     mnem: 'Left side pours into the right side.',
@@ -2238,7 +2240,7 @@ const LESSONS = [
       { t: 'Pipe it into another grep to see sib\'s visits: <code>grep cookie kitchen.log | grep sib</code>', ok: (e) => e.info.pipe?.length >= 2 && /sib/.test(e.line ?? '') },
       { t: 'How many cookies did sib eat? Add one more pipe: <code>grep cookie kitchen.log | grep sib | wc -l</code>', ok: (e) => e.info.pipe?.includes('wc') && /sib/.test(e.line ?? '') },
     ] },
-  { id: 'binary', word: '101', name: 'The number way', stands: 'Optional: binary locks', color: '#9b5cff', seq: true, onlyHere: true,
+  { id: 'binary', teaches: ['binary'], word: '101', name: 'The number way', stands: 'Optional: binary locks', color: '#9b5cff', seq: true, onlyHere: true,
     setup: () => ensure('/home/kid/note.txt', () => run1('echo I like cheese > /home/kid/note.txt'), 'note.txt wasn\'t here, so Shelly wrote it again.'),
     visual: `<table class="terms bin"><thead><tr><th>keys</th><th>switches</th><th>4+2+1</th><th>digit</th></tr></thead><tbody>
       <tr><td><code>rwx</code></td><td>1 1 1</td><td>4+2+1</td><td><b>7</b></td></tr><tr><td><code>rw-</code></td><td>1 1 0</td><td>4+2</td><td><b>6</b></td></tr>
@@ -2251,7 +2253,7 @@ const LESSONS = [
       { t: 'Let everyone read it again: <code>chmod 644 note.txt</code>', ok: (e) => isCmd(e, 'chmod') && e.ok && (modeOf(kidFile('note.txt') ?? {}) & 0o777) === 0o644 },
       { t: 'Try an impossible lock: <code>chmod 900 note.txt</code>. Why won\'t it work?', ok: (e) => isCmd(e, 'chmod') && e.info.badNumber },
     ] },
-  { id: 'quest', word: 'go!', name: 'The family clubhouse', stands: 'Final quest', color: '#62c934', seq: true, onlyHere: true, keepUser: true,
+  { id: 'quest', teaches: [], word: 'go!', name: 'The family clubhouse', stands: 'Final quest', color: '#62c934', seq: true, onlyHere: true, keepUser: true,
     title: 'Build the family clubhouse', why: 'Build a secret clubhouse folder that only the family can get into. Inside, put a secret-knock program that only <b>you</b> can run. Then do what real security people do: switch to sib and test your locks.',
     mnem: 'Build it. Lock it. Test it as someone else.',
     points: ['A folder needs <b>x</b> to go inside it, and <b>r</b> to list it.', 'Take keys away from <b>o</b>thers with <code>chmod o-rx</code>.', 'Write the knock program with <code>nano clubhouse/knock</code>, then give only yourself the x key.'],
@@ -2295,14 +2297,23 @@ const RECAP = {
 /* end recap data */
 
 
+// Has this child been taught this concept yet? Yes once they've finished the lesson that teaches it, or while they're in it.
+// Concepts this guide doesn't teach come from an earlier guide, so they count as taught.
+function taught(concept) {
+  const k = LESSONS.findIndex((L) => L.teaches?.includes(concept));
+  return k < 0 || !!store.done[LESSONS[k].id] || (!!PANELS[panelIdx]?.lesson && cur === k);
+}
 function complete(id) {
   if (store.done[id]) return;
   store.done[id] = true; save(); paintProgress();
   if (id === 'backstage') $('#p-backstage').dataset.played = '1';
   const item = ALL.find((a) => a.id === id);
-  if (!sectionDone(id)) toast(`Jelly collected: ${item.word ? item.word : item.name}!`);
+  const reviewing = PANELS[panelIdx]?.lesson?.id === id && $('#lcard').dataset.phase === 'mission';
+  if (reviewing) G.review = id; // look at what happened first, then press the button to collect
+  else if (!sectionDone(id)) toast(`Jelly collected: ${item.word ? item.word : item.name}!`);
   sound.ding(); confetti(item.color);
   if (LESSONS[cur]?.id === id) { paintSteps(); lessonStage?.hopAll(1.2); }
+  if (G.review === id) setTimeout(() => $('#lNext').focus({ preventScroll: true }), REDUCED ? 0 : 1200);
 }
 function check(ev) {
   if ((ev.type === 'cmd' || ev.type === 'edit') && !touched && PANELS[panelIdx]?.lesson) { touched = true; paintRestart(); }
@@ -2342,7 +2353,7 @@ const PANELS = [
 ];
 let cur = clamp(LESSONS.findIndex((l) => l.id === store.cur), 0, LESSONS.length - 1), lessonStage = null, panelIdx = -1;
 const navEl = $('#nav');
-navEl.innerHTML = PANELS.filter((p) => !p.ownButton).map((p, i, list) => `${i === 0 || list[i - 1].group !== p.group ? `<div class="ng">${esc(p.group)}</div>` : ''}<a class="ni" href="#${p.id}" data-id="${p.id}" style="--c:${p.color}"><span class="nd"></span><span class="nw">${esc(p.tag)}</span><span class="nl">${esc(p.label)}</span></a>`).join('');
+navEl.innerHTML = PANELS.filter((p) => !p.ownButton).map((p, i, list) => `${i === 0 || list[i - 1].group !== p.group ? `<div class="ng">${esc(p.group)}</div>` : ''}<a class="ni" href="#${p.id}" data-id="${p.id}" data-teaches="${(p.lesson?.teaches ?? []).join(' ')}" data-previews="${(p.lesson?.previews ?? []).join(' ')}" style="--c:${p.color}"><span class="nd"></span><span class="nw">${esc(p.tag)}</span><span class="nl">${esc(p.label)}</span></a>`).join('');
 navEl.addEventListener('click', (e) => { const a = e.target.closest('.ni'); if (!a) return; e.preventDefault(); go(a.dataset.id); });
 
 function go(id) {
@@ -2358,7 +2369,7 @@ function go(id) {
   navEl.querySelectorAll('.ni').forEach((a) => { const on = a.dataset.id === P.id; a.classList.toggle('cur', on); if (on) a.scrollIntoView({ block: 'nearest' }); });
   $('#recapBtn').classList.toggle('cur', P.id === 'recap');
   if (!REDUCED && from >= 0) el.animate([{ opacity: 0, transform: `translateY(${i >= from ? 28 : -28}px)` }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
-  G.card = false; renderGuide();
+  G.card = false; G.review = null; renderGuide();
   // Start every section with the big button ready, so the very next Enter carries on.
   requestAnimationFrame(() => { fitAll(el); const b = primaryButton(); if (b) b.focus({ preventScroll: true }); else document.activeElement?.blur(); });
   paintProgress();
@@ -2385,8 +2396,14 @@ addEventListener('keydown', (e) => {
 });
 addEventListener('keydown', (e) => {
   if (e.target.closest?.('input,textarea')) return;
-  if (e.key === 'PageDown' || e.key === 'ArrowRight') { e.preventDefault(); step(1); }
-  if (e.key === 'PageUp' || e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+  const fwd = e.key === 'PageDown' || e.key === 'ArrowRight', back = e.key === 'PageUp' || e.key === 'ArrowLeft';
+  if (!fwd && !back) return;
+  e.preventDefault();
+  if (G.card) return (fwd ? $('#unGo') : $('#unStay'))?.click();
+  if (!PANELS[panelIdx]?.lesson) return fwd ? (primaryButton() ?? { click: () => step(1) }).click() : step(-1);
+  if (back) { if (!$('#lBack').hidden) $('#lBack').click(); return; }
+  const b = primaryButton();
+  if (b) b.click(); else toast('Finish the mission first, or press ← to go back.');
 });
 addEventListener('hashchange', () => { const id = location.hash.slice(1); if (id && id !== PANELS[panelIdx]?.id) go(id); });
 
@@ -2426,7 +2443,7 @@ function paintSteps(celebrate = false) {
   $('#lPips').innerHTML = L.steps.map((s, k) => `<span class="pip${st[k] ? ' ok' : ''}${k === i ? ' cur' : ''}">${st[k] ? '✓' : k + 1}</span>`).join('');
   const show = () => {
     $('#lTaskN').textContent = i < 0 ? 'Mission complete!' : `Step ${i + 1} of ${L.steps.length}`;
-    $('#lTask').innerHTML = i < 0 ? `You did every step. The <b>${esc(L.word)}</b> jelly is yours!` : L.steps[i].t;
+    $('#lTask').innerHTML = i < 0 ? (G.review === L.id ? `You did every step! Take a look at what happened. When you're ready, press <b>Collect your jelly</b>.` : `You did every step. The <b>${esc(L.word)}</b> jelly is yours!`) : L.steps[i].t;
     if (i >= 0 && p === 'mission') onTask(L, L.steps[i]);
     if (PANELS[panelIdx]?.lesson) fitAll($('#p-lesson'));
   };
@@ -2440,8 +2457,9 @@ function paintSteps(celebrate = false) {
   if (celebrate && p === 'mission' && !REDUCED) { $('#lTaskN').textContent = ''; $('#lTask').innerHTML = '<span class="task-yay">✓ Nice one!</span>'; lessonStage?.hopAll(.7); taskTimer = setTimeout(show, 1100); }
   else show();
   const done = !!store.done[L.id], last = cur === LESSONS.length - 1, nx = $('#lNext');
-  nx.hidden = p === 'mission' && (!done || last);
-  nx.innerHTML = (p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next word') + ENTER;
+  const collect = p === 'mission' && G.review === L.id;
+  nx.hidden = p === 'mission' && (!done || last) && !collect;
+  nx.innerHTML = (collect ? 'Collect your jelly' : p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next word') + ENTER;
   nx.classList.toggle('pulse', p === 'mission');
   $('#lBack').hidden = p === 'meet'; paintRestart();
   document.querySelectorAll('#lPhases li').forEach((li) => li.classList.toggle('on', li.dataset.p === p));
@@ -2457,7 +2475,11 @@ function showLesson(i) {
   $('#lcard').dataset.phase = store.done[L.id] ? 'meet' : store.phase[L.id] ?? 'meet';
   paintSteps();
 }
-$('#lNext').onclick = () => { const p = $('#lcard').dataset.phase; if (p === 'meet') setPhase('brain'); else if (p === 'brain') setPhase('mission'); else step(1); };
+$('#lNext').onclick = () => {
+  const p = $('#lcard').dataset.phase, L = LESSONS[cur];
+  if (p === 'mission' && G.review === L.id) { G.review = null; paintSteps(); sectionDone(L.id); return; }
+  if (p === 'meet') setPhase('brain'); else if (p === 'brain') setPhase('mission'); else step(1);
+};
 $('#lBack').onclick = () => setPhase($('#lcard').dataset.phase === 'mission' ? 'brain' : 'meet');
 $('#lPhases').onclick = (e) => { const li = e.target.closest('[data-p]'); if (li) setPhase(li.dataset.p); };
 // Start over: untick this mission's steps and give the sandbox a fresh start. Jellies already earned stay in the jar.
@@ -2568,6 +2590,9 @@ const modeHTML = (n) => {
 };
 const setName = { owner: 'the owner\'s set (the first three letters)', group: 'the group\'s set (the middle three letters)', others: 'everyone else\'s set (the last three letters)' };
 const whoYouAre = (n) => ({ owner: 'the owner', group: `in the <b>${esc(grp(n))}</b> group`, others: 'not the owner and not in its group, so you count as <b>everyone else</b>' })[keySet(n)];
+// Before "Read the locks", a refusal is explained without keys, owners or r/w/x: that lesson is where they're taught.
+const NOT_YET = 'The computer said no. The lesson "Read the locks" explains why.';
+const lockTip = (tip) => taught('locks') ? tip : NOT_YET;
 const once = (k) => !store.seen?.[k] && ((store.seen ??= {})[k] = true, save(), true);
 
 function s2Perms() {
@@ -2597,20 +2622,20 @@ const isMachineCode = (n) => n.content.startsWith('0100');
 /* the commands that need users and locks */
 function chmodRun(rest, say, fail, info, out) {
   const [spec, ...files] = rest;
-  if (!spec || !files.length) return fail('chmod: missing operand', 'Say who, then + or -, then which keys. Like: chmod u+x hello');
+  if (!spec || !files.length) return fail('chmod: missing operand', lockTip('Say who, then + or -, then which keys. Like: chmod u+x hello'));
   for (const p of files) {
     const n = find(p);
     if (!n) { fail(`chmod: cannot access '${p}': No such file or directory`); continue; }
-    if (own(n) !== sh.user && sh.user !== 'root') { fail(`chmod: changing permissions of '${p}': Operation not permitted`, `Only the owner (${own(n)}) can change this lock. You are ${sh.user}.`); continue; }
+    if (own(n) !== sh.user && sh.user !== 'root') { fail(`chmod: changing permissions of '${p}': Operation not permitted`, lockTip(`Only the owner (${own(n)}) can change this lock. You are ${sh.user}.`)); continue; }
     let m = modeOf(n);
     if (/^\d+$/.test(spec)) {
-      if (!/^[0-7]{3}$/.test(spec)) { info.badNumber = true; fail(`chmod: invalid mode: '${spec}'`, /[89]/.test(spec) ? 'No digit can be bigger than 7. Each digit is three on/off switches (r = 4, w = 2, x = 1), and three switches add up to 7 at most.' : 'The number way needs exactly three digits: owner, group, everyone else. Like 644.'); continue; }
+      if (!/^[0-7]{3}$/.test(spec)) { info.badNumber = true; fail(`chmod: invalid mode: '${spec}'`, /[89]/.test(spec) ? lockTip('No digit can be bigger than 7. Each digit is three on/off switches (r = 4, w = 2, x = 1), and three switches add up to 7 at most.') : lockTip('The number way needs exactly three digits: owner, group, everyone else. Like 644.')); continue; }
       m = (m & ~0o777) | parseInt(spec, 8);
       if (!store.done.binary && LESSONS[cur]?.id !== 'binary' && once('chmodNumber')) say('(The number way is a shortcut that needs binary. The optional lesson "101" explains it. The letter way says the same thing in words: chmod u+x hello)', 'tip');
     } else {
       for (const part of spec.split(',')) {
         const s = part.match(/^([ugoa]*)([+\-=])([rwx]*)$/);
-        if (!s) { fail(`chmod: invalid mode: '${spec}'`, 'Say who (u = owner, g = group, o = others, a = all), then + to give or - to take away, then which keys (r, w, x). Like: chmod go-w hello'); m = null; break; }
+        if (!s) { fail(`chmod: invalid mode: '${spec}'`, lockTip('Say who (u = owner, g = group, o = others, a = all), then + to give or - to take away, then which keys (r, w, x). Like: chmod go-w hello')); m = null; break; }
         const bits = [...s[3]].reduce((b, c) => b | { r: 4, w: 2, x: 1 }[c], 0);
         for (const w of new Set((s[1] || 'a').replace('a', 'ugo'))) {
           const k = { u: 6, g: 3, o: 0 }[w];
@@ -2621,7 +2646,7 @@ function chmodRun(rest, say, fail, info, out) {
     }
     const was = modeHTML(n);
     n.mode = m; info.mode = m; info.file = pathOf(n);
-    out.push({ h: `<span class="mute">(the lock on ${esc(n.name)}: ${was} → ${modeHTML(n)})</span>`, t: '' });
+    if (taught('locks')) out.push({ h: `<span class="mute">(the lock on ${esc(n.name)}: ${was} → ${modeHTML(n)})</span>`, t: '' });
   }
 }
 function chgrpRun(rest, fail, info) {
@@ -2631,7 +2656,7 @@ function chgrpRun(rest, fail, info) {
   for (const p of files) {
     const n = find(p);
     if (!n) { fail(`chgrp: cannot access '${p}': No such file or directory`); continue; }
-    if (sh.user !== 'root' && (own(n) !== sh.user || !USERS[sh.user].groups.includes(g))) { fail(`chgrp: changing group of '${p}': Operation not permitted`, own(n) !== sh.user ? `Only the owner (${own(n)}) can do that.` : `You can only give things to a group you are in. You are in: ${USERS[sh.user].groups.join(', ')}.`); continue; }
+    if (sh.user !== 'root' && (own(n) !== sh.user || !USERS[sh.user].groups.includes(g))) { fail(`chgrp: changing group of '${p}': Operation not permitted`, lockTip(own(n) !== sh.user ? `Only the owner (${own(n)}) can do that.` : `You can only give things to a group you are in. You are in: ${USERS[sh.user].groups.join(', ')}.`)); continue; }
     n.group = g; info.group = g; info.file = pathOf(n);
   }
 }
@@ -2642,7 +2667,7 @@ function suRun(rest, say, fail, info) {
   sh.su.push({ user: sh.user, home: sh.home });
   sh.user = u; sh.home = find(`/home/${u}`); info.user = u;
   say(`Password: (the sandbox skips it. On a real computer you would need ${u}'s password, and you should only ever use your own.)`, 'mute');
-  if (once('su')) say(`(su means switch user. Now everything you type happens as ${u}, with ${u}'s keys. Look at the prompt. ~ means ${u}'s home now, so where you are standing shows as a full path.)`, 'tip');
+  if (once('su')) say(`(su means switch user. Now everything you type happens as ${u}${taught('locks') ? `, with ${u}'s keys` : ''}. Look at the prompt. ~ means ${u}'s home now, so where you are standing shows as a full path.)`, 'tip');
 }
 function sudoRun(rest, line, say, fail, info, out) {
   if (!rest.length) return fail('usage: sudo command', 'Put the command you want to run as root after it. Like: sudo whoami');
@@ -2670,7 +2695,7 @@ function textIn(rest, stdin, name, fail) {
     const n = find(p);
     if (!n) return fail(`${name}: ${p}: No such file or directory`), null;
     if (n.type === 'dir') return fail(`${name}: ${p}: Is a directory`), null;
-    if (!can(n, 4)) return fail(`${name}: ${p}: Permission denied`, `You have no r (read) key for ${n.name}.`), null;
+    if (!can(n, 4)) return fail(`${name}: ${p}: Permission denied`, lockTip(`You have no r (read) key for ${n.name}.`)), null;
     return { label: p, text: n.content };
   }).filter(Boolean);
 }
@@ -2701,11 +2726,13 @@ function runProgram(n, cmd, args, say, fail, info, out) {
   if (n.type === 'dir') return fail(`bash: ${cmd}: Is a directory`);
   if (!can(n, 1)) {
     info.denied = true; fail(`bash: ${cmd}: Permission denied`);
-    out.push({ h: shelly(`To <b>run</b> a file you need its <b>x</b> key (x is for eXecute, which means run). You are ${whoYouAre(n)}, and ${setName[keySet(n)]} has no x.${store.done.chmod ? '' : ' That is the cliffhanger: don\'t try to fix it yet! The next lesson shows the keys, and the one after shows how to change them.'}`), t: '' });
+    out.push({ h: shelly(taught('locks')
+      ? `To <b>run</b> a file you need its <b>x</b> key (x is for eXecute, which means run). You are ${whoYouAre(n)}, and ${setName[keySet(n)]} has no x.${taught('chmod') ? '' : ' The next lesson shows how to change that.'}`
+      : 'The computer refused to run it. Why? That is the cliffhanger: don\'t try to fix it yet! The next lesson explains.'), t: '' });
     return;
   }
   if (n.parent && pathOf(n.parent) === '/bin' && isMachineCode(n)) { const r = run1([n.name, ...args].join(' ')); out.push(...r.out); if (!r.ok) fail(null); info.ran = pathOf(n); return; }
-  if (!can(n, 4)) { info.denied = true; return fail(`bash: ${cmd}: Permission denied`, 'This program is a script: the shell has to read it to run it, so you need the r key too.'); }
+  if (!can(n, 4)) { info.denied = true; return fail(`bash: ${cmd}: Permission denied`, lockTip('This program is a script: the shell has to read it to run it, so you need the r key too.')); }
   if ((sh.depth ?? 0) > 3) return fail(`${cmd}: too many programs running programs`, 'Your program keeps starting itself. Ctrl+C!');
   info.ran = pathOf(n);
   sh.depth = (sh.depth ?? 0) + 1;
@@ -2774,10 +2801,10 @@ function backToKid() {
   print('<span class="tip">(You are kid again. Missions start as you.)</span>');
 }
 
-/* file tree: programs get a ▶ tag. Once ls -l has been taught, every row also shows YOUR keys for it. */
-const keysOn = () => !!store.done.lsl || cur >= LESSONS.findIndex((l) => l.id === 'lsl');
+/* file tree: programs get a ▶ tag once scripts are taught. Once the locks are taught, every row also shows YOUR keys for it. */
+const keysOn = () => taught('locks');
 const myKeys = (n) => sh.user === 'root' ? 'rwx' : triplet(modeOf(n), SHIFT[keySet(n)]);
-const mapTags = (n) => (n.type === 'file' && modeOf(n) & 0o111 && !(n.parent && pathOf(n.parent) === '/bin') ? '<i class="mtag run">▶ program</i>' : '')
+const mapTags = (n) => (taught('scripts') && n.type === 'file' && modeOf(n) & 0o111 && !(n.parent && pathOf(n.parent) === '/bin') ? '<i class="mtag run">▶ program</i>' : '')
   + (keysOn() && n !== sh.root ? `<i class="mtag keys" title="${sh.user}'s keys for this">${[...myKeys(n)].map((c) => `<b class="${c === '-' ? 'no' : ''}">${c}</b>`).join('')}</i>` : '');
 $('.map-head').insertAdjacentHTML('beforeend', '<small class="keys-legend" id="keysLegend" hidden>Letters = <b>your</b> keys: <b>r</b> read · <b>w</b> write · <b>x</b> run or go in</small>');
 
@@ -2789,7 +2816,7 @@ function nanoOpen(path, fail, info) {
   if (!path) return fail('nano: which file?', 'Like: nano note.txt');
   const n = find(path);
   if (n?.type === 'dir') return fail(`nano: ${path}: Is a directory`, 'nano edits files. To look inside a folder, use ls.');
-  if (n && !can(n, 4)) { info.denied = true; return fail(`nano: ${path}: Permission denied`, `Opening a file needs its r key, and ${sh.user} has none for ${n.name}.`); }
+  if (n && !can(n, 4)) { info.denied = true; return fail(`nano: ${path}: Permission denied`, lockTip(`Opening a file needs its r key, and ${sh.user} has none for ${n.name}.`)); }
   const [dp, name] = splitPath(path), d = n ? n.parent : find(dp);
   if (!d || d.type !== 'dir') return fail(`nano: ${path}: No such file or directory`, 'nano can start a new file, but the folder it goes in has to exist already.');
   Object.assign(NANO, { open: true, node: n, dir: d, name: n?.name ?? name, start: n?.content ?? '', saved: n?.content ?? '', asking: false });
