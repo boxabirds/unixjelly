@@ -1,0 +1,43 @@
+/* Shell 2: locks in ls -l, labelled pictures, groups, grep and pipes */
+.term-body .perm{font-weight:700}
+.term-body .perm .pu{color:#7dff9b;font-weight:700}.term-body .perm .pg{color:#ffd36b;font-weight:700}.term-body .perm .po{color:#7aa8ff;font-weight:700}
+.term-body .perm .mine{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.term-body .exe{color:#7dff9b;font-weight:700}
+.permviz{display:grid;gap:.5em;justify-items:center}
+.lsl{display:grid;grid-template-columns:repeat(var(--n),auto);gap:.25em .3em;align-items:center;justify-items:center;font-family:var(--mono);font-weight:700;font-size:clamp(.8em,var(--v,1.6vw),var(--s,1.1em))}
+.lsl small{font-family:var(--body);font-size:max(11px,.45em);font-weight:600;text-align:center;line-height:1.15;max-width:6.5em}
+.pv{border:4px solid var(--ink);border-radius:12px;padding:.1em .4em;background:#fff;min-width:1.5em;text-align:center}
+.pv.u{background:#c8f7d0}.pv.g{background:#fff0b3}.pv.o{background:#ffd0d8}.pv.n{background:#eef;border-style:dashed}
+.grp-row{display:flex;flex-wrap:wrap;align-items:center;gap:.4em;font-size:1.05em;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:.35em .8em}
+.gchip{border:3px solid var(--ink);border-radius:999px;padding:0 .6em;font-family:var(--mono);font-weight:700;background:#eef}
+.gchip.fam{background:var(--lemon)}
+.grepviz{font-family:var(--mono);background:#24133b;color:#cfc6e0;border:4px solid var(--ink);border-radius:16px;padding:.6em .9em;display:grid;gap:.2em;font-size:.95em}
+.grepviz .hit{color:#fff}.grepviz .hit b{background:var(--lime);color:var(--ink);border-radius:4px;padding:0 .15em}
+.pipeviz{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.5em;font-family:var(--mono);font-weight:700;font-size:1.05em}
+.pipeviz > b{font-size:1.8em;color:var(--berry)}
+.terms{border-collapse:separate;border-spacing:0;background:#fff;border:4px solid var(--ink);border-radius:20px;overflow:hidden;font-size:.8em;box-shadow:0 6px 0 var(--ink)}
+.terms th,.terms td{padding:.4em .8em;text-align:left;border-bottom:2px solid #24133b22}
+.terms th{font-family:var(--display);font-weight:400;background:var(--lemon)}
+.terms tr:last-child td{border-bottom:0}
+.terms.bin td{font-family:var(--mono)}
+.mtag.run{background:var(--lime);color:var(--ink)}
+.lock-ico{width:15px;height:15px;margin-left:.3em;vertical-align:-2px;flex:none}
+/* your keys on the file tree */
+.mtag.keys{font-family:var(--mono);font-size:max(11px,.85em);background:#fff;border:2px solid var(--ink);padding:0 .3em;letter-spacing:.04em;line-height:1.2}
+.mtag.keys b{color:var(--ink)}.mtag.keys b.no{color:#8a83a0}
+.keys-legend{display:block;margin-top:.2em}
+/* nano */
+.term.editing #termBody,.term.editing .keys{display:none}
+.nano{flex:1;min-height:0;display:flex;flex-direction:column;background:#0f2a1c;color:#e8fff0;font-family:var(--mono)}
+.nano-top{display:flex;justify-content:space-between;gap:1em;background:#d9ffe6;color:#0f2a1c;padding:.15em .6em;font-weight:700;font-size:.85em}
+.nano textarea{flex:1;min-height:0;resize:none;background:transparent;color:inherit;border:0;outline:0;font:inherit;font-size:.95em;padding:.5em .7em;caret-color:#7dff9b;line-height:1.45}
+.nano-msg{min-height:1.6em;text-align:center;font-size:.85em;color:#ffd36b;padding:.1em .5em}
+.nano-msg button,.nano-keys button{font:inherit;font-size:.9em;background:#d9ffe6;color:#0f2a1c;border:0;border-radius:6px;padding:.1em .5em;margin:0 .2em;cursor:pointer}
+.nano-keys{display:flex;gap:.6em;align-items:center;flex-wrap:wrap;padding:.35em .6em .5em;font-size:.85em;border-top:1px solid #ffffff22}
+.nano-keys span{color:#9fd3b2;margin-left:auto}
+.nano-keys kbd{font:inherit;background:#ffffff22;border-radius:4px;padding:0 .3em}
+.nanoviz{width:min(100%,26em);border:4px solid var(--ink);border-radius:14px;overflow:hidden;font-family:var(--mono);font-size:.85em;background:#0f2a1c;color:#e8fff0;box-shadow:0 6px 0 var(--ink)}
+.nanoviz .t{background:#d9ffe6;color:#0f2a1c;font-weight:700;padding:.15em .6em;display:flex;justify-content:space-between}
+.nanoviz .b{padding:.5em .7em;min-height:4.5em;line-height:1.5}
+.nanoviz .k{padding:.3em .7em;border-top:1px solid #ffffff22;color:#9fd3b2}
+.nanoviz .k b{background:#d9ffe6;color:#0f2a1c;border-radius:4px;padding:0 .3em}

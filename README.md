@@ -1,12 +1,14 @@
 # Jelly Unix
 
-Three playful guides: the shell first, then git, then the web. Open `index.html` for the landing page that links to all three.
+Five playful guides: the shell, the shell part 2, git, the web, and a prototype of security. Open `index.html` for the landing page that links to all of them.
 
 - **Jelly Shell** (`jellyshell/`): the command line.
+- **Jelly Shell 2** (`jellyshell2/`): users, file locks, writing your own commands, `sudo`, `grep` and pipes.
 - **Jelly Git** (`jellygit/`): git, built on the same ideas.
 - **Jelly Web** (`jellyweb/`): HTML, how web pages travel, and publishing with GitHub Pages.
+- **Jelly Security** (`jellysecurity/`, prototype): black hat and white hat. Break into a pretend computer, fix it, test it again. 3 of a planned 16 missions.
 
-There is no build step, no backend and no install. Each guide is a single HTML file.
+To use the guides there is no build step, no backend and no install. Each guide is a single HTML file. To change them, see [Contributing](#contributing).
 
 ## Run it
 
@@ -49,6 +51,14 @@ Keyboard: `Tab` completes, `↑`/`↓` recall history, `Ctrl+C` interrupts, `Ctr
 
 Progress (collected jellies) and sound preference are saved in the browser's `localStorage`. "Empty the jar" clears them.
 
+## Jelly Shell 2
+
+Part two of Jelly Shell: who's in charge? Same format, without the 3D tour (part 1 did the big picture). 15 lessons, each using only what Jelly Shell or an earlier lesson taught:
+
+`whoami` (accounts, and the prompt decoded), `>` and `>>`, `nano` (changing a file, with `Ctrl+O` to save and `Ctrl+X` to exit), `which` (every command is a file in `/bin`), `./` (write a one-line script in nano, run it, and get Permission denied), `ls -l` (reading the lock), `chmod` with letters (`u+x`, `go-r`), the `PATH` and `~/bin` (name your own command anything), groups with `id` and `chgrp`, `su` and `exit`, `sudo` and the two meanings of "root", `grep`, pipes (`|`, `wc -l`) to find out who ate the cookies, an optional binary lesson for the numbers in `chmod 644`, and a final quest to build and test a family-only clubhouse.
+
+The sandbox has three accounts (root, kid and sib), real owner/group/other permission checks on reading, writing, running, listing and entering folders, and scripts that run line by line. Missions that build on earlier ones quietly recreate any missing file after a reset. The file tree marks programs with ▶, and from the `ls -l` lesson on it shows your own keys (`r`, `w`, `x`) next to every file and folder, for whoever you currently are. A small `nano` editor opens inside the terminal window.
+
 ## Jelly Git
 
 Same format as Jelly Shell (same nav, 3D cutaway, backstage animation and sandbox), applied to git. Start with Jelly Shell: the git sandbox reuses the shell commands.
@@ -79,18 +89,53 @@ Lessons, in order: view source, tags as boxes with lids, boxes inside boxes, sta
 
 Everything runs on a pretend internet built into the page (`jelly.fun`, `gerbil.zone`, `teapot.jelly`, `moon.base` and friends), so no real network requests are made. The sandbox adds `curl [-I] [-v] [-L] [-o]`, `ping [-c]`, `nslookup`, `open`, and a small `git` with `status`, `add`, `commit`, `push`, `log` and `remote`. HTML is taught the tidy (XHTML) way throughout: every tag is closed, lids close in reverse order, and standalone tags close themselves (`<hr/>`, `<br/>`, `<img/>`). A tag checker under the editor enforces those rules and points at the line, and a Boxes view draws the page as nested boxes. Pages are previewed in a sandboxed frame with scripts removed. The pretend computer (including the kid's website) is saved in `localStorage`, so it survives a reload. Progress is 19 jellies.
 
+## Jelly Security (prototype)
+
+Same skills, different permission. Each mission is a hat swap: wear the black hat (attacker, red team) to break in, the white hat (defender, blue team) to fix it with a named principle, then the black hat again to watch the attack fail. Modern terms come first, with the older words kids will hear alongside. It teaches no new commands: everything it uses comes from the earlier guides.
+
+The prototype has 3 missions: picking your hat and signing a permission slip, least privilege with `ls -l`, `su` and `chmod go-rw`, and a "grey zone" of choices about what to do when you stumble on a way in.
+
 ## How every guide flows
 
 - During the tutorial the section list slides away; a tab on the left edge brings it back.
 - Each magic word runs one thing at a time: the story, then "remember it", then the mission one step at a time, with the jelly letters in the top left throughout.
 - Enter always means "carry on": it presses the one big green button on screen (marked "Enter ↵"). Inside the terminal or editor, Enter keeps its usual meaning.
 
+## Contributing
+
+The guides are built from the source in `src/`. The rules for how they teach and look are in `docs/`.
+
+| Document | What it covers |
+| --- | --- |
+| [docs/pedagogy.md](docs/pedagogy.md) | How the guides teach: the rules, what testing with children taught us, and which guide teaches which command |
+| [docs/design.md](docs/design.md) | How they look: colours, fonts, layout, story pictures, motion |
+| [docs/architecture.md](docs/architecture.md) | The technology, how the five guides share one engine, building and testing |
+| [docs/new-lesson.md](docs/new-lesson.md) | Playbook and checklist for adding a lesson |
+| [docs/plans/jelly-security.md](docs/plans/jelly-security.md) | The planned 16 Jelly Security missions |
+| [docs/research/kids-internet-security-resources.md](docs/research/kids-internet-security-resources.md) | The research behind Jelly Security |
+
+Quick start (needs Python 3 and Node 18 or newer):
+
+```sh
+./src/build.sh                       # rebuilds every guide folder from src/
+cd src && npm install
+CHROMIUM=/path/to/chromium npm test  # plays every mission in a real browser; leave CHROMIUM unset to use Google Chrome
+```
+
+Commit the source changes and the rebuilt guide folders together.
+
 ## Repo layout
 
-- `index.html`: landing page pointing to the three guides: shell, then git, then the web.
+- `index.html`: landing page pointing to all five guides, in order. Edited by hand.
 - `jellyshell/index.html`: Jelly Shell, the app described above.
+- `jellyshell2/index.html`: Jelly Shell 2, users, locks and pipes.
 - `jellygit/index.html`: Jelly Git, the follow-on guide to git.
 - `jellyweb/index.html`: Jelly Web, the guide to HTML, HTTP and publishing.
+- `jellysecurity/index.html`: Jelly Security, the prototype.
+- `src/`: the source every guide is built from, the build script and the browser tests. See [docs/architecture.md](docs/architecture.md).
+- `docs/`: how the guides teach, look and are built, and how to add a lesson.
+
+The guide folders are build output: change `src/` and rebuild, never edit them directly.
 
 ## Credits and licensing
 

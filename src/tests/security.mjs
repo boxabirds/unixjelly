@@ -1,0 +1,27 @@
+import { launch, guideUrl, unfinished, verdict } from './lib.mjs';
+const b = await launch();
+const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
+const errs = []; p.on('pageerror', (e) => errs.push(e.message));
+await p.goto(guideUrl('jellysecurity') + '#welcome', { waitUntil: 'load', timeout: 120000 }); await p.waitForTimeout(2500);
+await p.screenshot({ path: 'sec-welcome.png' });
+await p.keyboard.press('Enter'); await p.waitForTimeout(1200);
+await p.screenshot({ path: 'sec-hats-meet.png' });
+const t = p.locator('#termIn');
+const toMission = async () => { for (let k = 0; k < 2; k++) await p.evaluate(() => { if (document.querySelector('#lcard').dataset.phase !== 'mission') document.querySelector('#lNext').click(); }); await p.waitForTimeout(600); };
+const run = async (...cs) => { for (const c of cs) { await t.fill(c); await t.press('Enter'); await p.waitForTimeout(1300); } };
+const lines = (n) => p.evaluate((n) => [...document.querySelectorAll('#termOut .ln')].slice(-n).map((l) => '   ' + l.textContent).join('\n'), n);
+await toMission(); await run('cat permission-slip.txt', 'sign permission-slip.txt', 'cat /bin/sign', 'whoami'); console.log(await lines(14));
+await p.evaluate(() => { location.hash = 'keys'; }); await p.waitForTimeout(1500); await p.screenshot({ path: 'sec-keys-meet.png' }); await toMission();
+await run('ls -l'); console.log(await lines(7)); await p.screenshot({ path: 'sec-keys-black.png' });
+await run('su sib', 'cat diary.txt', 'chmod go-rw diary.txt'); console.log(await lines(9));
+await run('exit'); await p.waitForTimeout(400); await p.screenshot({ path: 'sec-keys-white.png' });
+await run('chmod 960 diary.txt', 'chmod go-rw diary.txt', 'ls -l', 'su sib', 'cat diary.txt'); console.log(await lines(22)); await p.screenshot({ path: 'sec-keys-done.png' });
+await p.evaluate(() => document.querySelector('#unStay')?.click());
+await p.evaluate(() => { location.hash = 'grey'; }); await p.waitForTimeout(800); await toMission();
+await p.screenshot({ path: 'sec-grey.png' });
+for (let k = 0; k < 4; k++) { await p.evaluate(() => document.querySelector('.choice')?.click()); await p.waitForTimeout(300); await p.evaluate(() => [...document.querySelectorAll('.choice')].at(-1)?.click()); await p.waitForTimeout(1500); }
+console.log(await lines(4));
+const st = await p.evaluate(() => JSON.parse(localStorage.getItem('jellysecurity.v1')));
+console.log('DONE', JSON.stringify(st.done), JSON.stringify(st.steps)); console.log(errs);
+verdict([...(await unfinished(p, 'jellysecurity.v1')).map((id) => 'not finished: ' + id), ...errs]);
+await b.close();

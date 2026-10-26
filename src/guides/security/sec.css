@@ -1,0 +1,38 @@
+/* security: locks in ls -l, hats on the mission card and the jelly box, dilemma choices */
+.term-body .perm{font-weight:700}
+.term-body .perm .pu{color:#7dff9b;font-weight:700}.term-body .perm .pg{color:#ffd36b;font-weight:700}.term-body .perm .po{color:#7aa8ff;font-weight:700}
+.term-body .perm .po.open{color:#fff;background:var(--berry);border-radius:3px}
+.task[data-hat=black]{background:#24133b;color:#fff;border-color:#24133b}
+.task[data-hat=black] code{background:#ffffff22;color:#fff}
+.task[data-hat=white]{background:#fff}
+.hat-badge{display:inline-flex;align-items:center;gap:.35em;margin-right:.6em;padding:.1em .7em .1em .3em;border-radius:999px;border:3px solid currentColor;font-family:var(--display)}
+.hat-badge small{font-family:var(--body);font-weight:600;font-size:.7em;opacity:.8}
+.hat-badge .hat-svg{width:1.8em;height:auto}
+.lj-hat{position:absolute;right:14px;top:6px;width:clamp(48px,22%,90px);z-index:1;animation:bob 1.6s ease-in-out infinite;pointer-events:none}
+.lesson:not([data-phase=mission]) .lj-hat{display:none}
+.choices{display:flex;flex-wrap:wrap;gap:.5em;margin-top:.5em}
+.choice{font:inherit;font-size:.85em;font-weight:700;background:var(--lemon);color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:.25em .8em;box-shadow:0 3px 0 var(--ink)}
+.choice:hover{background:#fff}
+.choice.bad{background:#ffd0d8;text-decoration:line-through}
+.choice.good{background:var(--lime)}
+.terms{border-collapse:separate;border-spacing:0;background:#fff;border:4px solid var(--ink);border-radius:20px;overflow:hidden;font-size:.72em;box-shadow:0 6px 0 var(--ink)}
+.terms th,.terms td{padding:.45em .8em;text-align:left;border-bottom:2px solid #24133b22;vertical-align:top}
+.terms th{font-family:var(--display);font-weight:400;background:var(--lemon)}
+.terms tr:last-child td{border-bottom:0}
+.hat-chip{display:inline-block;border:2px solid var(--ink);border-radius:999px;padding:0 .6em;white-space:nowrap}
+.hat-chip.black{background:var(--ink);color:#fff}.hat-chip.white{background:#fff}.hat-chip.grey{background:#b9b3c4}
+.permviz{display:grid;gap:.5em;justify-items:center}
+.pv-row{display:flex;gap:.3em;font-family:var(--mono);font-weight:700;font-size:1.6em}
+.pv-row.lab{font-family:var(--body);font-size:.6em;font-weight:600;text-align:center}
+.pv-row.lab span{width:5.2em}
+.pv{border:4px solid var(--ink);border-radius:12px;padding:.1em .4em;background:#fff;min-width:1.5em;text-align:center}
+.pv.u{background:#c8f7d0}.pv.g{background:#fff0b3}.pv.o{background:#ffd0d8}
+.permviz .pv-row.lab span:first-child{width:2.2em}
+.tz-eq{font-size:1.2em;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:.3em .8em}
+.task[data-hat=black] .hat-svg path:first-child{stroke:#fff}
+/* a dilemma needs room for its choices: the mission card grows */
+.lesson[data-phase=mission].choosing{--top:clamp(210px,34vh,320px)}
+/* the diary's real ls -l line, each part labelled */
+.lsl{display:grid;grid-template-columns:repeat(7,auto);gap:.25em .3em;align-items:center;justify-items:center;font-family:var(--mono);font-weight:700;font-size:clamp(.8em,1.6vw,1.1em)}
+.lsl small{font-family:var(--body);font-size:max(11px,.45em);font-weight:600;text-align:center;line-height:1.15;max-width:6.5em}
+.pv.n{background:#eef;border-style:dashed}

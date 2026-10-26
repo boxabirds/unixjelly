@@ -27,14 +27,17 @@ main{max-width:1180px;margin:0 auto;padding:clamp(20px,5vh,56px) max(16px,env(sa
 h1{font-size:clamp(2.2rem,1rem + 5vw,4.4rem);max-width:14ch;margin-top:8px}
 h1 em{font-style:normal;color:var(--berry)}
 .lede{color:var(--ink-soft);max-width:52ch;font-size:1.08rem;margin-top:14px}
-.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;counter-reset:step}
-@media (max-width:900px){.steps{grid-template-columns:1fr}}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:34px 20px;counter-reset:step}
 .card{position:relative;display:flex;flex-direction:column;gap:12px;padding:26px 26px 24px 26px;border:3px solid var(--ink);border-radius:24px;box-shadow:0 6px 0 var(--ink);color:inherit;text-decoration:none;transition:transform .1s,box-shadow .1s}
 .card:hover{transform:translateY(-3px);box-shadow:0 9px 0 var(--ink)}
 .card:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
 .card.shell{background:var(--mint)}
 .card.git{background:var(--lilac)}
 .card.web{background:var(--sun)}
+.card.shell2{background:#ffe1d1}
+.card.sec{background:#ffd9e1;grid-column:1/-1}
+.card.sec p{max-width:60ch}
+.start.proto{background:var(--card);animation:none}
 .badge{position:absolute;top:-18px;left:20px;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--lemon);border:3px solid var(--ink);font-family:var(--display);font-size:1.3rem}
 .start{position:absolute;top:-16px;right:20px;background:var(--lime);border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-family:var(--display);font-size:.95rem;animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(1.07)}}
@@ -57,9 +60,9 @@ h1 em{font-style:normal;color:var(--berry)}
 <body>
 <main>
   <header>
-    <div class="eyebrow">Three wobbly guides to the tools developers live in</div>
-    <h1>Learn the <em>command line</em>, <em>git</em>, then the <em>web</em>.</h1>
-    <p class="lede">Short missions, a sandboxed terminal and a lot of jelly. No install, nothing to break. Start with the shell, because git is a set of commands you type into it. Finish by making a web page and putting it on the internet.</p>
+    <div class="eyebrow">Five wobbly guides to the tools developers live in</div>
+    <h1>Learn the <em>command line</em>, <em>git</em>, the <em>web</em>, then <em>security</em>.</h1>
+    <p class="lede">Short missions, a sandboxed terminal and a lot of jelly. No install, nothing to break. Start with the shell, because everything else is commands you type into it. Make a web page and put it on the internet. Then learn to think like an attacker, and build things that are hard to break.</p>
   </header>
 
   <div class="steps">
@@ -69,38 +72,46 @@ h1 em{font-style:normal;color:var(--berry)}
       <div class="cmd">$ ls &nbsp;cd &nbsp;cat &nbsp;mv</div>
       <h2>Jelly Shell</h2>
       <p>Boss your computer around with tiny words. Move around folders, read and copy files, and rescue the gerbil.</p>
-      <div class="foot"><span class="btn">Start the shell</span><span class="chip" data-progress="jellyshell.v1" data-total="17">0 / 17 jellies</span></div>
+      <div class="foot"><span class="btn">Start the shell</span></div>
     </a>
 
-    <a class="card git" href="jellygit/" aria-label="Step 2: Jelly Git">
+    <a class="card shell2" href="jellyshell2/" aria-label="Step 2: Jelly Shell 2">
       <span class="badge" aria-hidden="true">2</span>
+      <div class="cmd">$ whoami &nbsp;chmod &nbsp;sudo &nbsp;|</div>
+      <h2>Jelly Shell 2</h2>
+      <p>Who's in charge? Users, groups and file locks. Write your own commands, borrow the boss's power, and use pipes to find out who ate the cookies.</p>
+      <div class="foot"><span class="btn">Then part 2</span></div>
+    </a>
+
+    <a class="card git" href="jellygit/" aria-label="Step 3: Jelly Git">
+      <span class="badge" aria-hidden="true">3</span>
       <div class="cmd">$ git add &nbsp;commit &nbsp;push</div>
       <h2>Jelly Git</h2>
       <p>Never lose your code again. Save snapshots, undo mistakes and work with other people without stepping on their changes.</p>
-      <div class="foot"><span class="btn">Then try git</span><span class="chip" data-progress="jellygit.v1" data-total="16">0 / 16 jellies</span></div>
+      <div class="foot"><span class="btn">Then try git</span></div>
     </a>
 
-    <a class="card web" href="jellyweb/" aria-label="Step 3: Jelly Web">
-      <span class="badge" aria-hidden="true">3</span>
+    <a class="card web" href="jellyweb/" aria-label="Step 4: Jelly Web">
+      <span class="badge" aria-hidden="true">4</span>
       <div class="cmd">&lt;h1&gt; &nbsp;curl &nbsp;ping &nbsp;push</div>
       <h2>Jelly Web</h2>
       <p>Write your own web page, find out how it crosses the planet in under a second, then put it on the internet with GitHub Pages.</p>
-      <div class="foot"><span class="btn">Then the web</span><span class="chip" data-progress="jellyweb.v1" data-total="19">0 / 19 jellies</span></div>
+      <div class="foot"><span class="btn">Then the web</span></div>
+    </a>
+
+    <a class="card sec" href="jellysecurity/" aria-label="Step 5: Jelly Security, prototype">
+      <span class="badge" aria-hidden="true">5</span>
+      <span class="start proto">Prototype</span>
+      <div class="cmd">black hat → white hat</div>
+      <h2>Jelly Security</h2>
+      <p>Same skills, different permission. Break into a pretend computer, fix the hole, then try again. The first 3 missions.</p>
+      <div class="foot"><span class="btn">Last of all</span></div>
     </a>
   </div>
 
-  <p class="why">New to the terminal? Do them in order. Already comfortable with <code>cd</code> and <code>ls</code>? Jump straight to git. Already know git? Go and build a website.</p>
+  <p class="why">New to the terminal? Do them in order. Already comfortable with <code>cd</code> and <code>ls</code>? Jump to part 2 or git. Security uses commands from all the others, so save it for last.</p>
   <p class="credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a>Wobble ported from <a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener">Jelly Baby</a> by Scott Sun (GPL-3.0). Progress is saved in this browser only.</p>
 </main>
-<script>
-for (const chip of document.querySelectorAll('[data-progress]')) {
-  try {
-    const store = JSON.parse(localStorage.getItem(chip.dataset.progress)) || {};
-    const total = Number(chip.dataset.total);
-    const n = Math.min(Object.keys(store.done || {}).length, total);
-    chip.textContent = `${n} / ${total} jellies`;
-  } catch {}
-}
-</script>
+
 </body>
 </html>

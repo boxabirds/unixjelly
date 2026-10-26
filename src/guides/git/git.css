@@ -1,0 +1,39 @@
+/* terminal colours git uses: green for staged / added, a warm yellow for photo IDs */
+.term-body .ok{color:#7dff9b}
+.term-body .hash{color:#ffd36b}
+/* the git map: four zones, top to bottom, the same four stops as the 3D whole game */
+.gm{display:grid;gap:.35em}
+.gm-where{font-size:.82em;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:.3em;align-items:center}
+.gm-where .yes{color:#2e8a1a}.gm-where .no{color:var(--berry)}
+.zone{border:2.5px solid var(--ink);border-radius:12px;padding:.3em .55em .4em;background:var(--zc)}
+.zone h6{margin:0 0 .15em;font-family:var(--display);font-weight:400;font-size:1.02em;display:flex;align-items:baseline;gap:.4em}
+.zone h6 small{font-family:var(--mono);font-size:.7em;color:var(--ink-soft)}
+.z-folder{--zc:#fff3d6}.z-stage{--zc:#e2f7d6}.z-album{--zc:#ece2ff}.z-cloud{--zc:#dcefff}
+.grow{display:flex;align-items:center;gap:.4em;font-family:var(--mono);font-size:.9em;white-space:nowrap;padding:.06em 0}
+.grow .nm{overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.tag{font-family:var(--body);font-size:.72em;font-weight:700;border-radius:999px;padding:0 .55em;border:2px solid var(--ink);flex:none;line-height:1.5}
+.t-new{background:#fff}.t-mod{background:var(--orange)}.t-ok{background:var(--lime)}.t-stage{background:var(--lemon)}.t-head{background:var(--grape);color:#fff}
+.t-ign{background:#d9d4e2;text-decoration:line-through}.t-del{background:var(--berry);color:#fff}
+.sha{background:var(--lemon);border:2px solid var(--ink);border-radius:5px;padding:0 .3em;font-weight:700;font-size:.85em;flex:none}
+.flow{font-family:var(--mono);font-size:.78em;text-align:center;color:var(--ink-soft);line-height:1.2}
+.flow b{color:var(--ink)}
+.gm .empty,.gm .note{font-size:.82em;color:var(--ink-soft);font-style:italic;white-space:normal}
+.gm .note{font-style:normal}
+.gm .url{font-family:var(--mono);font-size:.82em;font-weight:700}
+.gm .sync{font-size:.8em;font-weight:700;margin-top:.15em}
+.gm button{font-family:var(--display);font-size:.88em;background:var(--lime);color:var(--ink);border:2.5px solid var(--ink);border-radius:10px;padding:.12em .6em;box-shadow:0 2px 0 var(--ink);margin-top:.3em;display:block}
+.gm button.alt{background:#fff}
+/* backstage props for the git crew */
+.album{position:absolute;left:35%;top:9%;width:40%;height:24%;border-top:3px dashed #ffffffaa;display:flex;gap:3%;padding:0 2%;align-items:flex-start}
+.photo{width:21%;background:#fff;border:3px solid var(--ink);border-radius:4px;padding:5% 5% 2%;display:grid;gap:3px;font-family:var(--mono);font-size:clamp(6px,1cqw,11px);font-weight:700;color:var(--ink);text-align:center;transform:rotate(-3deg);transform-origin:top center;box-shadow:0 3px 0 var(--ink);line-height:1.1}
+.photo:nth-child(even){transform:rotate(3deg)}
+.photo i{display:block;aspect-ratio:4/3;background:var(--pc,#62c934);border:2px solid var(--ink)}
+.photo small{font-weight:400;font-size:.85em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#aCloud{position:absolute}
+.cphotos{position:absolute;left:32%;bottom:18%;width:40%;display:flex;gap:6%}
+.cphotos .photo{width:47%;font-size:clamp(4px,.6cqw,7px);padding:4% 4% 1%;border-width:2px}
+.carry{position:absolute;left:30%;top:85%;width:70%}
+.carry .photo{width:100%}
+.pfile{position:absolute;width:5.5%;aspect-ratio:3/4;background:#fff;border:3px solid var(--ink);border-radius:4px;font-family:var(--mono);font-weight:700;font-size:clamp(6px,.85cqw,10px);display:grid;place-items:end center;padding-bottom:3%;color:var(--ink);white-space:nowrap;background-image:repeating-linear-gradient(#0000 0 18%,#24133b33 18% 23%);background-size:70% 55%;background-repeat:no-repeat;background-position:50% 18%;z-index:2}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:6}
+.face.back .face-tag{right:auto;left:13%} /* clear of the cloud in the top-right corner */
