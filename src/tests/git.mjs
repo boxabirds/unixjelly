@@ -5,7 +5,13 @@ const errs = []; p.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message)); 
 await p.goto(guideUrl('jellygit') + '#git', { waitUntil: 'load', timeout: 120000 });
 await p.waitForTimeout(2500);
 const t = p.locator('#termIn');
-const go = async (id) => { await p.evaluate((id) => { location.hash = id; }, id); await p.waitForTimeout(500); for (let k = 0; k < 2; k++) await p.evaluate(() => { if (document.querySelector('#lcard').dataset.phase !== 'mission') document.querySelector('#lNext').click(); }); await p.waitForTimeout(400); };
+const ids = ['git', 'config', 'init', 'status', 'add', 'commit', 'log', 'diff', 'restore', 'remote', 'push', 'pull', 'ignore', 'quest'];
+// Wait for the lesson itself to be on screen, then step to its mission (fixed pauses were too short on a busy machine).
+const go = async (id) => {
+  await p.evaluate((id) => { location.hash = id; }, id);
+  await p.waitForFunction((n) => document.querySelector('#lNum')?.textContent.startsWith(`Magic word ${n} `), ids.indexOf(id) + 1);
+  for (let k = 0; k < 3 && await p.evaluate(() => document.querySelector('#lcard').dataset.phase !== 'mission'); k++) { await p.evaluate(() => document.querySelector('#lNext').click()); await p.waitForTimeout(250); }
+};
 const type = async (...cmds) => { for (const c of cmds) { await t.fill(c); await t.press('Enter'); await p.waitForTimeout(80); } };
 const click = (sel) => p.evaluate((sel) => document.querySelector(sel).click(), sel);
 const lastLines = (n) => p.evaluate((n) => [...document.querySelectorAll('#termOut .ln')].slice(-n).map((l) => l.textContent).join('\n'), n);
@@ -27,7 +33,6 @@ await go('quest'); await type(`echo "print('Level 2!')" >> game.py`, 'git add .'
 await type('git log --oneline'); console.log('--- final log ---\n' + await lastLines(7));
 await type('git comit -m x', 'git push origin master'); console.log('--- typos ---\n' + await lastLines(7));
 const st = await p.evaluate(() => JSON.parse(localStorage.getItem('jellygit.v1')));
-const ids = ['git', 'config', 'init', 'status', 'add', 'commit', 'log', 'diff', 'restore', 'remote', 'push', 'pull', 'ignore', 'quest'];
 console.log('\nLESSONS DONE:', ids.map((i) => `${i}${st.done[i] ? '✓' : '✗(' + (st.steps[i] || []).map((x) => x ? 1 : 0).join('') + ')'}`).join(' '));
 console.log('git map text:', (await p.evaluate(() => document.querySelector('#map').innerText)).replace(/\n+/g, ' | ').slice(0, 600));
 console.log(errs.join('\n') || 'no page errors');

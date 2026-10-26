@@ -279,7 +279,7 @@ rep("""  const last = [...document.querySelectorAll('.bean.on')].at(-1), jar = l
 rep("upPill.onclick = () => go(nextUp().id);\n", "")
 rep("$('#unStay').onclick = () => { G.card = false; renderGuide(); };", "$('#unStay').onclick = () => { G.card = false; renderGuide(); primaryButton()?.focus({ preventScroll: true }); };")
 
-# ---------- JS: whole game and backstage buttons say Enter too ----------
+# ---------- JS: overview and backstage buttons say Enter too ----------
 rep("""    $('#townNext').textContent = s.cta ? 'Zoom in on the screen' : 'Next';
     $('#townNext').classList.toggle('go', !!s.cta);""", """    $('#townNext').innerHTML = (s.cta ? 'Zoom in on the screen' : 'Next') + ENTER;
     $('#townNext').classList.add('go');""")

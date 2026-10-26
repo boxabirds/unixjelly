@@ -188,6 +188,8 @@ rep("    for (let i = 0; i < N; i++) this.inv[i] = 1 / this.mass[i];",
     """    // Tall, thin letters (like i and l) tip over easily. A heavier bottom keeps them standing, like a weighted toy.
     const slim = dx / box.max.y;
     if (slim < .7) for (let i = 0; i < N; i++) if (rest[i * 3 + 1] < oy + dy * .3) this.mass[i] *= 1 + 25 * (.7 - slim);
+    // Letters with a tail (g, j, p, q, y) stand on its rounded tip, so they roll over too. Same cure: a heavy bottom.
+    else if ('gjpqy'.includes(ch)) for (let i = 0; i < N; i++) if (rest[i * 3 + 1] < oy + dy * .3) this.mass[i] *= 6;
     for (let i = 0; i < N; i++) this.inv[i] = 1 / this.mass[i];""")
 rep("    const spin = (Math.random() - .5) * 6 * power;", "    const spin = (Math.random() - .5) * 6 * power * Math.min(1, this.width / this.height);")
 # Programmers' fonts join some symbols into one picture (>> looked like >, ../ like ./). Show every character as typed.
@@ -249,3 +251,68 @@ function complete(id) {""")
 
 # The shell itself moves into its own module (src/shell/jellysh.js).
 exec(open('engine/use-jellysh.py').read())
+# The course map: which course comes before which (curriculum.json).
+exec(open('engine/courses-patch.py').read())
+# Jellies bumping into each other without sinking in.
+exec(open('engine/collide-patch.py').read())
+# The jelly jar: every lesson's jelly, collected across courses.
+exec(open('engine/jar-patch.py').read())
+# Jelly Shell's demo scripts, for presenter mode.
+exec(open('engine/demos-shell.py').read())
+# Presenter mode, for recording videos.
+exec(open('engine/present-patch.py').read())
+
+# The file tree animates what changed by comparing the rows before and after. Rows that are still fading out after
+# being removed ("ghosts") must not count as rows that were there before, or every quick redraw (a sandbox reset,
+# presenter mode recording a course) turns them into new ghosts, and the tree grows slower with every redraw.
+rep("for (const el of mapEl.querySelectorAll('.mrow')) before.set(el.dataset.id", "for (const el of mapEl.querySelectorAll('.mrow:not(.ghost)')) before.set(el.dataset.id")
+
+# Every lesson's mission starts on a fresh sandbox, so one lesson's leftovers (the folder you ended up in, files you
+# made or removed) never break the next lesson. A mission already under way keeps its sandbox, so coming back to it
+# doesn't wipe your work. Guides whose lessons deliberately build on each other (Git's history, Web's website) opt
+# out by setting FRESH_SANDBOX to false.
+rep("function setPhase(p) {\n  const L = LESSONS[cur]; store.phase[L.id] = p; save();", """let sandboxFor = null; const FRESH_SANDBOX = true;
+function setPhase(p) {
+  const L = LESSONS[cur]; store.phase[L.id] = p; save();
+  if (p === 'mission' && FRESH_SANDBOX && sandboxFor !== L.id && !(store.steps[L.id] ?? []).some(Boolean)) resetSandbox();
+  if (p === 'mission') sandboxFor = L.id;""")
+
+# Backstage: what the kernel brings back from the disk used to be a tiny blank sheet that flew off and vanished, so
+# nobody could tell what it was. It is now a card showing what the program carries back (the names for ls, the
+# diary's lines for cat), and it travels back with the program until the program delivers it.
+rep(".paper{position:absolute;width:5%;aspect-ratio:3/4;background:#fff;border:3px solid var(--ink);border-radius:4px;opacity:0;z-index:2;background-image:repeating-linear-gradient(#0000 0 18%,#24133b44 18% 24%);background-clip:content-box;padding:12% 14%}",
+    ".paper{position:absolute;width:24%;background:#fff;border:3px solid var(--ink);border-radius:10px;box-shadow:0 4px 0 var(--ink);opacity:0;z-index:3;padding:.35em .6em .45em;font-family:var(--mono);font-size:clamp(.55rem,.25rem + .75vw,.9rem);line-height:1.3;color:var(--ink)}\n.paper b{display:block;font-family:var(--display);font-weight:400;color:var(--berry);font-size:.95em}")
+rep("    burp: 'Done! The hamster did not even notice.', out: [],", "    burp: 'Done! The hamster did not even notice.', out: [], carry: ['Done', 'hamster.txt is now', 'sir-fluffington.txt'],")
+rep("""  paper.style.opacity = 1; sound.boing(800, .3, .08);
+  await paper.animate([{ left: '86%', bottom: '20%', transform: 'rotate(0)' }, { left: '70%', bottom: '70%', transform: 'rotate(200deg)', offset: .5 }, { left: '57%', bottom: '40%', transform: 'rotate(360deg)' }], { duration: 1000, easing: 'ease-in-out', fill: 'forwards' }).finished;
+  paper.style.opacity = 0;""", """  const [got, ...lines] = s.carry ?? ['From the disk', ...s.out];
+  paper.innerHTML = `<b>${esc(got)}</b>${lines.map(esc).join('<br>')}`; paper.style.opacity = 1; sound.boing(800, .3, .08);
+  await paper.animate([{ left: '78%', bottom: '20%', transform: 'scale(.2) rotate(0)' }, { left: '64%', bottom: '74%', transform: 'scale(1) rotate(200deg)', offset: .5 }, { left: '48%', bottom: '60%', transform: 'rotate(360deg)' }], { duration: 1100, easing: 'ease-in-out', fill: 'forwards' }).finished;""")
+rep("""  prog.style.left = '14%'; await prog.animate([{ left: '54%' }, { left: '14%' }], { duration: 1300, easing: 'ease-in-out' }).finished;""",
+    """  prog.style.left = '14%'; paper.animate([{ left: '48%' }, { left: '8%' }], { duration: 1300, easing: 'ease-in-out', fill: 'forwards' });
+  await prog.animate([{ left: '54%' }, { left: '14%' }], { duration: 1300, easing: 'ease-in-out' }).finished;
+  paper.getAnimations().forEach((a) => a.cancel()); paper.style.opacity = 0;""")
+
+# Text is shrunk to fit its box when a panel opens or the window resizes. A box can still change size afterwards
+# (the side menu sliding in or out while a panel settles), and its text then overflowed until the next resize.
+# Now any box that changes size is fitted again. Fitting changes the font size, not the box, so it can't loop.
+rep("""function fitAll(root) {
+  for (const el of root.querySelectorAll('[data-fit]')) {
+    let f = 1; el.style.setProperty('--fit', '1');
+    while (el.scrollHeight > el.clientHeight + 1 && f > .56) { f -= .04; el.style.setProperty('--fit', f.toFixed(2)); }
+  }
+}""", """function fitAll(root) { root.querySelectorAll('[data-fit]').forEach(fitOne); }
+function fitOne(el) {
+  let f = 1; el.style.setProperty('--fit', '1');
+  while (el.scrollHeight > el.clientHeight + 1 && f > .56) { f -= .04; el.style.setProperty('--fit', f.toFixed(2)); }
+}
+const fitSizes = new WeakMap();
+const fitWatch = new ResizeObserver((entries) => entries.forEach(({ target, contentRect: r }) => {
+  const size = `${Math.round(r.width)}x${Math.round(r.height)}`;
+  if (fitSizes.get(target) !== size) { fitSizes.set(target, size); fitOne(target); }
+}));
+document.querySelectorAll('[data-fit]').forEach((el) => fitWatch.observe(el));""")
+# The fonts come from Google Fonts and can arrive after a panel was fitted with a stand-in font. The same words take
+# more room in the real font, so fit the open panel again when a font finishes loading (the others fit when shown).
+rep("let fitTimer;\naddEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(fitNow, 120); });",
+    "let fitTimer;\naddEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(fitNow, 120); });\ndocument.fonts?.addEventListener('loadingdone', () => fitNow());")

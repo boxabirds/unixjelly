@@ -1,6 +1,10 @@
 # Course order, recap layer and course navigator: pedagogical assessment
 
-**Status: proposal, waiting for agreement.** Two of the requests conflict with rule 1 (never use something before it's taught), so nothing here is built yet.
+**Status:**
+- **Agreed:** Git comes before Web (option A), and Security splits into Part 1 (after Shell 2) and Part 2 (after Web).
+- **Built:** the course order lives in `src/curriculum.json`. From it come the course map in every guide's side menu, the "Comes after" line on each welcome screen, the next course at the end of a course, and the landing page's steps. Security's prototype is now "Jelly Security 1", and its grey-zone dilemma shows the address as a picture.
+- **Agreed:** Finding 3. Security uses Shell 2's people and groups exactly, and recaps Shell 2's locks instead of re-teaching them.
+- **Not built yet:** the recap marks and popups, and the prerequisite interstitial. The welcome screen's "Comes after" line is the first part of the interstitial.
 
 ## The requests
 
@@ -41,7 +45,7 @@ Web can't come before Git. Its publishing lessons are three git commands, taught
 - **Security Part 2** comes after Web, and every mission in it declares the courses it needs. If one isn't done, the mission's interstitial says so and links to it. It doesn't use popups, because the child may never have seen that material.
 - The "not taught anywhere" gaps go into Web or Shell 2 before the missions that need them.
 
-## Finding 3: Security should use Shell 2's computer
+## Finding 3: Security should use Shell 2's computer (agreed)
 
 Shell 2's computer gives everyone their own group: `kid`'s files belong to group `kid`, and `family` is a shared club. Security's computer puts everything at home in group `family`. A child coming from Shell 2 would see the same commands behave differently, for example `ls -l` showing `kid family` instead of `kid kid`.
 
@@ -86,4 +90,4 @@ The landing page and the course navigator would show this as a small map, not a 
 
 1. **Order:** Git before Web (option A)?
 2. **Security:** split into Part 1 (beside Git, after Shell 2) and Part 2 (after Web)?
-3. **Security's computer:** switch to Shell 2's people and groups?
+3. **Security's computer:** switch to Shell 2's people and groups? **Agreed.**

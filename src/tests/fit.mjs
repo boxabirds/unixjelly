@@ -15,9 +15,11 @@ for (const [W, H] of (process.env.SIZES ?? '900x560,1024x640,1366x768,1440x900,1
     for (const ph of lesson ? ['meet', 'brain', 'mission'] : ['-']) {
       if (lesson) { await p.evaluate((ph) => { document.querySelector(`#lPhases [data-p=${ph}]`).click(); }, ph); await p.waitForTimeout(250); }
       const measure = () => p.evaluate(() => { const P = [...document.querySelectorAll('.panel')].find((x) => !x.hidden); return [...P.querySelectorAll('[data-fit]')].filter((e) => !e.classList.contains('map-list')).filter((e) => e.offsetParent).map((e) => [e.className.split(' ')[0], e.scrollHeight - e.clientHeight, getComputedStyle(e).getPropertyValue('--fit')]).filter((d) => d[1] > 1); });
-      let o = await measure();
-      // The side menu slides away when a lesson opens. Text can overflow for a moment while it moves, so look again before failing.
-      if (o.length) { await p.waitForTimeout(1500); o = await measure(); }
+      // The side menu slides away when a lesson opens, and text is refitted when its box stops changing. Measure once
+      // nothing is sliding any more (a slow machine can take seconds), then once more if needed.
+      const settled = () => p.waitForFunction(() => !document.getAnimations().some((a) => a instanceof CSSTransition && a.playState === 'running'), null, { timeout: 15000 }).then(() => p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))));
+      await settled(); let o = await measure();
+      if (o.length) { await p.waitForTimeout(1500); await settled(); o = await measure(); }
       if (o.length) bad.push(`${id}/${ph}:${JSON.stringify(o)}`);
       if (shots && W === +shots) await p.screenshot({ path: `fc-${guide}-${id}-${ph}-${W}.png` });
     }

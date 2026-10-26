@@ -1,5 +1,5 @@
 /* recap data */
-// What the recap shows: the whole game in one line, and for each magic word what it does, an example and a test question.
+// What the recap shows: the overview in one line, and for each magic word what it does, an example and a test question.
 const RECAP = {
   wizard: 'Web wizard!', wizardText: 'You collected every single jelly, and your website is on the internet. Go and build something amazing.',
   chain: [

@@ -1,0 +1,17 @@
+# What a presenter's video shows for each Jelly Shell lesson (presenter mode, present-patch.py): one action per frame.
+# The same commands as tests/shell.mjs. @tab:text types and presses Tab, @enter presses Enter, @up recalls, @ctrlc stops.
+rep("id: 'echo', word:", "id: 'echo', demo: ['echo hello', 'echo Sam', 'ECHO hi'], word:")
+rep("id: 'pwd', word:", "id: 'pwd', demo: ['pwd', 'cd toys', 'pwd', 'cd ~'], word:")
+rep("id: 'ls', word:", "id: 'ls', demo: ['ls', 'ls snacks', 'ls -a'], word:")
+rep("id: 'cd', word:", "id: 'cd', demo: ['cd toys', 'cd ..', 'cd toys', 'cd'], word:")
+rep("id: 'root', word:", "id: 'root', demo: ['cd /', 'ls', 'cd /tmp/dark/cave'], word:")
+rep("id: 'home', word:", "id: 'home', demo: ['cd ~', 'cd ~/snacks', 'cat pizza.txt', 'cat ~/toys/robot.txt'], word:")
+rep("id: 'hunt', word:", "id: 'hunt', demo: ['cd ~/toys', 'cd box', 'cd /tmp/dark', 'cd ~/pets', 'cd ~/snacks', 'cd ~'], word:")
+rep("id: 'cat', word:", "id: 'cat', demo: ['cat /home/kid/toys/robot.txt', 'cat secret-diary.txt', 'cat snacks/pizza.txt snacks/cookie.txt'], word:")
+rep("id: 'mkdir', word:", "id: 'mkdir', demo: ['mkdir fort', 'touch fort/flag.txt', 'ls fort'], word:")
+rep("id: 'cp', word:", "id: 'cp', demo: ['cp snacks/pizza.txt snacks/pizza2.txt', 'cp snacks/cookie.txt toys'], word:")
+rep("id: 'mv', word:", "id: 'mv', demo: ['mv pets/hamster.txt pets/sir-fluffington.txt', 'mv snacks/cookie.txt toys'], word:")
+rep("id: 'rm', word:", "id: 'rm', demo: ['rm snacks/broccoli.txt', 'rm toys'], word:")
+rep("id: 'man', word:", "id: 'man', demo: ['man ls', 'cp --help'], word:")
+rep("id: 'quest', word:", "id: 'quest', demo: ['cat note-from-gerbil.txt', 'cd /tmp/dark/cave', 'mv gerbil.txt ~/pets'], word:")
+rep("id: 'keys', word:", "id: 'keys', demo: ['cd', '@tab:cat secr', '@enter', '@up', 'cat', '@ctrlc', 'clear'], word:")

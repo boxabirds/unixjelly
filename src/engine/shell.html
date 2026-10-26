@@ -118,7 +118,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .hero-stage canvas,.cv canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .hero-hint{position:absolute;left:var(--pad);bottom:var(--pad);display:flex;gap:10px}
 
-/* whole game */
+/* overview */
 .town{flex:1;min-height:0;display:flex;flex-direction:column;background:#fff6cf}
 .cv{position:relative;flex:1;min-height:0}
 .town-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:12px 16px;border-top:4px solid var(--ink);background:var(--card);height:clamp(92px,15vh,128px)}
@@ -377,10 +377,10 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
       </div>
     </section>
 
-    <section class="panel sun" id="p-whole" aria-label="The whole game" hidden>
+    <section class="panel sun" id="p-whole" aria-label="Overview" hidden>
       <div class="ph">
         <div class="eyebrow">The big picture · 1 of 2</div>
-        <h2>The whole game</h2>
+        <h2>Overview</h2>
         <p>Follow one command, <code>ls</code>, all the way down to the disk and back up. Press Next. Drag to spin it, scroll to zoom, double-click to straighten up.</p>
       </div>
       <div class="town box">
@@ -1160,7 +1160,7 @@ function frame(t) {
   requestAnimationFrame(frame);
 }
 
-/* ---------------- section 1: the whole game ---------------- */
+/* ---------------- section 1: the overview ---------------- */
 const toonGrad = (() => { const t = new THREE.DataTexture(new Uint8Array([70, 160, 255]), 3, 1, THREE.RedFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; })();
 const OUTLINE = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
 function part(geo, color, { p = [0, 0, 0], s = [1, 1, 1], r = [0, 0, 0], line = 1.06 } = {}) {
@@ -1365,7 +1365,7 @@ const TOWN_STEPS = [
   { who: 'King Kernel', text: 'The shell finds the program called ls and asks the kernel to run it. The kernel is the boss of the whole computer. Only the kernel may touch the hardware. Everyone else has to ask nicely.', cam: [3.6, 1.6, 7], look: [.5, .3, 0], fly: [['crab', 'shellT', 'kernT', 'king'], 'ls'] },
   { who: 'Hardware + the file tree', text: 'The kernel reads the disk. Every file lives in one giant tree that grows upside down. The top is called the root and is written /. Your home folder is the branch /home/kid.', cam: [5.5, -1.5, 11.5], look: [3, -4, 0], fly: [['king', 'kernT', 'hwT', 'disk', 'root', 'kid'], 'ls', 2.4] },
   { who: 'All the way back up', text: 'The answer rides back up: pets, snacks, toys. The kernel gives it to the shell, the shell hands it to the terminal, and the words appear on your screen. All of that took less than a blink.', cam: [3.4, 8.6, 7], look: [.3, 7.2, 0], fly: [['kid', 'root', 'hwT', 'kernT', 'shellT', 'top', 'scr'], 'pets snacks toys', 2.6], screen: ['kid@jelly:~$ ls', 'pets  snacks  toys', 'kid@jelly:~$ _'] },
-  { who: 'That is the whole game', text: 'You → terminal → shell → kernel → hardware, and back. Every command in this guide makes that trip. Now let\'s zoom right into the green screen.', cam: [3, 3, 21], look: [2, .4, 0], cta: true },
+  { who: 'That\'s the overview', text: 'You → terminal → shell → kernel → hardware, and back. Every command in this guide makes that trip. Now let\'s zoom right into the green screen.', cam: [3, 3, 21], look: [2, .4, 0], cta: true },
 ];
 
 /* ---------------- section 2: backstage show ---------------- */
@@ -1970,9 +1970,9 @@ const LESSONS = [
       { t: 'Bring Gerald home to <code>~/pets</code> with <code>mv</code>.', ok: (e) => isCmd(e, 'mv') && !!find('/home/kid/pets/gerbil.txt') },
     ] },
 ];
-const ALL = [{ id: 'whole', name: 'The whole game', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];
+const ALL = [{ id: 'whole', name: 'Overview', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];
 /* recap data */
-// What the recap shows: the whole game in one line, and for each magic word what it does, an example and a test question.
+// What the recap shows: the overview in one line, and for each magic word what it does, an example and a test question.
 const RECAP = {
   wizard: 'Shell wizard!', wizardText: 'You collected every single jelly. Now go and boss a real computer around.',
   chain: [
@@ -2041,7 +2041,7 @@ function confetti(color) {
 // Every section is one full-window panel. The lesson panel is shared by all the magic words.
 const PANELS = [
   { id: 'welcome', group: 'Start here', label: 'Welcome', tag: 'hi!', color: '#ff4d6d' },
-  { id: 'whole', group: 'The big picture', label: 'The whole game', tag: '1', color: '#ffc61a' },
+  { id: 'whole', group: 'The big picture', label: 'Overview', tag: '1', color: '#ffc61a' },
   { id: 'backstage', group: 'The big picture', label: 'Backstage', tag: '2', color: '#9b5cff' },
   ...LESSONS.map((l) => ({ id: l.id, group: 'The magic words', label: l.name, tag: l.word, color: l.color, lesson: l })),
   { id: 'recap', group: 'Wrap up', label: 'What I’ve learnt', tag: '★', color: '#ffc61a', ownButton: true }, // reached by its own sidebar button
@@ -2134,7 +2134,7 @@ const GUIDES = {
     { sel: '.show-btns', title: 'Try all three', text: 'Watch cat and mv too. Every command makes the same trip with a different program.' },
   ],
   recap: [
-    { sel: '.rc-chain', title: 'The big picture, again', text: 'Remember the whole game? Here it is in one line.' },
+    { sel: '.rc-chain', title: 'The big picture, again', text: 'Remember the overview? Here it is in one line.' },
     { sel: '.rc-grid', title: 'Your magic words', text: 'Every word you learnt, with its brain-burner. Grey ones are still waiting for you: tap one to learn it.' },
     { sel: '.rc-mode', title: 'Test yourself', text: 'Press Test me. Each card asks a question. Say the answer out loud, then tap the card to check.' },
   ],
@@ -2270,7 +2270,7 @@ function flyToJar(from, color) {
 upPill.onclick = () => go(nextUp().id);
 
 /* ---------------- what I've learnt so far ---------------- */
-// Tell them what you told them: the whole game again in one line, then every magic word learnt so far.
+// Tell them what you told them: the overview again in one line, then every magic word learnt so far.
 // "Test me" turns each learnt card into a question to answer from memory before tapping to check.
 function renderRecap() {
   const learnt = LESSONS.filter((L) => store.done[L.id]).length, test = store.recapMode === 'test', seen = !!store.done.whole;
@@ -2278,7 +2278,7 @@ function renderRecap() {
     : learnt === LESSONS.length ? `You have learnt all ${LESSONS.length} magic words. Wow.` : `You have learnt ${learnt} of ${LESSONS.length} magic words so far.`;
   document.querySelectorAll('.rc-mode button').forEach((b) => b.classList.toggle('on', (b.dataset.mode === 'test') === test));
   $('#rcChain').innerHTML = `<div class="rc-stops${seen ? '' : ' dim-chain'}">${RECAP.chain.map((c, i) => `${i ? `<span class="rc-via"><small>${esc(c.via ?? '')}</small><b>→</b></span>` : ''}<div class="rc-stop"><b>${esc(c.label)}</b><small>${esc(c.sub)}</small></div>`).join('')}</div>
-    <p class="rc-line">${seen ? esc(RECAP.line) : 'Watch <button class="link" data-go="whole">The whole game</button> to fill in the big picture.'}</p>`;
+    <p class="rc-line">${seen ? esc(RECAP.line) : 'Watch the <button class="link" data-go="whole">Overview</button> to fill in the big picture.'}</p>`;
   $('#rcGrid').innerHTML = LESSONS.map((L) => {
     const R = RECAP.words[L.id], st = store.steps[L.id] ?? [], part = st.filter(Boolean).length;
     if (!store.done[L.id]) return `<button class="rc-card locked" data-go="${L.id}" style="--c:${L.color}"><span class="w">${esc(L.word)}</span><span class="d">${part ? `${part} of ${L.steps.length} done` : 'Not learnt yet'}</span><span class="go">Learn it →</span></button>`;

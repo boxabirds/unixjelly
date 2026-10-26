@@ -110,6 +110,36 @@ Each lesson's story phase has one picture, made in HTML and CSS rather than imag
 
 A plain padlock is never used: it could mean "can't read" or "can't change", and testers asked which. Each padlock carries the thing you can't do, and the legend under the map says so. Clicking a folder types its `cd` command for you.
 
+## The course map
+
+- **In the side menu**, under the jar, a "Course map" lists every course with its step number. The current course is yellow and says "you are here"; finished ones are green with "✓ finished"; planned ones are faded and say "coming later". The others say what they come after.
+- **On the welcome screen**, one line says which course comes first ("Comes after Jelly Shell 2 ✓").
+- **At the end of a course**, the final card offers up to two next courses as yellow buttons, and "What I've learnt" repeats them. The next course is one that isn't finished and whose needs are met.
+- **The landing page** shows the same map as steps. Courses on the same step sit side by side, labelled "do these in either order".
+
+## The Overview
+
+- **One style, three worlds.** Jelly Shell's computer is a doll's house; Jelly Git's is a house whose lift tower reaches a see-through cloud (GitHub), with a friend's house next door; Jelly Web's is a little world: your house, the DNS owl's treehouse, a cut-open sea with the cable on its floor, and the server on the far shore.
+- **A doll's house, cut open.** In Jelly Shell each layer of the computer is a floor: you and the terminal at the top (yellow), Shelly the shell (green), King Kernel on the ground floor (blue), the hardware in the cellar (orange). Floors stack, so nothing pokes into anything else, and each stop fills the frame, wide or tall.
+- **Things you can follow.** What the course is about travels as jelly letters (the same font as the welcome letters): `ls` and its answer, `game.py`, `gerbil.zone`, its number, `GET /` and `200 OK`. Commits are photos. No tube, packets or blank sheets that need explaining.
+- **See-through where it helps.** GitHub's cloud and the sea are see-through, so you can see GitHub's album and the cable on the sea floor.
+- **The file tree is the roots**, growing down from the disk under the house, so "a tree that grows upside down" is something you see. `/` is berry, folders are lemon.
+- **Characters have faces.** King Kernel is a gumdrop with a crown, eyes and a moustache; nothing but the terminal has a screen. Characters and travellers are rigid jelly that squashes when something reaches it; the house is toon with even ink outlines.
+- **Signs** are painted on the back walls (floors and walls hide them); only speech bubbles float on top.
+- **Its name.** "Overview", not "The whole game": a child doesn't know the teacher's phrase.
+
+## The jelly jar
+
+- **Every finished lesson earns a jelly with its own look:** classic, zebra, spotty, stripy, swirly, sprinkle, checked, two-tone, glitter, rainbow or galaxy, in the lesson's colour. The last lesson of a course gives a **golden** jelly. Each course starts at a different place in the list, so jellies from different courses look different.
+- **The "you earned" card** names the look ("You earned the zebra `ls -l` jelly!"), shows that jelly, and has a **See it in my jar** link.
+- **The shelf.** **My jelly jars** in the side menu opens a shelf with one jar per course, in course order. Each jar wears its course's lid colour and shows its jellies piled inside, with "7 of 15 jellies", "empty" or "coming later" underneath. Empty jars are a set waiting to be completed.
+- **A jar** opens from the shelf, or from the card's link (that course's jar). It's a round sweet jar in the jelly style: see-through glass with a rainbow sheen, a white lip, a puffy berry lid that has popped off and bobs above it, and a lemon coaster. The jar is rigid; only the jellies wobble. Behind it, soft pastel rainbow swirls drift slowly (they stop when the computer asks for less motion). The jellies are the same soft bodies as the jelly letters, in the shape of the card's jelly, with their faces puffed into domes. Colours stay bright: the jar uses neutral tone mapping (the letters' filmic one washes bright colours out), very little sheen, and clear glass. Grab one and fling it, press **Shake it!**, or tap one to see its look, its word, the lesson, the course, what it does and an example.
+- **Every course's jellies, everywhere.** Guides served from one website share them (the `jelly.collection` key), so the Shell 2 shelf shows the Git jar full too. Hosted one per page (claude.ai), each guide only sees its own, until the child loads a save file.
+- **Save my jellies** downloads `my-jellies-<date>.json`: every jelly, every course's ticks and the course map. **Use my existing jellies** loads one back. It only ever adds (nothing is taken away), and then says "Welcome back!". Progress otherwise lives only in this browser, so this is how a child keeps it safe, moves to another computer, or fills the other jars on claude.ai.
+- **Starting a course again** takes that course's jellies out of the jar, and nobody else's.
+- While the jar is open, the jelly letters behind it pause, and keys stay in the jar (**Escape** closes it).
+- A few seconds after the last drop, fling or shake, the jar settles and falls asleep: silent, and almost free for the computer. Bumps only make a sound when jellies really move into each other.
+
 ## Motion and sound
 
 - Jelly letters drop in, wobble, hop when you get something right, and walk back to their places if knocked out of line. Thin letters have a heavier base so they stay upright (`tests/letters.mjs` checks this).

@@ -36,3 +36,6 @@
 .lsl{display:grid;grid-template-columns:repeat(7,auto);gap:.25em .3em;align-items:center;justify-items:center;font-family:var(--mono);font-weight:700;font-size:clamp(.8em,1.6vw,1.1em)}
 .lsl small{font-family:var(--body);font-size:max(11px,.45em);font-weight:600;text-align:center;line-height:1.15;max-width:6.5em}
 .pv.n{background:#eef;border-style:dashed}
+/* a web address drawn like an address bar, so the grey-zone dilemma needs no knowledge of how addresses work */
+.addr{font-family:var(--mono);font-size:.9em;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:0 .6em;white-space:nowrap}
+.addr b{background:var(--lemon);border-radius:4px;padding:0 .1em}

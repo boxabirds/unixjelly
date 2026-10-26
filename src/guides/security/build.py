@@ -14,15 +14,15 @@ rep('<title>Jelly Shell</title>', '<title>Jelly Security</title>')
 rep('<div class="brand">Jelly <b>Shell</b></div>', '<div class="brand">Jelly <b>Security</b></div>')
 rep('aria-label="Jelly Shell navigation"', 'aria-label="Jelly Security navigation"')
 rep('<h1>Jelly Shell needs a bigger screen</h1>', '<h1>Jelly Security needs a bigger screen</h1>')
-rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to security · prototype</div>')
+rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to security · part 1</div>')
 rep('<h1>Boss your computer around with <em>tiny words</em>.</h1>', '<h1>Think like a <em>hacker</em>. Build like a defender.</h1>')
 rep('<p>These words were invented in 1971. They still work today on Macs, Linux, Raspberry Pis and most of the computers that run the internet. Learn them once, use them for life.</p>',
-    '<p>Security people wear two hats: one to find the way in, one to lock it. Learn both, safely, on a pretend computer. Best after Jelly Shell, Jelly Shell 2 and Jelly Web: it uses their commands and adds the hats. This prototype has the first 3 missions.</p>')
+    '<p>Security people wear two hats: one to find the way in, one to lock it. Learn both, safely, on a pretend computer. Part 1 has three missions.</p>')
 rep('aria-label="Wobbly 3D jelly letters spelling ls, cd and cat. Drag them to squish."', 'aria-label="Wobbly 3D jelly letters spelling hats. Drag them to squish."')
 rep("word: 'ls cd cat', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 0, frame: 1.4, lookY: .85", "word: 'hats', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 0, frame: 1.5, lookY: .8")
 rep("const KEY = 'jellyshell.v1';", "const KEY = 'jellysecurity.v1';")
 # the prototype goes straight to the missions: no 3D tour or backstage show yet
-rep("""  { id: 'whole', group: 'The big picture', label: 'The whole game', tag: '1', color: '#ffc61a' },
+rep("""  { id: 'whole', group: 'The big picture', label: 'Overview', tag: '1', color: '#ffc61a' },
   { id: 'backstage', group: 'The big picture', label: 'Backstage', tag: '2', color: '#9b5cff' },
 """, "")
 rep("group: 'The magic words'", "group: 'Missions'")
@@ -62,7 +62,7 @@ rep("  print('<span class=\"tip\">Welcome to the sandbox! This is a pretend comp
 
 # ---------- missions, hats and recap ----------
 region('const isCmd = (e, c)', 'const ALL = [', open(V + 'lessons.js').read())
-rep("const ALL = [{ id: 'whole', name: 'The whole game', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];", "const ALL = [...LESSONS];")
+rep("const ALL = [{ id: 'whole', name: 'Overview', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];", "const ALL = [...LESSONS];")
 region('/* recap data */', '/* end recap data */\n', """/* recap data */
 const RECAP = {
   wizard: 'Security wizard!', wizardText: 'You wore both hats. Now go and build things that are hard to break.',

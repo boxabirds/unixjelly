@@ -57,9 +57,20 @@ Jelly Security and Jelly Shell 2 declare `teaches`. **Jelly Shell, Jelly Git and
    - the "what testers found" table in `docs/pedagogy.md`, if this came from a child's confusion;
    - `docs/new-lesson.md`, if the process changed.
 
+## The course order
+
+`src/curriculum.json` is the only place that says which course comes before which. The landing page, the course map in each guide, the "Comes after" line and the next-course buttons are all built from it, so never write course order into a guide's text or into `index.html` by hand. A course may only use what its `needs` (and their needs) teach. When a new course needs another, add it to `needs` first, then check the dependency holds (see rule zero).
+
 ## The shell
 
 All five guides share one shell: `src/shell/jellysh.js`, a self-contained module with its own Node test (`tests/jellysh.mjs`, checked against real bash). Guides plug in commands with `SH.define()` and their teaching voice with hooks. They never patch the shell. Its deliberate differences from bash are listed in `src/shell/README.md`.
+
+## Performance
+
+Some children have old computers. A change to the 3D or the physics must not make the guides slower.
+- **Measure before and after:** run `node tests/perf.mjs` on the old build and the new one, on the same machine. It prints the work done per 3 seconds of jelly time for dropping letters, a filling jar and a settled jar.
+- **Things that stay still must sleep:** a settled jar should cost almost nothing.
+- **Nothing allocated in the physics loop:** reuse arrays, so old computers don't stall collecting garbage.
 
 ## Other house rules
 

@@ -1,7 +1,7 @@
 /* terminal colours git uses: green for staged / added, a warm yellow for photo IDs */
 .term-body .ok{color:#7dff9b}
 .term-body .hash{color:#ffd36b}
-/* the git map: four zones, top to bottom, the same four stops as the 3D whole game */
+/* the git map: four zones, top to bottom, the same four stops as the 3D overview */
 .gm{display:grid;gap:.35em}
 .gm-where{font-size:.82em;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:.3em;align-items:center}
 .gm-where .yes{color:#2e8a1a}.gm-where .no{color:var(--berry)}

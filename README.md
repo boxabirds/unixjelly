@@ -35,7 +35,7 @@ The app is a fixed left nav plus one full-window panel at a time:
 | Section | What it does |
 | --- | --- |
 | Welcome | Draggable 3D jelly letters spelling `ls`, `cd` and `cat`. |
-| The whole game | A 3D cutaway of a computer (terminal, shell, kernel, hardware, file tree) that follows `ls` through each layer. |
+| Overview | A computer cut open like a 3D doll's house: you and the terminal, Shelly the shell, King Kernel and the hardware on their own floors, and the file tree growing underground as roots. Your `ls` rides a lift down as jelly letters, and the answer climbs back up. |
 | Backstage | A flip-card animation. Press Enter on the "green screen", then watch the shell, `/bin`, the kernel and the disk cooperate. Plays `ls`, `cat` and `mv`. |
 | Lessons | 15 short missions, each with a mnemonic and a live terminal sandbox. |
 
@@ -66,7 +66,7 @@ Same format as Jelly Shell (same nav, 3D cutaway, backstage animation and sandbo
 | Section | What it does |
 | --- | --- |
 | Welcome | Intro to git as "a time machine for your code". |
-| The whole game | A 3D cutaway of how a file moves from your desk to the stage to the photo album to GitHub. |
+| Overview | Your computer as a 3D doll's house: your folder, the stage and the photo album on their own floors, and a lift tower up to GitHub in a see-through cloud. `game.py` rides up as jelly letters, gets photographed, pushed, and cloned to a friend's house. |
 | Backstage | A flip-card animation of `git add` and friends. |
 | Lessons | 14 short missions with a live sandbox. |
 
@@ -81,7 +81,7 @@ Same format again, applied to the web. The lesson panel swaps the file tree for 
 | Section | What it does |
 | --- | --- |
 | Welcome | Intro: every web page is a text file that crosses the planet. |
-| The whole game | A 3D trip of one page request: your computer, the router, the DNS phonebook, the undersea internet, the server, and back. |
+| Overview | A little 3D world: your house, the DNS owl's treehouse, a cut-open sea with the internet cable on its floor, and the server on the far shore. `gerbil.zone`, its number, `GET /` and `200 OK` travel there and back as jelly letters. |
 | Backstage | A flip-card animation of the browser crew loading `gerbil.zone`, a 404, and a teapot's 418. |
 | Lessons | 17 short missions with an editor, a terminal and a live browser. |
 

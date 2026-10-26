@@ -10,6 +10,10 @@ The point is the same every time. **Same skills, different permission.** The chi
 
 A working prototype of missions 0, 5 and the grey zone is in `jellysecurity/`.
 
+**Two parts** (agreed; see `course-order-and-recap.md`):
+- **Jelly Security 1** comes after Jelly Shell 2, beside Jelly Git. It holds the missions that need only the shell: 0 Pick your hat, 3 The Guessing Machine, 5 Keys you don't need, 6 The Sandbox Room, and the grey zone. The prototype in `jellysecurity/` is its start.
+- **Jelly Security 2** comes after Jelly Web. It holds the missions that need web pages, `curl`, DNS, HTTPS or git history. Each declares the courses it needs in `src/curriculum.json`.
+
 > **Note.** Some "tie-ins" below assume things the earlier guides don't teach yet, such as forms, cookies, query strings, HTML comments, branches and `;`. Check each mission against the prerequisite map and the list of known gaps in `../pedagogy.md` before building it. Jelly Security must not teach new commands itself.
 
 ---

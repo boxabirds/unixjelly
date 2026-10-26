@@ -20,12 +20,12 @@ rep('<span class="more"> Letters in Titan One', f'<span class="more"> The third 
 rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to the web</div>')
 rep('<h1>Boss your computer around with <em>tiny words</em>.</h1>', '<h1>Make a <em>web page</em>, then send it round the world.</h1>')
 rep('<p>These words were invented in 1971. They still work today on Macs, Linux, Raspberry Pis and most of the computers that run the internet. Learn them once, use them for life.</p>',
-    '<p>Every web page is a text file that crosses the planet in less than a second. Find out how, write your own page, and put it on the internet for real. Best after Jelly Shell and Jelly Git.</p>')
+    '<p>Every web page is a text file that crosses the planet in less than a second. Find out how, write your own page, and put it on the internet for real.</p>')
 rep('aria-label="Wobbly 3D jelly letters spelling ls, cd and cat. Drag them to squish."', 'aria-label="Wobbly 3D jelly letters spelling web. Drag them to squish."')
 rep('<p>Follow one command, <code>ls</code>, all the way down to the disk and back up. Press Next. Drag to spin it, scroll to zoom, double-click to straighten up.</p>',
-    '<p>Follow one web page, <code>gerbil.zone</code>, from your screen to a server far away and back. Press Next. Drag to spin it, scroll to zoom, double-click to straighten up.</p>')
+    '<p>Follow one web page, <code>gerbil.zone</code>, from your screen to a server far away and back. Press Next. Drag to turn the world, scroll to zoom, double-click to straighten up.</p>')
 rep('aria-label="A 3D cartoon of a computer cut into layers: you and the terminal, the shell, the kernel, the hardware and the file tree."',
-    'aria-label="A 3D cartoon of the trip a web page takes: your computer, your router, the DNS phonebook, the internet under the sea, and the server."')
+    'aria-label="A 3D cartoon world: your house with your computer upstairs and the router downstairs, the DNS owl in a treehouse next door, the internet cable along the bottom of a cut-open sea, and the server in a building on the far shore."')
 rep('<p>Someone types at the green screen. Then it flips around, and you see the crew inside putting the command together.</p>',
     '<p>Someone types an address into the browser. Then it flips around, and you see the crew that fetches and builds the page.</p>')
 rep('<span class="face-tag">Front: the green screen</span>', '<span class="face-tag">Front: the browser</span>')
@@ -80,33 +80,7 @@ rep('<a class="ni" href="#${p.id}" data-id="${p.id}" data-teaches=', '<a class="
 
 # ---------- script ----------
 rep("const KEY = 'jellyshell.v1';", "const KEY = 'jellyweb.v1';")
-region('  build() {', '  pt(name) {', open(V + 'town.js').read())
-region('  pt(name) {', '  fly(names, text, dur = 1.6) {', '''  pt(name) {
-    const Y = this.Y, P = {
-      kbd: [.3, Y.desk + 1.2, .45], scr: [.3, Y.desk + 1.7, .2], deskT: [2.9, Y.desk + .8, 0], routerT: [2.9, Y.router + .8, 0], dnsT: [5.3, Y.router + .8, 0], dns: [6.4, Y.router + 1.5, .6],
-      seaT: [2.9, Y.sea + .6, 0], sea: [.4, Y.sea + .55, 1], serverT: [2.9, Y.server + .8, 0], server: [.8, Y.server + 1.7, .7],
-    };
-    return new THREE.Vector3(...P[name]);
-  }
-''')
-i = s.index('    this.platters.forEach'); j = s.index('\n', s.index("Object.entries(this.treeNodes)", i))
-s = s[:i] + '''    this.leds.forEach((m, k) => { m.visible = Math.sin(t * (this.step === 3 ? 22 : 6) + k * 1.7) > -.2; });
-    this.racks.forEach((m, k) => { m.material.color.set(Math.sin(t * (this.step === 4 ? 18 : 4) + k * 2.3) > 0 ? '#4dff8b' : '#1f6b3a'); });
-    this.owl.rotation.y = Math.sin(t * 1.2) * .3 + (this.step === 2 ? Math.sin(t * 9) * .15 : 0);
-    this.owl.position.y = .2 + (this.step === 2 ? Math.abs(Math.sin(t * 6)) * .15 : 0);
-    this.bookPage.rotation.z = this.step === 2 ? Math.sin(t * 5) * .5 - .25 : 0;
-    const a = t * .6; this.fin.position.set(Math.cos(a) * 1.55, .45, Math.sin(a) * 1.1); this.fin.rotation.y = -a;
-    this.kid.position.y = .2 + (this.step === 1 ? Math.abs(Math.sin(t * 12)) * .05 : 0);''' + s[j:]
-region('const TOWN_STEPS = [', '\n];\n', '''const TOWN_STEPS = [
-  { who: 'The whole game', text: 'Loading one web page is a trip with five stops: your computer, your router, the DNS phonebook, the internet, and a server far away. Press Next to follow one page all the way there and back.', cam: [3.5, 3, 23], look: [3, .6, 0] },
-  { who: 'Your computer', text: 'You type gerbil.zone into the browser and press Enter. The browser is a program that fetches pages and draws them. But it has a problem: it has no idea where gerbil.zone is.', cam: [3.8, -1.6, 9.2], look: [.6, -3.7, 0], fly: [['kbd', 'scr'], 'gerbil.zone'] },
-  { who: 'The DNS phonebook', text: 'Computers only understand numbers. So your computer asks the DNS phonebook: "What is the number for gerbil.zone?" The owl looks it up: 203.0.113.7. Now it knows where to send the letter.', cam: [6.5, 1.4, 9.5], look: [4.6, -.6, 0], fly: [['scr', 'deskT', 'routerT', 'dnsT', 'dns'], 'gerbil.zone = ?', 2.2] },
-  { who: 'Your router and the internet', text: 'The browser writes a polite letter: GET /, which means "your home page, please". Your router sends it out across the internet, through cables that run along the bottom of the sea. A shark was once filmed biting one!', cam: [3.6, 3.8, 9], look: [.8, 1.2, 0], fly: [['dns', 'dnsT', 'routerT', 'seaT', 'sea'], 'GET /', 2.2] },
-  { who: 'The server', text: 'The letter arrives at the server: a computer in a giant building that never sleeps. It reads the letter, finds index.html in a folder (just like cat), and writes back.', cam: [3.6, 8.6, 7], look: [.3, 7.1, 0], fly: [['sea', 'seaT', 'serverT', 'server'], 'GET /'] },
-  { who: 'All the way back', text: 'The reply rides back: 200 OK, plus the HTML. Under the sea, through your router, onto your screen. Your browser reads the HTML and builds the page, box by box. All in less than a second.', cam: [3.8, -1.6, 9.2], look: [.6, -3.7, 0], fly: [['server', 'serverT', 'seaT', 'routerT', 'deskT', 'scr'], '200 OK', 2.8] },
-  { who: 'That is the whole game', text: 'Type an address, look up the number, send a GET, the server replies, the browser builds. Every page you have ever seen made this trip. Now let\\'s zoom in and watch the crew do it.', cam: [3.5, 3, 23], look: [3, .6, 0], cta: true },
-];
-''', keep_end=False)
+exec(open('engine/use-overview.py').read())
 region('/* ---------------- section 2: backstage show ---------------- */', '/* ---------------- section 3: the pretend computer ---------------- */', open(V + 'show.js').read())
 rep("const BIN = ['cat', 'clear', 'cp', 'echo', 'ls', 'man', 'mkdir', 'mv', 'pwd', 'rm', 'touch'];", "const BIN = ['cat', 'clear', 'cp', 'curl', 'echo', 'git', 'ls', 'man', 'mkdir', 'mv', 'nslookup', 'open', 'ping', 'pwd', 'rm', 'touch'];")
 INDEX = '<!DOCTYPE html>\\n<html>\\n  <head>\\n    <title>My page</title>\\n  </head>\\n  <body>\\n    <h1>Hello, world!</h1>\\n    <p>This is my very own web page.</p>\\n  </body>\\n</html>\\n'
@@ -163,14 +137,11 @@ rep("  cur = i; const L = LESSONS[i]; store.cur = L.id; save();", "  cur = i; co
 rep("  resetSandbox(); paintSteps(); termIn.focus({ preventScroll: true });",
     "  if (L.project === 'gerald') { resetGerald(); } else { stopPing(); sh.cwd = sh.home; termOut.innerHTML = ''; welcome(); paintPrompt(); }\n  renderMap(); webLesson(L); paintSteps();")
 rep("word: 'ls cd cat', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 0, frame: 1.4, lookY: .85", "word: 'web', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 3, frame: 1.5, lookY: .8")
-rep("""    if (s.fly) { town.fly(s.fly[0], s.fly[1], s.fly[2]); sound.boing(500, .3, .08); town.onLand = () => { if (s.screen) town.drawScreen(s.screen); sound.blip(); }; }
-    else { town.curve = null; town.packet.visible = town.packetLabel.visible = false; }
-    if (i === 0) town.drawScreen(['kid@jelly:~$ _']);""", """    town.setState(i, !s.fly);
-    if (s.fly) { town.fly(s.fly[0], s.fly[1], s.fly[2]); sound.boing(500, .3, .08); town.onLand = () => { town.setState(i, true); sound.blip(); }; }
-    else { town.curve = null; town.packet.visible = town.packetLabel.visible = false; }""")
 rep("if (TOWN_STEPS[town.step].cta) { go('backstage'); setTimeout(() => runShow('ls'), REDUCED ? 0 : 500); return; }", "if (TOWN_STEPS[town.step].cta) { go('backstage'); setTimeout(() => runShow('page'), REDUCED ? 0 : 500); return; }")
 rep("else if (PANELS[panelIdx]?.lesson && $('#lcard').dataset.phase === 'mission') { e.preventDefault(); termIn.focus({ preventScroll: true }); }", "else if (PANELS[panelIdx]?.lesson && $('#lcard').dataset.phase === 'mission') { e.preventDefault(); (WB.tool === 'edit' ? edText : termIn).focus({ preventScroll: true }); }")
 rep("resetFS(); welcome(); paintPrompt(); renderMap(); paintProgress();", "resetFS(false); welcome(); paintPrompt(); renderMap(); paintProgress();")
 region('/* recap data */', '/* end recap data */\n', open(V + 'recap.js').read(), keep_end=False)
+# Web's lessons build on each other (the website you make), so its sandbox carries on between lessons.
+rep("const FRESH_SANDBOX = true;", "const FRESH_SANDBOX = false;")
 open('build/jelly-web.src.html', 'w').write(s)
 print('ok')

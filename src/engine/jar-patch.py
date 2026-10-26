@@ -1,0 +1,409 @@
+# The jelly jar. Every finished lesson earns a jelly with its own look (zebra, spotty, golden…), and the jellies
+# live in a glass jar you can open from the side menu: grab them, fling them, shake the jar, and tap one to see
+# what you learnt and where. The jar holds jellies from every course, through one storage key, 'jelly.collection'.
+# The jellies are the same soft bodies as the jelly letters, in the shape of the bean on the "you earned" card.
+# Run by shelly-patch.py, after courses-patch.py.
+
+# ---------- physics: a bean shape, coarser cages for small jellies, a tap hook, resting on each other ----------
+rep('const letterCache = new Map();', r'''// The jelly-baby outline from the "you earned" card (bean() below), as a shape the jelly physics can extrude.
+const BEAN = '●';
+function beanShape(size) {
+  const k = size / 62, X = (x) => (x - 30) * k, Y = (y) => (66 - y) * k, s = new THREE.Shape();
+  s.moveTo(X(30), Y(4));
+  s.bezierCurveTo(X(48), Y(4), X(56), Y(18), X(54), Y(36));
+  s.bezierCurveTo(X(52), Y(56), X(42), Y(66), X(29), Y(66));
+  s.bezierCurveTo(X(16), Y(66), X(5), Y(56), X(6), Y(38));
+  s.bezierCurveTo(X(7), Y(18), X(12), Y(4), X(30), Y(4));
+  return s;
+}
+const letterCache = new Map();''')
+rep('const shapes = FONT.generateShapes(ch, size);', 'const shapes = ch === BEAN ? [beanShape(size)] : FONT.generateShapes(ch, size);')
+# Puff a jelly baby's flat faces into domes, and remember how far out the face is at each point, so the eyes sit on it.
+rep("geo.translate(sx, sy, sz); geo.computeBoundingBox();", r"""geo.translate(sx, sy, sz); geo.computeBoundingBox();
+  let eyeZ = null;
+  if (ch === BEAN) {
+    const bb2 = geo.boundingBox, a = (bb2.max.x - bb2.min.x) / 2, b = bb2.max.y / 2, z0 = bb2.max.z, P = geo.attributes.position;
+    const puff = (x, y) => 1 + 1.1 * Math.max(0, 1 - (x / a) ** 2 - ((y - b) / b) ** 2);
+    for (let i = 0; i < P.count; i++) P.setZ(i, P.getZ(i) * puff(P.getX(i), P.getY(i)));
+    geo.computeVertexNormals(); geo.computeBoundingBox();
+    eyeZ = (x, y) => z0 * puff(x, y);
+  }""")
+rep("const out = { geo, polys, box: geo.boundingBox.clone(), centerShift: -sx };", "const out = { geo, polys, box: geo.boundingBox.clone(), centerShift: -sx, eyeZ };")
+rep("this.eyes = this.makeEyes(polys, box, bind);", "this.eyeZ = L.eyeZ; this.eyes = this.makeEyes(polys, box, bind);")
+rep("return { b: bind(x, y, z), r, ball, pupil,", "return { b: bind(x, y, this.eyeZ ? this.eyeZ(x, y) : z), r, ball, pupil,")
+# A jelly baby is puffier than a letter: thinner middle, much rounder edges.
+rep("let geo = new THREE.ExtrudeGeometry(shapes, { depth: size * .3, curveSegments: 7, bevelEnabled: true, bevelThickness: size * .09, bevelSize: size * .05, bevelSegments: 4 });",
+    "let geo = new THREE.ExtrudeGeometry(shapes, ch === BEAN ? { depth: size * .08, curveSegments: 10, bevelEnabled: true, bevelThickness: size * .1, bevelSize: size * .08, bevelSegments: 6 } : { depth: size * .3, curveSegments: 7, bevelEnabled: true, bevelThickness: size * .09, bevelSize: size * .05, bevelSegments: 4 });")
+rep('cell = size / 6.5', 'cell = size / (stage.opts.cells ?? 6.5)')
+# A round jar: jellies are kept inside a circle instead of a box.
+rep("      x[j] = clamp(x[j], B.x0, B.x1); x[j + 2] = clamp(x[j + 2], B.z0, B.z1);",
+    "      if (B.r) { const rr = Math.hypot(x[j], x[j + 2]); if (rr > B.r) { x[j] *= B.r / rr; x[j + 2] *= B.r / rr; } }\n      else { x[j] = clamp(x[j], B.x0, B.x1); x[j + 2] = clamp(x[j + 2], B.z0, B.z1); }")
+rep("if (tap) { d.b.hop(1.1); sound.boing(380, .4); }", "if (tap) { d.b.hop(1.1); sound.boing(380, .4); this.onTap?.(d.b); }")
+# Letters only rest on the floor. Jellies in a jar rest on each other, so they may fall asleep anywhere once still.
+rep('this.quiet = !this.grab && grounded && rms < .005', 'this.quiet = !this.grab && (grounded || this.stage.opts.restAnywhere) && rms < .005')
+
+# ---------- the jar stage and the jelly looks ----------
+rep('let lastT = performance.now();', r'''/* ---------------- the jelly jar ---------------- */
+// Every jelly's look. The pattern is painted on the jelly's resting shape, so it squishes along with the jelly.
+const LOOKS = ['classic', 'zebra', 'spotty', 'stripy', 'swirly', 'sprinkle', 'checked', 'two-tone', 'glitter', 'rainbow', 'galaxy', 'golden'];
+const PATTERN_GLSL = `
+float jh(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+vec3 jhue(float h) { return clamp(abs(mod(h * 6. + vec3(0., 4., 2.), 6.) - 3.) - 1., 0., 1.); }
+vec3 jellyPattern(vec3 base) {
+  vec2 q = vR.xy; float on = 0.; vec3 c2 = vec3(1.);
+  if (uPat == 1) { on = step(.58, fract(q.x * 5. + sin(q.y * 9.) * .35 + vR.z * 2.)); c2 = vec3(.09, .05, .14); }
+  else if (uPat == 2) { vec2 g = floor(q * 6.), f = fract(q * 6.) - .5, o = (vec2(jh(g), jh(g + 3.1)) - .5) * .35; on = 1. - step(.2, length(f - o)); }
+  else if (uPat == 3) { on = step(.5, fract((q.x + q.y) * 5.)); }
+  else if (uPat == 4) { vec2 c = q - vec2(0., .5); on = step(.5, fract(atan(c.y, c.x) / 6.2832 * 2. + length(c) * 7.)); }
+  else if (uPat == 5) { vec2 g = floor(q * 16.), f = fract(q * 16.) - .5; on = step(.55, jh(g)) * (1. - step(.22, length(f))); c2 = jhue(jh(g + 5.)); }
+  else if (uPat == 6) { on = mod(floor(q.x * 7.) + floor(q.y * 7.), 2.); }
+  else if (uPat == 7) { on = step(.5, q.y); c2 = uC2; }
+  else if (uPat == 8) { vec3 g = floor(vR * 45.); on = step(.86, jh(g.xy + g.z * 7.1)); }
+  else if (uPat == 9) { return jhue(q.y * .9 + q.x * .3) * .85 + .15; }
+  else if (uPat == 10) { vec2 c = q - vec2(0., .5); float sw = .5 + .5 * sin(atan(c.y, c.x) * 2. + length(c) * 14.); vec3 g = floor(vR * 40.);
+    return mix(mix(vec3(.07, .05, .22), base, sw * .55), vec3(1.), step(.9, jh(g.xy + g.z * 3.3))); }
+  else if (uPat == 11) { vec3 g = floor(vR * 45.); on = step(.9, jh(g.xy + g.z * 7.1)); }
+  return mix(base, c2, on);
+}`;
+function paintJelly(b, look, color2) {
+  const pat = LOOKS.indexOf(look), m = b.mesh.material, P = b.geo.attributes.position.array;
+  b.geo.setAttribute('aR', new THREE.BufferAttribute(Float32Array.from(P, (v) => v / b.size), 3));
+  if (look === 'golden') { m.color.set('#ffc61a'); m.attenuationColor.set('#ffb000'); m.metalness = .45; }
+  m.transmission = pat > 0 ? .15 : .35; m.thickness = b.size * .2; m.sheen = .12; // brighter than the letters, so they pop against the jar
+  m.onBeforeCompile = (sh) => {
+    sh.uniforms.uPat = { value: pat }; sh.uniforms.uC2 = { value: new THREE.Color(color2) };
+    sh.vertexShader = 'attribute vec3 aR;\nvarying vec3 vR;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vR = aR;');
+    sh.fragmentShader = 'varying vec3 vR;\nuniform int uPat;\nuniform vec3 uC2;\n' + PATTERN_GLSL + '\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n  diffuseColor.rgb = jellyPattern(diffuseColor.rgb);');
+  };
+  m.customProgramCacheKey = () => 'jelly-pattern';
+}
+// A square glass sweet jar. Jellies are dropped in one by one and tumble onto each other.
+class JarStage extends JellyStage {
+  // A round sweet jar in the jelly style: see-through glass with a rainbow sheen, a puffy lid that has popped off,
+  // and a coaster, floating on soft rainbow swirls. The jar is rigid; only the jellies wobble.
+  setWord() {
+    const s = this.opts.size, R = this.R = s * 1.9, Rn = this.Rn = s * 1.45, H = this.H = s * 4.6, t = s * .12;
+    this.bounds = { r: R, x0: -R, x1: R, z0: -R, z1: R }; this.wordWidth = R * 2;
+    // Neutral tone mapping keeps the jellies' colours bright; the filmic one used for the letters washes bright colours out.
+    this.renderer.toneMapping = THREE.NeutralToneMapping; this.renderer.toneMappingExposure = 1;
+    // the background: a big sphere painted with slowly morphing pastel swirls (the jellies refract it, too)
+    this.scene.fog = null;
+    this.bg = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, uniforms: { uT: { value: 0 } },
+      vertexShader: 'varying vec3 vP; void main() { vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
+      fragmentShader: `varying vec3 vP; uniform float uT;
+        vec3 hue(float h) { return clamp(abs(mod(h * 6. + vec3(0., 4., 2.), 6.) - 3.) - 1., 0., 1.); }
+        void main() {
+          float u = atan(vP.x, -vP.z), v = vP.y;
+          float w = sin(u * 2.3 + sin(v * 3.1 + uT * .21) * 1.7 + uT * .09) + sin(v * 4.2 - u * 1.3 + sin(u * 1.7 - uT * .17) * 1.2);
+          vec3 c = mix(vec3(1., .97, .93), hue(fract(w * .16 + v * .25 + uT * .015)), .13 + .04 * sin(w * 2.));
+          gl_FragColor = vec4(c, 1.);
+        }` });
+    const sky = new THREE.Mesh(new THREE.SphereGeometry(4, 48, 32), this.bg); sky.renderOrder = -1; this.scene.add(sky);
+    // the grid floor becomes an invisible one that only catches soft shadows
+    const floor = this.scene.children.find((o) => o.isMesh && o.geometry.type === 'PlaneGeometry');
+    floor.material = new THREE.ShadowMaterial({ opacity: .14 }); floor.position.y = -s * .2;
+    const jelly = (color, transmission, extra = {}) => new THREE.MeshPhysicalMaterial({ color, transmission, thickness: s * .3, roughness: .15, ior: 1.36, clearcoat: 1, clearcoatRoughness: .06, sheen: .15, sheenColor: new THREE.Color('#ffffff'), attenuationColor: new THREE.Color(color), attenuationDistance: s * .8, ...extra });
+    // glass: a lathe profile with a rounded base, straight sides, a shoulder and a neck
+    const prof = [];
+    const arc = (cx, cy, r, a0, a1, n = 8) => { for (let k = 0; k <= n; k++) { const a = a0 + (a1 - a0) * k / n; prof.push(new THREE.Vector2(cx + r * Math.cos(a), cy + r * Math.sin(a))); } };
+    prof.push(new THREE.Vector2(0, -t));
+    arc(R + t - s * .5, s * .5 - t, s * .5, -Math.PI / 2, 0);
+    prof.push(new THREE.Vector2(R + t, H * .74));
+    for (let k = 1; k <= 10; k++) { const q = k / 10, e = q * q * (3 - 2 * q); prof.push(new THREE.Vector2(R + t - (R - Rn) * e, H * .74 + H * .18 * q)); }
+    prof.push(new THREE.Vector2(Rn + t, H));
+    const glass = new THREE.Mesh(new THREE.LatheGeometry(prof, 64), new THREE.MeshPhysicalMaterial({ color: '#e6f7ff', transparent: true, opacity: .1, roughness: .06, clearcoat: 1, clearcoatRoughness: .04, iridescence: .7, iridescenceIOR: 1.3, specularIntensity: 1, side: THREE.DoubleSide, depthWrite: false }));
+    glass.renderOrder = 2; this.scene.add(glass);
+    // a chunky white lip round the neck
+    const lip = new THREE.Mesh(new THREE.TorusGeometry(Rn + t, s * .13, 16, 64), jelly('#ffffff', .2)); lip.rotation.x = Math.PI / 2; lip.position.y = H; this.scene.add(lip);
+    // the lid has popped off and bobs above the jar, tilted, so jellies can drop in
+    const puck = (r, h, round) => { const pts = [new THREE.Vector2(0, 0)]; for (let k = 0; k <= 12; k++) { const a = -Math.PI / 2 + Math.PI * k / 12; pts.push(new THREE.Vector2(r - round + round * Math.cos(a), h / 2 + h / 2 * Math.sin(a))); } pts.push(new THREE.Vector2(0, h)); return new THREE.LatheGeometry(pts, 48); };
+    const lid = this.lid = new THREE.Group();
+    const cap = this.cap = new THREE.Mesh(puck(Rn + s * .3, s * .55, s * .26), jelly('#ff4d6d', .35)); cap.castShadow = true;
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(s * .32, 24, 16), jelly('#ffc61a', .3)); knob.scale.y = .75; knob.position.y = s * .62; knob.castShadow = true;
+    lid.add(cap, knob); lid.position.set(R * .85, H + s * .75, -s * .3); lid.rotation.set(.2, 0, -.6); this.scene.add(lid);
+    // a lemon coaster to stand on
+    const coaster = new THREE.Mesh(puck(R + s * .7, s * .2, s * .1), jelly('#ffc61a', .25)); coaster.position.y = -s * .2 - t; coaster.receiveShadow = true; this.scene.add(coaster);
+    const sc = this.sun.shadow.camera; sc.left = -R * 2.5; sc.right = R * 2.5; sc.top = H * 1.6; sc.bottom = -R * 2.5; sc.near = .01; sc.far = 4; sc.updateProjectionMatrix();
+    this.sun.position.set(R * .8, H * 3, H * 1.6); this.sun.target.position.set(0, H * .3, 0);
+    this.resize();
+  }
+  resize() {
+    const w = this.canvas.clientWidth, h = this.canvas.clientHeight; if (!w || !h || !this.H) return;
+    this.renderer.setSize(w, h, false);
+    const cam = this.camera, a = w / h, t = Math.tan(cam.fov * Math.PI / 360), dist = Math.max(this.H * .9 / t, this.R * 2.1 / (t * a));
+    cam.aspect = a; cam.position.set(0, this.H * .95, dist); cam.lookAt(0, this.H * .58, 0); cam.updateProjectionMatrix();
+  }
+  tick(dt) {
+    if (!REDUCED) { this.bg.uniforms.uT.value += dt; this.lid.position.y = this.H + this.opts.size * (.75 + .1 * Math.sin(this.bg.uniforms.uT.value * 1.6)); }
+    super.tick(dt);
+  }
+  // No tidying up and no standing up: jellies in a jar just lie where they land.
+  simulate(dt) {
+    this.t += dt; this.acc += Math.min(dt, 1 / 20);
+    let n = 0;
+    while (this.acc >= PHYS.step && n < 7) { const moving = this.bodies.filter((b) => this.t >= b.spawnAt && b.solve(PHYS.step)); this.collide(); for (const b of moving) b.finish(PHYS.step); this.acc -= PHYS.step; n++; }
+    if (n === 7) this.acc = 0;
+    // Settling: a few seconds after the last drop, fling or shake, jellies that are nearly still are put to sleep,
+    // so a full jar is quiet and costs nothing. Anything that really bumps them wakes them again.
+    this.calm = this.drag || this.bodies.some((b) => this.t < b.spawnAt + 1.5) ? 0 : (this.calm || 0) + dt;
+    if (this.calm > 2.5) for (const b of this.bodies) if (!b.sleeping && !b.grab && (b.rms < .08 || this.calm > 6)) { b.sleeping = true; b.v.fill(0); }
+  }
+  fill(items) {
+    for (const b of this.bodies) { this.scene.remove(b.mesh); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); b.mesh.material.dispose(); }
+    this.bodies = [];
+    items.forEach((it, i) => {
+      const b = new JellyBody(this, BEAN, it.colour, 0, this.opts.size);
+      paintJelly(b, it.look, JELLY[(JELLY.indexOf(it.colour) + 3) % JELLY.length] ?? '#ffffff');
+      b.item = it; this.bodies.push(b); this.scene.add(b.mesh); b.eyes.forEach((e) => this.scene.add(e.ball, e.pupil));
+      this.toss(b, i * (REDUCED ? .02 : .09));
+    });
+  }
+  // Drop a jelly in from above the rim, at a random spot, turned a random way.
+  toss(b, delay = 0) {
+    const s = this.opts.size, ang = Math.random() * Math.PI * 2, rad = Math.sqrt(Math.random()) * this.Rn * .55, x0 = Math.cos(ang) * rad, z0 = Math.sin(ang) * rad, turn = Math.random() * Math.PI * 2, c = Math.cos(turn), sn = Math.sin(turn);
+    b.cx = x0; b.place(this.H + s * (.4 + Math.random() * 1.2), (Math.random() - .5) * 2.4);
+    for (let i = 0; i < b.N; i++) { const j = i * 3, x = b.x[j] - x0, z = b.x[j + 2]; b.x[j] = x0 + x * c - z * sn; b.x[j + 2] = z0 + x * sn + z * c; }
+    b.prev.set(b.x); b.v.fill(0); b.sleeping = false; b.quiet = 0; b.dirty = true; b.updateBox();
+    b.spawnAt = this.t + delay; b.visibleNow(false);
+  }
+  shake() {
+    this.calm = 0;
+    for (const b of this.bodies) { b.wake(); for (let i = 0; i < b.N; i++) { b.v[i * 3] += (Math.random() - .5) * .6; b.v[i * 3 + 1] += .5 + Math.random() * .6; b.v[i * 3 + 2] += (Math.random() - .5) * .3; } }
+    sound.boing(240, .5, .14);
+  }
+}
+
+let lastT = performance.now();''')
+
+# While the jar is open, the jelly letters behind it stop, so the jar gets the whole frame.
+rep("  for (const s of stages) if (s.active && !document.hidden) s.tick(dt);", "  for (const s of stages) if (s.active && !document.hidden && (s === jar || $('#jarBox').hidden)) s.tick(dt);")
+
+# ---------- each lesson's jelly, the collection, and the jar window ----------
+rep("  $('#jarCount').textContent = `${n} / ${ALL.length} jellies`; paintCourses(n, ALL.length);",
+    "  $('#jarCount').textContent = `${n} / ${ALL.length} jellies`; paintCourses(n, ALL.length); collect();")
+rep('/* ---------------- panels + navigation ---------------- */', r'''/* ---------------- the jelly jar: collecting ---------------- */
+// Each lesson's jelly has a look. The last lesson of a course gives the golden one. The others take turns through
+// the patterns, starting at a different place in each course, so jellies from different courses look different.
+const LOOK_NAMES = { classic: 'classic', zebra: 'zebra', spotty: 'spotty', stripy: 'stripy', swirly: 'swirly', sprinkle: 'sprinkle', checked: 'checked', 'two-tone': 'two-tone', glitter: 'glitter', rainbow: 'rainbow', galaxy: 'galaxy', golden: 'golden' };
+const look = (id) => {
+  const i = ALL.findIndex((a) => a.id === id), plain = Object.keys(LOOK_NAMES).filter((k) => k !== 'golden');
+  return i === ALL.length - 1 ? 'golden' : plain[(i + COURSES.indexOf(COURSE) * 4) % plain.length];
+};
+const jarStore = () => { try { return JSON.parse(localStorage.getItem('jelly.collection')) || {}; } catch { return {}; } };
+// Keep this course's finished lessons in the shared collection, with what each one taught, for the jar's labels.
+function collect() {
+  const all = jarStore(), words = (typeof RECAP !== 'undefined' && RECAP.words) || {};
+  for (const a of ALL) {
+    const key = `${COURSE.id}:${a.id}`;
+    if (!store.done[a.id]) { delete all[key]; continue; }
+    all[key] ??= { at: Date.now() };
+    Object.assign(all[key], { course: COURSE.title, word: a.word ?? '', name: a.name, colour: a.color, look: look(a.id), does: words[a.id]?.does ?? '', ex: words[a.id]?.ex ?? '' });
+  }
+  try { localStorage.setItem('jelly.collection', JSON.stringify(all)); } catch {}
+  $('#jarOpen').textContent = `My jelly jars (${Object.keys(all).length})`;
+}
+
+/* ---------------- panels + navigation ---------------- */''')
+
+rep('<div class="toast" id="toast" role="status"></div>', '''<div class="jarbox" id="jarBox" hidden role="dialog" aria-modal="true" aria-label="Your jelly jars">
+  <div class="jar-card">
+    <div class="jar-head"><div><h2 id="jarTitle">Your jelly jars</h2><p id="jarSum"></p></div><div class="jar-btns"><button class="btn alt" id="jarBack" hidden>← All my jars</button><button class="btn" id="jarShake" hidden>Shake it!</button><button class="btn alt" id="jarClose">Close</button></div></div>
+    <div class="jar-view"><div class="shelf" id="jarShelf"></div><canvas id="jarCanvas" hidden></canvas><div class="jar-pop" id="jarPop" hidden></div><p class="jar-empty" id="jarEmpty" hidden>No jellies in this jar yet. Finish a lesson to earn one!</p></div>
+    <div class="jar-foot"><p class="jar-tip" id="jarTip"></p><div class="jar-file"><button class="pill-ink" id="jarSave">Save my jellies</button><button class="pill-ink" id="jarLoad">Use my existing jellies</button><input type="file" id="jarFile" accept=".json,application/json" hidden></div></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>''')
+rep('<button class="pill" id="resetBtn">Empty the jar</button>', '<button class="pill" id="resetBtn">Start this course again</button>')
+rep('Yes, empty it', "Yes, start again")
+rep("toast('Jar emptied. Fresh start!')", "toast('This course\\'s jellies are out of the jar. Fresh start!')")
+rep('<div class="beans" id="beans"></div>', '<div class="beans" id="beans"></div><button class="jar-open" id="jarOpen">My jelly jars</button>')
+
+# The "you earned" card shows the jelly's own look, and the jelly that flies into the jar is that one.
+rep("<div class=\"un-card\">${bean(item.color, 'un-bean')}", "<div class=\"un-card\">${bean(item.color, 'un-bean', look(id))}")
+rep('<div class="un-earned">You earned the <b style="color:${item.color}">${esc(item.word ?? item.name)}</b> jelly!</div>',
+    '<div class="un-earned">You earned the ${LOOK_NAMES[look(id)]} <b style="color:${item.color}">${esc(item.word ?? item.name)}</b> jelly!</div><button class="un-jar" id="unJar">See it in my jar</button>')
+rep("$('#unStay').onclick = () => { G.card = false; renderGuide(); primaryButton()?.focus({ preventScroll: true }); };",
+    "$('#unStay').onclick = () => { G.card = false; renderGuide(); primaryButton()?.focus({ preventScroll: true }); };\n  $('#unJar').onclick = () => { G.card = false; renderGuide(); openJar(COURSE.id); };")
+rep("  const fly = document.createElement('div'); fly.className = 'flyer'; fly.innerHTML = bean(color);",
+    "  const fly = document.createElement('div'); fly.className = 'flyer'; fly.innerHTML = from.outerHTML.replace('un-bean', '');")
+
+# bean(): the card's jelly, now with an optional look painted inside its outline.
+region('const bean = (color, cls = \'\') => `', '\n', r'''let beanN = 0;
+const BEAN_PATH = 'M30 4c18 0 26 14 24 32-2 20-12 30-25 30S5 56 6 38C7 18 12 4 30 4z';
+// Fixed "random" sprinkles and sparkles, the same every time.
+const DOTS = Array.from({ length: 34 }, (_, i) => [(i * 37 % 52) + 4, (i * 23 % 62) + 4, ['#ff4d6d', '#62c934', '#3a5bff', '#ffc61a', '#9b5cff', '#fff'][i % 6]]);
+const LOOK_SVG = {
+  zebra: () => [6, 18, 30, 42, 54].map((x) => `<path d="M${x - 4} 0q6 20 0 35t2 35h5q-6-20 0-35t-2-35z" fill="${INK}" opacity=".85"/>`).join(''),
+  spotty: () => DOTS.slice(0, 12).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="#fff" opacity=".85"/>`).join(''),
+  stripy: () => [-40, -24, -8, 8, 24, 40, 56].map((x) => `<path d="M${x} 70l40-70h7l-40 70z" fill="#fff" opacity=".7"/>`).join(''),
+  swirly: () => [8, 16, 24, 32].map((r) => `<circle cx="30" cy="38" r="${r}" fill="none" stroke="#fff" stroke-width="3.5" opacity=".7"/>`).join(''),
+  sprinkle: () => DOTS.map(([x, y, c], i) => `<rect x="${x}" y="${y}" width="6" height="2.4" rx="1.2" fill="${c}" transform="rotate(${i * 47 % 180} ${x + 3} ${y + 1})"/>`).join(''),
+  checked: () => Array.from({ length: 49 }, (_, i) => (i % 7 + Math.floor(i / 7)) % 2 ? `<rect x="${i % 7 * 10}" y="${Math.floor(i / 7) * 10}" width="10" height="10" fill="#fff" opacity=".65"/>` : '').join(''),
+  'two-tone': (c) => `<rect x="0" y="36" width="60" height="40" fill="${JELLY[(JELLY.indexOf(c) + 3) % JELLY.length]}"/>`,
+  glitter: () => DOTS.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.2" fill="#fff"/>`).join(''),
+  rainbow: () => ['#ff4d6d', '#ff8a2b', '#ffc61a', '#62c934', '#3a5bff', '#9b5cff'].map((c, i) => `<rect x="0" y="${i * 12}" width="60" height="12" fill="${c}"/>`).join(''),
+  galaxy: (c) => `<rect width="60" height="70" fill="#120c38"/><circle cx="30" cy="38" r="16" fill="${c}" opacity=".45"/>` + DOTS.slice(0, 20).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1" fill="#fff"/>`).join(''),
+  golden: () => `<rect width="60" height="70" fill="#ffc61a"/>` + DOTS.slice(0, 14).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.3" fill="#fff"/>`).join(''),
+};
+const bean = (color, cls = '', lk = 'classic') => { const id = 'bn' + beanN++, art = LOOK_SVG[lk]?.(color) ?? ''; return `<svg class="bean-svg ${cls}" viewBox="0 0 60 70" aria-hidden="true">${art ? `<clipPath id="${id}"><path d="${BEAN_PATH}"/></clipPath>` : ''}<path d="${BEAN_PATH}" fill="${color}"/>${art ? `<g clip-path="url(#${id})">${art}</g>` : ''}<path d="${BEAN_PATH}" fill="none" stroke="${INK}" stroke-width="4"/><ellipse cx="18" cy="15" rx="5" ry="3" fill="#fff" opacity=".55"/><ellipse cx="22" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><ellipse cx="38" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><g class="pp"><circle cx="22" cy="31" r="3.6" fill="${INK}"/><circle cx="38" cy="31" r="3.6" fill="${INK}"/></g><path d="M22 45q8 7 16 0" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/></svg>`; };
+''', keep_end=False)
+
+# The jar window: opened from the side menu. The 3D jar is made the first time it opens.
+rep("  if (e.key === 'Escape') $('.app').classList.remove('peek');", "  if (!$('#jarBox').hidden) { if (e.key === 'Escape') closeJar(); return; }\n  if (e.key === 'Escape') $('.app').classList.remove('peek');")
+rep("  const fwd = e.key === 'PageDown'", "  if (!$('#jarBox').hidden) return;\n  const fwd = e.key === 'PageDown'")
+rep('/* ---------------- panels + navigation ---------------- */', r'''/* ---------------- the jelly jar: the window ---------------- */
+// Opens on a shelf with one jar per course, in course order. Tap a jar to open it in 3D.
+let jar = null, jarKeys = '', jarCourse = null;
+const lidColour = (c) => JELLY[COURSES.indexOf(c) % JELLY.length];
+const jelliesOf = (all, c) => Object.entries(all).filter(([k]) => k.startsWith(c.id + ':')).map(([, v]) => v).sort((a, b) => a.at - b.at);
+function openJar(id) {
+  $('#jarBox').hidden = false; $('#jarPop').hidden = true;
+  if (id) showJar(course(id)); else showShelf();
+  $('#jarClose').focus({ preventScroll: true });
+}
+function showShelf() {
+  const all = jarStore(), prog = courseStore(), n = Object.keys(all).length;
+  jarCourse = null; $('#jarPop').hidden = true;
+  $('#jarTitle').textContent = 'Your jelly jars';
+  $('#jarSum').textContent = n ? `${n} ${n === 1 ? 'jelly' : 'jellies'} so far` : '';
+  $('#jarTip').textContent = 'One jar for every course. Tap a jar to open it.';
+  $('#jarShelf').hidden = false; $('#jarCanvas').hidden = true; $('#jarEmpty').hidden = true; $('#jarBack').hidden = true; $('#jarShake').hidden = true;
+  $('#jarShelf').innerHTML = COURSES.map((c) => {
+    const mine = jelliesOf(all, c), total = prog[c.id]?.total, later = !c.folder;
+    const beans = mine.slice(0, 24).map((it, k) => {
+      const row = Math.floor(k / 5), x = 14 + (k % 5) * 17 + (row % 2) * 8, y = 118 - row * 15;
+      return `<g transform="rotate(${(k * 53 % 50) - 25} ${x + 8} ${y + 9})">${bean(it.colour, '', it.look).replace('<svg class="bean-svg ', `<svg x="${x}" y="${y}" width="16" height="19" class="mini-bean `)}</g>`;
+    }).join('');
+    const note = later ? 'coming later' : mine.length ? `${mine.length}${total ? ` of ${total}` : ''} ${mine.length === 1 ? 'jelly' : 'jellies'}` : 'empty';
+    return `<button class="shelf-jar${c === COURSE ? ' here' : ''}${later ? ' later' : ''}" data-course="${c.id}"${later ? ' disabled' : ''}>
+      <svg viewBox="0 0 120 150" aria-hidden="true"><rect x="14" y="6" width="92" height="16" rx="8" fill="${lidColour(c)}" stroke="${INK}" stroke-width="3"/>
+        <path d="M24 24h72v8q14 6 14 24v74q0 14-14 14H24q-14 0-14-14V56q0-18 14-24z" fill="#ffffff80" stroke="${INK}" stroke-width="3"/>${beans}
+        <path d="M18 60q0-14 10-20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/></svg>
+      <b>${esc(c.title)}</b><small>${esc(note)}</small></button>`;
+  }).join('');
+}
+function showJar(c) {
+  const all = jarStore(), items = jelliesOf(all, c);
+  jarCourse = c;
+  $('#jarTitle').textContent = `${c.title} jar`;
+  $('#jarSum').textContent = `${items.length} ${items.length === 1 ? 'jelly' : 'jellies'}`;
+  $('#jarTip').textContent = 'Grab a jelly and fling it. Tap one to see where you got it.';
+  $('#jarShelf').hidden = true; $('#jarCanvas').hidden = false; $('#jarEmpty').hidden = items.length > 0; $('#jarBack').hidden = false; $('#jarShake').hidden = false;
+  if (booted && !jar) {
+    jar = new JarStage($('#jarCanvas'), { word: '', size: .052 * Math.min(1, Math.cbrt(20 / Math.max(20, items.length))), bg: '#e9f5ff', floor: '#cfe6ff', cells: 3.4, restAnywhere: true });
+    jar.onTap = (b) => showJelly(b.item);
+  }
+  const keys = c.id + '|' + items.map((it) => it.word + it.at).join();
+  if (jar && keys !== jarKeys) { jarKeys = keys; jar.cap.material.color.set(lidColour(c)); jar.cap.material.attenuationColor.set(lidColour(c)); jar.fill(items); }
+  requestAnimationFrame(() => jar?.resize());
+}
+function closeJar() { $('#jarBox').hidden = true; primaryButton()?.focus({ preventScroll: true }); }
+function showJelly(it) {
+  const pop = $('#jarPop');
+  pop.innerHTML = `<button class="jar-x" aria-label="Close">×</button>${bean(it.colour, 'pop-bean', it.look)}<div><div class="pop-name">The ${esc(LOOK_NAMES[it.look] ?? it.look)} jelly</div>
+    <div class="pop-word" style="color:${it.colour}">${esc(it.word || it.name)}</div><div class="pop-where">${esc(it.name)} · ${esc(it.course)}</div>
+    ${it.does ? `<p>${esc(it.does)}</p>` : ''}${it.ex ? `<code>${esc(it.ex)}</code>` : ''}</div>`;
+  pop.hidden = false; pop.querySelector('.jar-x').onclick = () => { pop.hidden = true; };
+}
+$('#jarOpen').onclick = () => openJar(); $('#beans').onclick = () => openJar();
+$('#jarShelf').addEventListener('click', (e) => { const b = e.target.closest('.shelf-jar'); if (b && !b.disabled) showJar(course(b.dataset.course)); });
+$('#jarBack').onclick = showShelf;
+$('#jarClose').onclick = closeJar; $('#jarShake').onclick = () => jar?.shake();
+$('#jarBox').addEventListener('click', (e) => { if (e.target === $('#jarBox')) closeJar(); });
+
+/* ---------------- saving and loading jellies ---------------- */
+// Progress lives only in this browser. A save file keeps it safe, carries it to another computer, and carries it
+// between guides hosted as separate pages (as on claude.ai), which can't see each other's storage.
+// On claude.ai a page may only offer a file through the viewer's "downloads" permission; anywhere else it's an ordinary download.
+const DOWNLOADS = window.claude?.use?.('downloads') ?? Promise.resolve(null);
+const readKey = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+const writeKey = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+async function saveJellies() {
+  save(); collect();
+  const progress = Object.fromEntries(COURSES.filter((c) => c.store && readKey(c.store)).map((c) => [c.store, readKey(c.store)]));
+  const file = JSON.stringify({ kind: 'jelly-save', version: 1, saved: new Date().toISOString(), collection: jarStore(), courses: courseStore(), progress }, null, 1);
+  const name = `my-jellies-${new Date().toISOString().slice(0, 10)}.json`, dl = await DOWNLOADS;
+  if (dl) return dl.save({ filename: name, data: file }).then(() => toast('Saved! Keep that file somewhere safe.'), (e) => { if (e?.code !== 'declined') toast('Saving a file isn\'t possible here, sorry.'); });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([file], { type: 'application/json' })); a.download = name;
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  toast('Saved! Look in your Downloads folder.');
+}
+// The file comes from outside, so it's checked once, here: only known courses, only lesson ticks, only safe colours and looks.
+function readSave(text) {
+  let d; try { d = JSON.parse(text); } catch { return null; }
+  if (!d || d.kind !== 'jelly-save' || typeof d.collection !== 'object' || typeof d.progress !== 'object') return null;
+  const str = (v) => typeof v === 'string' ? v.slice(0, 300) : '';
+  const collection = Object.fromEntries(Object.entries(d.collection).filter(([k, v]) => /^[a-z0-9]+:[a-z0-9-]+$/.test(k) && v && typeof v === 'object').map(([k, v]) => [k, {
+    at: Number.isFinite(v.at) ? v.at : 0, course: str(v.course), word: str(v.word), name: str(v.name), does: str(v.does), ex: str(v.ex),
+    colour: /^#[0-9a-f]{6}$/i.test(v.colour) ? v.colour : '#ff4d6d', look: LOOKS.includes(v.look) ? v.look : 'classic' }]));
+  const ticks = (o) => Object.fromEntries(Object.entries(o && typeof o === 'object' ? o : {}).filter(([k, v]) => /^[a-z0-9-]+$/.test(k) && v === true));
+  const progress = Object.fromEntries(COURSES.filter((c) => c.store && d.progress[c.store]).map((c) => [c.store, { done: ticks(d.progress[c.store].done) }]));
+  const courses = Object.fromEntries(Object.entries(d.courses ?? {}).filter(([k, v]) => course(k) && Number.isFinite(v?.done) && Number.isFinite(v?.total)).map(([k, v]) => [k, { done: v.done, total: v.total }]));
+  return { collection, progress, courses };
+}
+// Loading adds to what's here and never takes anything away.
+function useSave(d) {
+  for (const [key, p] of Object.entries(d.progress)) {
+    if (key === KEY) { Object.assign(store.done, p.done); save(); continue; }
+    const cur = readKey(key) ?? {}; writeKey(key, { ...cur, done: { ...(cur.done ?? {}), ...p.done } });
+  }
+  writeKey('jelly.collection', { ...d.collection, ...jarStore() });
+  const prog = courseStore();
+  for (const [k, v] of Object.entries(d.courses)) if (!prog[k] || prog[k].done < v.done) prog[k] = v;
+  writeKey('jelly.courses', prog);
+  writeKey('jelly.welcomeBack', Object.keys(jarStore()).length);
+  location.reload();
+}
+$('#jarSave').onclick = saveJellies;
+$('#jarLoad').onclick = () => $('#jarFile').click();
+$('#jarFile').onchange = async (e) => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  const d = readSave(await f.text());
+  if (!d) return toast('That file isn\'t a jelly save. Look for one called my-jellies….json');
+  useSave(d);
+};
+{ const n = readKey('jelly.welcomeBack'); if (n) { try { localStorage.removeItem('jelly.welcomeBack'); } catch {} setTimeout(() => toast(`Welcome back! ${n} jellies are on your shelf.`), 900); } }
+
+/* ---------------- panels + navigation ---------------- */''')
+
+rep('.side-foot{display:grid;gap:8px}', '''.side-foot{display:grid;gap:8px}
+/* the jelly jar */
+.beans{cursor:pointer}
+/* the earned card on short screens: the next-course buttons and the jar link make it taller */
+@media (max-height:680px){.upnext .un-card{padding:12px 28px 16px;gap:2px}.upnext .un-bean{width:54px}.upnext .un-word{font-size:2.1rem}.upnext .un-label{margin-top:4px}.upnext .un-btns{margin-top:6px}.upnext .un-earned{font-size:1.25rem}.upnext .un-name{font-size:.95rem}}
+.un-jar{font:inherit;font-weight:700;font-size:.9rem;color:var(--blue);background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
+.jar-open{grid-column:1/-1;justify-self:start;font:inherit;font-weight:700;font-size:.82rem;color:var(--ink);background:var(--lemon);border:0;border-radius:999px;padding:2px 10px;cursor:pointer}
+.jarbox[hidden]{display:none}
+.jarbox{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:#24133b88;backdrop-filter:blur(3px);padding:16px}
+.jar-card{width:min(860px,100%);height:min(680px,100%);display:grid;grid-template-rows:auto 1fr auto;gap:10px;background:#fff;border:5px solid var(--ink);border-radius:30px;box-shadow:0 10px 0 var(--ink);padding:18px 22px}
+.jar-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.jar-head h2{font-family:var(--display);font-weight:400;font-size:clamp(1.5rem,1rem + 2vh,2.2rem);margin:0}
+.jar-head p{color:var(--ink-soft);margin:0}
+.jar-btns{display:flex;gap:10px;align-items:center}
+.jar-view{position:relative;min-height:0;border-radius:20px;overflow:hidden;border:3px solid var(--ink)}
+.jar-view canvas{width:100%;height:100%;display:block;touch-action:none}
+.jar-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.jar-tip{margin:0;color:var(--ink-soft);font-size:.9rem}
+.jar-file{display:flex;gap:8px;flex-wrap:wrap}
+.pill-ink{font:inherit;font-weight:700;font-size:.85rem;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:3px 12px;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+.pill-ink:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.shelf{position:absolute;inset:0;overflow:auto;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:18px 14px;padding:16px;background:linear-gradient(135deg,#fff3e6,#f3e8ff 50%,#e6f6ff)}
+.shelf[hidden]{display:none}
+.shelf-jar{width:clamp(118px,15vw,150px);display:grid;justify-items:center;gap:2px;font:inherit;color:var(--ink);background:none;border:0;cursor:pointer;padding:4px 4px 10px;border-bottom:8px solid var(--lemon);border-radius:0 0 6px 6px;transition:transform .15s}
+.shelf-jar:hover:not(:disabled){transform:translateY(-4px) rotate(-1.5deg)}
+.shelf-jar svg{width:100%;height:auto}
+.shelf-jar b{font-family:var(--display);font-weight:400;font-size:1rem;line-height:1.1;text-align:center}
+.shelf-jar small{color:var(--ink-soft);font-size:.8rem}
+.shelf-jar.here b{color:var(--berry)}
+.shelf-jar.later{opacity:.45;cursor:default}
+.jar-view canvas[hidden]{display:none}
+.jar-empty{position:absolute;inset:0;display:grid;place-items:center;margin:0;font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.jar-pop{position:absolute;top:12px;left:12px;max-width:min(360px,calc(100% - 24px));display:flex;gap:12px;align-items:flex-start;background:#fff;border:4px solid var(--ink);border-radius:20px;box-shadow:0 6px 0 var(--ink);padding:12px 16px}
+.jar-pop .pop-bean{width:56px;flex:none}
+.pop-name{font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.pop-word{font-family:var(--display);font-size:1.7rem;line-height:1.05;-webkit-text-stroke:1.5px var(--ink);paint-order:stroke fill}
+.pop-where{font-weight:700;font-size:.85rem;margin-bottom:4px}
+.jar-pop p{margin:0 0 6px;font-size:.9rem;color:var(--ink-soft)}
+.jar-pop code{font-family:var(--mono);font-size:.85rem;background:#24133b12;border-radius:6px;padding:1px 6px}
+.jar-x{position:absolute;top:4px;right:8px;border:0;background:none;font-size:1.4rem;cursor:pointer;color:var(--ink-soft)}''')

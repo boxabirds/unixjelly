@@ -12,6 +12,7 @@ python3 guides/git/build.py
 python3 guides/web/build.py
 python3 guides/shell2/build.py
 python3 guides/security/build.py
+python3 guides/shell/build.py
 
 # 3. Put in the jelly letters' font, check the script is valid JavaScript, and wrap it as a full HTML page.
 guide() {
@@ -27,11 +28,13 @@ guide() {
   } > "../$folder/index.html"
   echo "built $folder/index.html"
 }
-guide jelly-shell titan.json jellyshell
+guide jelly-shell1 titan.json jellyshell
 guide jelly-shell2 titan-shell2.json jellyshell2
 guide jelly-git titan.json jellygit
 guide jelly-web titan-web.json jellyweb
 guide jelly-security titan.json jellysecurity
 
-# 4. Stamp the version and a fingerprint of the guides on the landing page.
-python3 tools/stamp-version.py ../index.html
+# 4. Write the landing page from curriculum.json, then stamp it with the version and a fingerprint of the guides.
+#    LANDING=path writes it somewhere else (for copies hosted elsewhere; see JELLY_LINKS in tools/curriculum.py).
+python3 tools/landing.py "${LANDING:-../index.html}"
+python3 tools/stamp-version.py "${LANDING:-../index.html}"

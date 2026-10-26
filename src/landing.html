@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jelly Unix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Lexend:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  --sky:#d4eeff; --sun:#fff0b3; --lilac:#eadcff; --mint:#d8f6e4;
+  --ink:#24133b; --ink-soft:#56467a; --card:#ffffff;
+  --berry:#ff4d6d; --lime:#62c934; --lemon:#ffc61a; --blue:#3a5bff;
+  --display:"Titan One","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
+  --body:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--sky);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2{font-family:var(--display);font-weight:400;line-height:1.02;text-wrap:balance;margin:0}
+p{margin:0}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px}
+main{max-width:1180px;margin:0 auto;padding:clamp(20px,5vh,56px) max(16px,env(safe-area-inset-left,0px)) 40px;display:grid;gap:clamp(20px,4vh,40px)}
+.eyebrow{font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+h1{font-size:clamp(2.2rem,1rem + 5vw,4.4rem);max-width:14ch;margin-top:8px}
+h1 em{font-style:normal;color:var(--berry)}
+.lede{color:var(--ink-soft);max-width:52ch;font-size:1.08rem;margin-top:14px}
+/* the course path: one row per step; courses on the same step sit side by side */
+.path{list-style:none;margin:0;padding:0;display:grid;gap:clamp(26px,4vh,40px)}
+.stage{display:grid;gap:12px}
+.stage-n{font-family:var(--mono);font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.stage-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(420px,100%),1fr));gap:22px 20px}
+.card{background:var(--bg);position:relative;display:flex;flex-direction:column;gap:12px;padding:26px 26px 24px 26px;border:3px solid var(--ink);border-radius:24px;box-shadow:0 6px 0 var(--ink);color:inherit;text-decoration:none;transition:transform .1s,box-shadow .1s}
+.card:hover{transform:translateY(-3px);box-shadow:0 9px 0 var(--ink)}
+.card:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
+.start{position:absolute;top:-16px;right:20px;background:var(--lime);border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-family:var(--display);font-size:.95rem;animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.07)}}
+@media (prefers-reduced-motion:reduce){.start{animation:none}}
+.cmd{font-family:var(--mono);font-weight:700;font-size:.85rem;color:var(--ink-soft);margin-top:10px}
+.card h2{font-size:clamp(1.6rem,1rem + 2vw,2.3rem)}
+.card p{color:var(--ink-soft)}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.btn{background:var(--lemon);border:3px solid var(--ink);border-radius:14px;padding:7px 15px;font-family:var(--display);font-size:1.02rem;box-shadow:0 4px 0 var(--ink);white-space:nowrap}
+.start.tag{background:var(--card);animation:none}
+.card.later{border-style:dashed;box-shadow:none;opacity:.75}
+.card.later:hover{transform:none}
+.after{font-size:.85rem;font-weight:600;color:var(--ink-soft)}
+.chip{background:var(--card);border:3px solid var(--ink);border-radius:999px;padding:3px 12px;font-weight:600;font-size:.85rem;font-variant-numeric:tabular-nums}
+.why{color:var(--ink-soft);max-width:60ch;font-size:.95rem}
+.credit{font-size:.75rem;color:var(--ink-soft)}
+.credit a{color:inherit}
+.repo{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-weight:700;color:var(--ink);text-decoration:none;margin-right:10px;vertical-align:middle}
+.repo svg{width:16px;height:16px;flex:none}
+.repo:hover span{text-decoration:underline}
+/* which build this is: stamped by src/build.sh, for checking a deploy is up to date */
+body{position:relative}
+.version{position:absolute;top:10px;right:max(14px,env(safe-area-inset-right,0px));margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--ink-soft);opacity:.75;user-select:all}
+</style>
+</head>
+<body>
+<p class="version" title="Version and build fingerprint">v1.1.0 · 5713fce</p>
+<main>
+  <header>
+    <div class="eyebrow">Wobbly guides to the tools developers live in</div>
+    <h1>Learn the <em>command line</em>, <em>git</em>, the <em>web</em>, then <em>security</em>.</h1>
+    <p class="lede">Short missions, a sandboxed terminal and a lot of jelly. No install, nothing to break. Start with the shell, because everything else is commands you type into it. Make a web page and put it on the internet. Then learn to think like an attacker, and build things that are hard to break.</p>
+  </header>
+
+<!-- courses: written by tools/landing.py from curriculum.json -->
+  <p class="credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a>Wobble ported from <a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener">Jelly Baby</a> by Scott Sun (GPL-3.0). Progress is saved in this browser only.</p>
+</main>
+<script>
+// Ticks for courses you have started or finished. The guides save them under one key when they share this website.
+try {
+  const all = JSON.parse(localStorage.getItem('jelly.courses')) || {};
+  document.querySelectorAll('[data-progress]').forEach((el) => { const p = all[el.dataset.progress]; if (!p?.done) return; el.textContent = p.done >= p.total ? '✓ finished' : `${p.done} / ${p.total} jellies`; el.hidden = false; });
+} catch {}
+</script>
+
+</body>
+</html>

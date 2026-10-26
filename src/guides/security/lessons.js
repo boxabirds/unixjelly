@@ -37,7 +37,7 @@ const LESSONS = [
     mnem: 'Stop. Don\'t peek. Tell the owner.',
     points: ['Finding a way in is not permission to use it.', 'Report it the right way: the website\'s "report a problem" page, or a grown-up you trust. Many websites also keep a file called <code>security.txt</code> that says who to tell. Security people call this <b>coordinated vulnerability disclosure</b>. You will also hear its older name, <b>responsible disclosure</b>.', 'Anyone asking for your password, or offering to knock someone offline, is wearing a black hat. Say no and tell someone.'],
     steps: [
-      { t: 'You change the number at the end of the school website\'s address, and suddenly you can see <b>another pupil\'s marks</b>. What do you do?', ok: chose(0), choices: [
+      { t: 'You change your marks page from <span class="addr">school.test/marks/10<b>42</b></span> to <span class="addr">…/10<b>43</b></span>, and see <b>another pupil\'s marks</b>! What do you do?', ok: chose(0), choices: [
         { c: 'Look at everyone\'s marks', say: 'That\'s a black-hat move. Looking where you have no permission is unauthorised access, even when the door was left open. Pick again.' },
         { c: 'Screenshot it to show my friends', say: 'Sharing it hurts real people, and it\'s still unauthorised access. Pick again.' },
         { c: 'Close it, and tell a teacher what happened', good: true, say: 'White hat! You stopped, didn\'t look around, and told the owner. That\'s <b>coordinated vulnerability disclosure</b> (older name: responsible disclosure), and it gets the hole fixed for everyone.' },

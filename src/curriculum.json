@@ -1,0 +1,35 @@
+{
+  "_about": "The one place that says which courses exist and which must come first. The build reads it to make the course map in every guide's side menu, the 'Comes after' line on each welcome screen, the next-course buttons at the end of a course, and the landing page. 'needs' lists the courses that must be finished first (only the direct ones: Git needs Shell 2, and Shell 2 already needs Shell). A course whose 'folder' is null is planned, not built: it shows as 'coming later'. 'store' is the browser storage key the guide keeps its progress under. Card fields (cmd, blurb, button, colour) are for the landing page. tests/curriculum.mjs checks this file.",
+  "courses": [
+    {
+      "id": "shell", "title": "Jelly Shell", "folder": "jellyshell", "store": "jellyshell.v1", "needs": [],
+      "cmd": "$ ls  cd  cat  mv", "colour": "#d8f6e4", "button": "Start the shell",
+      "blurb": "Boss your computer around with tiny words. Move around folders, read and copy files, and rescue the gerbil."
+    },
+    {
+      "id": "shell2", "title": "Jelly Shell 2", "folder": "jellyshell2", "store": "jellyshell2.v1", "needs": ["shell"],
+      "cmd": "$ whoami  chmod  sudo  |", "colour": "#ffe1d1", "button": "Then part 2",
+      "blurb": "Who's in charge? Users, groups and file locks. Write your own commands, borrow the boss's power, and use pipes to find out who ate the cookies."
+    },
+    {
+      "id": "git", "title": "Jelly Git", "folder": "jellygit", "store": "jellygit.v1", "needs": ["shell2"],
+      "cmd": "$ git add  commit  push", "colour": "#eadcff", "button": "Try git",
+      "blurb": "Never lose your code again. Save snapshots, undo mistakes and work with other people without stepping on their changes."
+    },
+    {
+      "id": "security1", "title": "Jelly Security 1", "folder": "jellysecurity", "store": "jellysecurity.v1", "needs": ["shell2"], "badge": "Prototype",
+      "cmd": "black hat → white hat", "colour": "#ffd9e1", "button": "Try security",
+      "blurb": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. Three missions."
+    },
+    {
+      "id": "web", "title": "Jelly Web", "folder": "jellyweb", "store": "jellyweb.v1", "needs": ["git"],
+      "cmd": "<h1>  curl  ping  push", "colour": "#fff0b3", "button": "Then the web",
+      "blurb": "Write your own web page, find out how it crosses the planet in under a second, then put it on the internet with GitHub Pages."
+    },
+    {
+      "id": "security2", "title": "Jelly Security 2", "folder": null, "store": null, "needs": ["web", "security1"],
+      "cmd": "401  403  https", "colour": "#ffd9e1",
+      "blurb": "Attack and defend a pretend website: passwords, lookalike addresses, secret pages and who else can see your messages."
+    }
+  ]
+}

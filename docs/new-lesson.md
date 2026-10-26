@@ -94,6 +94,16 @@ The full list for each guide is in its `run` / `run1` function. Search for `info
    ```
 4. If the lesson must mention a later concept, say so in `previews` and explain it on screen ("That one is a secret for later").
 
+## 3b. Give it a demo
+
+Add `demo: [...]` to the lesson: the actions a presenter's video should show, one per frame, in order. Each action is one of these:
+- a command, like `'ls -l'`;
+- `'@type:text'`, typed into nano (`\\n` for a new line);
+- `'@key:Control+x'`, a key pressed in nano.
+- `'@tab:cat secr'`, `'@up'`, `'@enter'` or `'@ctrlc'`, a special key in the terminal: Tab after typing the text, ↑, Enter on what is typed, or Ctrl+C.
+
+The demo must finish the mission: `node tests/present.mjs` fails if it doesn't. The play-through tests (`shell.mjs`, `shell2.mjs`) still have their own copies of the same commands, and should use the lessons' `demo` lists instead. Jelly Shell's demos live in `engine/demos-shell.py`, because its lessons are in the engine page.
+
 ## 4. Add any new command to the pretend computer
 
 If the lesson introduces a command, add it everywhere the shell needs to know about it:
@@ -156,6 +166,13 @@ Sit with a child from the 9–14 age range, and say as little as you can:
 
 1. Update the guide's lesson list in `README.md` and, if needed, the prerequisite map in `pedagogy.md`.
 2. Commit the source and the rebuilt guide folders together.
+
+## Adding a whole course
+
+1. Write the pedagogical assessment first (`CLAUDE.md`, rule zero). List what the course uses from every other course.
+2. Add it to `src/curriculum.json`, after the courses it needs, with `needs` listing the direct ones only. Leave `folder` and `store` as `null` while it's only planned: it then shows as "coming later" everywhere.
+3. When it's built, set `folder` and `store` (the guide's `KEY`, usually `<folder>.v1`) and add its line to `build.sh`.
+4. `node tests/curriculum.mjs` checks the map against the build.
 
 ## Checklist
 

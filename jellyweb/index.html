@@ -56,6 +56,120 @@ button{font:inherit;color:inherit;cursor:pointer}
 .nw{font-family:var(--mono);font-weight:700;color:var(--c);white-space:nowrap}
 .nl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .side-foot{display:grid;gap:8px}
+/* presenter mode: the app still runs every command, but is never drawn (no layout work, its 3D stages sleep);
+   a full-screen frame sits on top */
+.present .app,.present .toast,.present .flyer,.present .gate{display:none!important}
+.present body,.present *{cursor:none!important}
+.pr-stage{position:fixed;inset:0;z-index:70;background:#fff8ec;color:var(--ink);overflow:hidden;--u:1vmin;--pad:calc(6 * var(--u))}
+.present-tall .pr-stage{--u:1.45vw}
+.pr-stage[data-k=title],.pr-stage[data-k=intro]{background:#d4eeff}
+.pr-town{position:absolute;inset:0}
+.pr-town[hidden]{display:none}
+.pr-town canvas{width:100%;height:100%;display:block}
+.pr-stage[data-k=whole] .pr-body{justify-content:flex-end}
+.present-tall .pr-stage[data-k=whole] .pr-body{justify-content:flex-start}
+.pr-town-card{background:#fffffff0;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2.4 * var(--u));box-shadow:0 var(--u) 0 var(--ink);padding:calc(2.4 * var(--u)) calc(3 * var(--u));display:grid;gap:var(--u);max-width:min(100%, calc(62 * var(--u)))}
+.pr-town-card .pr-h{font-size:calc(3.6 * var(--u))}
+.pr-town-card .pr-big{font-size:calc(2.6 * var(--u) * var(--s, 1))}
+.pr-stage[data-k=term],.pr-stage[data-k=nano]{background:#1b0f2c}
+.pr-body{position:absolute;inset:var(--pad);display:flex;flex-direction:column;justify-content:center;gap:calc(2.4 * var(--u));z-index:1}
+.face-right.present-wide .pr-body{right:31vw}
+.face-right.present-tall .pr-body{bottom:30vh}
+#prJelly{position:absolute;inset:0;width:100%;height:100%}
+#prJelly[hidden]{display:none}
+.pr-label{font-family:var(--mono);font-size:calc(2.4 * var(--u));letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.pr-h{font-family:var(--display);font-weight:400;font-size:calc(6 * var(--u));line-height:1.05;margin:0}
+.pr-big{font-size:calc((5 * var(--u)) * var(--s, 1));line-height:1.3;margin:0;max-width:30ch;text-wrap:pretty}
+.pr-big code,.pr-big kbd{font-family:var(--mono);background:#24133b14;border-radius:.3em;padding:0 .25em}
+.pr-stage[data-k=title] .pr-body,.pr-stage[data-k=intro] .pr-body{justify-content:flex-end}
+.present-tall .pr-stage[data-k=title] .pr-body,.present-tall .pr-stage[data-k=intro] .pr-body{justify-content:flex-start}
+.pr-name{font-family:var(--display);font-size:calc(7 * var(--u));line-height:1}
+.pr-stands{font-family:var(--mono);font-size:calc(3.2 * var(--u));color:var(--ink-soft)}
+.pr-intro h1{font-family:var(--display);font-weight:400;font-size:calc(9 * var(--u));line-height:1;margin:0}
+.pr-intro h1 em{font-style:normal;color:var(--berry)}
+.pr-visual{align-self:flex-start}
+.present .jar-head{display:none}
+.pr-stage .pr-term{flex:none;font-family:var(--mono);font-size:calc((4.2 * var(--u)) * var(--s, 1));line-height:1.45;color:#e8f6ec;background:none;padding:0;overflow:visible;cursor:none}
+.pr-term .p{color:#7dff9b}
+.pr-caret{display:inline-block;width:.6em;height:1.1em;vertical-align:-.15em;background:#7dff9b;margin-left:.1em;animation:pr-blink 1s steps(1) infinite}
+@keyframes pr-blink{50%{opacity:0}}
+.pr-out .ln{white-space:pre-wrap}
+.pr-nano{font-family:var(--mono);font-size:calc(3.4 * var(--u));color:#e8fff0;display:grid;gap:calc(1 * var(--u));position:relative}
+.pr-nano .nano-top{display:flex;justify-content:space-between;gap:1em;background:#d9ffe6;color:#0f2a1c;padding:.2em .6em;font-weight:700;font-size:1em}
+.pr-nano-text{margin:0;font:inherit;min-height:30vh;white-space:pre-wrap}
+.pr-nano .nano-msg{color:#ffd36b;font-size:1em}
+.pr-termkey{position:relative!important;right:auto!important;bottom:auto!important;align-self:flex-start;margin-top:calc(2 * var(--u))}
+.pr-key{position:absolute;right:0;bottom:-calc(1 * var(--u));font-size:calc(4 * var(--u));background:#fff;color:var(--ink);border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(1.4 * var(--u));padding:.2em .6em;box-shadow:0 calc(.8 * var(--u)) 0 var(--ink);font-weight:700}
+.pr-stage .pr-files{flex:none;font-size:calc((3.2 * var(--u)) * var(--s, 1));background:#fff;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2.4 * var(--u));padding:.8em 1em;box-shadow:0 calc(1 * var(--u)) 0 var(--ink);overflow:visible;align-self:flex-start;min-width:50%}
+.pr-files .pr-new{background:#fff3b8;outline:calc(.3 * var(--u)) solid #ffc61a}
+.pr-files .mrow .lock-ico{width:1.9em;height:1.25em}
+.pr-earned{display:grid;justify-items:center;gap:calc(3 * var(--u));text-align:center}
+.pr-earned .pr-bean{width:calc(22 * var(--u))}
+.pr-earned .pr-big{font-family:var(--display);max-width:none}
+.pr-bar{position:absolute;left:0;right:0;bottom:0;height:calc(.6 * var(--u));background:#24133b14;z-index:2}
+.pr-bar i{display:block;height:100%;width:0;background:var(--c, #ff4d6d);transition:width .3s}
+.pr-stage[data-k=term] .pr-bar,.pr-stage[data-k=nano] .pr-bar{background:#ffffff14}
+/* the last frame is the jar, full screen */
+.present .jarbox{visibility:visible;z-index:75;padding:0;background:none;backdrop-filter:none}
+.present .jar-card{width:100vw;height:100vh;border:0;border-radius:0;box-shadow:none;padding:calc(4 * var(--u))}
+.present .jar-btns,.present .jar-foot{display:none}
+.present .jar-view{border:0}
+/* the jelly jar */
+.beans{cursor:pointer}
+/* the earned card on short screens: the next-course buttons and the jar link make it taller */
+@media (max-height:680px){.upnext .un-card{padding:12px 28px 16px;gap:2px}.upnext .un-bean{width:54px}.upnext .un-word{font-size:2.1rem}.upnext .un-label{margin-top:4px}.upnext .un-btns{margin-top:6px}.upnext .un-earned{font-size:1.25rem}.upnext .un-name{font-size:.95rem}}
+.un-jar{font:inherit;font-weight:700;font-size:.9rem;color:var(--blue);background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
+.jar-open{grid-column:1/-1;justify-self:start;font:inherit;font-weight:700;font-size:.82rem;color:var(--ink);background:var(--lemon);border:0;border-radius:999px;padding:2px 10px;cursor:pointer}
+.jarbox[hidden]{display:none}
+.jarbox{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:#24133b88;backdrop-filter:blur(3px);padding:16px}
+.jar-card{width:min(860px,100%);height:min(680px,100%);display:grid;grid-template-rows:auto 1fr auto;gap:10px;background:#fff;border:5px solid var(--ink);border-radius:30px;box-shadow:0 10px 0 var(--ink);padding:18px 22px}
+.jar-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.jar-head h2{font-family:var(--display);font-weight:400;font-size:clamp(1.5rem,1rem + 2vh,2.2rem);margin:0}
+.jar-head p{color:var(--ink-soft);margin:0}
+.jar-btns{display:flex;gap:10px;align-items:center}
+.jar-view{position:relative;min-height:0;border-radius:20px;overflow:hidden;border:3px solid var(--ink)}
+.jar-view canvas{width:100%;height:100%;display:block;touch-action:none}
+.jar-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.jar-tip{margin:0;color:var(--ink-soft);font-size:.9rem}
+.jar-file{display:flex;gap:8px;flex-wrap:wrap}
+.pill-ink{font:inherit;font-weight:700;font-size:.85rem;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:3px 12px;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+.pill-ink:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.shelf{position:absolute;inset:0;overflow:auto;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:18px 14px;padding:16px;background:linear-gradient(135deg,#fff3e6,#f3e8ff 50%,#e6f6ff)}
+.shelf[hidden]{display:none}
+.shelf-jar{width:clamp(118px,15vw,150px);display:grid;justify-items:center;gap:2px;font:inherit;color:var(--ink);background:none;border:0;cursor:pointer;padding:4px 4px 10px;border-bottom:8px solid var(--lemon);border-radius:0 0 6px 6px;transition:transform .15s}
+.shelf-jar:hover:not(:disabled){transform:translateY(-4px) rotate(-1.5deg)}
+.shelf-jar svg{width:100%;height:auto}
+.shelf-jar b{font-family:var(--display);font-weight:400;font-size:1rem;line-height:1.1;text-align:center}
+.shelf-jar small{color:var(--ink-soft);font-size:.8rem}
+.shelf-jar.here b{color:var(--berry)}
+.shelf-jar.later{opacity:.45;cursor:default}
+.jar-view canvas[hidden]{display:none}
+.jar-empty{position:absolute;inset:0;display:grid;place-items:center;margin:0;font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.jar-pop{position:absolute;top:12px;left:12px;max-width:min(360px,calc(100% - 24px));display:flex;gap:12px;align-items:flex-start;background:#fff;border:4px solid var(--ink);border-radius:20px;box-shadow:0 6px 0 var(--ink);padding:12px 16px}
+.jar-pop .pop-bean{width:56px;flex:none}
+.pop-name{font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.pop-word{font-family:var(--display);font-size:1.7rem;line-height:1.05;-webkit-text-stroke:1.5px var(--ink);paint-order:stroke fill}
+.pop-where{font-weight:700;font-size:.85rem;margin-bottom:4px}
+.jar-pop p{margin:0 0 6px;font-size:.9rem;color:var(--ink-soft)}
+.jar-pop code{font-family:var(--mono);font-size:.85rem;background:#24133b12;border-radius:6px;padding:1px 6px}
+.jar-x{position:absolute;top:4px;right:8px;border:0;background:none;font-size:1.4rem;cursor:pointer;color:var(--ink-soft)}
+/* the course map in the side menu */
+.courses{padding:0 6px;font-size:.85rem}
+.courses summary{cursor:pointer;font-weight:700;color:var(--lemon);width:max-content}
+.co-list{list-style:none;margin:8px 0 2px;padding:0;display:grid;gap:6px}
+.co{display:flex;gap:8px;align-items:flex-start}
+.co-step{flex:none;width:1.6em;height:1.6em;border-radius:50%;display:grid;place-items:center;background:#ffffff26;font-family:var(--display);font-size:.78rem}
+.co.here .co-step{background:var(--lemon);color:var(--ink)}
+.co.fin .co-step{background:var(--lime);color:var(--ink)}
+.co.later{opacity:.6}
+.co-name{display:grid;line-height:1.25}
+.co-name a{color:#fff}
+.co.here .co-name{font-weight:700}
+.co-name small{color:#ffffffa8;font-size:.76rem}
+.hero-side .needs{font-size:.88em}
+.needs a,.rc-next a{color:var(--blue);font-weight:700}
+.un-next{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.un-next a{font-family:var(--display);font-size:1.1rem;color:var(--ink);text-decoration:none;background:var(--lemon);border:3px solid var(--ink);border-radius:14px;padding:6px 14px;box-shadow:0 4px 0 var(--ink)}
 .stepper{display:grid;grid-template-columns:1fr 1.4fr;gap:6px}
 .stepper .btn{padding:6px 10px;font-size:1rem}
 .tools{display:flex;gap:6px;flex-wrap:wrap}
@@ -124,7 +238,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .hero-stage canvas,.cv canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .hero-hint{position:absolute;left:var(--pad);bottom:var(--pad);display:flex;gap:10px}
 
-/* whole game */
+/* overview */
 .town{flex:1;min-height:0;display:flex;flex-direction:column;background:#fff6cf}
 .cv{position:relative;flex:1;min-height:0}
 .town-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:12px 18px;border-top:4px solid var(--ink);background:var(--card);height:clamp(110px,19vh,170px)}
@@ -178,7 +292,8 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .tile.prog{background:var(--lime)}
 .bubble{position:absolute;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:.35em .7em;font-weight:600;font-size:clamp(9px,1.85cqw,17px);line-height:1.2;max-width:30%;opacity:0;pointer-events:none;z-index:3}
 .bubble::after{content:"";position:absolute;left:18%;bottom:-11px;border:8px solid transparent;border-top-color:var(--ink)}
-.paper{position:absolute;width:5%;aspect-ratio:3/4;background:#fff;border:3px solid var(--ink);border-radius:4px;opacity:0;z-index:2;background-image:repeating-linear-gradient(#0000 0 18%,#24133b44 18% 24%);background-clip:content-box;padding:12% 14%}
+.paper{position:absolute;width:24%;background:#fff;border:3px solid var(--ink);border-radius:10px;box-shadow:0 4px 0 var(--ink);opacity:0;z-index:3;padding:.35em .6em .45em;font-family:var(--mono);font-size:clamp(.55rem,.25rem + .75vw,.9rem);line-height:1.3;color:var(--ink)}
+.paper b{display:block;font-family:var(--display);font-weight:400;color:var(--berry);font-size:.95em}
 .show-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:stretch}
 .show-cap{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:10px 18px;height:clamp(76px,14vh,130px);overflow:hidden;display:flex;align-items:center;font-size:calc(clamp(1.05rem,.75rem + 1vh,1.35rem) * var(--fit,1))}
 .show-cap b{font-family:var(--display);font-weight:400;color:var(--grape)}
@@ -548,14 +663,15 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
 <div class="app">
   <aside class="side" aria-label="Jelly Web navigation">
     <div class="brand">Jelly <b>Web</b></div>
-    <div class="jar" aria-label="Your progress"><div class="beans" id="beans"></div><div class="jar-count" id="jarCount">0 / 15 jellies</div><a class="home-link" href="../">← All guides</a></div>
+    <div class="jar" aria-label="Your progress"><div class="beans" id="beans"></div><button class="jar-open" id="jarOpen">My jelly jars</button><div class="jar-count" id="jarCount">0 / 15 jellies</div><a class="home-link" href="../">← All guides</a></div>
+    <details class="courses" id="courses"><summary>Course map</summary><ol class="co-list" id="courseList"></ol></details>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <button class="btn recap-btn" id="recapBtn">★ What I’ve learnt</button>
       <div class="tools">
         <button class="pill" id="muteBtn" aria-pressed="false">Sound on</button>
-        <button class="pill" id="resetBtn">Empty the jar</button>
-        <div class="confirm" id="resetConfirm" hidden><span>Sure?</span><button class="pill yes" id="resetYes">Yes, empty it</button><button class="pill" id="resetNo">Keep</button></div>
+        <button class="pill" id="resetBtn">Start this course again</button>
+        <div class="confirm" id="resetConfirm" hidden><span>Sure?</span><button class="pill yes" id="resetYes">Yes, start again</button><button class="pill" id="resetNo">Keep</button></div>
       </div>
       <div class="credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a><p><span class="long">Jelly physics ported from </span><a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener"><span class="short">Physics: </span>Jelly Baby</a><span class="long"> by Scott Sun</span> (GPL-3.0).<span class="more"> The third guide, after <a href="https://claude.ai/artifact/QKpnE1d1poehF9u2UX1wsW" target="_blank" rel="noopener">Jelly Shell</a> and <a href="https://claude.ai/artifact/FNCb8eUqjBgFrCNvkBfxSr" target="_blank" rel="noopener">Jelly Git</a>. Letters in Titan One (OFL). Progress is saved in this browser only.</span></p></div>
     </div>
@@ -568,7 +684,7 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
         <div class="eyebrow">A wobbly guide to the web</div>
         <h1>Make a <em>web page</em>, then send it round the world.</h1>
         <div class="hero-side">
-          <p>Every web page is a text file that crosses the planet in less than a second. Find out how, write your own page, and put it on the internet for real. Best after Jelly Shell and Jelly Git.</p>
+          <p>Every web page is a text file that crosses the planet in less than a second. Find out how, write your own page, and put it on the internet for real.</p>
           <button class="btn go" id="startBtn">Start the tour<span class="ent">Enter ↵</span></button>
         </div>
       </div>
@@ -578,14 +694,14 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
       </div>
     </section>
 
-    <section class="panel sun" id="p-whole" aria-label="The whole game" hidden>
+    <section class="panel sun" id="p-whole" aria-label="Overview" hidden>
       <div class="ph">
         <div class="eyebrow">The big picture · 1 of 2</div>
-        <h2>The whole game</h2>
-        <p>Follow one web page, <code>gerbil.zone</code>, from your screen to a server far away and back. Press Next. Drag to spin it, scroll to zoom, double-click to straighten up.</p>
+        <h2>Overview</h2>
+        <p>Follow one web page, <code>gerbil.zone</code>, from your screen to a server far away and back. Press Next. Drag to turn the world, scroll to zoom, double-click to straighten up.</p>
       </div>
       <div class="town box">
-        <div class="cv"><canvas id="town" aria-label="A 3D cartoon of the trip a web page takes: your computer, your router, the DNS phonebook, the internet under the sea, and the server."></canvas></div>
+        <div class="cv"><canvas id="town" aria-label="A 3D cartoon world: your house with your computer upstairs and the router downstairs, the DNS owl in a treehouse next door, the internet cable along the bottom of a cut-open sea, and the server in a building on the far shore."></canvas></div>
         <div class="town-ui">
           <div class="cap" data-fit aria-live="polite"><div class="who" id="townWho"></div><p id="townText"></p></div>
           <div class="ctrls"><div class="dots" id="townDots"></div><button class="btn alt" id="townPrev">Back</button><button class="btn" id="townNext">Next</button></div>
@@ -679,7 +795,7 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
     </section>
     <section class="panel sun" id="p-recap" aria-label="What I've learnt so far" hidden>
       <div class="rc-head">
-        <div class="ph"><div class="eyebrow">Wrap up</div><h2>What I’ve learnt so far</h2><p id="rcCount"></p></div>
+        <div class="ph"><div class="eyebrow">Wrap up</div><h2>What I’ve learnt so far</h2><p id="rcCount"></p><p class="rc-next" id="rcNext"></p></div>
         <div class="rc-mode" role="group" aria-label="Recap mode"><button data-mode="remind">Remind me</button><button data-mode="test">Test me</button></div>
       </div>
       <div class="rc-chain box" id="rcChain"></div>
@@ -691,13 +807,21 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
   </main>
 </div>
 
+<div class="jarbox" id="jarBox" hidden role="dialog" aria-modal="true" aria-label="Your jelly jars">
+  <div class="jar-card">
+    <div class="jar-head"><div><h2 id="jarTitle">Your jelly jars</h2><p id="jarSum"></p></div><div class="jar-btns"><button class="btn alt" id="jarBack" hidden>← All my jars</button><button class="btn" id="jarShake" hidden>Shake it!</button><button class="btn alt" id="jarClose">Close</button></div></div>
+    <div class="jar-view"><div class="shelf" id="jarShelf"></div><canvas id="jarCanvas" hidden></canvas><div class="jar-pop" id="jarPop" hidden></div><p class="jar-empty" id="jarEmpty" hidden>No jellies in this jar yet. Finish a lesson to earn one!</p></div>
+    <div class="jar-foot"><p class="jar-tip" id="jarTip"></p><div class="jar-file"><button class="pill-ink" id="jarSave">Save my jellies</button><button class="pill-ink" id="jarLoad">Use my existing jellies</button><input type="file" id="jarFile" accept=".json,application/json" hidden></div></div>
+  </div>
+</div>
 <div class="toast" id="toast" role="status"></div>
 
 <script type="module">
 import * as THREE from 'three';
 import { Font } from 'three/addons/loaders/FontLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mergeVertices, mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 const FONT = new Font({"glyphs":{"0":{"ha":726,"x_min":30,"x_max":696,"o":"m 503 6 q 363 -9 446 -9 q 224 6 280 -9 q 121 59 167 20 l 121 59 q 30 360 30 136 l 30 360 q 125 653 30 576 l 125 653 q 228 706 172 691 q 363 721 284 721 q 498 706 441 721 q 601 653 554 691 l 601 653 q 696 360 696 576 l 696 360 q 605 59 696 136 l 605 59 q 503 6 559 20 m 342 161 l 342 161 q 364 148 350 148 q 385 162 377 148 q 398 221 393 175 q 403 352 403 267 q 398 485 403 437 q 385 548 393 532 q 364 563 377 563 q 342 548 350 563 l 342 548 q 322 352 322 514 l 322 352 q 342 161 322 191"},"1":{"ha":453,"x_min":15,"x_max":413,"o":"m 413 24 q 352 7 413 13 q 230 0 291 0 q 152 6 169 0 q 134 24 134 11 l 134 24 l 134 456 l 32 456 q 15 529 15 456 q 32 661 15 602 l 32 661 q 138 696 37 680 q 293 712 239 712 q 365 708 347 712 q 392 699 383 704 q 406 686 401 693 l 406 686 q 413 665 413 675 l 413 665 l 413 24"},"2":{"ha":614,"x_min":30,"x_max":584,"o":"m 99 451 l 99 451 q 51 517 71 451 q 30 644 30 583 l 30 644 q 61 676 30 658 q 155 707 92 693 q 292 721 218 721 l 292 721 q 579 520 579 721 l 579 520 q 555 415 579 464 q 502 337 531 366 q 434 282 473 307 l 434 282 q 348 238 389 254 l 348 238 l 548 238 q 561 233 554 238 q 576 201 568 227 q 584 135 584 174 q 579 69 584 95 q 567 30 574 42 l 567 30 q 540 1 552 3 l 540 1 l 535 0 l 97 0 q 34 197 34 0 l 34 197 q 164 318 34 219 l 164 318 q 254 397 213 354 q 295 467 295 440 l 295 467 q 250 497 295 497 q 156 474 205 497 q 99 451 106 451"},"3":{"ha":609,"x_min":30,"x_max":579,"o":"m 570 534 l 570 534 q 490 383 570 433 l 490 383 q 519 359 501 378 q 548 321 536 340 l 548 321 q 579 205 579 272 l 579 205 q 500 43 579 95 q 283 -9 421 -9 l 283 -9 q 155 3 215 -9 q 62 29 94 14 q 30 55 30 43 l 30 55 q 42 152 30 110 q 69 212 54 194 q 98 229 84 229 l 98 229 q 151 211 102 229 q 248 193 200 193 q 295 223 295 193 l 295 223 q 194 267 295 264 l 194 267 q 150 269 154 268 l 150 269 q 129 357 129 276 q 150 446 129 438 l 150 446 q 194 448 154 448 l 194 448 q 295 489 295 450 l 295 489 q 252 519 295 519 q 155 498 208 519 q 97 477 102 477 l 97 477 q 55 544 74 477 q 36 639 36 611 l 36 639 q 94 692 36 665 l 94 692 q 282 721 158 721 l 282 721 q 570 534 570 721"},"4":{"ha":618,"x_min":15,"x_max":578,"o":"m 578 24 q 517 7 578 13 q 395 0 456 0 q 317 6 334 0 q 299 24 299 11 l 299 24 l 299 147 l 49 147 q 15 313 15 147 l 15 313 q 97 476 15 332 q 209 665 178 620 l 209 665 q 299 697 221 682 q 451 712 377 712 l 451 712 q 578 665 578 712 l 578 665 l 578 24 m 247 303 l 316 303 l 317 521 l 247 303"},"5":{"ha":611,"x_min":30,"x_max":581,"o":"m 30 67 l 30 67 q 48 185 30 132 q 88 237 66 237 l 88 237 q 152 213 94 237 q 238 188 210 188 q 282 197 266 188 q 297 221 297 206 l 297 221 q 94 286 297 276 l 94 286 q 59 500 59 288 q 92 712 59 712 l 92 712 l 534 712 q 560 632 560 712 l 560 632 q 551 527 560 584 q 518 469 541 469 l 518 469 l 238 469 l 238 424 q 514 362 431 424 l 514 362 q 581 212 581 311 q 507 52 581 113 q 270 -9 433 -9 l 270 -9 q 97 15 164 -9 q 30 67 30 39"},"6":{"ha":662,"x_min":30,"x_max":632,"o":"m 309 438 q 357 458 318 445 q 446 471 396 471 q 530 457 495 471 q 584 420 564 442 q 614 365 603 398 l 614 365 q 632 255 632 311 q 628 171 632 199 q 606 107 623 142 q 559 48 588 72 q 475 8 529 24 q 347 -9 420 -9 l 347 -9 q 110 78 190 -9 q 30 358 30 164 q 105 637 30 551 q 333 722 180 722 l 333 722 q 516 707 438 722 q 593 670 593 691 l 593 670 q 574 579 593 644 q 538 514 554 514 l 538 514 q 508 519 533 514 l 508 519 q 384 533 440 533 q 312 506 328 533 q 296 425 296 478 l 296 425 q 309 438 300 430 m 331 347 l 331 347 q 302 240 302 347 q 331 132 302 132 l 331 132 q 362 240 362 132 q 331 347 362 347"},"7":{"ha":539,"x_min":10,"x_max":529,"o":"m 394 24 q 328 7 391 13 q 202 0 264 0 q 123 6 140 0 q 106 24 106 11 l 106 24 q 241 470 106 45 l 241 470 l 36 470 q 14 518 22 470 l 14 518 q 10 579 10 541 q 21 665 10 617 q 54 712 31 712 l 54 712 l 456 712 q 518 690 505 712 l 518 690 q 529 646 529 673 q 506 513 529 618 q 447 255 483 408 q 394 24 410 102 l 394 24"},"8":{"ha":659,"x_min":30,"x_max":629,"o":"m 629 224 l 629 224 q 330 -9 629 -9 q 30 224 30 -9 l 30 224 q 78 382 30 329 l 78 382 q 54 435 65 397 q 43 509 43 472 l 43 509 q 116 673 43 624 q 329 721 189 721 q 543 673 469 721 q 616 509 616 624 l 616 509 q 605 435 616 472 q 581 382 594 397 l 581 382 q 629 224 629 329 m 297 217 q 305 152 297 167 q 330 136 313 136 q 354 152 346 136 q 361 217 361 167 q 354 284 361 267 q 330 300 346 300 q 305 284 313 300 q 297 217 297 267 m 330 456 l 330 456 q 361 516 361 456 q 330 575 361 575 l 330 575 q 297 516 297 575 q 330 456 297 456"},"9":{"ha":662,"x_min":30,"x_max":632,"o":"m 205 252 l 205 252 q 75 315 119 252 q 30 479 30 377 l 30 479 q 86 636 30 565 l 86 636 q 175 699 116 675 q 315 722 234 722 l 315 722 q 553 640 474 722 q 632 359 632 558 q 558 76 632 160 q 329 -9 484 -9 l 329 -9 q 145 5 221 -9 q 69 39 69 18 l 69 39 q 89 129 69 64 q 124 194 108 194 l 124 194 q 154 190 129 194 l 154 190 q 281 180 227 180 q 350 209 334 180 q 366 284 366 237 l 366 284 q 305 263 352 273 q 205 252 257 252 m 331 376 l 331 376 q 360 479 360 376 q 331 581 360 581 l 331 581 q 300 479 300 581 q 331 376 300 376"},"a":{"ha":664,"x_min":30,"x_max":629,"o":"m 225 -9 l 225 -9 q 82 34 134 -9 l 82 34 q 46 87 61 52 q 30 169 30 122 q 53 251 30 216 q 107 305 75 286 q 182 336 139 324 l 182 336 q 325 353 247 353 l 325 353 l 358 353 q 330 411 358 394 l 330 411 q 294 418 318 418 q 235 405 269 418 q 177 379 200 392 q 146 365 154 365 l 146 365 q 97 413 128 365 q 66 499 66 460 l 66 499 q 103 533 66 512 q 208 572 140 554 q 339 589 275 589 q 450 579 403 589 q 526 553 496 568 q 576 513 555 538 q 607 468 596 488 q 622 416 617 448 l 622 416 q 629 325 629 379 l 629 325 l 629 24 q 576 7 629 13 q 470 0 522 0 q 402 3 417 0 q 383 10 386 6 q 378 24 380 14 l 378 24 l 370 81 l 362 81 q 225 -9 337 -9 m 359 157 l 359 157 l 359 274 q 317 252 333 274 q 301 202 301 230 l 301 202 q 331 136 301 136 l 331 136 q 352 143 344 136 q 359 157 359 149"},"b":{"ha":668,"x_min":35,"x_max":638,"o":"m 90 10 l 90 10 q 35 52 35 24 l 35 52 l 35 686 q 94 729 35 708 q 218 750 153 750 l 218 750 q 306 704 306 750 l 306 704 l 306 591 l 295 522 l 303 522 q 326 544 309 531 q 360 566 342 557 l 360 566 q 457 589 404 589 q 541 576 510 589 q 590 541 571 562 q 619 486 608 519 l 619 486 q 638 344 638 429 l 638 344 q 606 128 638 203 q 502 22 574 53 q 299 -9 430 -9 q 90 10 168 -9 m 305 445 l 305 138 l 336 138 q 368 292 368 138 q 335 445 368 445 l 335 445 l 305 445"},"c":{"ha":550,"x_min":25,"x_max":525,"o":"m 164 17 l 164 17 q 113 50 140 28 q 67 102 85 72 l 67 102 q 25 290 25 174 l 25 290 q 48 419 25 362 q 104 506 71 475 q 180 557 137 537 l 180 557 q 318 589 249 589 l 318 589 q 480 571 434 589 q 525 510 525 553 q 510 419 525 467 q 469 370 494 370 l 469 370 q 421 387 461 370 q 351 404 380 404 q 306 381 321 404 q 290 290 290 357 q 304 198 290 222 q 348 173 318 173 q 421 193 377 173 q 470 213 465 213 l 470 213 q 507 168 489 213 q 524 88 524 123 l 524 88 q 468 13 524 34 q 317 -9 412 -9 q 164 17 221 -9"},"d":{"ha":664,"x_min":25,"x_max":629,"o":"m 223 -9 l 223 -9 q 154 2 186 -9 q 102 29 122 13 q 66 72 81 45 q 43 124 51 99 q 31 184 35 148 l 31 184 q 25 305 25 237 l 25 305 q 76 517 25 444 q 216 589 127 589 l 216 589 q 348 546 307 589 l 348 546 q 362 522 357 536 l 362 522 l 370 522 l 358 591 l 358 716 q 414 759 358 738 q 535 780 470 780 l 535 780 q 622 754 603 780 l 622 754 q 629 734 629 744 l 629 734 l 629 24 q 574 7 629 13 q 467 0 518 0 q 401 4 415 0 q 383 11 386 7 q 378 24 379 15 l 378 24 l 370 81 l 362 81 q 326 22 353 46 l 326 22 q 223 -9 292 -9 m 335 137 l 335 137 q 359 157 351 137 l 359 157 l 359 424 q 349 440 359 434 q 330 445 338 445 l 330 445 q 296 289 296 445 l 296 289 q 306 172 296 206 q 335 137 315 137"},"e":{"ha":640,"x_min":25,"x_max":615,"o":"m 331 226 l 298 226 q 360 161 298 161 l 360 161 q 454 186 396 161 q 515 210 512 210 l 515 210 q 565 153 534 210 q 596 69 596 96 l 596 69 q 516 10 596 30 q 360 -10 436 -10 q 232 2 283 -10 q 148 33 180 14 q 91 78 115 51 q 54 130 66 105 q 35 184 42 154 l 35 184 q 25 275 25 228 l 25 275 q 120 526 25 457 l 120 526 q 225 575 167 561 q 362 589 283 589 l 362 589 q 615 413 615 589 l 615 413 q 331 226 615 226 l 331 226 m 296 372 l 296 372 l 296 306 q 344 329 325 306 q 362 385 362 352 l 362 385 q 331 445 362 445 l 331 445 q 296 372 296 445"},"f":{"ha":559,"x_min":10,"x_max":539,"o":"m 476 330 l 358 330 l 358 24 q 303 7 358 13 q 168 0 248 0 q 88 24 88 0 l 88 24 l 88 330 l 37 330 q 10 421 10 330 l 10 421 q 23 489 10 457 q 55 520 35 520 l 55 520 l 88 520 q 108 637 88 587 q 155 714 127 687 q 221 756 182 740 l 221 756 q 353 780 279 780 l 353 780 q 539 719 539 780 l 539 719 q 526 611 539 653 q 491 569 513 569 l 491 569 q 458 576 482 569 q 411 582 433 582 l 411 582 q 353 542 353 582 l 353 542 q 358 520 353 532 l 358 520 l 491 520 q 518 432 518 520 l 518 432 q 507 362 518 393 q 476 330 495 330 l 476 330"},"g":{"ha":659,"x_min":25,"x_max":624,"o":"m 369 66 l 369 66 l 369 124 l 361 124 q 347 112 357 119 q 298 91 337 104 q 209 78 258 78 q 125 93 159 78 q 72 131 91 108 q 42 191 53 153 l 42 191 q 25 351 25 250 l 25 351 q 74 529 25 467 l 74 529 q 131 572 93 554 q 211 589 168 589 q 282 580 254 589 q 324 557 310 570 l 324 557 q 356 508 352 529 l 356 508 l 357 499 l 365 499 l 374 538 q 532 580 384 580 l 532 580 q 612 560 598 580 l 612 560 q 622 538 620 548 q 624 506 624 527 l 624 506 l 624 87 q 547 -93 624 -31 q 321 -155 470 -155 l 321 -155 q 106 -124 163 -155 l 106 -124 q 81 -95 81 -110 l 81 -95 q 101 -14 81 -71 q 137 43 120 43 l 137 43 q 165 36 141 43 l 165 36 q 289 16 241 16 q 353 28 336 16 q 369 66 369 40 m 329 192 l 329 192 q 347 200 340 192 q 354 218 354 208 l 354 218 l 354 424 q 332 445 350 445 l 332 445 q 294 320 294 445 l 294 320 q 304 227 294 262 q 329 192 313 192"},"h":{"ha":665,"x_min":35,"x_max":630,"o":"m 360 24 l 360 24 l 360 302 q 354 411 360 377 q 325 445 348 445 l 325 445 q 305 418 305 445 l 305 418 l 305 24 q 247 7 305 13 q 128 0 189 0 q 51 6 67 0 q 35 24 35 11 l 35 24 l 35 717 q 93 759 35 738 q 215 780 151 780 l 215 780 q 300 755 282 780 l 300 755 q 306 738 306 747 l 306 738 l 306 591 l 295 522 l 302 522 q 346 559 316 543 l 346 559 q 468 589 402 589 l 468 589 q 597 529 563 589 q 630 332 630 468 l 630 332 l 630 24 q 572 7 630 13 q 453 0 513 0 q 376 6 392 0 q 360 24 360 11"},"i":{"ha":350,"x_min":35,"x_max":315,"o":"m 310 517 l 310 517 l 310 24 q 253 7 310 13 q 135 0 195 0 q 57 6 74 0 q 39 24 39 11 l 39 24 l 39 499 q 96 543 39 521 q 219 564 152 564 l 219 564 q 310 517 310 564 m 174 780 l 174 780 q 278 761 240 780 q 315 690 315 741 l 315 690 q 175 600 315 600 q 35 690 35 600 q 174 780 35 780"},"j":{"ha":400,"x_min":0,"x_max":365,"o":"m 360 90 q 305 -94 360 -33 q 152 -155 249 -155 q 28 -136 55 -155 q 0 -53 0 -118 q 25 14 0 11 l 25 14 q 75 32 60 19 q 89 80 89 45 l 89 80 l 89 499 q 146 543 89 521 q 268 564 202 564 l 268 564 q 360 517 360 564 l 360 517 l 360 90 m 365 693 q 225 600 365 600 q 85 691 85 600 l 85 691 q 123 761 85 742 q 227 780 160 780 q 330 763 294 780 q 365 693 365 745 l 365 693"},"k":{"ha":636,"x_min":35,"x_max":631,"o":"m 305 24 q 249 7 305 13 q 132 0 193 0 q 53 6 71 0 q 35 24 35 11 l 35 24 l 35 716 q 92 759 35 738 q 213 780 148 780 l 213 780 q 305 734 305 780 l 305 734 l 305 360 l 318 360 q 389 589 366 589 l 389 589 q 529 562 447 589 q 611 502 611 535 l 611 502 q 571 410 611 478 q 488 299 531 342 l 488 299 q 631 96 631 128 l 631 96 q 540 23 631 66 q 412 -20 449 -20 l 412 -20 q 374 24 394 -20 q 331 154 354 67 l 331 154 l 305 123 l 305 24"},"l":{"ha":340,"x_min":35,"x_max":305,"o":"m 305 734 l 305 734 l 305 24 q 248 7 305 13 q 131 0 191 0 q 53 6 70 0 q 35 24 35 11 l 35 24 l 35 716 q 92 759 35 738 q 213 780 148 780 l 213 780 q 305 734 305 780"},"m":{"ha":981,"x_min":35,"x_max":946,"o":"m 946 330 l 946 330 l 946 24 q 890 7 946 13 q 773 0 833 0 q 694 6 712 0 q 676 24 676 11 l 676 24 l 676 301 q 647 444 676 444 l 647 444 q 633 438 640 444 q 626 417 626 432 l 626 417 l 626 24 q 570 7 626 13 q 452 0 513 0 q 374 6 391 0 q 356 24 356 11 l 356 24 l 356 301 q 342 434 356 412 l 342 434 q 324 444 335 444 l 324 444 q 305 417 305 444 l 305 417 l 305 24 q 248 7 305 13 q 131 0 191 0 q 53 6 70 0 q 35 24 35 11 l 35 24 l 35 517 q 93 559 35 538 q 214 580 150 580 q 286 543 278 580 l 286 543 l 295 499 l 302 499 q 398 580 331 556 l 398 580 q 470 589 426 589 l 470 589 q 598 499 558 589 l 598 499 q 663 559 611 529 q 778 589 715 589 l 778 589 q 912 528 877 589 q 946 330 946 466"},"n":{"ha":673,"x_min":35,"x_max":638,"o":"m 638 332 l 638 332 l 638 24 q 581 7 638 13 q 464 0 524 0 q 386 6 403 0 q 368 24 368 11 l 368 24 l 368 342 q 365 401 368 387 q 358 426 361 415 l 358 426 q 333 445 351 445 l 333 445 q 305 418 305 445 l 305 418 l 305 24 q 249 7 305 13 q 132 0 192 0 q 53 6 71 0 q 35 24 35 11 l 35 24 l 35 517 q 93 559 35 538 q 214 580 150 580 q 286 543 278 580 l 286 543 l 295 499 l 302 499 q 402 580 331 557 l 402 580 q 466 589 431 589 l 466 589 q 603 529 567 589 q 638 332 638 468"},"o":{"ha":685,"x_min":25,"x_max":660,"o":"m 343 -9 l 343 -9 q 214 4 268 -9 q 116 50 160 17 l 116 50 q 25 296 25 116 l 25 296 q 118 525 25 456 l 118 525 q 343 589 205 589 l 343 589 q 444 584 402 589 q 530 560 486 578 q 600 511 573 542 q 643 426 626 480 q 660 296 660 371 l 660 296 q 574 68 660 144 q 343 -9 488 -9 m 308 186 q 323 143 315 150 q 343 136 330 136 q 363 143 355 136 q 377 186 370 150 q 383 277 383 222 q 381 361 383 331 q 375 406 378 390 q 365 431 371 422 l 365 431 q 344 444 356 444 q 323 437 331 444 q 308 393 315 429 q 301 289 301 356 q 308 186 301 222"},"p":{"ha":663,"x_min":35,"x_max":638,"o":"m 35 -121 l 35 -121 l 35 515 q 91 558 35 536 q 212 580 147 580 l 212 580 q 259 573 242 580 q 280 559 276 566 l 280 559 q 295 499 284 552 l 295 499 l 303 499 q 321 527 305 508 q 354 558 337 546 q 401 580 370 570 q 474 589 432 589 q 549 571 515 589 q 600 528 583 552 q 626 466 616 503 q 637 406 635 428 q 638 341 638 383 q 635 257 638 298 q 624 172 632 215 q 601 98 616 129 q 563 42 586 67 l 563 42 q 428 -8 517 -8 l 428 -8 q 372 2 396 -8 q 335 24 347 11 l 335 24 q 306 72 310 51 l 306 72 l 305 82 l 297 82 l 311 -8 l 311 -121 q 254 -138 311 -132 q 136 -145 196 -145 q 55 -139 75 -145 q 35 -121 35 -134 m 367 293 q 358 412 367 378 q 331 446 349 446 q 305 426 313 446 l 305 426 l 305 164 q 332 138 305 138 l 332 138 q 367 293 367 138 l 367 293"},"q":{"ha":663,"x_min":25,"x_max":628,"o":"m 328 16 q 288 0 314 7 q 218 -8 261 -8 q 137 9 175 -8 q 78 50 99 25 q 44 114 57 75 l 44 114 q 25 265 25 174 l 25 265 q 105 514 25 438 q 362 589 184 589 l 362 589 q 504 582 461 589 q 573 569 547 575 l 573 569 q 628 527 628 556 l 628 527 l 628 -121 q 573 -138 628 -132 q 437 -145 517 -145 q 357 -121 357 -145 l 357 -121 l 357 -8 l 369 61 l 361 61 q 351 39 361 53 q 328 16 341 25 m 328 444 l 328 444 q 296 291 296 444 q 330 138 296 138 l 330 138 q 348 143 338 138 q 358 157 358 148 l 358 157 l 358 440 q 328 444 351 444"},"r":{"ha":586,"x_min":35,"x_max":571,"o":"m 305 316 l 305 316 l 305 24 q 249 7 305 13 q 132 0 192 0 q 53 6 71 0 q 35 24 35 11 l 35 24 l 35 517 q 91 558 35 536 q 212 580 146 580 q 285 544 277 580 l 285 544 l 295 498 l 302 498 q 369 563 316 536 q 475 589 422 589 q 550 572 528 589 q 571 529 571 555 q 567 461 571 502 q 548 372 563 420 q 507 324 532 324 l 507 324 q 444 339 497 324 q 357 354 391 354 q 314 344 322 354 q 305 316 305 334"},"s":{"ha":611,"x_min":25,"x_max":586,"o":"m 307 -9 l 307 -9 q 64 23 141 -9 l 64 23 q 25 56 25 40 l 25 56 q 49 152 25 97 q 91 207 73 207 l 91 207 q 159 185 101 207 q 256 163 216 163 q 308 168 295 163 q 320 188 320 173 q 300 211 320 202 q 250 222 280 219 q 186 234 220 225 q 121 257 151 243 q 71 304 91 271 q 51 374 51 336 q 53 430 51 411 q 70 482 55 448 q 111 536 84 515 q 193 574 137 557 q 317 591 248 591 q 433 587 386 591 q 506 575 479 582 q 549 559 532 568 l 549 559 q 578 526 578 544 l 578 526 q 550 436 578 487 q 506 385 522 385 q 434 403 489 385 q 353 420 379 420 l 353 420 q 311 396 311 420 l 311 396 q 340 374 311 381 q 408 358 368 366 q 489 336 448 350 q 558 283 529 321 q 586 187 586 245 l 586 187 q 307 -9 586 -9"},"t":{"ha":482,"x_min":10,"x_max":457,"o":"m 428 9 q 346 -8 410 -8 q 240 1 282 -8 q 160 34 198 9 l 160 34 q 87 238 87 83 l 87 238 l 87 394 l 37 394 q 18 417 26 394 q 10 480 10 440 q 23 551 10 520 q 55 581 35 581 l 55 581 l 87 581 l 87 702 q 148 752 87 733 q 266 771 208 771 l 266 771 q 357 726 357 771 l 357 726 l 357 581 l 431 581 q 457 506 457 581 l 457 506 q 446 426 457 457 q 416 394 434 394 l 416 394 l 357 394 l 357 211 q 380 173 357 184 q 421 161 403 161 q 442 144 438 161 q 446 93 446 127 l 446 93 q 428 9 446 26"},"u":{"ha":678,"x_min":35,"x_max":643,"o":"m 236 -9 l 236 -9 q 80 49 124 -9 q 35 251 35 107 l 35 251 l 35 523 q 94 562 35 543 q 218 580 153 580 l 218 580 q 305 535 305 580 l 305 535 l 305 281 q 311 171 305 205 q 341 136 317 136 l 341 136 q 373 163 373 136 l 373 163 l 373 523 q 435 562 373 544 q 570 580 497 580 q 643 541 643 580 l 643 541 l 643 26 q 580 6 643 12 q 456 0 517 0 q 394 16 395 0 l 394 16 l 384 81 l 376 81 q 340 22 367 45 l 340 22 q 299 1 326 10 q 236 -9 271 -9"},"v":{"ha":679,"x_min":5,"x_max":674,"o":"m 5 509 l 5 509 q 34 536 5 519 q 113 566 63 552 q 211 580 163 580 l 211 580 q 311 533 308 580 l 311 533 l 336 215 l 349 215 l 371 517 q 440 561 373 542 q 558 580 507 580 q 635 571 609 580 q 667 553 660 562 q 674 536 674 543 q 632 433 674 529 q 462 24 589 337 l 462 24 q 299 0 452 0 l 299 0 q 236 6 251 0 q 216 24 221 11 l 216 24 q 76 352 147 198 q 5 509 5 505"},"w":{"ha":983,"x_min":5,"x_max":978,"o":"m 794 24 l 794 24 q 659 0 781 0 q 531 24 536 0 l 531 24 l 497 206 l 483 206 l 451 24 q 276 0 448 0 l 276 0 q 213 6 228 0 q 191 24 197 11 l 191 24 q 5 505 5 481 q 78 555 5 529 q 217 580 150 580 l 217 580 q 306 534 303 580 l 306 534 l 340 260 l 352 260 l 364 481 q 415 525 365 506 q 516 544 465 544 q 593 532 567 544 q 619 501 618 519 l 619 501 l 630 260 l 641 260 l 674 517 q 742 561 677 541 q 855 580 806 580 q 932 566 904 580 l 932 566 q 978 514 978 544 l 978 514 q 888 270 978 511 q 794 24 797 29"},"x":{"ha":679,"x_min":5,"x_max":674,"o":"m 332 169 l 306 38 q 217 0 298 0 q 71 10 136 0 q 5 39 5 19 l 5 39 q 47 114 5 51 q 174 291 89 177 l 174 291 q 14 519 14 509 l 14 519 q 84 559 14 538 q 202 580 154 580 q 277 569 250 580 q 306 543 303 557 l 306 543 l 350 390 l 359 390 l 375 534 q 399 551 376 540 q 459 571 421 561 q 532 580 497 580 l 532 580 q 664 535 664 580 l 664 535 q 625 457 664 521 q 508 277 586 392 l 508 277 q 674 39 674 52 l 674 39 q 561 0 674 0 l 561 0 q 378 38 386 0 l 378 38 l 339 169 l 332 169"},"y":{"ha":661,"x_min":35,"x_max":626,"o":"m 372 65 l 372 65 l 372 124 l 364 124 q 349 111 359 119 q 302 90 339 103 q 220 77 265 77 q 140 92 174 77 q 85 131 105 106 q 54 196 65 155 l 54 196 q 35 380 35 261 l 35 380 l 35 518 q 94 560 35 539 q 218 580 153 580 l 218 580 q 305 535 305 580 l 305 535 l 305 409 q 337 209 305 209 l 337 209 q 356 236 356 209 l 356 236 l 356 518 q 419 560 356 539 q 554 580 482 580 q 626 541 626 580 l 626 541 l 626 68 q 324 -155 626 -155 l 324 -155 q 108 -124 165 -155 l 108 -124 q 83 -95 83 -110 l 83 -95 q 103 -14 83 -71 q 140 42 123 42 l 140 42 q 168 36 144 42 l 168 36 q 292 16 242 16 q 357 27 341 16 q 372 65 372 38"},"z":{"ha":576,"x_min":25,"x_max":551,"o":"m 531 428 l 531 428 q 490 354 531 414 q 365 187 448 293 l 365 187 l 526 187 q 551 117 551 187 l 551 117 q 538 36 551 71 q 506 0 525 0 l 506 0 l 75 0 q 37 48 48 0 q 25 150 25 95 l 25 150 q 72 223 25 162 q 211 393 118 283 l 211 393 l 58 393 q 33 463 33 393 l 33 463 q 46 545 33 509 q 78 580 58 580 l 78 580 l 483 580 q 531 428 531 580"},"$":{"ha":664,"x_min":30,"x_max":634,"o":"m 235 703 l 235 716 q 273 760 235 739 q 373 780 311 780 l 373 780 q 435 760 421 780 l 435 760 q 445 734 445 746 l 445 734 l 445 704 q 602 662 558 692 l 602 662 q 620 639 620 650 l 620 639 q 596 527 620 587 q 548 467 571 467 l 548 467 q 522 476 544 467 l 522 476 q 413 505 456 505 q 354 497 369 505 q 338 473 338 489 q 360 447 338 456 q 415 432 382 438 q 486 410 447 425 q 557 374 524 395 q 612 312 590 353 q 634 227 634 270 q 626 156 634 184 q 599 98 618 128 q 540 45 579 68 q 445 10 500 21 l 445 10 l 445 -6 q 407 -49 445 -29 q 307 -70 369 -70 l 307 -70 q 245 -50 259 -70 l 245 -50 q 235 -24 235 -36 l 235 -24 l 235 6 q 122 25 170 12 l 122 25 q 30 79 30 50 l 30 79 q 46 196 30 135 q 84 256 62 256 l 84 256 q 167 229 88 256 q 286 202 246 202 q 338 211 326 202 q 350 235 350 219 q 328 263 350 251 q 273 281 306 274 q 202 303 240 288 q 130 338 163 318 q 75 397 97 358 q 53 488 53 436 l 53 488 q 235 703 53 672 l 235 703"},"~":{"ha":561,"x_min":40,"x_max":521,"o":"m 521 689 q 470 642 521 674 q 380 610 418 610 q 288 628 341 610 q 219 645 234 645 q 159 628 203 645 q 97 610 115 610 q 60 646 79 610 q 40 700 40 681 l 40 700 q 95 749 40 717 q 185 780 149 780 q 274 763 221 780 q 349 746 326 746 l 349 746 q 399 763 356 746 q 461 780 441 780 q 501 743 480 780 q 521 689 521 706 l 521 689"},"/":{"ha":418,"x_min":25,"x_max":393,"o":"m 66 0 l 66 0 q 35 14 44 0 q 25 42 25 27 q 187 657 25 57 l 187 657 q 341 711 202 711 l 341 711 q 393 676 393 711 l 393 676 q 225 44 393 670 l 225 44 q 66 0 213 0"},".":{"ha":293,"x_min":40,"x_max":253,"o":"m 253 94 q 226 13 253 35 q 147 -9 199 -9 q 67 13 94 -9 q 40 94 40 35 q 68 173 40 153 q 147 192 95 192 q 226 173 199 192 q 253 94 253 153"},"-":{"ha":553,"x_min":30,"x_max":523,"o":"m 462 190 l 462 190 l 57 190 q 38 209 46 190 q 30 262 30 227 q 52 332 30 296 q 95 367 74 367 l 95 367 l 497 367 q 523 302 523 367 l 523 302 q 502 230 523 269 q 462 190 481 190"},"_":{"ha":593,"x_min":15,"x_max":578,"o":"m 537 -145 l 537 -145 l 42 -145 q 15 -94 15 -145 l 15 -94 q 30 -34 15 -58 q 65 -10 44 -10 l 65 -10 l 552 -10 q 565 -13 560 -10 l 565 -13 q 578 -59 578 -21 q 567 -121 578 -97 q 537 -145 555 -145"},">":{"ha":362,"x_min":30,"x_max":347,"o":"m 30 545 l 30 545 q 152 580 30 580 l 152 580 q 236 526 212 580 l 236 526 q 268 464 237 523 l 268 464 q 347 289 347 312 q 299 164 347 266 q 237 40 250 61 q 205 10 223 19 q 143 0 187 0 q 70 4 98 0 q 36 12 42 7 q 30 26 30 17 q 59 101 30 35 q 147 288 88 167 l 147 288 q 30 545 30 523"},"?":{"ha":599,"x_min":20,"x_max":569,"o":"m 89 441 l 89 441 q 41 508 61 441 q 20 635 20 574 l 20 635 q 51 667 20 649 q 145 698 82 684 q 282 711 208 711 l 282 711 q 569 511 569 711 l 569 511 q 546 413 569 454 q 489 352 522 371 l 489 352 q 366 314 422 315 l 366 314 l 343 313 q 348 278 343 302 q 353 236 353 254 l 353 236 q 299 212 353 220 q 204 203 244 203 l 204 203 q 129 233 143 203 q 114 360 114 263 l 114 360 q 200 394 114 383 l 200 394 q 259 415 232 399 q 285 459 285 431 q 240 487 285 487 q 146 464 195 487 q 89 441 96 441 m 246 169 l 246 169 q 350 152 314 169 q 386 79 386 134 l 386 79 q 246 -11 386 -11 q 106 79 106 -11 q 246 169 106 169"},"!":{"ha":332,"x_min":31,"x_max":302,"o":"m 31 700 q 88 718 30 711 q 224 724 146 724 q 302 701 302 724 l 302 701 q 284 219 302 672 l 284 219 q 248 174 283 194 q 149 154 213 154 l 149 154 q 58 201 62 154 l 58 201 l 31 700 m 291 9 q 259 -61 291 -42 q 168 -81 226 -81 q 78 -63 109 -81 q 47 9 47 -46 l 47 9 q 169 99 47 99 q 291 9 291 99 l 291 9"}," ":{"ha":225,"x_min":0,"x_max":0,"o":""},"<":{"ha":362,"x_min":15,"x_max":332,"o":"m 215 288 l 215 288 q 332 24 332 48 q 280 0 332 0 l 280 0 q 169 9 197 0 q 126 40 140 18 q 64 164 112 61 q 15 284 15 266 q 40 354 15 302 q 95 465 64 406 q 129 533 125 523 q 145 553 133 542 q 190 572 156 563 q 278 580 224 580 q 332 545 332 580 l 332 545 q 215 288 332 524"},":":{"ha":293,"x_min":40,"x_max":253,"o":"m 253 419 q 226 338 253 359 q 147 316 199 316 q 67 338 94 316 q 40 419 40 359 q 68 498 40 478 q 147 517 95 517 q 226 498 199 517 q 253 419 253 478 m 253 94 q 226 13 253 35 q 147 -9 199 -9 q 67 13 94 -9 q 40 94 40 35 q 68 173 40 153 q 147 192 95 192 q 226 173 199 192 q 253 94 253 153"},"=":{"ha":553,"x_min":30,"x_max":523,"o":"m 462 317 l 462 317 l 57 317 q 38 336 46 317 q 30 389 30 354 q 52 459 30 423 q 95 494 74 494 l 95 494 l 497 494 q 523 429 523 494 l 523 429 q 502 357 523 396 q 462 317 481 317 m 462 74 l 462 74 l 57 74 q 38 93 46 74 q 30 146 30 111 q 52 216 30 180 q 95 251 74 251 l 95 251 l 497 251 q 523 186 523 251 l 523 186 q 502 114 523 153 q 462 74 481 74"},"#":{"ha":814,"x_min":10,"x_max":804,"o":"m 105 0 l 105 0 q 74 14 83 0 q 64 42 64 27 q 83 130 64 57 l 83 130 l 37 130 q 18 149 26 130 q 10 202 10 167 q 32 272 10 236 q 75 307 54 307 l 75 307 l 131 307 l 157 403 l 95 403 q 76 422 84 403 q 68 475 68 440 q 90 545 68 509 q 133 580 112 580 l 133 580 l 205 580 q 226 657 213 612 l 226 657 q 380 711 241 711 l 380 711 q 432 676 432 711 l 432 676 q 408 580 432 670 l 408 580 l 513 580 q 534 657 521 612 l 534 657 q 688 711 549 711 l 688 711 q 740 676 740 711 l 740 676 q 716 580 740 670 l 716 580 l 778 580 q 804 515 804 580 l 804 515 q 783 443 804 482 q 743 403 762 403 l 743 403 l 668 403 l 642 307 l 720 307 q 746 242 746 307 l 746 242 q 725 170 746 209 q 685 130 704 130 l 685 130 l 595 130 l 572 44 q 413 0 560 0 l 413 0 q 382 14 391 0 q 372 42 372 27 q 391 130 372 57 l 391 130 l 287 130 l 264 44 q 105 0 252 0 m 465 403 l 360 403 l 334 307 l 439 307 l 465 403"},"A":{"ha":738,"x_min":10,"x_max":728,"o":"m 316 51 q 286 11 314 22 q 183 0 257 0 q 60 14 109 0 q 10 48 10 27 l 10 48 q 99 355 10 72 q 201 680 188 637 l 201 680 q 282 702 206 693 q 444 710 357 710 q 539 680 530 710 l 539 680 q 728 42 728 52 q 716 22 728 32 l 716 22 q 605 0 688 0 l 605 0 q 424 42 428 0 l 424 42 l 417 107 l 321 107 l 316 51 m 342 297 l 396 297 l 381 477 l 359 477 l 342 297"},"B":{"ha":705,"x_min":40,"x_max":675,"o":"m 343 0 l 343 0 l 124 0 q 57 7 74 0 q 40 29 40 14 l 40 29 l 40 672 q 329 720 40 720 l 329 720 q 558 688 495 720 l 558 688 q 640 604 622 655 l 640 604 q 650 534 650 574 l 650 534 q 624 417 650 456 q 566 373 597 378 l 566 373 q 644 327 613 363 q 675 205 675 291 l 675 205 q 614 57 675 105 l 614 57 q 452 4 561 15 l 452 4 q 343 0 406 0 m 319 436 l 344 436 q 395 504 395 436 l 395 504 q 382 555 395 538 q 351 571 368 571 l 351 571 l 319 571 l 319 436 m 319 284 l 319 149 l 344 149 q 395 217 395 149 l 395 217 q 382 268 395 251 q 351 284 368 284 l 351 284 l 319 284"},"C":{"ha":656,"x_min":30,"x_max":626,"o":"m 541 8 q 460 -5 501 -2 q 379 -9 418 -9 q 318 -7 339 -9 q 261 3 296 -5 q 197 25 226 11 q 136 66 168 39 q 81 130 103 93 l 81 130 q 30 352 30 216 l 30 352 q 59 513 30 443 q 128 621 87 583 q 220 682 168 659 l 220 682 q 389 720 304 720 l 389 720 q 564 700 511 720 l 564 700 q 607 672 588 691 q 626 617 626 653 q 609 526 626 581 q 558 471 591 471 l 558 471 q 484 487 548 471 q 397 503 420 503 l 397 503 q 338 464 362 503 q 313 353 313 425 q 335 241 313 281 q 391 201 356 201 l 391 201 q 482 222 416 201 q 558 242 547 242 l 558 242 q 607 185 589 242 q 624 93 624 128 q 603 38 624 58 q 541 8 581 17"},"D":{"ha":731,"x_min":40,"x_max":701,"o":"m 359 0 l 359 0 l 123 0 q 57 7 74 0 q 40 30 40 14 l 40 30 l 40 661 q 62 699 40 687 q 138 710 84 710 l 138 710 l 363 710 q 628 635 555 710 q 701 360 701 559 q 625 81 701 161 q 359 0 549 0 m 351 561 l 351 561 q 319 557 327 561 l 319 557 l 319 153 l 357 149 q 403 197 387 149 q 418 363 418 245 q 402 521 418 481 q 351 561 386 561"},"E":{"ha":610,"x_min":40,"x_max":580,"o":"m 547 0 l 547 0 l 123 0 q 57 7 74 0 q 40 29 40 14 l 40 29 l 40 662 q 64 699 40 688 q 148 710 87 710 l 148 710 l 550 710 q 571 641 571 710 q 562 535 571 571 q 538 498 553 498 l 538 498 q 319 511 473 498 l 319 511 l 319 444 q 512 450 467 450 l 512 450 q 539 387 539 450 q 529 292 539 324 q 500 259 518 259 l 500 259 l 319 263 l 319 199 q 559 212 493 212 l 559 212 q 580 142 580 212 q 571 36 580 72 q 547 0 562 0"},"F":{"ha":586,"x_min":40,"x_max":556,"o":"m 319 29 q 255 7 319 14 q 132 0 190 0 q 57 7 74 0 q 40 29 40 14 l 40 29 l 40 663 q 66 700 40 689 q 164 711 92 711 l 164 711 l 535 711 q 556 636 556 711 q 547 521 556 560 q 522 481 537 481 l 522 481 l 319 491 l 319 423 q 497 429 452 429 l 497 429 q 518 413 512 429 q 523 352 523 397 q 513 265 523 306 q 485 223 503 223 l 485 223 l 319 229 l 319 29"},"G":{"ha":674,"x_min":30,"x_max":644,"o":"m 257 -8 l 257 -8 q 194 -1 223 -8 q 134 29 165 6 q 80 88 102 51 l 80 88 q 30 341 30 172 l 30 341 q 55 505 30 434 q 118 616 80 576 q 209 680 156 655 q 308 713 262 705 q 406 720 354 720 l 406 720 q 575 700 526 720 q 624 621 624 679 l 624 621 q 607 522 624 575 q 557 468 590 468 l 557 468 q 489 484 549 468 q 399 499 429 499 l 399 499 q 313 354 313 499 l 313 354 q 333 246 313 281 q 383 206 353 210 l 383 206 l 383 296 q 434 342 383 321 q 532 363 485 363 q 601 357 579 363 q 630 340 622 351 l 630 340 q 644 308 644 322 l 644 308 l 644 31 q 592 10 644 18 q 483 2 539 2 q 411 8 426 2 q 394 38 396 13 l 394 38 l 387 97 l 379 97 q 344 23 372 54 q 257 -8 315 -8"},"H":{"ha":727,"x_min":40,"x_max":687,"o":"m 319 29 q 259 8 319 16 q 137 0 198 0 q 58 7 75 0 q 40 29 40 14 l 40 29 l 40 644 q 98 690 40 669 q 224 710 156 710 l 224 710 q 319 665 319 710 l 319 665 l 319 445 l 408 445 l 408 644 q 467 690 408 669 q 593 710 525 710 l 593 710 q 687 665 687 710 l 687 665 l 687 29 q 626 8 687 16 q 504 0 565 0 q 426 7 443 0 q 408 29 408 14 l 408 29 l 408 258 l 319 258 l 319 29"},"I":{"ha":359,"x_min":40,"x_max":319,"o":"m 319 24 q 258 7 319 13 q 136 0 197 0 q 57 6 74 0 q 40 24 40 11 l 40 24 l 40 646 q 98 690 40 668 q 228 711 156 711 l 228 711 q 312 684 292 711 l 312 684 q 319 664 319 674 l 319 664 l 319 24"},"J":{"ha":410,"x_min":10,"x_max":370,"o":"m 339 -74 q 282 -121 319 -108 q 197 -135 244 -135 q 127 -133 149 -135 q 81 -125 105 -132 q 42 -108 56 -119 l 42 -108 q 10 -24 10 -81 l 10 -24 q 52 58 10 58 l 52 58 q 72 62 65 58 l 72 62 q 91 124 91 71 l 91 124 l 91 645 q 149 689 91 667 q 271 710 206 710 l 271 710 q 370 663 370 710 l 370 663 l 370 110 q 364 0 370 41 q 339 -74 358 -41"},"K":{"ha":709,"x_min":40,"x_max":694,"o":"m 319 31 q 258 10 319 18 q 135 2 196 2 q 57 9 74 2 q 40 31 40 16 l 40 31 l 40 644 q 97 690 40 670 q 227 710 153 710 l 227 710 q 306 686 288 710 l 306 686 q 319 655 319 669 l 319 655 l 319 490 l 327 490 q 357 573 327 495 l 357 573 q 440 720 414 720 l 440 720 q 578 691 489 720 l 578 691 q 652 651 621 677 q 683 592 683 624 l 683 592 q 643 515 683 572 q 520 361 602 457 l 520 361 q 568 310 539 341 q 646 218 597 279 q 694 130 694 156 q 647 70 694 104 q 547 14 600 35 q 468 -8 494 -8 l 468 -8 q 422 44 451 -8 q 350 198 392 95 l 350 198 l 319 161 l 319 31"},"L":{"ha":544,"x_min":40,"x_max":524,"o":"m 491 0 l 124 0 q 57 6 74 0 q 40 24 40 11 l 40 24 l 40 646 q 98 690 40 668 q 228 711 156 711 l 228 711 q 312 684 292 711 l 312 684 q 319 664 319 674 l 319 664 l 319 221 q 503 229 441 229 l 503 229 q 524 163 524 229 q 515 48 524 96 q 491 0 506 0 l 491 0"},"M":{"ha":880,"x_min":40,"x_max":840,"o":"m 194 0 l 194 0 q 122 0 169 0 q 57 7 74 0 q 40 29 40 14 l 40 29 l 40 660 q 102 697 40 683 q 233 710 163 710 q 333 692 303 710 q 368 654 363 674 l 368 654 l 436 390 l 445 390 l 509 642 q 575 690 516 669 q 703 710 633 710 q 807 699 773 710 q 840 671 840 688 l 840 671 l 840 29 q 783 8 840 16 q 644 0 726 0 q 562 29 562 0 l 562 29 q 579 310 562 108 l 579 310 l 570 310 l 518 49 q 494 27 515 34 q 429 20 472 20 q 377 26 386 20 q 364 49 367 32 l 364 49 l 310 310 l 301 310 q 319 29 319 104 l 319 29 q 194 0 319 3"},"N":{"ha":734,"x_min":40,"x_max":694,"o":"m 319 29 q 258 8 319 16 q 135 0 196 0 q 57 7 74 0 q 40 29 40 14 l 40 29 l 40 643 q 98 689 40 668 q 228 710 155 710 l 228 710 q 267 708 254 710 l 267 708 q 315 665 301 703 l 315 665 l 411 407 l 415 407 l 415 643 q 472 689 415 668 q 602 710 529 710 l 602 710 q 682 686 665 710 l 682 686 q 694 655 694 669 l 694 655 l 694 29 q 633 8 694 16 q 498 0 571 0 q 417 19 424 0 l 417 19 l 324 265 l 319 265 l 319 29"},"O":{"ha":756,"x_min":25,"x_max":731,"o":"m 378 -9 l 378 -9 q 236 7 295 -9 q 126 62 176 22 l 126 62 q 25 365 25 141 l 25 365 q 53 529 25 459 q 129 640 80 599 l 129 640 q 378 720 225 720 l 378 720 q 516 706 457 720 q 626 655 574 692 l 626 655 q 731 365 731 579 l 731 365 q 636 82 731 173 q 378 -9 541 -9 m 345 163 q 378 148 357 148 q 411 163 399 148 q 431 225 423 177 q 439 357 439 272 q 431 488 439 442 q 411 548 423 534 q 378 562 399 562 q 345 548 357 562 q 325 488 333 534 q 317 357 317 442 q 325 225 317 272 q 345 163 333 177"},"P":{"ha":707,"x_min":40,"x_max":682,"o":"m 318 181 l 318 29 q 257 8 318 16 q 135 0 196 0 q 57 7 74 0 q 40 29 40 14 l 40 29 l 40 672 q 328 720 40 720 l 328 720 q 558 696 502 720 l 558 696 q 650 620 626 668 l 650 620 q 682 461 682 558 l 682 461 q 636 268 682 328 l 636 268 q 570 211 603 224 q 516 193 537 198 q 462 184 494 187 l 462 184 q 342 180 418 180 l 342 180 l 318 181 m 319 552 l 319 347 l 343 347 q 373 353 362 347 q 393 383 384 358 q 401 452 401 407 q 392 520 401 496 q 373 548 382 543 q 350 552 363 552 l 350 552 l 319 552"},"Q":{"ha":746,"x_min":20,"x_max":726,"o":"m 20 373 l 20 373 q 48 533 20 465 q 124 641 75 601 l 124 641 q 373 720 221 720 l 373 720 q 485 712 436 720 q 581 682 533 704 q 658 622 628 659 l 658 622 q 726 386 726 539 q 681 145 726 233 q 555 24 636 56 l 555 24 q 600 -62 600 -50 l 600 -62 q 578 -99 600 -84 q 522 -122 556 -115 l 522 -122 q 416 -135 459 -135 q 357 -126 373 -135 q 329 -92 340 -118 l 329 -92 l 286 0 q 92 91 164 0 q 20 373 20 181 m 327 196 q 373 148 342 148 q 419 196 404 148 q 434 346 434 243 q 426 493 434 448 q 406 550 418 537 q 373 562 394 562 q 340 550 352 562 l 340 550 q 312 382 312 520 q 327 196 312 243"},"R":{"ha":716,"x_min":40,"x_max":706,"o":"m 320 234 l 320 29 q 259 8 320 16 q 137 0 198 0 q 58 7 75 0 q 40 29 40 14 l 40 29 l 40 672 q 106 709 40 698 q 271 720 171 720 q 401 720 371 720 q 470 716 430 719 q 534 706 510 713 q 586 688 557 699 q 630 660 614 677 q 661 618 646 642 l 661 618 q 688 496 688 575 q 662 362 688 416 q 591 279 635 307 l 591 279 q 706 49 706 98 q 509 0 706 0 l 509 0 q 430 5 452 0 q 402 27 408 10 l 402 27 l 337 233 l 320 234 m 320 562 l 320 388 l 346 388 q 404 478 404 388 l 404 478 q 389 543 404 524 q 353 562 373 562 l 353 562 l 320 562"},"S":{"ha":654,"x_min":25,"x_max":629,"o":"m 549 42 q 466 6 519 20 q 328 -9 412 -9 q 167 5 243 -9 q 58 36 91 19 q 25 69 25 53 l 25 69 q 41 186 25 125 q 79 246 57 246 l 79 246 q 162 219 83 246 q 281 192 241 192 q 333 201 321 192 q 345 225 345 209 q 323 254 345 241 q 268 276 301 266 q 197 303 235 285 q 125 343 158 321 q 70 406 92 365 q 48 498 48 446 l 48 498 q 313 720 48 720 l 313 720 q 484 708 412 720 q 586 680 556 695 q 615 649 615 664 l 615 649 q 591 537 615 597 q 543 477 566 477 l 543 477 q 517 486 539 477 l 517 486 q 408 515 451 515 q 349 507 364 515 q 333 483 333 499 q 355 456 333 466 q 410 437 377 445 q 481 411 442 428 q 552 370 519 393 q 607 303 585 346 q 629 203 629 260 l 629 203 q 598 94 629 143 l 598 94 q 549 42 579 64"},"T":{"ha":651,"x_min":20,"x_max":631,"o":"m 465 24 q 404 7 465 13 q 281 0 342 0 q 203 6 219 0 q 186 24 186 11 l 186 24 l 186 454 l 47 454 q 28 482 36 454 q 20 566 20 510 q 32 666 20 621 q 64 710 44 710 l 64 710 l 605 710 q 626 682 620 710 q 631 601 631 654 q 620 501 631 548 q 590 454 609 454 l 590 454 l 465 454 l 465 24"},"U":{"ha":726,"x_min":40,"x_max":686,"o":"m 686 279 q 604 64 686 135 q 365 -8 521 -8 q 124 64 208 -8 q 40 279 40 135 l 40 279 l 40 646 q 97 691 40 671 q 228 711 153 711 l 228 711 q 306 688 288 711 l 306 688 q 319 657 319 670 l 319 657 l 319 359 q 328 210 319 246 q 364 173 336 173 q 400 209 392 173 q 407 360 407 244 l 407 360 l 407 646 q 464 691 407 671 q 594 711 520 711 l 594 711 q 674 688 657 711 l 674 688 q 686 657 686 670 l 686 657 l 686 279"},"V":{"ha":727,"x_min":10,"x_max":717,"o":"m 10 639 l 10 639 q 36 668 10 651 q 110 697 62 684 q 213 710 157 710 q 295 694 269 710 q 323 659 321 678 l 323 659 l 358 295 l 372 295 l 403 650 q 471 694 406 678 q 592 710 536 710 q 675 701 648 710 q 710 681 702 691 q 717 663 717 671 q 703 616 717 654 q 672 533 688 577 l 672 533 q 493 31 619 393 l 493 31 q 321 0 482 0 l 321 0 q 255 7 271 0 q 233 31 239 14 l 233 31 q 92 417 174 201 q 10 639 10 633"},"W":{"ha":1016,"x_min":10,"x_max":1006,"o":"m 315 0 l 315 0 q 252 7 267 0 q 231 31 237 14 l 231 31 l 10 641 q 82 685 10 660 q 226 710 153 710 l 226 710 q 326 651 320 710 l 326 651 l 360 334 l 374 334 l 402 651 q 537 710 407 710 l 537 710 q 604 697 587 710 q 623 661 621 683 l 623 661 l 656 334 l 670 334 l 696 651 q 765 695 699 680 q 895 710 830 710 q 983 691 959 710 q 1006 651 1006 672 l 1006 651 l 792 31 q 644 0 781 0 l 644 0 q 589 7 603 0 q 570 31 575 14 l 570 31 l 518 205 l 506 205 l 453 31 q 315 0 444 0"},"X":{"ha":721,"x_min":10,"x_max":711,"o":"m 209 0 l 209 0 q 73 13 136 0 q 10 49 10 25 l 10 49 q 52 141 10 63 q 177 360 93 218 l 177 360 q 27 656 27 642 l 27 656 q 91 694 27 678 q 207 710 154 710 q 293 694 259 710 q 329 662 326 678 l 329 662 l 368 485 l 373 485 l 401 660 q 425 679 402 667 q 487 701 448 691 q 576 710 525 710 q 660 698 626 710 q 694 653 694 686 l 694 653 q 658 554 694 636 q 549 326 622 472 l 549 326 q 711 49 711 63 l 711 49 q 592 0 711 0 l 592 0 q 402 48 415 0 l 402 48 l 363 187 l 357 187 l 325 48 q 209 0 314 0"},"Y":{"ha":698,"x_min":10,"x_max":688,"o":"m 487 29 q 426 8 487 16 q 305 0 365 0 q 226 7 244 0 q 208 29 208 13 l 208 29 l 208 203 q 10 643 10 608 l 10 643 q 77 687 10 664 q 218 710 144 710 l 218 710 q 319 654 313 710 l 319 654 l 346 385 l 357 385 l 376 647 q 447 693 378 675 q 578 710 516 710 q 664 692 640 710 q 688 654 688 674 l 688 654 q 487 203 688 635 l 487 203 l 487 29"},"Z":{"ha":627,"x_min":20,"x_max":607,"o":"m 582 507 l 582 507 q 529 424 582 489 q 370 248 476 359 l 370 248 l 581 248 q 600 219 592 248 q 607 136 607 189 q 595 41 607 82 q 561 0 582 0 l 561 0 l 74 0 q 33 58 45 0 q 20 184 20 116 l 20 184 q 76 266 20 199 q 245 453 132 333 l 245 453 l 51 453 q 24 540 24 453 l 24 540 q 37 656 24 601 q 70 710 50 710 l 70 710 l 531 710 q 582 507 582 710"}},"familyName":"Titan One","ascender":970,"descender":-175,"underlinePosition":-100,"underlineThickness":50,"resolution":1000,"boundingBox":{"yMin":-175,"xMin":-70,"yMax":970,"xMax":1384},"original_font_information":{"copyright":"Titan One, SIL Open Font License 1.1"},"cssFontWeight":"normal","cssFontStyle":"normal"});
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -708,12 +832,15 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, REDUCED ? ms * 0.35 : ms)
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
 /* ---------------- storage + sound ---------------- */
+// Presenter mode (see present-patch.py): ?present in the address, or switched on with Shift+P for this tab.
+let PRESENT = (() => { let s = null; try { s = sessionStorage.getItem('jelly.present'); } catch {} const q = new URLSearchParams(location.search).get('present'); return q !== null ? (q === 'tall' ? 'tall' : 'wide') : s; })();
 const KEY = 'jellyweb.v1';
 const store = (() => {
+  if (PRESENT) return { muted: true };
   try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; }
 })();
 store.done ??= {}; store.steps ??= {};
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch {} };
+const save = () => { if (PRESENT) return; try { localStorage.setItem(KEY, JSON.stringify(store)); } catch {} };
 
 const sound = {
   ctx: null, muted: !!store.muted,
@@ -754,19 +881,38 @@ function inside(polys, x, y) {
   }
   return hit;
 }
+// The jelly-baby outline from the "you earned" card (bean() below), as a shape the jelly physics can extrude.
+const BEAN = '●';
+function beanShape(size) {
+  const k = size / 62, X = (x) => (x - 30) * k, Y = (y) => (66 - y) * k, s = new THREE.Shape();
+  s.moveTo(X(30), Y(4));
+  s.bezierCurveTo(X(48), Y(4), X(56), Y(18), X(54), Y(36));
+  s.bezierCurveTo(X(52), Y(56), X(42), Y(66), X(29), Y(66));
+  s.bezierCurveTo(X(16), Y(66), X(5), Y(56), X(6), Y(38));
+  s.bezierCurveTo(X(7), Y(18), X(12), Y(4), X(30), Y(4));
+  return s;
+}
 const letterCache = new Map();
 function makeLetter(ch, size) {
   const key = ch + size;
   if (letterCache.has(key)) { const c = letterCache.get(key); return { ...c, geo: c.geo.clone() }; }
-  const shapes = FONT.generateShapes(ch, size);
-  let geo = new THREE.ExtrudeGeometry(shapes, { depth: size * .3, curveSegments: 7, bevelEnabled: true, bevelThickness: size * .09, bevelSize: size * .05, bevelSegments: 4 });
+  const shapes = ch === BEAN ? [beanShape(size)] : FONT.generateShapes(ch, size);
+  let geo = new THREE.ExtrudeGeometry(shapes, ch === BEAN ? { depth: size * .08, curveSegments: 10, bevelEnabled: true, bevelThickness: size * .1, bevelSize: size * .08, bevelSegments: 6 } : { depth: size * .3, curveSegments: 7, bevelEnabled: true, bevelThickness: size * .09, bevelSize: size * .05, bevelSegments: 4 });
   geo.deleteAttribute('uv'); geo.deleteAttribute('normal');
   geo = mergeVertices(geo, size * 1e-4);
   geo.computeVertexNormals(); geo.computeBoundingBox();
   const bb = geo.boundingBox, sx = -(bb.min.x + bb.max.x) / 2, sy = -bb.min.y, sz = -(bb.min.z + bb.max.z) / 2;
   geo.translate(sx, sy, sz); geo.computeBoundingBox();
+  let eyeZ = null;
+  if (ch === BEAN) {
+    const bb2 = geo.boundingBox, a = (bb2.max.x - bb2.min.x) / 2, b = bb2.max.y / 2, z0 = bb2.max.z, P = geo.attributes.position;
+    const puff = (x, y) => 1 + 1.1 * Math.max(0, 1 - (x / a) ** 2 - ((y - b) / b) ** 2);
+    for (let i = 0; i < P.count; i++) P.setZ(i, P.getZ(i) * puff(P.getX(i), P.getY(i)));
+    geo.computeVertexNormals(); geo.computeBoundingBox();
+    eyeZ = (x, y) => z0 * puff(x, y);
+  }
   const polys = shapes.flatMap((s) => { const e = s.extractPoints(7); return [e.shape, ...e.holes].map((p) => p.map((v) => ({ x: v.x + sx, y: v.y + sy }))); });
-  const out = { geo, polys, box: geo.boundingBox.clone(), centerShift: -sx };
+  const out = { geo, polys, box: geo.boundingBox.clone(), centerShift: -sx, eyeZ };
   letterCache.set(key, out);
   return { ...out, geo: geo.clone() };
 }
@@ -777,7 +923,7 @@ class JellyBody {
   constructor(stage, ch, color, cx, size) {
     const L = makeLetter(ch, size), geo = L.geo, box = L.box, polys = L.polys;
     this.stage = stage; this.size = size; this.cx = cx; this.homeX = cx; this.width = box.max.x - box.min.x; this.height = box.max.y;
-    const dx = box.max.x - box.min.x, dy = box.max.y - box.min.y, dz = box.max.z - box.min.z, cell = size / 6.5;
+    const dx = box.max.x - box.min.x, dy = box.max.y - box.min.y, dz = box.max.z - box.min.z, cell = size / (stage.opts.cells ?? 6.5);
     const nx = Math.max(1, Math.round(dx / cell)), ny = Math.max(1, Math.round(dy / cell)), nz = Math.max(2, Math.round(dz / cell));
     const sx = dx / nx, sy = dy / ny, sz = dz / nz, ox = box.min.x, oy = box.min.y, oz = box.min.z;
     const col = (v, o, s, n) => clamp(Math.floor((v - o) / s), 0, n - 1);
@@ -786,7 +932,7 @@ class JellyBody {
     for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) for (const [a, b] of [[.25, .25], [.75, .25], [.25, .75], [.75, .75], [.5, .5]]) {
       if (inside(polys, ox + (i + a) * sx, oy + (j + b) * sy)) occ[i + j * nx] = 1;
     }
-    const index = new Map(), rest = [];
+    const index = new Map(), rest = [], cellNodes = [];
     const node = (i, j, k) => {
       const key = i + (nx + 1) * (j + (ny + 1) * k);
       let id = index.get(key);
@@ -796,7 +942,7 @@ class JellyBody {
     const corners = (i, j, k) => [0, 1, 2, 3, 4, 5, 6, 7].map((b) => node(i + (b & 1), j + (b >> 1 & 1), k + (b >> 2 & 1)));
     const tets = [];
     for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) if (occ[i + j * nx]) for (let k = 0; k < nz; k++) {
-      const c = corners(i, j, k);
+      const c = corners(i, j, k); cellNodes.push(c);
       for (const [A, B] of PERMS) tets.push([c[0], c[1 << A], c[(1 << A) | (1 << B)], c[7]]);
     }
     const nearest = (i, j) => {
@@ -825,7 +971,7 @@ class JellyBody {
     this.mass = new Float64Array(N); this.inv = new Float64Array(N); this.nodalVolume = new Float64Array(N);
     this.normal = new Float64Array(N); this.incoming = new Float64Array(N); this.nodalF = new Float64Array(N * 9);
     this.F = new Float64Array(9); this.dg = new Float64Array(12); this.hg = new Float64Array(12); this.co = new Float64Array(9);
-    this.elements = []; this.edges = [];
+    this.elements = []; this.edges = []; this.cellNodes = cellNodes; // for collisions: each cell's centre is the average of its 8 corners
     const seen = new Set(), p = this.rest;
     for (const t of tets) {
       let ids = t, o = ids.map((v) => v * 3);
@@ -844,6 +990,8 @@ class JellyBody {
     // Tall, thin letters (like i and l) tip over easily. A heavier bottom keeps them standing, like a weighted toy.
     const slim = dx / box.max.y;
     if (slim < .7) for (let i = 0; i < N; i++) if (rest[i * 3 + 1] < oy + dy * .3) this.mass[i] *= 1 + 25 * (.7 - slim);
+    // Letters with a tail (g, j, p, q, y) stand on its rounded tip, so they roll over too. Same cure: a heavy bottom.
+    else if ('gjpqy'.includes(ch)) for (let i = 0; i < N; i++) if (rest[i * 3 + 1] < oy + dy * .3) this.mass[i] *= 6;
     for (let i = 0; i < N; i++) this.inv[i] = 1 / this.mass[i];
     this.totalMass = this.mass.reduce((a, b) => a + b, 0);
 
@@ -863,7 +1011,7 @@ class JellyBody {
     }));
     this.mesh.castShadow = true; this.mesh.frustumCulled = false; this.mesh.userData.body = this;
 
-    this.eyes = this.makeEyes(polys, box, bind);
+    this.eyeZ = L.eyeZ; this.eyes = this.makeEyes(polys, box, bind);
     this.grab = null; this.sleeping = false; this.quiet = 0; this.spawnAt = 0; this.visible = true;
   }
 
@@ -882,7 +1030,7 @@ class JellyBody {
     return pts.map(([x, y]) => {
       const ball = new THREE.Mesh(new THREE.SphereGeometry(r, 20, 14), white), pupil = new THREE.Mesh(new THREE.SphereGeometry(r * .5, 16, 10), black);
       ball.scale.set(1, 1, .5); ball.castShadow = true;
-      return { b: bind(x, y, z), r, ball, pupil, q: new THREE.Vector2(0, -.3), qv: new THREE.Vector2(), pos: new THREE.Vector3(), vel: new THREE.Vector3(), n: new THREE.Vector3(0, 0, 1), first: true };
+      return { b: bind(x, y, this.eyeZ ? this.eyeZ(x, y) : z), r, ball, pupil, q: new THREE.Vector2(0, -.3), qv: new THREE.Vector2(), pos: new THREE.Vector3(), vel: new THREE.Vector3(), n: new THREE.Vector3(0, 0, 1), first: true };
     });
   }
 
@@ -896,6 +1044,39 @@ class JellyBody {
     for (const e of this.eyes) e.first = true;
   }
   wake() { this.sleeping = false; this.quiet = 0; }
+  // The collision points inside a box: cage corners (ids 0…N-1), then cell centres (ids N…). Each has a weighted
+  // inverse mass W, so a push on it can be shared out to its corners. The arrays are made once per jelly and reused,
+  // so colliding makes no garbage for old computers to clean up.
+  points(lo, hi) {
+    const x = this.x, v = this.v, C = this.cellNodes, N = this.N, inv = this.inv, n = N + C.length;
+    const s = this.pts ??= { id: new Int32Array(n), x: new Float64Array(n), y: new Float64Array(n), z: new Float64Array(n), vx: new Float64Array(n), vy: new Float64Array(n), vz: new Float64Array(n), W: new Float64Array(n), m: 0 };
+    this.cellW ??= Float64Array.from(C, (c) => c.reduce((a, i) => a + inv[i], 0) / 64);
+    let m = 0;
+    const keep = (id, px, py, pz, vx, vy, vz, W) => {
+      if (px < lo[0] || px > hi[0] || py < lo[1] || py > hi[1] || pz < lo[2] || pz > hi[2]) return;
+      s.id[m] = id; s.x[m] = px; s.y[m] = py; s.z[m] = pz; s.vx[m] = vx; s.vy[m] = vy; s.vz[m] = vz; s.W[m] = W; m++;
+    };
+    for (let i = 0; i < N; i++) { const j = i * 3; keep(i, x[j], x[j + 1], x[j + 2], v[j], v[j + 1], v[j + 2], inv[i]); }
+    // a cell whose first corner is more than a cell away from the box can't have its centre inside it: skip the averaging
+    const e = this.cellSize ??= Math.max(...[0, 1, 2].map((k) => Math.abs(this.rest[this.cellNodes[0]?.[7] * 3 + k] - this.rest[this.cellNodes[0]?.[0] * 3 + k]) || 0)) * 1.5;
+    for (let k = 0; k < C.length; k++) {
+      const c = C[k], j0 = c[0] * 3;
+      if (x[j0] < lo[0] - e || x[j0] > hi[0] + e || x[j0 + 1] < lo[1] - e || x[j0 + 1] > hi[1] + e || x[j0 + 2] < lo[2] - e || x[j0 + 2] > hi[2] + e) continue;
+      let px = 0, py = 0, pz = 0, vx = 0, vy = 0, vz = 0;
+      for (let q = 0; q < 8; q++) { const j = c[q] * 3; px += x[j]; py += x[j + 1]; pz += x[j + 2]; vx += v[j]; vy += v[j + 1]; vz += v[j + 2]; }
+      keep(N + k, px / 8, py / 8, pz / 8, vx / 8, vy / 8, vz / 8, this.cellW[k]);
+    }
+    s.m = m;
+    return s;
+  }
+  shift(s, k, dx, dy, dz) {
+    const x = this.x, id = s.id[k];
+    const move = (i, w) => { const j = i * 3; x[j] += dx * w; x[j + 1] = Math.max(0, x[j + 1] + dy * w); x[j + 2] += dz * w; };
+    if (id < this.N) move(id, this.inv[id]);
+    else { const c = this.cellNodes[id - this.N]; for (let q = 0; q < 8; q++) move(c[q], this.inv[c[q]] / 8); }
+    // the point itself moved, so the next pair sees where it is now
+    s.x[k] += dx * s.W[k]; s.y[k] += dy * s.W[k]; s.z[k] += dz * s.W[k];
+  }
   updateBox() {
     const x = this.x, lo = this.lo ??= [0, 0, 0], hi = this.hi ??= [0, 0, 0];
     lo.fill(Infinity); hi.fill(-Infinity);
@@ -1013,7 +1194,8 @@ class JellyBody {
     for (let i = 0; i < this.N; i++) {
       const j = i * 3;
       if (x[j + 1] < 0) { this.normal[i] -= x[j + 1]; x[j + 1] = 0; }
-      x[j] = clamp(x[j], B.x0, B.x1); x[j + 2] = clamp(x[j + 2], B.z0, B.z1);
+      if (B.r) { const rr = Math.hypot(x[j], x[j + 2]); if (rr > B.r) { x[j] *= B.r / rr; x[j + 2] *= B.r / rr; } }
+      else { x[j] = clamp(x[j], B.x0, B.x1); x[j + 2] = clamp(x[j + 2], B.z0, B.z1); }
     }
   }
   step(h) { if (this.solve(h)) this.finish(h); }
@@ -1066,7 +1248,7 @@ class JellyBody {
     let energy = 0; for (let i = 0; i < this.N; i++) energy += .5 * this.mass[i] * (v[i * 3] ** 2 + v[i * 3 + 1] ** 2 + v[i * 3 + 2] ** 2);
     const rms = Math.sqrt(2 * energy / this.totalMass);
     this.grounded = grounded; this.rms = Math.sqrt(2 * energy / this.totalMass);
-    this.quiet = !this.grab && grounded && rms < .005 ? this.quiet + h : 0;
+    this.quiet = !this.grab && (grounded || this.stage.opts.restAnywhere) && rms < .005 ? this.quiet + h : 0;
     if (this.quiet > .45) { this.sleeping = true; v.fill(0); }
     this.dirty = true; this.updateBox();
     if (!Number.isFinite(x[0])) this.place(.05, 0);
@@ -1228,31 +1410,29 @@ class JellyStage {
     const end = (e) => {
       const d = this.drag; if (!d) return; this.drag = null; d.b.grab = null; d.b.wake();
       const tap = Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6 && performance.now() - d.t < 350;
-      if (tap) { d.b.hop(1.1); sound.boing(380, .4); } else sound.boing(260, .45, .14);
+      if (tap) { d.b.hop(1.1); sound.boing(380, .4); this.onTap?.(d.b); } else sound.boing(260, .45, .14);
     };
     cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
   }
-  // Letters bump into each other: cage nodes of different letters keep a minimum gap.
-  // Only pairs whose bounding boxes touch are checked, so letters standing apart cost nothing.
+  // Jellies bump into each other: collision points of different jellies keep a minimum gap (see collide-patch.py).
+  // Only pairs whose bounding boxes touch are checked, so jellies standing apart cost nothing.
   collide() {
-    const live = this.bodies.filter((b) => this.t >= b.spawnAt && b.lo), d = this.opts.size / 6.5 * .7, d2 = d * d, cap = d * .3;
+    const live = this.bodies.filter((b) => this.t >= b.spawnAt && b.lo), d = this.opts.size / (this.opts.cells ?? 6.5) * .62, d2 = d * d, cap = d * .3;
     for (let a = 0; a < live.length; a++) for (let c = a + 1; c < live.length; c++) {
       const P = live[a], Q = live[c];
       if (P.sleeping && Q.sleeping) continue;
       const lo = [0, 1, 2].map((k) => Math.max(P.lo[k], Q.lo[k]) - d), hi = [0, 1, 2].map((k) => Math.min(P.hi[k], Q.hi[k]) + d);
       if (lo.some((v, k) => v > hi[k])) continue;
-      const near = (b) => { const out = []; for (let i = 0; i < b.N; i++) { const j = i * 3; if (b.x[j] >= lo[0] && b.x[j] <= hi[0] && b.x[j + 1] >= lo[1] && b.x[j + 1] <= hi[1] && b.x[j + 2] >= lo[2] && b.x[j + 2] <= hi[2]) out.push(i); } return out; };
-      const ps = near(P), qs = near(Q);
+      const ps = P.points(lo, hi), qs = Q.points(lo, hi);
       let hit = false;
-      for (const i of ps) for (const j of qs) {
-        const pi = i * 3, qj = j * 3, dx = Q.x[qj] - P.x[pi], dy = Q.x[qj + 1] - P.x[pi + 1], dz = Q.x[qj + 2] - P.x[pi + 2], r2 = dx * dx + dy * dy + dz * dz;
+      for (let a2 = 0; a2 < ps.m; a2++) for (let b2 = 0; b2 < qs.m; b2++) {
+        const dx = qs.x[b2] - ps.x[a2], dy = qs.y[b2] - ps.y[a2], dz = qs.z[b2] - ps.z[a2], r2 = dx * dx + dy * dy + dz * dz;
         if (r2 >= d2 || r2 < 1e-14) continue;
         const r = Math.sqrt(r2), depth = d - r; if (depth < 1e-4) continue;
-        const wi = P.inv[i], wj = Q.inv[j], push = Math.min(depth, cap) / (wi + wj), nx = dx / r, ny = dy / r, nz = dz / r;
-        const si = push * wi, sj = push * wj;
-        P.x[pi] -= nx * si; P.x[pi + 1] -= ny * si; P.x[pi + 2] -= nz * si; Q.x[qj] += nx * sj; Q.x[qj + 1] += ny * sj; Q.x[qj + 2] += nz * sj;
-        if (P.x[pi + 1] < 0) P.x[pi + 1] = 0; if (Q.x[qj + 1] < 0) Q.x[qj + 1] = 0;
-        if (depth > d * .15) hit = true; // a real bump, not two letters resting cheek to cheek
+        const nx = dx / r, ny = dy / r, nz = dz / r, push = Math.min(depth, cap) / (ps.W[a2] + qs.W[b2]);
+        P.shift(ps, a2, -nx * push, -ny * push, -nz * push); Q.shift(qs, b2, nx * push, ny * push, nz * push);
+        // a real bump: moving into each other, not two jellies resting cheek to cheek
+        if ((qs.vx[b2] - ps.vx[a2]) * nx + (qs.vy[b2] - ps.vy[a2]) * ny + (qs.vz[b2] - ps.vz[a2]) * nz < -.12) hit = true;
         P.dirty = Q.dirty = true;
       }
       if (hit) {
@@ -1364,16 +1544,146 @@ class JellyStage {
   }
 }
 
+/* ---------------- the jelly jar ---------------- */
+// Every jelly's look. The pattern is painted on the jelly's resting shape, so it squishes along with the jelly.
+const LOOKS = ['classic', 'zebra', 'spotty', 'stripy', 'swirly', 'sprinkle', 'checked', 'two-tone', 'glitter', 'rainbow', 'galaxy', 'golden'];
+const PATTERN_GLSL = `
+float jh(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+vec3 jhue(float h) { return clamp(abs(mod(h * 6. + vec3(0., 4., 2.), 6.) - 3.) - 1., 0., 1.); }
+vec3 jellyPattern(vec3 base) {
+  vec2 q = vR.xy; float on = 0.; vec3 c2 = vec3(1.);
+  if (uPat == 1) { on = step(.58, fract(q.x * 5. + sin(q.y * 9.) * .35 + vR.z * 2.)); c2 = vec3(.09, .05, .14); }
+  else if (uPat == 2) { vec2 g = floor(q * 6.), f = fract(q * 6.) - .5, o = (vec2(jh(g), jh(g + 3.1)) - .5) * .35; on = 1. - step(.2, length(f - o)); }
+  else if (uPat == 3) { on = step(.5, fract((q.x + q.y) * 5.)); }
+  else if (uPat == 4) { vec2 c = q - vec2(0., .5); on = step(.5, fract(atan(c.y, c.x) / 6.2832 * 2. + length(c) * 7.)); }
+  else if (uPat == 5) { vec2 g = floor(q * 16.), f = fract(q * 16.) - .5; on = step(.55, jh(g)) * (1. - step(.22, length(f))); c2 = jhue(jh(g + 5.)); }
+  else if (uPat == 6) { on = mod(floor(q.x * 7.) + floor(q.y * 7.), 2.); }
+  else if (uPat == 7) { on = step(.5, q.y); c2 = uC2; }
+  else if (uPat == 8) { vec3 g = floor(vR * 45.); on = step(.86, jh(g.xy + g.z * 7.1)); }
+  else if (uPat == 9) { return jhue(q.y * .9 + q.x * .3) * .85 + .15; }
+  else if (uPat == 10) { vec2 c = q - vec2(0., .5); float sw = .5 + .5 * sin(atan(c.y, c.x) * 2. + length(c) * 14.); vec3 g = floor(vR * 40.);
+    return mix(mix(vec3(.07, .05, .22), base, sw * .55), vec3(1.), step(.9, jh(g.xy + g.z * 3.3))); }
+  else if (uPat == 11) { vec3 g = floor(vR * 45.); on = step(.9, jh(g.xy + g.z * 7.1)); }
+  return mix(base, c2, on);
+}`;
+function paintJelly(b, look, color2) {
+  const pat = LOOKS.indexOf(look), m = b.mesh.material, P = b.geo.attributes.position.array;
+  b.geo.setAttribute('aR', new THREE.BufferAttribute(Float32Array.from(P, (v) => v / b.size), 3));
+  if (look === 'golden') { m.color.set('#ffc61a'); m.attenuationColor.set('#ffb000'); m.metalness = .45; }
+  m.transmission = pat > 0 ? .15 : .35; m.thickness = b.size * .2; m.sheen = .12; // brighter than the letters, so they pop against the jar
+  m.onBeforeCompile = (sh) => {
+    sh.uniforms.uPat = { value: pat }; sh.uniforms.uC2 = { value: new THREE.Color(color2) };
+    sh.vertexShader = 'attribute vec3 aR;\nvarying vec3 vR;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vR = aR;');
+    sh.fragmentShader = 'varying vec3 vR;\nuniform int uPat;\nuniform vec3 uC2;\n' + PATTERN_GLSL + '\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n  diffuseColor.rgb = jellyPattern(diffuseColor.rgb);');
+  };
+  m.customProgramCacheKey = () => 'jelly-pattern';
+}
+// A square glass sweet jar. Jellies are dropped in one by one and tumble onto each other.
+class JarStage extends JellyStage {
+  // A round sweet jar in the jelly style: see-through glass with a rainbow sheen, a puffy lid that has popped off,
+  // and a coaster, floating on soft rainbow swirls. The jar is rigid; only the jellies wobble.
+  setWord() {
+    const s = this.opts.size, R = this.R = s * 1.9, Rn = this.Rn = s * 1.45, H = this.H = s * 4.6, t = s * .12;
+    this.bounds = { r: R, x0: -R, x1: R, z0: -R, z1: R }; this.wordWidth = R * 2;
+    // Neutral tone mapping keeps the jellies' colours bright; the filmic one used for the letters washes bright colours out.
+    this.renderer.toneMapping = THREE.NeutralToneMapping; this.renderer.toneMappingExposure = 1;
+    // the background: a big sphere painted with slowly morphing pastel swirls (the jellies refract it, too)
+    this.scene.fog = null;
+    this.bg = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, uniforms: { uT: { value: 0 } },
+      vertexShader: 'varying vec3 vP; void main() { vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
+      fragmentShader: `varying vec3 vP; uniform float uT;
+        vec3 hue(float h) { return clamp(abs(mod(h * 6. + vec3(0., 4., 2.), 6.) - 3.) - 1., 0., 1.); }
+        void main() {
+          float u = atan(vP.x, -vP.z), v = vP.y;
+          float w = sin(u * 2.3 + sin(v * 3.1 + uT * .21) * 1.7 + uT * .09) + sin(v * 4.2 - u * 1.3 + sin(u * 1.7 - uT * .17) * 1.2);
+          vec3 c = mix(vec3(1., .97, .93), hue(fract(w * .16 + v * .25 + uT * .015)), .13 + .04 * sin(w * 2.));
+          gl_FragColor = vec4(c, 1.);
+        }` });
+    const sky = new THREE.Mesh(new THREE.SphereGeometry(4, 48, 32), this.bg); sky.renderOrder = -1; this.scene.add(sky);
+    // the grid floor becomes an invisible one that only catches soft shadows
+    const floor = this.scene.children.find((o) => o.isMesh && o.geometry.type === 'PlaneGeometry');
+    floor.material = new THREE.ShadowMaterial({ opacity: .14 }); floor.position.y = -s * .2;
+    const jelly = (color, transmission, extra = {}) => new THREE.MeshPhysicalMaterial({ color, transmission, thickness: s * .3, roughness: .15, ior: 1.36, clearcoat: 1, clearcoatRoughness: .06, sheen: .15, sheenColor: new THREE.Color('#ffffff'), attenuationColor: new THREE.Color(color), attenuationDistance: s * .8, ...extra });
+    // glass: a lathe profile with a rounded base, straight sides, a shoulder and a neck
+    const prof = [];
+    const arc = (cx, cy, r, a0, a1, n = 8) => { for (let k = 0; k <= n; k++) { const a = a0 + (a1 - a0) * k / n; prof.push(new THREE.Vector2(cx + r * Math.cos(a), cy + r * Math.sin(a))); } };
+    prof.push(new THREE.Vector2(0, -t));
+    arc(R + t - s * .5, s * .5 - t, s * .5, -Math.PI / 2, 0);
+    prof.push(new THREE.Vector2(R + t, H * .74));
+    for (let k = 1; k <= 10; k++) { const q = k / 10, e = q * q * (3 - 2 * q); prof.push(new THREE.Vector2(R + t - (R - Rn) * e, H * .74 + H * .18 * q)); }
+    prof.push(new THREE.Vector2(Rn + t, H));
+    const glass = new THREE.Mesh(new THREE.LatheGeometry(prof, 64), new THREE.MeshPhysicalMaterial({ color: '#e6f7ff', transparent: true, opacity: .1, roughness: .06, clearcoat: 1, clearcoatRoughness: .04, iridescence: .7, iridescenceIOR: 1.3, specularIntensity: 1, side: THREE.DoubleSide, depthWrite: false }));
+    glass.renderOrder = 2; this.scene.add(glass);
+    // a chunky white lip round the neck
+    const lip = new THREE.Mesh(new THREE.TorusGeometry(Rn + t, s * .13, 16, 64), jelly('#ffffff', .2)); lip.rotation.x = Math.PI / 2; lip.position.y = H; this.scene.add(lip);
+    // the lid has popped off and bobs above the jar, tilted, so jellies can drop in
+    const puck = (r, h, round) => { const pts = [new THREE.Vector2(0, 0)]; for (let k = 0; k <= 12; k++) { const a = -Math.PI / 2 + Math.PI * k / 12; pts.push(new THREE.Vector2(r - round + round * Math.cos(a), h / 2 + h / 2 * Math.sin(a))); } pts.push(new THREE.Vector2(0, h)); return new THREE.LatheGeometry(pts, 48); };
+    const lid = this.lid = new THREE.Group();
+    const cap = this.cap = new THREE.Mesh(puck(Rn + s * .3, s * .55, s * .26), jelly('#ff4d6d', .35)); cap.castShadow = true;
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(s * .32, 24, 16), jelly('#ffc61a', .3)); knob.scale.y = .75; knob.position.y = s * .62; knob.castShadow = true;
+    lid.add(cap, knob); lid.position.set(R * .85, H + s * .75, -s * .3); lid.rotation.set(.2, 0, -.6); this.scene.add(lid);
+    // a lemon coaster to stand on
+    const coaster = new THREE.Mesh(puck(R + s * .7, s * .2, s * .1), jelly('#ffc61a', .25)); coaster.position.y = -s * .2 - t; coaster.receiveShadow = true; this.scene.add(coaster);
+    const sc = this.sun.shadow.camera; sc.left = -R * 2.5; sc.right = R * 2.5; sc.top = H * 1.6; sc.bottom = -R * 2.5; sc.near = .01; sc.far = 4; sc.updateProjectionMatrix();
+    this.sun.position.set(R * .8, H * 3, H * 1.6); this.sun.target.position.set(0, H * .3, 0);
+    this.resize();
+  }
+  resize() {
+    const w = this.canvas.clientWidth, h = this.canvas.clientHeight; if (!w || !h || !this.H) return;
+    this.renderer.setSize(w, h, false);
+    const cam = this.camera, a = w / h, t = Math.tan(cam.fov * Math.PI / 360), dist = Math.max(this.H * .9 / t, this.R * 2.1 / (t * a));
+    cam.aspect = a; cam.position.set(0, this.H * .95, dist); cam.lookAt(0, this.H * .58, 0); cam.updateProjectionMatrix();
+  }
+  tick(dt) {
+    if (!REDUCED) { this.bg.uniforms.uT.value += dt; this.lid.position.y = this.H + this.opts.size * (.75 + .1 * Math.sin(this.bg.uniforms.uT.value * 1.6)); }
+    super.tick(dt);
+  }
+  // No tidying up and no standing up: jellies in a jar just lie where they land.
+  simulate(dt) {
+    this.t += dt; this.acc += Math.min(dt, 1 / 20);
+    let n = 0;
+    while (this.acc >= PHYS.step && n < 7) { const moving = this.bodies.filter((b) => this.t >= b.spawnAt && b.solve(PHYS.step)); this.collide(); for (const b of moving) b.finish(PHYS.step); this.acc -= PHYS.step; n++; }
+    if (n === 7) this.acc = 0;
+    // Settling: a few seconds after the last drop, fling or shake, jellies that are nearly still are put to sleep,
+    // so a full jar is quiet and costs nothing. Anything that really bumps them wakes them again.
+    this.calm = this.drag || this.bodies.some((b) => this.t < b.spawnAt + 1.5) ? 0 : (this.calm || 0) + dt;
+    if (this.calm > 2.5) for (const b of this.bodies) if (!b.sleeping && !b.grab && (b.rms < .08 || this.calm > 6)) { b.sleeping = true; b.v.fill(0); }
+  }
+  fill(items) {
+    for (const b of this.bodies) { this.scene.remove(b.mesh); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); b.mesh.material.dispose(); }
+    this.bodies = [];
+    items.forEach((it, i) => {
+      const b = new JellyBody(this, BEAN, it.colour, 0, this.opts.size);
+      paintJelly(b, it.look, JELLY[(JELLY.indexOf(it.colour) + 3) % JELLY.length] ?? '#ffffff');
+      b.item = it; this.bodies.push(b); this.scene.add(b.mesh); b.eyes.forEach((e) => this.scene.add(e.ball, e.pupil));
+      this.toss(b, i * (REDUCED ? .02 : .09));
+    });
+  }
+  // Drop a jelly in from above the rim, at a random spot, turned a random way.
+  toss(b, delay = 0) {
+    const s = this.opts.size, ang = Math.random() * Math.PI * 2, rad = Math.sqrt(Math.random()) * this.Rn * .55, x0 = Math.cos(ang) * rad, z0 = Math.sin(ang) * rad, turn = Math.random() * Math.PI * 2, c = Math.cos(turn), sn = Math.sin(turn);
+    b.cx = x0; b.place(this.H + s * (.4 + Math.random() * 1.2), (Math.random() - .5) * 2.4);
+    for (let i = 0; i < b.N; i++) { const j = i * 3, x = b.x[j] - x0, z = b.x[j + 2]; b.x[j] = x0 + x * c - z * sn; b.x[j + 2] = z0 + x * sn + z * c; }
+    b.prev.set(b.x); b.v.fill(0); b.sleeping = false; b.quiet = 0; b.dirty = true; b.updateBox();
+    b.spawnAt = this.t + delay; b.visibleNow(false);
+  }
+  shake() {
+    this.calm = 0;
+    for (const b of this.bodies) { b.wake(); for (let i = 0; i < b.N; i++) { b.v[i * 3] += (Math.random() - .5) * .6; b.v[i * 3 + 1] += .5 + Math.random() * .6; b.v[i * 3 + 2] += (Math.random() - .5) * .3; } }
+    sound.boing(240, .5, .14);
+  }
+}
+
 let lastT = performance.now();
 const towns = [];
 function frame(t) {
   const dt = Math.min(.05, (t - lastT) / 1000); lastT = t;
-  for (const s of stages) if (s.active && !document.hidden) s.tick(dt);
+  for (const s of stages) if (s.active && !document.hidden && (s === jar || $('#jarBox').hidden)) s.tick(dt);
   for (const s of towns) if (s.active && !document.hidden) s.tick(dt);
   requestAnimationFrame(frame);
 }
 
-/* ---------------- section 1: the whole game ---------------- */
+/* ---------------- section 1: the overview ---------------- */
 const toonGrad = (() => { const t = new THREE.DataTexture(new Uint8Array([70, 160, 255]), 3, 1, THREE.RedFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; })();
 const OUTLINE = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
 function part(geo, color, { p = [0, 0, 0], s = [1, 1, 1], r = [0, 0, 0], line = 1.06 } = {}) {
@@ -1397,206 +1707,512 @@ function labelSprite(text, { bg = '#ffffff', fg = INK, h = .5 } = {}) {
   return sp;
 }
 
-class Town {
-  constructor(canvas) {
-    this.canvas = canvas; this.active = true; this.t = 0; this.step = 0; this.drag = null;
-    this.view = { yaw: 0, pitch: 0, zoom: 1 }; this.easeHome = false; // the viewer's own orbit, layered on each step's camera shot
-    const r = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.outputColorSpace = THREE.SRGBColorSpace;
-    const s = this.scene = new THREE.Scene(); s.background = new THREE.Color('#fff6cf'); s.fog = new THREE.Fog('#fff6cf', 22, 46);
-    s.add(new THREE.HemisphereLight('#ffffff', '#ffd98a', 1.6));
-    const sun = new THREE.DirectionalLight('#ffffff', 2.2); sun.position.set(4, 10, 8); s.add(sun);
-    this.camera = new THREE.PerspectiveCamera(38, 16 / 9, .1, 100);
-    this.camOff = new THREE.Vector3(1, 2.6, 21); this.camLook = new THREE.Vector3(2, .4, 0);
-    this.build();
-    this.bindPointer();
-    new ResizeObserver(() => this.resize()).observe(canvas);
-    new IntersectionObserver(([en]) => { this.active = en.isIntersecting; }).observe(canvas);
-    this.resize();
-    towns.push(this);
+// The Overview kit. Every guide's Overview is a little 3D world drawn in one style: buildings cut open like a doll's
+// house in cartoon toon with even ink outlines, characters and travellers in rigid jelly that squashes when poked,
+// signs painted on walls, and things you can follow (jelly words, a lift, a letter) instead of tubes and packets.
+// A guide supplies TOWN_STEPS (who, text, the camera shot it starts on, and where it ends) and a world:
+//   const Town = overview((k) => ({ SHOTS, PLAY, reset, tick }));
+// `k` holds the building blocks below. PLAY[i] is an async script for step i, made of k's tweens.
+// Needs from the page: THREE, FONT, INK, REDUCED, clamp, mergeVertices, mergeGeometries, RoundedBoxGeometry, RoomEnvironment,
+// and `towns`, whose members the page's frame loop ticks while they're on screen.
+function overview(world) {
+  return class { constructor(canvas) { return makeOverview(canvas, world); } };
+}
+
+function makeOverview(canvas, world) {
+  const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
+  const ease = (k) => k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2;
+  let rush = false;
+  const sfx = (f) => { if (!rush && typeof sound !== 'undefined') f(sound); };
+
+  /* materials: buildings are cartoon (flat bands of light, ink outlines); everything alive, and every traveller, is jelly */
+  const toonGrad = (() => { const t = new THREE.DataTexture(new Uint8Array([95, 180, 255]), 3, 1, THREE.RedFormat); t.minFilter = t.magFilter = THREE.NearestFilter; t.needsUpdate = true; return t; })();
+  const OUTLINE = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
+  const cache = new Map(), memo = (key, f) => cache.get(key) ?? cache.set(key, f()).get(key);
+  const toon = (c) => memo('t' + c, () => new THREE.MeshToonMaterial({ color: c, gradientMap: toonGrad }));
+  const jelly = (c) => memo('j' + c, () => new THREE.MeshPhysicalMaterial({
+    color: c, transmission: .45, thickness: .7, roughness: .16, ior: 1.38, attenuationColor: new THREE.Color(c), attenuationDistance: .35,
+    clearcoat: 1, clearcoatRoughness: .07, sheen: .35, sheenRoughness: .4, sheenColor: new THREE.Color('#ffffff'), specularIntensity: .9,
+  }));
+  // An ink outline of the same thickness on every part, whatever its size.
+  function solid(geo, color, { p = [0, 0, 0], s = [1, 1, 1], r = [0, 0, 0], line = .035 } = {}) {
+    const m = new THREE.Mesh(geo, toon(color)); m.position.set(...p); m.scale.set(...s); m.rotation.set(...r);
+    if (line) {
+      geo.computeBoundingBox(); const d = geo.boundingBox.getSize(V()), c = geo.boundingBox.getCenter(V());
+      const o = new THREE.Mesh(geo, OUTLINE), f = (dim, sc) => dim * sc > 1e-4 ? 1 + 2 * line / (dim * sc) : 1;
+      o.scale.set(f(d.x, s[0]), f(d.y, s[1]), f(d.z, s[2])); o.position.copy(c).multiply(V(1, 1, 1).sub(o.scale)); m.add(o);
+    }
+    return m;
   }
-  island(y, color, label, x = 0) {
-    const g = new THREE.Group(); g.position.set(x, y, 0);
-    g.add(part(new THREE.CylinderGeometry(2.3, 2.3, .36, 44), color));
-    g.add(part(new THREE.CylinderGeometry(2.15, .5, 1.7, 9), '#c58a55', { p: [0, -1.02, 0] }));
-    const l = labelSprite(label, { h: .42 }); l.position.set(-2.1, .45, 1.6); g.add(l);
-    this.scene.add(g); return g;
+  function gel(geo, color, { p = [0, 0, 0], s = [1, 1, 1], r = [0, 0, 0] } = {}) {
+    const m = new THREE.Mesh(geo, jelly(color)); m.position.set(...p); m.scale.set(...s); m.rotation.set(...r); return m;
   }
-  // Five stops: your computer at the bottom, the router, the internet (under the sea), the server at the top,
-  // and the DNS phonebook off to the side, where the router goes to look up numbers.
-  build() {
-    const Y = this.Y = { desk: -4.8, router: -1.2, sea: 2.4, server: 6, dns: -1.2 }; // one height per island, in order
-    this.islands = [this.island(Y.desk, '#ffc61a', 'YOUR COMPUTER'), this.island(Y.router, '#62c934', 'YOUR ROUTER (WI-FI)'), this.seaIsland(Y.sea), this.island(Y.server, '#9b8cff', 'THE SERVER'), this.island(Y.router, '#ff8a2b', 'DNS PHONEBOOK', 7.2)];
-    const [desk, router, , server, dns] = this.islands;
-    // your computer: a desk, a monitor showing a browser, and you
-    desk.add(part(new THREE.BoxGeometry(2.2, .14, 1.1), '#a86b3c', { p: [.3, .95, -.1] }));
-    [[-.65, -.5], [1.25, -.5], [-.65, .3], [1.25, .3]].forEach(([x, z]) => desk.add(part(new THREE.CylinderGeometry(.05, .05, .75, 8), '#7b4a26', { p: [x, .55, z] })));
-    desk.add(part(new THREE.BoxGeometry(1.5, 1.05, .5), '#e3d6bc', { p: [.3, 1.62, -.35] }));
-    this.screenCanvas = document.createElement('canvas'); this.screenCanvas.width = 320; this.screenCanvas.height = 210;
-    this.screenTex = new THREE.CanvasTexture(this.screenCanvas); this.screenTex.colorSpace = THREE.SRGBColorSpace;
-    const scr = new THREE.Mesh(new THREE.PlaneGeometry(1.24, .8), new THREE.MeshBasicMaterial({ map: this.screenTex }));
-    scr.position.set(.3, 1.64, -.09); desk.add(scr);
-    desk.add(part(new THREE.BoxGeometry(.9, .07, .32), '#ffffff', { p: [.3, 1.05, .25] }));
-    const kid = new THREE.Group(); kid.position.set(-.9, .2, .75); kid.rotation.y = 2.3;
-    kid.add(part(new THREE.CapsuleGeometry(.28, .45, 6, 14), '#ff4d6d', { p: [0, .75, 0] }));
-    kid.add(part(new THREE.SphereGeometry(.34, 20, 14), '#ffcf9e', { p: [0, 1.42, 0] }));
-    kid.add(part(new THREE.SphereGeometry(.36, 20, 14, 0, Math.PI * 2, 0, Math.PI / 2), '#5a2d0c', { p: [0, 1.48, -.02] }));
-    [-.12, .12].forEach((x) => kid.add(part(new THREE.SphereGeometry(.05, 10, 8), INK, { p: [x, 1.45, .3], line: 0 })));
-    desk.add(kid); this.kid = kid;
-    // the router: your home's post office, with antennas and blinking lights
-    router.add(part(new THREE.BoxGeometry(1.6, .45, .9), '#2b2d42', { p: [0, .62, 0] }));
-    [-.55, .55].forEach((x, i) => router.add(part(new THREE.CylinderGeometry(.05, .05, 1, 8), '#2b2d42', { p: [x, 1.25, -.3], r: [0, 0, i ? -.18 : .18] })));
-    this.leds = [-.5, -.25, 0, .25, .5].map((x) => { const m = part(new THREE.SphereGeometry(.06, 10, 8), '#4dff8b', { p: [x, .62, .46], line: 0 }); router.add(m); return m; });
-    // the DNS phonebook: a wise owl with a very big book
-    const owl = this.owl = new THREE.Group(); owl.position.set(-.5, .2, .2);
-    owl.add(part(new THREE.SphereGeometry(.55, 22, 16), '#a8743f', { p: [0, .75, 0], s: [1, 1.15, .9] }));
-    owl.add(part(new THREE.SphereGeometry(.36, 20, 14), '#f1d7a8', { p: [0, .62, .3], s: [1, 1.1, .6], line: 0 }));
-    [-1, 1].forEach((sd) => {
-      owl.add(part(new THREE.SphereGeometry(.17, 16, 12), '#ffffff', { p: [sd * .2, 1.12, .4] }));
-      owl.add(part(new THREE.SphereGeometry(.08, 10, 8), INK, { p: [sd * .2, 1.12, .55], line: 0 }));
-      owl.add(part(new THREE.ConeGeometry(.1, .3, 8), '#8a5a2e', { p: [sd * .32, 1.52, 0], r: [0, 0, sd * -.35] }));
+  const rbox = (w, h, d, rad = .08) => new RoundedBoxGeometry(w, h, d, 2, Math.min(rad, w / 2.01, h / 2.01, d / 2.01));
+  const EYE_W = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .25 }), EYE_B = new THREE.MeshStandardMaterial({ color: '#15091f', roughness: .2 });
+  const eyes = [];
+  function eye(parent, pos, r) {
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(r, 20, 14), EYE_W), pupil = new THREE.Mesh(new THREE.SphereGeometry(r * .52, 16, 10), EYE_B);
+    ball.position.set(...pos); pupil.position.z = r * .62; ball.add(pupil); parent.add(ball);
+    eyes.push({ ball, pupil, r, blink: 2 + Math.random() * 4 }); return ball;
+  }
+  function smile(parent, pos, w = .1) {
+    const m = new THREE.Mesh(new THREE.TorusGeometry(w, w * .22, 6, 14, Math.PI), new THREE.MeshBasicMaterial({ color: INK }));
+    m.position.set(...pos); m.rotation.z = Math.PI; parent.add(m); return m;
+  }
+  // Squash and stretch: a poke makes a character wobble like jelly, then settle. Origins sit at their feet.
+  const wobblers = [];
+  function wobbly(obj) { obj.userData.wob = { x: 0, v: 0, base: obj.scale.clone(), ph: Math.random() * 6 }; wobblers.push(obj); return obj; }
+  const poke = (obj, a = .25) => { obj.userData.wob.v += a * 9; sfx((s) => s.boing(380 + a * 600, .25, .07)); };
+  const shadowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, '#24133b66'); gr.addColorStop(1, '#24133b00'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
+  const BLOB = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false });
+  function blob(parent, w, d, p = [0, .01, 0]) {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), BLOB);
+    m.rotation.x = -Math.PI / 2; m.position.set(...p); parent.add(m); return m;
+  }
+  // Signs sit in the scene, so floors and walls hide them; speech bubbles (top) always show.
+  function label(text, { bg = '#ffffff', fg = INK, h = .5, top = false, font = '"Titan One", sans-serif' } = {}) {
+    const c = document.createElement('canvas'), g = c.getContext('2d'), fs = 64;
+    g.font = `${fs}px ${font}`;
+    const w = Math.ceil(g.measureText(text).width) + 56; c.width = w; c.height = 110;
+    g.font = `${fs}px ${font}`; g.fillStyle = bg; g.strokeStyle = INK; g.lineWidth = 8;
+    g.beginPath(); g.roundRect(6, 6, w - 12, 98, 30); g.fill(); g.stroke();
+    g.fillStyle = fg; g.textBaseline = 'middle'; g.fillText(text, 28, 60);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: !top })); sp.renderOrder = top ? 5 : 0;
+    sp.scale.set(h * w / 110, h, 1); return sp;
+  }
+  function textPlane(text, w, h, { bg = '#ffe2b8', fg = INK, font = '700 40px "JetBrains Mono", monospace' } = {}) {
+    const c = document.createElement('canvas'); c.width = 256; c.height = Math.round(256 * h / w); const g = c.getContext('2d');
+    g.fillStyle = bg; g.fillRect(0, 0, c.width, c.height); g.fillStyle = fg; g.font = font; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, c.width / 2, c.height / 2 + 2);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    return new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t }));
+  }
+  // Jelly letters: the same font and shape as the guide's jelly letters, but rigid.
+  function letterGeo(ch, size) {
+    return memo('L' + ch + size, () => {
+      let geo = new THREE.ExtrudeGeometry(FONT.generateShapes(ch, size), { depth: size * .3, curveSegments: 7, bevelEnabled: true, bevelThickness: size * .09, bevelSize: size * .05, bevelSegments: 4 });
+      geo.deleteAttribute('uv'); geo.deleteAttribute('normal'); geo = mergeVertices(geo, size * 1e-4); geo.computeVertexNormals(); geo.computeBoundingBox();
+      const bb = geo.boundingBox; geo.translate(-(bb.min.x + bb.max.x) / 2, -bb.min.y, -(bb.min.z + bb.max.z) / 2); geo.computeBoundingBox();
+      return geo;
     });
-    owl.add(part(new THREE.ConeGeometry(.07, .2, 8), '#ffb000', { p: [0, .98, .5], r: [Math.PI / 2 + .3, 0, 0] }));
-    dns.add(owl);
-    const book = this.book = new THREE.Group(); book.position.set(.85, .32, .2); book.rotation.y = -.5;
-    [-1, 1].forEach((sd) => book.add(part(new THREE.BoxGeometry(.7, .06, .9), '#ffffff', { p: [sd * .36, 0, 0], r: [0, 0, sd * .12] })));
-    book.add(part(new THREE.BoxGeometry(1.5, .04, .95), '#e0233f', { p: [0, -.06, 0] }));
-    this.bookPage = part(new THREE.BoxGeometry(.66, .02, .86), '#fff7e0', { p: [.34, .08, 0], line: 0 }); book.add(this.bookPage);
-    const bl = labelSprite('jelly.fun = 203.0.113.42', { h: .2 }); bl.position.set(0, .45, .2); book.add(bl);
-    dns.add(book);
-    // the internet: cables under the sea, with a curious shark
-    const pts = [[-2.1, -.02, .4], [-1.2, -.04, .9], [0, -.05, .6], [1.2, -.04, .9], [2.1, -.02, .4]].map((p) => new THREE.Vector3(...p));
-    this.islands[2].add(part(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .09, 10), '#2b2d42', { line: 1.04 }));
-    const fin = this.fin = part(new THREE.ConeGeometry(.22, .5, 4), '#8e9ab5', { s: [1, 1, .35] });
-    this.islands[2].add(fin);
-    // the server: racks of computers in a building that never sleeps
-    this.racks = [-.8, 0, .8].map((x) => {
-      server.add(part(new THREE.BoxGeometry(.62, 1.7, .7), '#3a4055', { p: [x, 1.05, -.1] }));
-      return [0, 1, 2, 3, 4].map((k) => { const m = part(new THREE.BoxGeometry(.4, .06, .04), '#4dff8b', { p: [x, .45 + k * .3, .27], line: 0 }); server.add(m); return m; });
-    }).flat();
-    this.servePaper = part(new THREE.BoxGeometry(.34, .44, .03), '#ffffff', { p: [1.5, 1, .5] });
-    const sl = labelSprite('index.html', { h: .2 }); sl.position.set(0, .4, .05); this.servePaper.add(sl); server.add(this.servePaper);
-    // the tube everything travels through, and a side tube to the phonebook
-    const glass = () => new THREE.MeshPhysicalMaterial({ color: '#bfe8ff', transparent: true, opacity: .35, roughness: .1, side: THREE.DoubleSide });
-    const tube = new THREE.Mesh(new THREE.CylinderGeometry(.2, .2, Y.server - Y.desk + .6, 20, 1, true), glass());
-    tube.position.set(2.9, (Y.server + Y.desk) / 2 + .2, 0); this.scene.add(tube);
-    const side = new THREE.Mesh(new THREE.CylinderGeometry(.16, .16, 2.3, 16, 1, true), glass());
-    side.rotation.z = Math.PI / 2; side.position.set(4.15, Y.router + .8, 0); this.scene.add(side);
-    this.packet = part(new THREE.CapsuleGeometry(.17, .22, 6, 14), '#62c934', { r: [0, 0, Math.PI / 2] });
-    this.packetLabel = labelSprite('gerbil.zone', { bg: '#24133b', fg: '#4dff8b', h: .36 });
-    this.scene.add(this.packet, this.packetLabel);
-    this.packet.visible = this.packetLabel.visible = false;
-    this.setState(0, true);
   }
-  seaIsland(y) {
-    const g = new THREE.Group(); g.position.set(0, y, 0);
-    // see-through water, so the cable on the sea floor shows
-    const water = part(new THREE.CylinderGeometry(2.3, 2.3, .5, 44), '#3a8cff', { p: [0, .07, 0], line: 0 });
-    Object.assign(water.material, { transparent: true, opacity: .55, depthWrite: false }); water.renderOrder = 2; g.add(water);
-    g.add(part(new THREE.TorusGeometry(2.3, .035, 8, 64), INK, { p: [0, .32, 0], r: [Math.PI / 2, 0, 0], line: 0 }));
-    g.add(part(new THREE.CylinderGeometry(2.3, 2.3, .06, 44), '#e8c98f', { p: [0, -.17, 0] }));
-    g.add(part(new THREE.CylinderGeometry(2.15, .5, 1.7, 9), '#c58a55', { p: [0, -1.02, 0] }));
-    const l = labelSprite('THE INTERNET (UNDER THE SEA!)', { h: .42 }); l.position.set(-2.1, .45, 1.6); g.add(l);
-    this.scene.add(g); return g;
+  // A word standing on y = 0, centred on x = 0. Big words get eyes, like the letters on the welcome screen.
+  function jellyWord(text, size, color, withEyes = false) {
+    const g = new THREE.Group(), gap = size * .1, sp = size * .35; let x = 0;
+    const ls = [...text].map((ch) => {
+      if (ch === ' ') { x += sp; return null; }
+      const geo = letterGeo(ch, size), b = geo.boundingBox, w = b.max.x - b.min.x, m = new THREE.Mesh(geo, jelly(color));
+      m.position.x = x + w / 2; x += w + gap; g.add(m);
+      if (withEyes) { const r = size * .085, y = b.max.y * .74, z = b.max.z + r * .2; (w < size * .45 ? [0] : [-w * .2, w * .2]).forEach((ex) => eye(m, [ex, y, z], r)); }
+      return m;
+    }).filter(Boolean);
+    ls.forEach((m) => { m.position.x -= (x - gap) / 2; });
+    return g;
   }
-  // The monitor shows a little browser: an address bar, then either a blank page or Gerald's page.
-  drawScreen(st) {
-    const g = this.screenCanvas.getContext('2d');
+
+  /* the 3D stage */
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75)); renderer.outputColorSpace = THREE.SRGBColorSpace;
+  const scene = new THREE.Scene(); scene.background = new THREE.Color('#bfe6ff');
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), .04).texture; scene.environmentIntensity = .7;
+  scene.add(new THREE.HemisphereLight('#ffffff', '#ffd98a', 1.5));
+  const sun = new THREE.DirectionalLight('#ffffff', 2.1); sun.position.set(5, 14, 10); scene.add(sun);
+  const camera = new THREE.PerspectiveCamera(36, 16 / 9, .1, 260);
+  const add = (...o) => { scene.add(...o); return o[0]; };
+  // Things that move are marked live; everything else is merged into one mesh per material once the world is built.
+  const live = (o) => { o.userData.live = true; if (!o.parent) scene.add(o); return o; };
+
+  /* scenery every world uses */
+  const T = .3; // wall thickness
+  // One floor of a building cut open at the front: floor, back wall, side walls (with a doorway on one side), a sign.
+  function room({ cx = 0, y, w, h, d, floor, wall, sign, door = 'right', doorD = 1.8 }) {
+    add(solid(rbox(w + 2 * T, .3, d + .2, .1), floor, { p: [cx, y - .15, .1] }));
+    add(solid(rbox(w, h, T, .06), wall, { p: [cx, y + h / 2, -d / 2 - T / 2] }));
+    for (const side of [-1, 1]) {
+      const x = cx + side * (w / 2 + T / 2);
+      if ((side > 0 ? 'right' : 'left') !== door) { add(solid(rbox(T, h, d, .08), wall, { p: [x, y + h / 2, 0] })); continue; }
+      const back = d - doorD;
+      add(solid(rbox(T, h, back, .08), wall, { p: [x, y + h / 2, -d / 2 + back / 2] }));
+      add(solid(rbox(T, h - 2.3, doorD, .08), wall, { p: [x, y + 2.3 + (h - 2.3) / 2, d / 2 - doorD / 2] }));
+    }
+    if (sign) { const s = label(sign, { h: .46 }); s.position.set(cx - w / 2 + .35 + s.scale.x / 2, y + h - .45, -d / 2 + .25); add(s); }
+  }
+  // A lift shaft from y0 to y1, open at the front, with a car that carries travellers. x is the shaft's centre.
+  const lifts = [];
+  function lift({ x, y0, y1, d, w = 1.9, side = 1, at = y0, pit = true }) {
+    if (pit) add(solid(rbox(w + T * 2, .3, d + .2, .1), '#b49cff', { p: [x, y0 - .15, .1] }));
+    add(solid(rbox(w, y1 - y0, T, .06), '#e6dcff', { p: [x, (y0 + y1) / 2, -d / 2 - T / 2] }));
+    add(solid(rbox(T, y1 - y0, d, .08), '#c7b4ff', { p: [x + side * (w / 2 + T / 2), (y0 + y1) / 2, 0] }));
+    [-.7, .7].forEach((dx) => add(solid(new THREE.CylinderGeometry(.05, .05, y1 - y0, 8), '#9b5cff', { p: [x + dx, (y0 + y1) / 2, -d / 2 + .1] })));
+    const pulley = live(solid(new THREE.CylinderGeometry(.32, .32, .16, 24), '#ffc61a', { p: [x, y1 - .45, 0], r: [Math.PI / 2, 0, 0] }));
+    const rope = live(new THREE.Mesh(new THREE.CylinderGeometry(.025, .025, 1, 6), toon('#56467a')));
+    const cab = live(new THREE.Group());
+    cab.add(solid(rbox(1.6, .14, 1.7, .06), '#ffc61a', { p: [0, .07, 0] }));
+    cab.add(solid(rbox(1.6, 1.75, .1, .04), '#ffe27a', { p: [0, .9, -.8] }));
+    cab.add(solid(rbox(1.7, .16, 1.8, .07), '#ff4d6d', { p: [0, 1.8, 0] }));
+    [[-.77, -.8], [.77, -.8], [-.77, .8], [.77, .8]].forEach(([px, pz]) => cab.add(solid(new THREE.CylinderGeometry(.05, .05, 1.7, 8), '#ff4d6d', { p: [px, .9, pz] })));
+    cab.position.set(x, at, .25);
+    const L = {
+      cab, home: at,
+      slot: (i) => cab.position.clone().add([V(0, .14, 0), V(0, .14, .35), V(0, .62, -.2), V(0, 1.1, -.5)][i]),
+      off: (i) => [V(0, .14, 0), V(0, .14, .35), V(0, .62, -.2), V(0, 1.1, -.5)][i],
+      async in(o, i) { await hop(o, L.slot(i)); ride(o, L.off(i)); },
+      to(y) { const a = cab.position.y; sfx((s) => s.blip()); return tween(.5 + Math.abs(y - a) / 3.3 * .45, (e) => { cab.position.y = a + (y - a) * e; }); },
+      tick() { rope.position.set(x, (pulley.position.y + cab.position.y + 1.88) / 2, 0); rope.scale.y = Math.max(.01, pulley.position.y - cab.position.y - 1.88); pulley.rotation.y = cab.position.y * 1.5; },
+    };
+    lifts.push(L); return L;
+  }
+  // You: a jelly baby on a stool at a desk, with a screen the world draws on (a terminal, a browser).
+  function you({ x, y, color = '#9b5cff' }) {
+    add(solid(new THREE.CylinderGeometry(2, 2, .04, 40), '#eadcff', { p: [x - .4, y + .02, .6], s: [1.3, 1, .8], line: .02 }));
+    const desk = new THREE.Group(); desk.position.set(x + 1.2, y, -.6); desk.rotation.y = -.5; add(desk);
+    desk.add(solid(rbox(2.6, .16, 1.3, .06), '#c58a55', { p: [0, 1.0, 0] }));
+    [[-1.15, -.5], [1.15, -.5], [-1.15, .5], [1.15, .5]].forEach(([px, pz]) => desk.add(solid(new THREE.CylinderGeometry(.06, .06, .95, 8), '#8a5a33', { p: [px, .5, pz] })));
+    desk.add(solid(rbox(1.7, 1.3, 1, .18), '#efe3c8', { p: [0, 1.75, -.15] }));
+    desk.add(solid(rbox(.5, .14, .5, .05), '#efe3c8', { p: [0, 1.12, -.15] }));
+    const c = document.createElement('canvas'); c.width = 400; c.height = 290;
+    const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.36, .98), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
+    screen.position.set(0, 1.78, .36); desk.add(screen);
+    desk.add(solid(rbox(1.2, .08, .4, .04), '#ffffff', { p: [0, 1.12, .38] }));
+    blob(desk, 3.2, 1.8);
+    const kid = live(wobbly(new THREE.Group())); kid.position.set(x - 1.25, y, .35); kid.rotation.y = .75;
+    add(solid(new THREE.CylinderGeometry(.42, .36, .62, 20), '#3a5bff', { p: [x - 1.25, y + .31, .35] }));
+    blob(scene, 1.4, 1.4, [x - 1.25, y + .02, .35]);
+    kid.add(gel(new THREE.CapsuleGeometry(.36, .42, 8, 18), color, { p: [0, 1.05, 0] }));
+    kid.add(gel(new THREE.SphereGeometry(.4, 28, 20), color, { p: [0, 1.78, 0] }));
+    const arms = [-1, 1].map((sd) => { const a = new THREE.Group(); a.position.set(sd * .38, 1.32, .05); a.add(gel(new THREE.CapsuleGeometry(.1, .34, 6, 10), color, { p: [0, -.12, .16], r: [1.1, 0, 0] })); kid.add(a); return a; });
+    [-1, 1].forEach((sd) => kid.add(gel(new THREE.CapsuleGeometry(.12, .32, 6, 10), color, { p: [sd * .17, .64, .32], r: [1.35, 0, 0] })));
+    [-.15, .15].forEach((ex) => eye(kid, [ex, 1.86, .33], .095)); smile(kid, [0, 1.68, .38], .09);
+    const Y = { kid, screen, canvas: c, typing: false, refresh: () => { tex.needsUpdate = true; }, at: () => screen.getWorldPosition(V()).add(V(.15, -.25, .35)) };
+    yous.push({ Y, arms }); return Y;
+  }
+  const yous = [];
+  // Outside: grass, soil cut open at the front, pebbles, lollipop trees, clouds and a sun.
+  const grass = (x0, x1, y, d = 4.6) => add(solid(rbox(x1 - x0, .4, d, .15), '#62c934', { p: [(x0 + x1) / 2, y - .2, 0] }));
+  const soil = (x0, x1, y0, y1, d = 4) => add(solid(rbox(x1 - x0, y0 - y1, d, .1), '#a5683a', { p: [(x0 + x1) / 2, (y0 + y1) / 2, 0] }));
+  function pebbles(x0, x1, y0, y1, n = 26, z = 2.02) { for (let i = 0; i < n; i++) { const r = .08 + ((i * 37) % 7) * .025; add(solid(new THREE.SphereGeometry(r, 8, 6), i % 3 ? '#c9a27e' : '#8d6c55', { p: [x0 + ((i * 53) % 29) / 29 * (x1 - x0), y0 - ((i * 31) % 70) / 70 * (y0 - y1), z], s: [1.3, .8, .4], line: 0 })); } }
+  function tree(x, y, s = 1, z = -.6) { add(solid(new THREE.CylinderGeometry(.14 * s, .18 * s, 1.6 * s, 10), '#8a5a33', { p: [x, y + .8 * s, z] })); add(solid(new THREE.SphereGeometry(1 * s, 20, 14), '#3fae4f', { p: [x, y + 2.1 * s, z] })); }
+  const cloud = (x, y, z, s = 1) => [[0, 0, .9], [.9, -.15, .7], [-.85, -.2, .65]].forEach(([dx, dy, r]) => add(solid(new THREE.SphereGeometry(r * s, 18, 12), '#ffffff', { p: [x + dx * s, y + dy * s, z], s: [1, .8, .8], line: .03 })));
+  const sunBall = (x, y, z) => add(solid(new THREE.SphereGeometry(1.1, 24, 16), '#ffd84d', { p: [x, y, z] }));
+  // A gabled roof from x0 to x1, with a round window.
+  function roof({ x0, x1, y, d, color = '#ff6f8a', h = 3, chimney = true }) {
+    const sh = new THREE.Shape(); sh.moveTo(x0, 0); sh.lineTo(x1, 0); sh.lineTo((x0 + x1) / 2, h); sh.closePath();
+    add(solid(new THREE.ExtrudeGeometry(sh, { depth: d, bevelEnabled: true, bevelThickness: .18, bevelSize: .18, bevelSegments: 3 }), color, { p: [0, y, -d / 2] }));
+    add(solid(new THREE.CylinderGeometry(.62, .62, .12, 32), '#ffffff', { p: [(x0 + x1) / 2, y + h * .37, d / 2 + .24], r: [Math.PI / 2, 0, 0] }));
+    add(solid(new THREE.CylinderGeometry(.48, .48, .14, 32), '#bfe6ff', { p: [(x0 + x1) / 2, y + h * .37, d / 2 + .26], r: [Math.PI / 2, 0, 0], line: 0 }));
+    if (chimney) add(solid(rbox(.7, 1.4, .7, .1), '#c58a55', { p: [x0 + (x1 - x0) * .2, y + h * .58, -.4] }));
+  }
+
+  /* a tiny timeline: each step is a little script of tweens. A new step rushes the one still playing to its end;
+     going back replays every step from the start, rushed, so the world is always exactly where that step leaves it. */
+  const tweens = new Set();
+  const tween = (dur, fn, e = ease) => rush || REDUCED ? (fn(1), Promise.resolve()) : new Promise((res) => tweens.add({ t: 0, dur, fn, e, res }));
+  const wait = (s) => tween(s, () => {});
+  const riders = new Map(); // object → where it sits in its lift
+  const ride = (o, off, L = lifts[0]) => riders.set(o, [L, off]), unride = (o) => riders.delete(o);
+  function hop(o, to, dur = .55, up = .8) { unride(o); const from = o.position.clone(); return tween(dur, (e) => { o.position.lerpVectors(from, to, e); o.position.y += Math.sin(Math.PI * e) * up; }); }
+  function along(o, pts, dur) { unride(o); const c = new THREE.CatmullRomCurve3(pts); return tween(dur, (e) => o.position.copy(c.getPoint(e))); }
+  const pop = (o, to = 1, dur = .35) => { const from = o.scale.x; o.visible = true; return tween(dur, (e) => { o.scale.setScalar(from + (to - from) * e); if (e === 1 && to === 0) o.visible = false; }, (e) => 1 - (1 - e) ** 3); };
+  const bubbles = [];
+  function say(text, at) {
+    bubbles.splice(0).forEach((b) => b.removeFromParent());
+    if (!text) return;
+    const b = label(text, { h: .4, top: true }); b.position.copy(at); add(b); bubbles.push(b);
+  }
+
+  /* camera: each shot is a box to fit, whatever the frame's shape */
+  const view = { yaw: 0, pitch: 0, zoom: 1 }, cam = { c: V(), dist: 0, shot: null };
+  let gaze = null;
+  const k = {
+    V, ease, toon, jelly, solid, gel, rbox, eye, smile, wobbly, poke, blob, label, textPlane, jellyWord, sfx,
+    scene, add, live, camera, T, room, lift, you, grass, soil, pebbles, tree, cloud, sunBall, roof,
+    tween, wait, hop, along, pop, ride, unride, say,
+    shot: (s) => { cam.shot = s; }, look: (o) => { gaze = o; },
+    get rush() { return rush; },
+  };
+  const W = world(k);
+  const DIR = (W.DIR ?? V(.1, .11, 1)).clone().normalize();
+  // A tall frame is narrow, so room shots crop to the room itself.
+  const fitDist = (s) => { const t = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), w = camera.aspect < 1 && s.room ? s.w * .78 : s.w; return Math.max(s.h / 2 / t, w / 2 / (t * camera.aspect)) * 1.04 + (s.d ?? 2); };
+
+  // Old machines: draw everything that never moves as one mesh per material (hundreds of draw calls become a few dozen).
+  {
+    scene.updateMatrixWorld(true);
+    const groups = new Map(), done = [];
+    scene.traverse((o) => {
+      if (!o.isMesh || !(o.material.isMeshToonMaterial || o.material === OUTLINE || o.material === BLOB)) return;
+      for (let a = o; a; a = a.parent) if (a.userData.live) return;
+      const g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
+      for (const key of Object.keys(g.attributes)) if (!['position', 'normal', 'uv'].includes(key)) g.deleteAttribute(key);
+      if (!g.attributes.uv) g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(g.attributes.position.count * 2), 2));
+      g.applyMatrix4(o.matrixWorld);
+      (groups.get(o.material) ?? groups.set(o.material, []).get(o.material)).push(g); done.push(o);
+    });
+    done.forEach((o) => o.removeFromParent());
+    for (const [m, gs] of groups) { const mesh = new THREE.Mesh(mergeGeometries(gs), m); if (m === BLOB) mesh.renderOrder = 1; scene.add(mesh); }
+  }
+
+  /* pointer: grab to turn, scroll to zoom, double-click to straighten */
+  let easeHome = false, drag = null;
+  canvas.style.cursor = 'grab';
+  const endDrag = () => { drag = null; canvas.style.cursor = 'grab'; };
+  canvas.addEventListener('pointerdown', (e) => { if (e.button !== 0) return; canvas.setPointerCapture(e.pointerId); canvas.style.cursor = 'grabbing'; easeHome = false; drag = { x: e.clientX, y: e.clientY, yaw: view.yaw, pitch: view.pitch }; });
+  canvas.addEventListener('pointermove', (e) => { if (!drag) return; if (!e.buttons) return endDrag(); view.yaw = clamp(drag.yaw - (e.clientX - drag.x) * .006, -.8, .8); view.pitch = clamp(drag.pitch + (e.clientY - drag.y) * .005, -.35, .7); });
+  canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag); canvas.addEventListener('lostpointercapture', endDrag);
+  canvas.addEventListener('wheel', (e) => { e.preventDefault(); easeHome = false; view.zoom = clamp(view.zoom * Math.exp(e.deltaY * .0012), .5, 1.6); }, { passive: false });
+  canvas.addEventListener('dblclick', () => { easeHome = true; });
+  const resize = () => { const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); };
+
+  // Old machines: if two seconds of frames (after the first few, which compile shaders) average under 30 a second,
+  // the jelly stops being see-through, the costliest effect. It keeps its gloss and colour.
+  const speed = { n: 0, time: 0 };
+  const plainJelly = () => { for (const [key, m] of cache) if (key[0] === 'j') { m.transmission = 0; m.needsUpdate = true; } };
+
+  function reset() {
+    for (const tw of tweens) tw.res(); tweens.clear(); riders.clear();
+    lifts.forEach((L) => { L.cab.position.y = L.home; }); yous.forEach((y) => { y.Y.typing = false; });
+    say(null); gaze = null; W.reset();
+  }
+  let shown = 0, playing = null, queue = Promise.resolve(), t = 0;
+  const tmp = V(), look = V();
+  const api = {
+    active: true, step: 0, speed, plainJelly,
+    get busy() { return !!playing; },
+    resize,
+    resetView() { easeHome = true; },
+    // Show step i: the next step plays (the canvas says data-playing while it does); any other jump (back, or
+    // straight to a step) lands where that step ends.
+    go(i) {
+      api.step = i;
+      queue = queue.then(async () => {
+        if (playing) { rush = true; for (const tw of [...tweens]) { tw.fn(1); tw.res(); } tweens.clear(); await playing; rush = false; }
+        if (i === shown + 1) { shown = i; cam.shot = TOWN_STEPS[i].shot; canvas.dataset.playing = i; playing = W.PLAY[i]().finally(() => { playing = null; delete canvas.dataset.playing; }); return; }
+        reset(); rush = true; for (let n = 1; n <= i; n++) await W.PLAY[n](); rush = false;
+        shown = i; cam.shot = TOWN_STEPS[i].ends ?? TOWN_STEPS[i].shot;
+      });
+      return queue;
+    },
+    tick(dt) {
+      t += dt;
+      if (speed.n < 140 && ++speed.n > 20) { speed.time += dt; if (speed.n === 140 && speed.time / 120 > 1 / 30) plainJelly(); }
+      for (const tw of [...tweens]) { tw.t += dt; const e = Math.min(1, tw.t / tw.dur); tw.fn(tw.e(e)); if (e >= 1) { tweens.delete(tw); tw.res(); } }
+      for (const [o, [L, off]] of riders) o.position.copy(L.cab.position).add(off);
+      lifts.forEach((L) => L.tick());
+      for (const o of wobblers) {
+        const w = o.userData.wob; w.v += (-110 * w.x - 7 * w.v) * dt; w.x += w.v * dt;
+        const b = Math.sin(t * 2.2 + w.ph) * .018, sy = 1 + w.x + b, sxz = 1 - (w.x + b) * .5; o.scale.set(w.base.x * sxz, w.base.y * sy, w.base.z * sxz);
+      }
+      yous.forEach(({ Y, arms }) => arms.forEach((a, i) => { a.rotation.x = Y.typing ? Math.sin(t * 22 + i * 2) * .25 : Math.sin(t * 1.5 + i) * .05; }));
+      W.tick?.(dt, t);
+      // eyes follow whatever is travelling, or else look at you
+      look.copy(gaze?.visible ? gaze.getWorldPosition(tmp) : camera.position);
+      for (const e of eyes) {
+        const v = e.ball.worldToLocal(look.clone()).normalize(); v.z = Math.max(v.z, .55); v.normalize().multiplyScalar(e.r * .62); e.pupil.position.copy(v);
+        e.blink -= dt; e.ball.scale.y = e.blink < 0 ? .12 : 1; if (e.blink < -.12) e.blink = 2 + Math.random() * 4;
+      }
+      // the camera glides to the step's shot; your own turn and zoom sit on top
+      const s = W.SHOTS[cam.shot], g = 1 - Math.exp(-dt * 2.4);
+      cam.c.lerp(s.c, g); cam.dist += (fitDist(s) - cam.dist) * g;
+      if (easeHome && !drag) { const e = 1 - Math.exp(-dt * 4); view.yaw -= view.yaw * e; view.pitch -= view.pitch * e; view.zoom += (1 - view.zoom) * e; }
+      const sph = new THREE.Spherical().setFromVector3(DIR.clone().multiplyScalar(cam.dist * view.zoom));
+      sph.theta += view.yaw + (drag ? 0 : Math.sin(t * .35) * .03); sph.phi = clamp(sph.phi - view.pitch, .3, Math.PI / 2 + .25);
+      camera.position.copy(cam.c).add(V().setFromSpherical(sph)); camera.lookAt(cam.c);
+      renderer.render(scene, camera);
+    },
+  };
+  new ResizeObserver(resize).observe(canvas); resize();
+  new IntersectionObserver(([en]) => { api.active = en.isIntersecting; }).observe(canvas);
+  cam.shot = TOWN_STEPS[0].shot; cam.c.copy(W.SHOTS[cam.shot].c); reset(); cam.dist = fitDist(W.SHOTS[cam.shot]);
+  towns.push(api);
+  return api;
+}
+
+// Jelly Web's Overview: one page's trip across a little world. Your house (you at the browser upstairs, the router
+// downstairs), the DNS owl's treehouse next door, the internet cable along the bottom of a cut-open sea, and the
+// server's building on the far shore. The name, the number, GET / and 200 OK all travel as jelly letters.
+// Built with the Overview kit (engine/overview-kit.js).
+const TOWN_STEPS = [
+  { who: 'The overview', text: 'Loading one web page is a trip with five stops: your computer, your router, the DNS phonebook, the internet, and a server far away. Press Next to follow one page all the way there and back.', shot: 'whole' },
+  { who: 'Your computer', text: 'You type gerbil.zone into the browser and press Enter. The browser is a program that fetches pages and draws them. But it has a problem: it has no idea where gerbil.zone is.', shot: 'computer', ends: 'computer' },
+  { who: 'The DNS phonebook', text: 'Computers only understand numbers. So your computer asks the DNS phonebook: "What is the number for gerbil.zone?" The owl looks it up: 203.0.113.7. Now it knows where to send the letter.', shot: 'computer', ends: 'dns' },
+  { who: 'Your router and the internet', text: 'The browser writes a polite letter: GET /, which means "your home page, please". Your router sends it out across the internet, through cables that run along the bottom of the sea. A shark was once filmed biting one!', shot: 'dns', ends: 'sea' },
+  { who: 'The server', text: 'The letter arrives at the server: a computer in a giant building that never sleeps. It reads the letter, finds index.html in a folder (just like cat), and writes back.', shot: 'sea', ends: 'server' },
+  { who: 'All the way back', text: 'The reply rides back: 200 OK, plus the HTML. Under the sea, through your router, onto your screen. Your browser reads the HTML and builds the page, box by box. All in less than a second.', shot: 'server', ends: 'computer' },
+  { who: 'That\'s the overview', text: 'Type an address, look up the number, send a GET, the server replies, the browser builds. Every page you have ever seen made this trip. Now let\'s zoom in and watch the crew do it.', shot: 'whole', cta: true },
+];
+
+const Town = overview((k) => {
+  const { V, solid, gel, rbox, eye, smile, wobbly, blob, label, jellyWord, add, live, T } = k;
+  const H = 3.3, W = 8.4, D = 4, SW = 1.9;
+  const SX = W / 2 + T + SW / 2;
+  const LEVEL = { router: 0, computer: H };
+  k.room({ y: LEVEL.router, w: W, h: H, d: D, floor: '#62c934', wall: '#dcf7e5', sign: 'YOUR ROUTER (WI-FI)' });
+  k.room({ y: LEVEL.computer, w: W, h: H, d: D, floor: '#ffc61a', wall: '#fff3c4', sign: 'YOUR COMPUTER' });
+  add(solid(rbox(W + 2 * T + .2, .32, D + .4, .12), '#ff4d6d', { p: [0, 2 * H + .16, .1] }));
+  k.roof({ x0: -W / 2 - T - .7, x1: SX + SW / 2 + T + .7, y: 2 * H + .45, d: D });
+  const lift = k.lift({ x: SX, y0: 0, y1: 2 * H, d: D, at: LEVEL.computer });
+  // land, a cut-open sea, and the far shore
+  const SEA0 = 9, SEA1 = 23, BED = -4.2, FAR = 29.5;
+  k.grass(-18, SEA0, 0); k.soil(-18, SEA0, -.4, -6.4); k.grass(SEA1, 38, 0); k.soil(SEA1, 38, -.4, -6.4);
+  k.soil(SEA0, SEA1, BED - .1, -6.4); add(solid(rbox(SEA1 - SEA0, .2, D, .05), '#e8c98f', { p: [(SEA0 + SEA1) / 2, BED, 0], line: .02 }));
+  k.pebbles(-16, SEA0 - .5, -1, -5.6, 18); k.pebbles(SEA1 + .5, 37, -1, -5.6, 12);
+  const water = live(new THREE.Mesh(new THREE.BoxGeometry(SEA1 - SEA0, -.35 - BED, D), new THREE.MeshPhysicalMaterial({ color: '#3a8cff', transparent: true, opacity: .42, roughness: .2, clearcoat: .8, depthWrite: false })));
+  water.position.set((SEA0 + SEA1) / 2, (BED - .35) / 2, 0); water.renderOrder = 2;
+  const fin = live(solid(new THREE.ConeGeometry(.3, .7, 4), '#8e9ab5', { s: [1, 1, .35] }));
+  [[-6.5, .9], [-15.5, .8], [34.5, 1], [36.8, .8]].forEach(([x, s]) => k.tree(x, 0, s));
+  k.sunBall(18, 9.5, -8); k.cloud(4, 10.5, -7); k.cloud(27, 9, -7, .8);
+  // the internet: a cable from your router, along the sea floor, to the server
+  const CABLE = [V(1.4, .55, .1), V(2.6, .1, 1.5), V(4.6, -.55, 2.15), V(8.2, -.8, 2.15), V(9.6, BED + .25, 1.2), V(16, BED + .2, 1.2), V(22.4, BED + .25, 1.2), V(23.8, -.8, 2.15), V(27.2, -.55, 2.15), V(28.4, .1, 1.4), V(FAR - .6, .7, .2)];
+  add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(CABLE), 160, .1, 10), k.toon('#2b2d42')));
+
+  /* top floor: you, with a browser */
+  const me = k.you({ x: 0, y: LEVEL.computer });
+  let screenState = { url: '', page: false };
+  const drawScreen = () => {
+    const g = me.canvas.getContext('2d'), st = screenState; g.save(); g.scale(400 / 320, 290 / 210);
     g.fillStyle = '#ffffff'; g.fillRect(0, 0, 320, 210);
     g.fillStyle = '#eef0f6'; g.fillRect(0, 0, 320, 44); g.strokeStyle = INK; g.lineWidth = 4; g.strokeRect(2, 2, 316, 206);
     g.fillStyle = '#ffffff'; g.beginPath(); g.roundRect(12, 9, 296, 28, 14); g.fill(); g.stroke();
-    g.fillStyle = INK; g.font = '20px "JetBrains Mono", monospace'; g.fillText(st.url ?? '', 26, 30);
+    g.fillStyle = INK; g.font = '20px "JetBrains Mono", monospace'; g.fillText(st.url, 26, 30);
     if (st.page) {
       g.fillStyle = '#d4eeff'; g.fillRect(4, 46, 312, 160);
       g.fillStyle = '#3a5bff'; g.font = '26px "Titan One", sans-serif'; g.fillText('Gerald\'s Zone', 18, 84);
       g.fillStyle = '#e3b27a'; g.beginPath(); g.ellipse(74, 140, 46, 30, 0, 0, Math.PI * 2); g.fill(); g.stroke();
       g.fillStyle = INK; [[140, 120, 150], [140, 140, 130], [140, 160, 110]].forEach(([x, y, w]) => g.fillRect(x, y, w, 8));
     }
-    this.screenTex.needsUpdate = true;
-  }
-  // What is where at each step of the story. `landed` is true once the jelly bean has arrived.
-  setState(i, landed) {
-    this.servePaper.visible = i === 4 && landed;
-    this.drawScreen({ url: i === 0 ? '' : 'gerbil.zone', page: i >= 6 || (i === 5 && landed) });
-    if (i === 2 && landed) this.packetLabel.userData.set('203.0.113.7');
-  }
-  pt(name) {
-    const Y = this.Y, P = {
-      kbd: [.3, Y.desk + 1.2, .45], scr: [.3, Y.desk + 1.7, .2], deskT: [2.9, Y.desk + .8, 0], routerT: [2.9, Y.router + .8, 0], dnsT: [5.3, Y.router + .8, 0], dns: [6.4, Y.router + 1.5, .6],
-      seaT: [2.9, Y.sea + .6, 0], sea: [.4, Y.sea + .55, 1], serverT: [2.9, Y.server + .8, 0], server: [.8, Y.server + 1.7, .7],
-    };
-    return new THREE.Vector3(...P[name]);
-  }
-  fly(names, text, dur = 1.6) {
-    this.curve = new THREE.CatmullRomCurve3(names.map((n) => this.pt(n))); this.flyT = 0; this.flyDur = REDUCED ? .3 : dur;
-    this.packet.visible = this.packetLabel.visible = true; this.packetLabel.userData.set(text);
-  }
-  bindPointer() {
-    const cv = this.canvas;
-    const end = () => { this.drag = null; cv.style.cursor = 'grab'; };
-    cv.style.cursor = 'grab';
-    cv.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0) return;
-      cv.setPointerCapture(e.pointerId); cv.style.cursor = 'grabbing'; this.easeHome = false;
-      this.drag = { x: e.clientX, y: e.clientY, yaw: this.view.yaw, pitch: this.view.pitch };
-    });
-    // Grab-and-turn: drag right and the cake turns right; drag down to look over the top.
-    cv.addEventListener('pointermove', (e) => {
-      if (!this.drag) return;
-      if (!e.buttons) return end(); // the button came up outside the frame
-      this.view.yaw = this.drag.yaw - (e.clientX - this.drag.x) * .008;
-      this.view.pitch = clamp(this.drag.pitch + (e.clientY - this.drag.y) * .006, -.45, .9);
-    });
-    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end); cv.addEventListener('lostpointercapture', end);
-    cv.addEventListener('wheel', (e) => { e.preventDefault(); this.easeHome = false; this.view.zoom = clamp(this.view.zoom * Math.exp(e.deltaY * .0012), .45, 1.8); }, { passive: false });
-    cv.addEventListener('dblclick', () => this.resetView());
-  }
-  resetView() { this.easeHome = true; }
-  resize() {
-    const w = this.canvas.clientWidth, h = this.canvas.clientHeight; if (!w || !h) return;
-    this.renderer.setSize(w, h, false); this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
-  }
-  tick(dt) {
-    this.t += dt; const t = this.t;
-    this.islands.forEach((g, i) => { g.position.y = Object.values(this.Y)[i] + Math.sin(t * 1.3 + i) * .06; });
-    this.leds.forEach((m, k) => { m.visible = Math.sin(t * (this.step === 3 ? 22 : 6) + k * 1.7) > -.2; });
-    this.racks.forEach((m, k) => { m.material.color.set(Math.sin(t * (this.step === 4 ? 18 : 4) + k * 2.3) > 0 ? '#4dff8b' : '#1f6b3a'); });
-    this.owl.rotation.y = Math.sin(t * 1.2) * .3 + (this.step === 2 ? Math.sin(t * 9) * .15 : 0);
-    this.owl.position.y = .2 + (this.step === 2 ? Math.abs(Math.sin(t * 6)) * .15 : 0);
-    this.bookPage.rotation.z = this.step === 2 ? Math.sin(t * 5) * .5 - .25 : 0;
-    const a = t * .6; this.fin.position.set(Math.cos(a) * 1.55, .45, Math.sin(a) * 1.1); this.fin.rotation.y = -a;
-    this.kid.position.y = .2 + (this.step === 1 ? Math.abs(Math.sin(t * 12)) * .05 : 0);
-    if (this.curve) {
-      this.flyT = Math.min(1, this.flyT + dt / this.flyDur);
-      const e = this.flyT < .5 ? 2 * this.flyT ** 2 : 1 - (-2 * this.flyT + 2) ** 2 / 2, p = this.curve.getPoint(e);
-      this.packet.position.copy(p); this.packet.rotation.y = t * 4; this.packetLabel.position.copy(p).add(new THREE.Vector3(0, .5, 0));
-      if (this.flyT >= 1 && this.onLand) { const f = this.onLand; this.onLand = null; f(); }
-    }
-    const v = TOWN_STEPS[this.step], narrow = this.camera.aspect < 1.1 ? 1.65 : 1;
-    const look = new THREE.Vector3(...v.look), base = new THREE.Vector3(...v.cam).sub(look).multiplyScalar(narrow);
-    const k = 1 - Math.exp(-dt * 2.6), V = this.view;
-    this.camLook.lerp(look, k); this.camOff.lerp(base, k); // the step's shot glides in
-    if (this.easeHome && !this.drag) {
-      const e = 1 - Math.exp(-dt * 4);
-      V.yaw += (Math.round(V.yaw / (Math.PI * 2)) * Math.PI * 2 - V.yaw) * e; V.pitch -= V.pitch * e; V.zoom += (1 - V.zoom) * e;
-    }
-    // The viewer's orbit applies instantly on top, so dragging feels attached to the mouse.
-    const sph = new THREE.Spherical().setFromVector3(this.camOff);
-    sph.theta += V.yaw + (this.drag ? 0 : Math.sin(t * .4) * .05);
-    sph.phi = clamp(sph.phi - V.pitch, .12, Math.PI - .12); sph.radius *= V.zoom;
-    this.camera.position.copy(this.camLook).add(new THREE.Vector3().setFromSpherical(sph)); this.camera.lookAt(this.camLook);
-    this.renderer.render(this.scene, this.camera);
-  }
-}
-const TOWN_STEPS = [
-  { who: 'The whole game', text: 'Loading one web page is a trip with five stops: your computer, your router, the DNS phonebook, the internet, and a server far away. Press Next to follow one page all the way there and back.', cam: [3.5, 3, 23], look: [3, .6, 0] },
-  { who: 'Your computer', text: 'You type gerbil.zone into the browser and press Enter. The browser is a program that fetches pages and draws them. But it has a problem: it has no idea where gerbil.zone is.', cam: [3.8, -1.6, 9.2], look: [.6, -3.7, 0], fly: [['kbd', 'scr'], 'gerbil.zone'] },
-  { who: 'The DNS phonebook', text: 'Computers only understand numbers. So your computer asks the DNS phonebook: "What is the number for gerbil.zone?" The owl looks it up: 203.0.113.7. Now it knows where to send the letter.', cam: [6.5, 1.4, 9.5], look: [4.6, -.6, 0], fly: [['scr', 'deskT', 'routerT', 'dnsT', 'dns'], 'gerbil.zone = ?', 2.2] },
-  { who: 'Your router and the internet', text: 'The browser writes a polite letter: GET /, which means "your home page, please". Your router sends it out across the internet, through cables that run along the bottom of the sea. A shark was once filmed biting one!', cam: [3.6, 3.8, 9], look: [.8, 1.2, 0], fly: [['dns', 'dnsT', 'routerT', 'seaT', 'sea'], 'GET /', 2.2] },
-  { who: 'The server', text: 'The letter arrives at the server: a computer in a giant building that never sleeps. It reads the letter, finds index.html in a folder (just like cat), and writes back.', cam: [3.6, 8.6, 7], look: [.3, 7.1, 0], fly: [['sea', 'seaT', 'serverT', 'server'], 'GET /'] },
-  { who: 'All the way back', text: 'The reply rides back: 200 OK, plus the HTML. Under the sea, through your router, onto your screen. Your browser reads the HTML and builds the page, box by box. All in less than a second.', cam: [3.8, -1.6, 9.2], look: [.6, -3.7, 0], fly: [['server', 'serverT', 'seaT', 'routerT', 'deskT', 'scr'], '200 OK', 2.8] },
-  { who: 'That is the whole game', text: 'Type an address, look up the number, send a GET, the server replies, the browser builds. Every page you have ever seen made this trip. Now let\'s zoom in and watch the crew do it.', cam: [3.5, 3, 23], look: [3, .6, 0], cta: true },
-];
+    g.restore(); me.refresh();
+  };
+  const setScreen = (st) => { screenState = { ...screenState, ...st }; drawScreen(); };
+  document.fonts?.ready.then(drawScreen);
+
+  /* ground floor: the router, your home's post office */
+  const router = new THREE.Group(); router.position.set(1.2, LEVEL.router, -.6); add(router);
+  router.add(solid(rbox(1.4, .7, 1, .08), '#c58a55', { p: [0, .35, 0] }));
+  router.add(solid(rbox(1.8, .5, 1, .12), '#2b2d42', { p: [0, .95, 0] }));
+  [-.6, .6].forEach((x, i) => router.add(solid(new THREE.CylinderGeometry(.05, .05, 1.1, 8), '#2b2d42', { p: [x, 1.65, -.3], r: [0, 0, i ? -.2 : .2] })));
+  blob(router, 2.4, 1.6);
+  const leds = [-.6, -.3, 0, .3, .6].map((x) => { const m = live(new THREE.Mesh(new THREE.SphereGeometry(.07, 10, 8), new THREE.MeshBasicMaterial({ color: '#4dff8b' }))); m.position.set(1.2 + x, .95, -.08); return m; });
+  add(solid(new THREE.CylinderGeometry(.3, .22, .45, 16), '#ff8a2b', { p: [-3.4, .23, -1.3] }));
+  add(solid(new THREE.SphereGeometry(.42, 16, 12), '#3fae4f', { p: [-3.4, .8, -1.3], s: [1, 1.2, 1] }));
+  const ROUTER_AT = V(1.2, LEVEL.router + 1.25, .5);
+
+  /* next door: the DNS owl in a treehouse, with a very big phonebook */
+  const DX = -11.5, DY = 3.8;
+  add(solid(new THREE.CylinderGeometry(.55, .8, DY, 14), '#8a5a33', { p: [DX, DY / 2, -.6] }));
+  [[-2, 1.6, -3.2, 1.6], [2, 1.8, -3.3, 1.5], [0, 3.1, -3.4, 1.8]].forEach(([x, y, z, r]) => add(solid(new THREE.SphereGeometry(r, 20, 14), '#3fae4f', { p: [DX + x, DY + y, z] })));
+  add(solid(rbox(5, .3, 3.4, .1), '#c58a55', { p: [DX, DY - .15, 0] }));
+  add(solid(rbox(4.4, 2.4, .2, .06), '#ffe6d1', { p: [DX, DY + 1.2, -1.6] }));
+  const hutRoof = new THREE.Shape(); hutRoof.moveTo(-2.7, 0); hutRoof.lineTo(2.7, 0); hutRoof.lineTo(0, 1.4); hutRoof.closePath();
+  add(solid(new THREE.ExtrudeGeometry(hutRoof, { depth: 3.4, bevelEnabled: true, bevelThickness: .1, bevelSize: .1, bevelSegments: 2 }), '#ff8a2b', { p: [DX, DY + 2.4, -1.8] }));
+  const dnsSign = label('DNS PHONEBOOK', { h: .46 }); dnsSign.position.set(DX, DY - .6, 1.85); add(dnsSign);
+  const owl = live(new THREE.Group()); owl.position.set(DX - .9, DY, .1); owl.rotation.y = .3; owl.scale.setScalar(1.3); wobbly(owl);
+  owl.add(gel(new THREE.SphereGeometry(.62, 26, 18), '#a8743f', { p: [0, .72, 0], s: [1, 1.15, .9] }));
+  owl.add(gel(new THREE.SphereGeometry(.4, 20, 14), '#f1d7a8', { p: [0, .6, .32], s: [1, 1.1, .55] }));
+  [-1, 1].forEach((sd) => { eye(owl, [sd * .24, 1.1, .5], .19); owl.add(solid(new THREE.ConeGeometry(.11, .34, 8), '#8a5a2e', { p: [sd * .36, 1.52, 0], r: [0, 0, sd * -.35] })); });
+  owl.add(solid(new THREE.ConeGeometry(.08, .22, 8), '#ffb000', { p: [0, .92, .62], r: [Math.PI / 2 + .3, 0, 0] }));
+  blob(owl, 1.6, 1.4);
+  const book = new THREE.Group(); book.position.set(DX + .8, DY, .3); book.rotation.y = -.4; add(book);
+  book.add(solid(rbox(.3, .8, .3, .05), '#8a5a33', { p: [0, .4, 0] }));
+  book.add(solid(rbox(1.7, .06, 1.1, .02), '#e0233f', { p: [0, .84, 0], r: [-.5, 0, 0] }));
+  [-1, 1].forEach((sd) => book.add(solid(rbox(.78, .06, 1, .02), '#ffffff', { p: [sd * .41, .9, .02], r: [-.5, 0, 0] })));
+  const page = new THREE.Group(); page.position.set(0, .93, .02); page.rotation.x = -.5; page.userData.live = true; book.add(page);
+  page.add(solid(rbox(.76, .03, .96, .01), '#fff7e0', { p: [.38, 0, 0], line: .015 }));
+  const DNS_AT = V(DX + .3, DY + .1, 1.1);
+  // the phone line from your router to the treehouse
+  const WIRE = [V(.2, 1.4, .3), V(-3.2, 2.6, .6), V(-5, 3.4, .9), V(-7.6, 4.4, .9), V(DX + 2.4, DY + .9, .9), DNS_AT.clone()];
+  add(solid(new THREE.CylinderGeometry(.08, .1, 4.6, 8), '#8a5a33', { p: [-7.6, 2.3, .9] }));
+  add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(WIRE.slice(0, 5)), 60, .04, 6), k.toon('#2b2d42')));
+
+  /* the far shore: the server, in a building that never sleeps */
+  k.room({ cx: FAR, y: 0, w: 7.6, h: H, d: D, floor: '#9b8cff', wall: '#ebe6ff', sign: 'THE SERVER', door: 'none' });
+  add(solid(rbox(7.6 + 2 * T + .2, .32, D + .4, .12), '#3a5bff', { p: [FAR, H + .16, .1] }));
+  const rackLeds = [];
+  [-2.4, -1.2, 0, 1.2].forEach((dx) => {
+    add(solid(rbox(.9, 2.3, .9, .08), '#3a4055', { p: [FAR + dx, 1.15, -1.2] }));
+    for (let n = 0; n < 5; n++) { const m = live(new THREE.Mesh(new THREE.BoxGeometry(.55, .07, .04), new THREE.MeshBasicMaterial({ color: '#4dff8b' }))); m.position.set(FAR + dx, .45 + n * .38, -.73); rackLeds.push(m); }
+  });
+  const SERVER_AT = V(FAR + 2.2, 1.1, .8);
+  const servePaper = live(new THREE.Group()); servePaper.add(solid(rbox(.7, .9, .05, .03), '#ffffff'));
+  [.2, .05, -.1, -.25].forEach((y) => servePaper.add(solid(rbox(.46, .05, .06, .01), '#c9c2d6', { p: [0, y, 0], line: 0 })));
+  const sl = label('index.html', { h: .26, font: '"JetBrains Mono", monospace' }); sl.position.set(0, .66, .05); servePaper.add(sl);
+
+  /* the travellers */
+  const name = live(jellyWord('gerbil.zone', .42, '#ff2f7e'));
+  const num = live(jellyWord('203.0.113.7', .42, '#3a5bff'));
+  const get = live(jellyWord('GET /', .5, '#ff8a2b', true));
+  const ok = live(jellyWord('200 OK', .5, '#62c934', true));
+
+  const { tween, wait, hop, along, pop, say, shot, look, poke } = k;
+  let ledFast = false, rackFast = false, owlReads = false;
+  const backWire = () => [...WIRE].reverse().map((p) => p.clone());
+  return {
+    DIR: V(.08, .12, 1),
+    SHOTS: {
+      whole: { c: V(9.6, 1.6, 0), w: 50, h: 15 },
+      computer: { c: V(1.1, LEVEL.computer + 1.6, 0), w: 12, h: 4.3, room: true },
+      home: { c: V(1.1, LEVEL.router + 1.6, 0), w: 12, h: 4.3, room: true },
+      dns: { c: V(-8.2, 3.6, 0), w: 14, h: 7.8 },
+      sea: { c: V(16, -1.6, 0), w: 22, h: 8 },
+      server: { c: V(FAR, 1.6, 0), w: 11, h: 4.6, room: true },
+    },
+    reset() {
+      [name, num, get, ok, servePaper].forEach((o) => { o.visible = false; o.scale.setScalar(0); });
+      ledFast = rackFast = owlReads = false; setScreen({ url: '', page: false });
+    },
+    PLAY: [
+      async () => {},
+      async () => {
+        me.typing = true;
+        for (let n = 1; n <= 11; n++) { setScreen({ url: 'gerbil.zone'.slice(0, n) }); k.sfx((s) => s.boing(1400, .03, .03)); await wait(.09); }
+        me.typing = false; await wait(.2);
+        name.position.copy(me.at()); look(name); await pop(name, 1, .4); poke(me.kid, .15);
+        say('Where is gerbil.zone?', V(1.6, LEVEL.computer + 2.75, 1.2));
+      },
+      async () => {
+        say(null); look(name); await lift.in(name, 0); await lift.to(LEVEL.router); shot('home');
+        await hop(name, ROUTER_AT, .5); ledFast = true; await wait(.3);
+        shot('dns'); await along(name, WIRE.map((p) => p.clone()), 2); ledFast = false;
+        owlReads = true; poke(owl, .3); say('gerbil.zone? Let me look…', V(DX, DY + 3.25, .8)); await wait(1);
+        await pop(name, 0, .3); num.position.copy(DNS_AT); await pop(num, 1, .35); look(num); owlReads = false;
+        say('That\'s 203.0.113.7!', V(DX, DY + 3.25, .8)); poke(owl, .2);
+      },
+      async () => {
+        say(null); look(num); shot('home'); await along(num, backWire(), 1.8);
+        get.position.copy(ROUTER_AT).add(V(-.6, 0, .2)); look(get); await pop(get, 1, .35); await pop(num, 0, .25); ledFast = true;
+        say('GET /  to 203.0.113.7', V(1.2, LEVEL.router + 2.75, 1.2)); await wait(.8); say(null);
+        shot('sea'); await along(get, CABLE.slice(0, 8).map((p) => p.clone().add(V(0, .35, 0))), 3.2); ledFast = false;
+      },
+      async () => {
+        look(get); shot('server'); await along(get, CABLE.slice(7).map((p) => p.clone().add(V(0, .35, 0))).concat([SERVER_AT.clone()]), 1.6);
+        rackFast = true; await wait(.6);
+        servePaper.position.copy(SERVER_AT).add(V(-1.1, 1.0, 0)); await pop(servePaper, 1, .35);
+        say('Here is index.html!', V(FAR + .4, 2.85, .8));
+      },
+      async () => {
+        say(null); rackFast = false; await pop(get, 0, .25);
+        ok.position.copy(SERVER_AT); look(ok); await pop(ok, 1, .35);
+        shot('whole');
+        await Promise.all([
+          along(ok, [SERVER_AT.clone(), ...[...CABLE].reverse().map((p) => p.clone().add(V(0, .35, 0)))], 3.6),
+          along(servePaper, [servePaper.position.clone(), ...[...CABLE].reverse().map((p) => p.clone().add(V(0, 1.1, 0)))], 3.6),
+        ]);
+        ledFast = true; await lift.in(ok, 0); k.ride(servePaper, V(0, 1.1, -.3), undefined); ledFast = false;
+        shot('computer'); await lift.to(LEVEL.computer);
+        await Promise.all([hop(ok, me.at(), .5, .5), hop(servePaper, me.at(), .55, .6)]);
+        await Promise.all([pop(ok, 0, .2), pop(servePaper, 0, .2)]);
+        setScreen({ page: true }); poke(me.kid, .3); look(null); k.sfx((s) => s.ding());
+      },
+      async () => { say(null); },
+    ],
+    tick(dt, t) {
+      leds.forEach((m, n) => { m.visible = Math.sin(t * (ledFast ? 22 : 6) + n * 1.7) > -.2; });
+      rackLeds.forEach((m, n) => { m.material.color.set(Math.sin(t * (rackFast ? 18 : 4) + n * 2.3) > 0 ? '#4dff8b' : '#1f6b3a'); });
+      page.rotation.z = owlReads ? Math.sin(t * 6) * .9 - .6 : 0;
+      const a = t * .5; fin.position.set(16 + Math.cos(a) * 4.5, -.25, Math.sin(a) * 1.2); fin.rotation.y = -a;
+    },
+  };
+});
 
 /* ---------------- section 2: backstage show ---------------- */
 const PADLOCK = `<svg viewBox="0 0 16 18" aria-hidden="true"><rect x="2" y="8" width="12" height="9" rx="2" fill="#62c934" stroke="${INK}" stroke-width="2"/><path d="M5 8V5.5a3 3 0 0 1 6 0V8" fill="none" stroke="${INK}" stroke-width="2"/></svg>`;
@@ -3320,9 +3936,9 @@ const LESSONS = [
       { t: 'Push it, then check <code>gerald.github.io</code>.', ok: (e) => visited(e, 'gerald.github.io') && e.status === 200 && Object.values(geraldFixed(WEB.pages['gerald.github.io']?.['index.html'] ?? '', (h, pic) => { const k = (h ?? '').replace(/^\.\//, ''); return pic ? /^PNG:/.test(WEB.pages['gerald.github.io'][k] ?? '') : k in WEB.pages['gerald.github.io']; })).every(Boolean) },
     ] },
 ];
-const ALL = [{ id: 'whole', name: 'The whole game', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];
+const ALL = [{ id: 'whole', name: 'Overview', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];
 /* recap data */
-// What the recap shows: the whole game in one line, and for each magic word what it does, an example and a test question.
+// What the recap shows: the overview in one line, and for each magic word what it does, an example and a test question.
 const RECAP = {
   wizard: 'Web wizard!', wizardText: 'You collected every single jelly, and your website is on the internet. Go and build something amazing.',
   chain: [
@@ -3386,7 +4002,7 @@ function check(ev) {
 }
 function paintProgress() {
   const n = ALL.filter((a) => store.done[a.id]).length;
-  $('#jarCount').textContent = `${n} / ${ALL.length} jellies`; $('#handleCount').textContent = `${n} / ${ALL.length}`;
+  $('#jarCount').textContent = `${n} / ${ALL.length} jellies`; paintCourses(n, ALL.length); collect(); $('#handleCount').textContent = `${n} / ${ALL.length}`;
   $('#beans').innerHTML = ALL.map((a) => `<span class="bean${store.done[a.id] ? ' on' : ''}" title="${esc(a.name)}" style="${store.done[a.id] ? `background:${a.color}` : ''}"></span>`).join('');
   const rec = PANELS.find((p) => p.id !== 'welcome' && !store.done[p.id])?.id;
   document.querySelectorAll('.ni').forEach((t) => { t.classList.toggle('done', !!store.done[t.dataset.id]); t.classList.toggle('up-next', t.dataset.id === rec); });
@@ -3403,11 +4019,357 @@ function confetti(color) {
   }
 }
 
+/* ---------------- the course map (src/curriculum.json) ---------------- */
+const COURSES = [{"id": "shell", "title": "Jelly Shell", "store": "jellyshell.v1", "needs": [], "step": 1, "href": "../jellyshell/", "away": false, "folder": "jellyshell"}, {"id": "shell2", "title": "Jelly Shell 2", "store": "jellyshell2.v1", "needs": ["shell"], "step": 2, "href": "../jellyshell2/", "away": false, "folder": "jellyshell2"}, {"id": "git", "title": "Jelly Git", "store": "jellygit.v1", "needs": ["shell2"], "step": 3, "href": "../jellygit/", "away": false, "folder": "jellygit"}, {"id": "security1", "title": "Jelly Security 1", "store": "jellysecurity.v1", "needs": ["shell2"], "step": 3, "href": "../jellysecurity/", "away": false, "folder": "jellysecurity"}, {"id": "web", "title": "Jelly Web", "store": "jellyweb.v1", "needs": ["git"], "step": 4, "href": "../jellyweb/", "away": false, "folder": "jellyweb"}, {"id": "security2", "title": "Jelly Security 2", "store": null, "needs": ["web", "security1"], "step": 5, "href": null, "away": false, "folder": null}], COURSE = COURSES.find((c) => c.store === KEY);
+const course = (id) => COURSES.find((c) => c.id === id);
+const courseStore = () => { try { return JSON.parse(localStorage.getItem('jelly.courses')) || {}; } catch { return {}; } };
+const finishedCourse = (id, all = courseStore()) => !!all[id] && all[id].done >= all[id].total;
+const courseLink = (c) => c.href ? `<a href="${c.href}"${c.away ? ' target="_blank" rel="noopener"' : ''}>${esc(c.title)}</a>` : esc(c.title);
+// Every course this one rests on, all the way down.
+const before = (c) => c.needs.flatMap((n) => [n, ...before(course(n))]);
+// What to try after this course: built courses not finished yet whose needs are met. Finishing this course means its own needs were met too.
+function nextCourses() {
+  const all = courseStore(), met = new Set([COURSE.id, ...before(COURSE)]);
+  return COURSES.filter((c) => c !== COURSE && c.folder && !finishedCourse(c.id, all) && c.needs.every((n) => met.has(n) || finishedCourse(n, all))).slice(0, 2);
+}
+const nextCourseCard = () => { const nx = nextCourses(); return nx.length ? `<div class="un-label">Next course</div><div class="un-next">${nx.map(courseLink).join('')}</div>` : ''; };
+function paintCourses(done, total) {
+  const all = courseStore();
+  all[COURSE.id] = { done, total };
+  if (!PRESENT) try { localStorage.setItem('jelly.courses', JSON.stringify(all)); } catch {}
+  $('#courseList').innerHTML = COURSES.map((c) => {
+    const p = all[c.id], here = c === COURSE, fin = finishedCourse(c.id, all);
+    const note = here ? `you are here · ${done} / ${total}` : fin ? '✓ finished' : !c.folder ? 'coming later' : p?.done ? `${p.done} / ${p.total} jellies` : c.needs.length ? `after ${c.needs.map((n) => course(n).title).join(' and ')}` : 'the first course';
+    return `<li class="co${here ? ' here' : ''}${fin ? ' fin' : ''}${c.folder ? '' : ' later'}"><span class="co-step">${c.step}</span><span class="co-name">${here ? esc(c.title) : courseLink(c)}<small>${esc(note)}</small></span></li>`;
+  }).join('');
+  const nx = nextCourses();
+  $('#rcNext').innerHTML = nx.length ? `Next course: ${nx.map(courseLink).join(' or ')}` : 'That\'s every course so far. More are on the way!';
+}
+$('#startBtn').insertAdjacentHTML('beforebegin', `<p class="needs">${COURSE.needs.length
+  ? `Comes after ${COURSE.needs.map((n) => courseLink(course(n)) + (finishedCourse(n) ? ' ✓' : '')).join(' and ')}. The course map in the menu shows the order.`
+  : 'The very first course. You don\'t need any other course before this one.'}</p>`);
+
+/* ---------------- the jelly jar: collecting ---------------- */
+// Each lesson's jelly has a look. The last lesson of a course gives the golden one. The others take turns through
+// the patterns, starting at a different place in each course, so jellies from different courses look different.
+const LOOK_NAMES = { classic: 'classic', zebra: 'zebra', spotty: 'spotty', stripy: 'stripy', swirly: 'swirly', sprinkle: 'sprinkle', checked: 'checked', 'two-tone': 'two-tone', glitter: 'glitter', rainbow: 'rainbow', galaxy: 'galaxy', golden: 'golden' };
+const look = (id) => {
+  const i = ALL.findIndex((a) => a.id === id), plain = Object.keys(LOOK_NAMES).filter((k) => k !== 'golden');
+  return i === ALL.length - 1 ? 'golden' : plain[(i + COURSES.indexOf(COURSE) * 4) % plain.length];
+};
+let presentJars = {};
+const jarStore = () => { if (PRESENT) return presentJars; try { return JSON.parse(localStorage.getItem('jelly.collection')) || {}; } catch { return {}; } };
+// Keep this course's finished lessons in the shared collection, with what each one taught, for the jar's labels.
+function collect() {
+  const all = jarStore(), words = (typeof RECAP !== 'undefined' && RECAP.words) || {};
+  for (const a of ALL) {
+    const key = `${COURSE.id}:${a.id}`;
+    if (!store.done[a.id]) { delete all[key]; continue; }
+    all[key] ??= { at: Date.now() };
+    Object.assign(all[key], { course: COURSE.title, word: a.word ?? '', name: a.name, colour: a.color, look: look(a.id), does: words[a.id]?.does ?? '', ex: words[a.id]?.ex ?? '' });
+  }
+  if (PRESENT) presentJars = all; else try { localStorage.setItem('jelly.collection', JSON.stringify(all)); } catch {}
+  $('#jarOpen').textContent = `My jelly jars (${Object.keys(all).length})`;
+}
+
+/* ---------------- the jelly jar: the window ---------------- */
+// Opens on a shelf with one jar per course, in course order. Tap a jar to open it in 3D.
+let jar = null, jarKeys = '', jarCourse = null;
+const lidColour = (c) => JELLY[COURSES.indexOf(c) % JELLY.length];
+const jelliesOf = (all, c) => Object.entries(all).filter(([k]) => k.startsWith(c.id + ':')).map(([, v]) => v).sort((a, b) => a.at - b.at);
+function openJar(id) {
+  $('#jarBox').hidden = false; $('#jarPop').hidden = true;
+  if (id) showJar(course(id)); else showShelf();
+  $('#jarClose').focus({ preventScroll: true });
+}
+function showShelf() {
+  const all = jarStore(), prog = courseStore(), n = Object.keys(all).length;
+  jarCourse = null; $('#jarPop').hidden = true;
+  $('#jarTitle').textContent = 'Your jelly jars';
+  $('#jarSum').textContent = n ? `${n} ${n === 1 ? 'jelly' : 'jellies'} so far` : '';
+  $('#jarTip').textContent = 'One jar for every course. Tap a jar to open it.';
+  $('#jarShelf').hidden = false; $('#jarCanvas').hidden = true; $('#jarEmpty').hidden = true; $('#jarBack').hidden = true; $('#jarShake').hidden = true;
+  $('#jarShelf').innerHTML = COURSES.map((c) => {
+    const mine = jelliesOf(all, c), total = prog[c.id]?.total, later = !c.folder;
+    const beans = mine.slice(0, 24).map((it, k) => {
+      const row = Math.floor(k / 5), x = 14 + (k % 5) * 17 + (row % 2) * 8, y = 118 - row * 15;
+      return `<g transform="rotate(${(k * 53 % 50) - 25} ${x + 8} ${y + 9})">${bean(it.colour, '', it.look).replace('<svg class="bean-svg ', `<svg x="${x}" y="${y}" width="16" height="19" class="mini-bean `)}</g>`;
+    }).join('');
+    const note = later ? 'coming later' : mine.length ? `${mine.length}${total ? ` of ${total}` : ''} ${mine.length === 1 ? 'jelly' : 'jellies'}` : 'empty';
+    return `<button class="shelf-jar${c === COURSE ? ' here' : ''}${later ? ' later' : ''}" data-course="${c.id}"${later ? ' disabled' : ''}>
+      <svg viewBox="0 0 120 150" aria-hidden="true"><rect x="14" y="6" width="92" height="16" rx="8" fill="${lidColour(c)}" stroke="${INK}" stroke-width="3"/>
+        <path d="M24 24h72v8q14 6 14 24v74q0 14-14 14H24q-14 0-14-14V56q0-18 14-24z" fill="#ffffff80" stroke="${INK}" stroke-width="3"/>${beans}
+        <path d="M18 60q0-14 10-20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/></svg>
+      <b>${esc(c.title)}</b><small>${esc(note)}</small></button>`;
+  }).join('');
+}
+function showJar(c) {
+  const all = jarStore(), items = jelliesOf(all, c);
+  jarCourse = c;
+  $('#jarTitle').textContent = `${c.title} jar`;
+  $('#jarSum').textContent = `${items.length} ${items.length === 1 ? 'jelly' : 'jellies'}`;
+  $('#jarTip').textContent = 'Grab a jelly and fling it. Tap one to see where you got it.';
+  $('#jarShelf').hidden = true; $('#jarCanvas').hidden = false; $('#jarEmpty').hidden = items.length > 0; $('#jarBack').hidden = false; $('#jarShake').hidden = false;
+  if (booted && !jar) {
+    jar = new JarStage($('#jarCanvas'), { word: '', size: .052 * Math.min(1, Math.cbrt(20 / Math.max(20, items.length))), bg: '#e9f5ff', floor: '#cfe6ff', cells: 3.4, restAnywhere: true });
+    jar.onTap = (b) => showJelly(b.item);
+  }
+  const keys = c.id + '|' + items.map((it) => it.word + it.at).join();
+  if (jar && keys !== jarKeys) { jarKeys = keys; jar.cap.material.color.set(lidColour(c)); jar.cap.material.attenuationColor.set(lidColour(c)); jar.fill(items); }
+  requestAnimationFrame(() => jar?.resize());
+}
+function closeJar() { $('#jarBox').hidden = true; primaryButton()?.focus({ preventScroll: true }); }
+function showJelly(it) {
+  const pop = $('#jarPop');
+  pop.innerHTML = `<button class="jar-x" aria-label="Close">×</button>${bean(it.colour, 'pop-bean', it.look)}<div><div class="pop-name">The ${esc(LOOK_NAMES[it.look] ?? it.look)} jelly</div>
+    <div class="pop-word" style="color:${it.colour}">${esc(it.word || it.name)}</div><div class="pop-where">${esc(it.name)} · ${esc(it.course)}</div>
+    ${it.does ? `<p>${esc(it.does)}</p>` : ''}${it.ex ? `<code>${esc(it.ex)}</code>` : ''}</div>`;
+  pop.hidden = false; pop.querySelector('.jar-x').onclick = () => { pop.hidden = true; };
+}
+$('#jarOpen').onclick = () => openJar(); $('#beans').onclick = () => openJar();
+$('#jarShelf').addEventListener('click', (e) => { const b = e.target.closest('.shelf-jar'); if (b && !b.disabled) showJar(course(b.dataset.course)); });
+$('#jarBack').onclick = showShelf;
+$('#jarClose').onclick = closeJar; $('#jarShake').onclick = () => jar?.shake();
+$('#jarBox').addEventListener('click', (e) => { if (e.target === $('#jarBox')) closeJar(); });
+
+/* ---------------- saving and loading jellies ---------------- */
+// Progress lives only in this browser. A save file keeps it safe, carries it to another computer, and carries it
+// between guides hosted as separate pages (as on claude.ai), which can't see each other's storage.
+// On claude.ai a page may only offer a file through the viewer's "downloads" permission; anywhere else it's an ordinary download.
+const DOWNLOADS = window.claude?.use?.('downloads') ?? Promise.resolve(null);
+const readKey = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+const writeKey = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+async function saveJellies() {
+  save(); collect();
+  const progress = Object.fromEntries(COURSES.filter((c) => c.store && readKey(c.store)).map((c) => [c.store, readKey(c.store)]));
+  const file = JSON.stringify({ kind: 'jelly-save', version: 1, saved: new Date().toISOString(), collection: jarStore(), courses: courseStore(), progress }, null, 1);
+  const name = `my-jellies-${new Date().toISOString().slice(0, 10)}.json`, dl = await DOWNLOADS;
+  if (dl) return dl.save({ filename: name, data: file }).then(() => toast('Saved! Keep that file somewhere safe.'), (e) => { if (e?.code !== 'declined') toast('Saving a file isn\'t possible here, sorry.'); });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([file], { type: 'application/json' })); a.download = name;
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  toast('Saved! Look in your Downloads folder.');
+}
+// The file comes from outside, so it's checked once, here: only known courses, only lesson ticks, only safe colours and looks.
+function readSave(text) {
+  let d; try { d = JSON.parse(text); } catch { return null; }
+  if (!d || d.kind !== 'jelly-save' || typeof d.collection !== 'object' || typeof d.progress !== 'object') return null;
+  const str = (v) => typeof v === 'string' ? v.slice(0, 300) : '';
+  const collection = Object.fromEntries(Object.entries(d.collection).filter(([k, v]) => /^[a-z0-9]+:[a-z0-9-]+$/.test(k) && v && typeof v === 'object').map(([k, v]) => [k, {
+    at: Number.isFinite(v.at) ? v.at : 0, course: str(v.course), word: str(v.word), name: str(v.name), does: str(v.does), ex: str(v.ex),
+    colour: /^#[0-9a-f]{6}$/i.test(v.colour) ? v.colour : '#ff4d6d', look: LOOKS.includes(v.look) ? v.look : 'classic' }]));
+  const ticks = (o) => Object.fromEntries(Object.entries(o && typeof o === 'object' ? o : {}).filter(([k, v]) => /^[a-z0-9-]+$/.test(k) && v === true));
+  const progress = Object.fromEntries(COURSES.filter((c) => c.store && d.progress[c.store]).map((c) => [c.store, { done: ticks(d.progress[c.store].done) }]));
+  const courses = Object.fromEntries(Object.entries(d.courses ?? {}).filter(([k, v]) => course(k) && Number.isFinite(v?.done) && Number.isFinite(v?.total)).map(([k, v]) => [k, { done: v.done, total: v.total }]));
+  return { collection, progress, courses };
+}
+// Loading adds to what's here and never takes anything away.
+function useSave(d) {
+  for (const [key, p] of Object.entries(d.progress)) {
+    if (key === KEY) { Object.assign(store.done, p.done); save(); continue; }
+    const cur = readKey(key) ?? {}; writeKey(key, { ...cur, done: { ...(cur.done ?? {}), ...p.done } });
+  }
+  writeKey('jelly.collection', { ...d.collection, ...jarStore() });
+  const prog = courseStore();
+  for (const [k, v] of Object.entries(d.courses)) if (!prog[k] || prog[k].done < v.done) prog[k] = v;
+  writeKey('jelly.courses', prog);
+  writeKey('jelly.welcomeBack', Object.keys(jarStore()).length);
+  location.reload();
+}
+$('#jarSave').onclick = saveJellies;
+$('#jarLoad').onclick = () => $('#jarFile').click();
+$('#jarFile').onchange = async (e) => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  const d = readSave(await f.text());
+  if (!d) return toast('That file isn\'t a jelly save. Look for one called my-jellies….json');
+  useSave(d);
+};
+{ const n = readKey('jelly.welcomeBack'); if (n) { try { localStorage.removeItem('jelly.welcomeBack'); } catch {} setTimeout(() => toast(`Welcome back! ${n} jellies are on your shelf.`), 900); } }
+
+/* ---------------- presenter mode: recording the frames ---------------- */
+// Run every lesson's demo once, silently, and record a frame for each thing worth a whole screen.
+function prCapture() {
+  const frames = [{ k: 'intro' }], muted = sound.muted, ok = [];
+  // the overview (Jelly Shell, Git and Web): one frame per step of the 3D town, right after the intro
+  if (PR.townGo && PANELS.some((p) => p.id === 'whole')) TOWN_STEPS.forEach((_, n) => frames.push({ k: 'whole', n }));
+  sound.muted = true; store.done = {}; store.steps = {};
+  LESSONS.forEach((L, li) => {
+    frames.push({ k: 'title', li }, { k: 'story', li });
+    if (L.visual) frames.push({ k: 'visual', li });
+    L.points.forEach((_, n) => frames.push({ k: 'point', li, n }));
+    if (!L.demo?.length) return;
+    go(L.id); resetSandbox(); setPhase('mission'); renderMap();
+    let shown = -1;
+    for (const a of L.demo) {
+      const st = store.steps[L.id] ?? [], i = L.steps.findIndex((s, k) => !st[k]);
+      if (i >= 0 && i !== shown) { frames.push({ k: 'task', li, n: i }); shown = i; }
+      const map0 = $('#map').innerHTML, prompt = promptText(), lines = termOut.children.length;
+      if (a.startsWith('@type:')) { nanoText.value = a.slice(6).replace(/\\n/g, '\n'); nanoText.dispatchEvent(new Event('input')); frames.push({ k: 'nano', li, file: $('#nanoName').textContent, text: nanoText.value, typed: true }); }
+      else if (a.startsWith('@key:')) {
+        const k = a.slice(5), ctrl = /^Control\+/.test(k), before = { file: $('#nanoName').textContent, text: nanoText.value };
+        nanoText.dispatchEvent(new KeyboardEvent('keydown', { key: ctrl ? k.slice(8) : k, ctrlKey: ctrl, bubbles: true, cancelable: true }));
+        frames.push({ k: 'nano', li, ...before, key: ctrl ? `Ctrl+${k.slice(8).toUpperCase()}` : k.toUpperCase(), msg: $('#nanoMsg').textContent });
+      } else if (/^@(tab:|up$|enter$|ctrlc$)/.test(a)) {
+        // a special key in the terminal: Tab completes, ↑ brings back the last command, Enter runs what is typed, Ctrl+C stops
+        const typed = a.startsWith('@tab:') ? a.slice(5) : a === '@up' ? '' : termIn.value, key = { '@up': '↑', '@enter': 'Enter', '@ctrlc': 'Ctrl+C' }[a] ?? 'Tab';
+        termIn.value = typed;
+        if (key === 'Tab') completeTab(); else if (key === '↑') recall(-1); else if (key === 'Enter') submit(); else ctrlC();
+        const out = [...termOut.children].slice(lines + (key === 'Enter' ? 1 : 0)).map((e) => e.outerHTML).join('');
+        frames.push({ k: 'term', li, prompt, cmd: typed, key, after: key === 'Tab' || key === '↑' ? termIn.value : null, out });
+      } else {
+        termIn.value = a; submit();
+        if (typeof NANO !== 'undefined' && NANO.open) frames.push({ k: 'term', li, prompt, cmd: a, out: '' }, { k: 'nano', li, file: $('#nanoName').textContent, text: nanoText.value });
+        else frames.push({ k: 'term', li, prompt, cmd: a, out: [...termOut.children].slice(lines + 1).map((e) => e.outerHTML).join('') });
+      }
+      renderMap();
+      if ($('#map').innerHTML !== map0) frames.push({ k: 'files', li, before: map0, after: $('#map').innerHTML });
+    }
+    if (G.review === L.id) ok.push(L.id);
+    G.review = null; store.done[L.id] = true; paintProgress();
+    frames.push({ k: 'earned', li });
+  });
+  frames.push({ k: 'jar' });
+  sound.muted = muted;
+  document.documentElement.dataset.prOk = ok.length; // how many demos really finished their mission, for tests
+  return frames;
+}
+
+/* ---------------- presenter mode: showing a frame ---------------- */
+const PR = { i: 0, frames: [], typing: null, jelly: null };
+function presentGo(i) {
+  i = Math.max(0, Math.min(PR.frames.length - 1, i));
+  if (PR.typing) { PR.typing.skip = true; return; } // a press while typing finishes the typing at once
+  const forward = i === PR.i + 1;
+  PR.i = i; $('#prBar').style.width = `${(i + 1) / PR.frames.length * 100}%`;
+  try { sessionStorage.setItem('jelly.presentBeat.' + KEY, i); } catch {} // a reload comes back to this frame
+  prShow(PR.frames[i], forward);
+}
+function prShow(f, animate) {
+  const L = LESSONS[f.li], stage = $('#prStage'), body = $('#prBody');
+  stage.dataset.k = f.k; stage.style.setProperty('--c', L?.color ?? '#ff4d6d');
+  if (!$('#jarBox').hidden) closeJar();
+  $('#prJelly').hidden = f.k !== 'title' && f.k !== 'intro';
+  $('#prTown').hidden = f.k !== 'whole';
+  const label = (t) => `<div class="pr-label">${t}</div>`;
+  body.innerHTML = {
+    whole: () => `<div class="pr-town-card">${label(`Overview · ${f.n + 1} of ${TOWN_STEPS.length}`)}<div class="pr-h">${esc(TOWN_STEPS[f.n].who)}</div><p class="pr-big">${esc(TOWN_STEPS[f.n].text.replace(/ Press Next[^.]*\./, ''))}</p></div>`,
+    intro: () => `<div class="pr-intro">${label(esc(COURSE.title))}<h1>${$('#p-welcome h1').innerHTML}</h1></div>`,
+    title: () => `<div class="pr-title">${label(`Magic word ${f.li + 1} of ${LESSONS.length}`)}<div class="pr-name">${esc(L.name)}</div><div class="pr-stands">${esc(L.stands)}</div></div>`,
+    story: () => `${label(esc(L.word))}<h2 class="pr-h">${esc(L.title)}</h2><p class="pr-big">${L.why}</p>`,
+    visual: () => `<div class="pr-visual">${L.visual}</div>`,
+    point: () => `${label(`Remember it · ${f.n + 1} of ${L.points.length}`)}<p class="pr-big">${L.points[f.n]}</p>`,
+    task: () => `${label(`Mission · step ${f.n + 1} of ${L.steps.length}`)}<p class="pr-big">${L.steps[f.n].t}</p>`,
+    term: () => `<div class="pr-term term-body"><div class="ln"><span class="p">${esc(f.prompt)}</span> <span class="pr-typed"></span><span class="pr-caret"></span></div><div class="pr-out">${f.out}</div></div>${f.key ? `<div class="pr-key pr-termkey">${esc(f.key)}</div>` : ''}`,
+    nano: () => `<div class="pr-nano"><div class="nano-top"><span>GNU nano</span><b>${esc(f.file)}</b><span></span></div><pre class="pr-nano-text"></pre><div class="nano-msg">${esc(f.msg ?? '')}</div>${f.key ? `<div class="pr-key">${esc(f.key)}</div>` : ''}</div>`,
+    files: () => `${label('The file tree')}<div class="pr-files map-list">${prDiff(f.before, f.after)}</div>`,
+    earned: () => `<div class="pr-earned">${bean(L.color, 'pr-bean', look(L.id))}<div class="pr-big">You earned the ${LOOK_NAMES[look(L.id)]} <b style="color:${L.color}">${esc(L.word)}</b> jelly!</div></div>`,
+    jar: () => '',
+  }[f.k]();
+  // the town only draws while it is on screen; moved out of the hidden app, it is told so directly
+  if (PR.town) { PR.town.active = f.k === 'whole'; }
+  if (f.k === 'whole') { if ($('#town').parentNode !== $('#prTown')) $('#prTown').append($('#town')); PR.town.resize(); PR.townGo(f.n); }
+  if (f.k === 'jar') { store.done = Object.fromEntries(LESSONS.map((x) => [x.id, true])); paintProgress(); openJar(COURSE.id); }
+  if (f.k === 'title' || f.k === 'intro') prJelly(f.k === 'intro' ? COURSE.title.replace(/^Jelly /, '').toLowerCase() : L.word, L?.color);
+  if (f.k === 'nano') $('.pr-nano-text').textContent = f.text;
+  if (f.k === 'term') $('.pr-typed').textContent = f.after ?? f.cmd;
+  prFit(body);
+  if (!animate || REDUCED) return;
+  body.animate([{ opacity: 0, transform: 'translateY(26px) scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  if (f.k === 'term') prType($('.pr-typed'), f.cmd, $('.pr-out'), f);
+  if (f.k === 'nano' && f.typed) prType($('.pr-nano-text'), f.text);
+  if (f.k === 'files') body.querySelectorAll('.pr-new').forEach((r, n) => r.animate([{ background: '#ffc61a', transform: 'scale(1.04)' }, { transform: 'none' }], { duration: 900, delay: 250 + n * 120 }));
+  if (f.k === 'earned') { $('.pr-bean').animate([{ transform: 'scale(.3) rotate(-20deg)' }, { transform: 'scale(1.15) rotate(6deg)' }, { transform: 'none' }], { duration: 700, easing: 'cubic-bezier(.3,1.5,.5,1)' }); confetti(L.color); sound.ding(); }
+}
+// Keys typed one at a time, then the result appears.
+async function prType(el, text, then, f) {
+  const t = PR.typing = { skip: false }, key = document.querySelector('.pr-termkey');
+  if (then) then.hidden = true;
+  if (key) key.hidden = true;
+  el.textContent = '';
+  for (const ch of text) { if (t.skip) break; el.textContent += ch; sound.blip(); await new Promise((r) => setTimeout(r, 45 + Math.random() * 60)); }
+  el.textContent = text;
+  // then the special key is pressed: its keycap pops up and the line changes (Tab completes it, ↑ brings one back)
+  if (key) {
+    if (!t.skip) await new Promise((r) => setTimeout(r, 300));
+    key.hidden = false; key.animate([{ transform: 'scale(.4)', opacity: 0 }, { transform: 'scale(1.15)' }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.3,1.5,.5,1)' }); sound.boing(520, .15, .06);
+    if (f?.after != null) el.textContent = f.after;
+  }
+  if (then) { await new Promise((r) => setTimeout(r, t.skip ? 0 : 280)); then.hidden = false; then.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250 }); }
+  PR.typing = null;
+}
+// The file tree after the step, with rows that are new or changed marked.
+function prDiff(before, after) {
+  const rows = (h) => { const t = document.createElement('template'); t.innerHTML = h; return [...t.content.querySelectorAll('.mrow')]; };
+  const old = new Map(rows(before).map((r) => [r.dataset.path ?? r.textContent, r.outerHTML]));
+  return rows(after).map((r) => { if (old.get(r.dataset.path ?? r.textContent) !== r.outerHTML) r.classList.add('pr-new'); return r.outerHTML; }).join('');
+}
+// The jelly word on the title frames: its own full-size 3D stage, made the first time it is needed.
+function prJelly(word, color) {
+  if (!booted) return;
+  if (!PR.jelly) {
+    PR.jelly = new JellyStage($('#prJelly'), { word, size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 0, frame: 1.1, lookY: .55 });
+    // no grid floor on a presenter frame: an invisible one that only catches the letters' shadows
+    PR.jelly.scene.children.find((o) => o.isMesh && o.geometry.type === 'PlaneGeometry').material = new THREE.ShadowMaterial({ opacity: .12 });
+  }
+  PR.jelly.opts.colorOffset = Math.max(0, JELLY.indexOf(color)); PR.jelly.setWord(word);
+}
+// Big text shrinks until it fits its frame.
+function prFit(el) {
+  // a lesson's picture is drawn for the small card, so it is zoomed up to fill the frame, then down until it fits
+  for (const v of el.querySelectorAll('.pr-visual')) {
+    let z = Math.min(3, (el.clientWidth * .9) / Math.max(1, v.scrollWidth)); v.style.zoom = z;
+    while ((el.scrollHeight > el.clientHeight + 1 || v.getBoundingClientRect().width > el.clientWidth) && z > .6) { z -= .1; v.style.zoom = z; }
+  }
+  for (const t of el.querySelectorAll('.pr-big,.pr-files,.pr-term')) {
+    let s = 1; t.style.setProperty('--s', 1);
+    while (el.scrollHeight > el.clientHeight + 1 && s > .5) { s -= .05; t.style.setProperty('--s', s.toFixed(2)); }
+  }
+}
+
+// Start presenting: hide the app, record the frames, show the first (or the one a reload came back to).
+// Runs at start-up for ?present, or straight away from Shift+P with no reload: inside claude.ai the page can't see
+// its address, so a keypress is the only way in there.
+function presentStart(shape) {
+  PRESENT = shape;
+  store.done = {}; store.steps = {}; store.phase = {}; sound.muted = true; // fresh, and nothing is saved from here on
+  const face = new URLSearchParams(location.search).get('face') ?? 'right';
+  document.documentElement.classList.add('present', `present-${shape}`, `face-${face}`);
+  document.body.insertAdjacentHTML('beforeend', '<div class="pr-stage" id="prStage"><canvas id="prJelly" hidden></canvas><div class="pr-town" id="prTown" hidden></div><div class="pr-body" id="prBody"></div><div class="pr-bar"><i id="prBar"></i></div></div>');
+  if (!booted) boot();
+  PR.frames = prCapture();
+  // &lesson=<id>: just that lesson's frames, for a Short
+  const only = LESSONS.findIndex((L) => L.id === new URLSearchParams(location.search).get('lesson'));
+  if (only >= 0) PR.frames = PR.frames.filter((f) => f.li === only);
+  document.documentElement.dataset.prFrames = PR.frames.map((f) => f.k).join(' '); document.documentElement.dataset.prLessons = PR.frames.map((f) => f.li ?? -1).join(' '); document.documentElement.dataset.prKey = KEY; // for tests
+  let at = 0; try { at = +sessionStorage.getItem('jelly.presentBeat.' + KEY) || 0; } catch {}
+  PR.i = -1; presentGo(at);
+}
+// The presenter's keys come first, before the guide's own.
+addEventListener('keydown', (e) => {
+  // Shift+P: 16:9 presenting, then 9:16, then back to the guide (with its saved progress, untouched)
+  if (e.key === 'P' && e.shiftKey && !e.target.closest?.('input:not([readonly]),textarea')) {
+    e.preventDefault(); e.stopImmediatePropagation();
+    const next = !PRESENT ? 'wide' : PRESENT === 'wide' ? 'tall' : null;
+    try { if (next) sessionStorage.setItem('jelly.present', next); else sessionStorage.removeItem('jelly.present'); } catch {}
+    if (!PRESENT) return presentStart('wide');
+    if (next === 'tall') { PRESENT = 'tall'; document.documentElement.classList.replace('present-wide', 'present-tall'); return prShow(PR.frames[PR.i], false); }
+    const u = new URL(location.href);
+    if (u.searchParams.has('present')) { u.searchParams.delete('present'); location.replace(u); } else location.reload();
+    return;
+  }
+  if (!PRESENT || !e.isTrusted) return;
+  const fwd = e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown', back = e.key === 'ArrowLeft' || e.key === 'PageUp';
+  e.preventDefault(); e.stopImmediatePropagation();
+  if (fwd || back) presentGo(PR.i + (fwd ? 1 : -1));
+  else if (e.key === 'Home' || e.key === 'End') presentGo(e.key === 'Home' ? 0 : PR.frames.length - 1);
+  else if (e.key === 'm' || e.key === 'M') sound.muted = !sound.muted;
+}, true);
+
 /* ---------------- panels + navigation ---------------- */
 // Every section is one full-window panel. The lesson panel is shared by all the magic words.
 const PANELS = [
   { id: 'welcome', group: 'Start here', label: 'Welcome', tag: 'hi!', color: '#ff4d6d' },
-  { id: 'whole', group: 'The big picture', label: 'The whole game', tag: '1', color: '#ffc61a' },
+  { id: 'whole', group: 'The big picture', label: 'Overview', tag: '1', color: '#ffc61a' },
   { id: 'backstage', group: 'The big picture', label: 'Backstage', tag: '2', color: '#9b5cff' },
   ...LESSONS.map((l) => ({ id: l.id, group: 'The magic words', label: l.name, tag: l.word, color: l.color, lesson: l })),
   { id: 'recap', group: 'Wrap up', label: 'What I’ve learnt', tag: '★', color: '#ffc61a', ownButton: true }, // reached by its own sidebar button
@@ -3448,6 +4410,7 @@ function primaryButton() {
   return b && !b.hidden && !b.disabled && b.offsetParent ? b : null;
 }
 addEventListener('keydown', (e) => {
+  if (!$('#jarBox').hidden) { if (e.key === 'Escape') closeJar(); return; }
   if (e.key === 'Escape') $('.app').classList.remove('peek');
   if (e.key !== 'Enter' || e.repeat || e.isComposing || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
   if (e.target.closest?.('input,textarea,select,button,a,[contenteditable]') && e.target.offsetParent) return; // a hidden box has lost its turn
@@ -3457,6 +4420,7 @@ addEventListener('keydown', (e) => {
 });
 addEventListener('keydown', (e) => {
   if (e.target.closest?.('input,textarea')) return;
+  if (!$('#jarBox').hidden) return;
   const fwd = e.key === 'PageDown' || e.key === 'ArrowRight', back = e.key === 'PageUp' || e.key === 'ArrowLeft';
   if (!fwd && !back) return;
   e.preventDefault();
@@ -3469,15 +4433,21 @@ addEventListener('keydown', (e) => {
 addEventListener('hashchange', () => { const id = location.hash.slice(1); if (id && id !== PANELS[panelIdx]?.id) go(id); });
 
 // Shrink a panel region's text until it fits its box, so no section ever needs scrolling.
-function fitAll(root) {
-  for (const el of root.querySelectorAll('[data-fit]')) {
-    let f = 1; el.style.setProperty('--fit', '1');
-    while (el.scrollHeight > el.clientHeight + 1 && f > .56) { f -= .04; el.style.setProperty('--fit', f.toFixed(2)); }
-  }
+function fitAll(root) { root.querySelectorAll('[data-fit]').forEach(fitOne); }
+function fitOne(el) {
+  let f = 1; el.style.setProperty('--fit', '1');
+  while (el.scrollHeight > el.clientHeight + 1 && f > .56) { f -= .04; el.style.setProperty('--fit', f.toFixed(2)); }
 }
+const fitSizes = new WeakMap();
+const fitWatch = new ResizeObserver((entries) => entries.forEach(({ target, contentRect: r }) => {
+  const size = `${Math.round(r.width)}x${Math.round(r.height)}`;
+  if (fitSizes.get(target) !== size) { fitSizes.set(target, size); fitOne(target); }
+}));
+document.querySelectorAll('[data-fit]').forEach((el) => fitWatch.observe(el));
 const fitNow = () => { const P = PANELS[panelIdx]; if (P) fitAll(P.lesson ? $('#p-lesson') : $('#p-' + P.id)); };
 let fitTimer;
 addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(fitNow, 120); });
+document.fonts?.addEventListener('loadingdone', () => fitNow());
 
 /* ---------------- one magic word, one thing at a time ---------------- */
 // Three phases: the story, the brain-burner, then the mission, one step at a time. The jelly stays put throughout.
@@ -3494,8 +4464,11 @@ function freshStart(L) {
   document.querySelector('.task').animate([{ transform: 'scale(.92) rotate(-1deg)' }, { transform: 'scale(1.04)' }, { transform: 'none' }], { duration: 500, easing: 'ease-out' });
   lessonStage?.hopAll(1); toast(`Fresh start on ${L.word.replace(/!$/, "")}! Back to step 1.`); sound.boing(360, .35, .12);
 }
+let sandboxFor = null; const FRESH_SANDBOX = false;
 function setPhase(p) {
   const L = LESSONS[cur]; store.phase[L.id] = p; save();
+  if (p === 'mission' && FRESH_SANDBOX && sandboxFor !== L.id && !(store.steps[L.id] ?? []).some(Boolean)) resetSandbox();
+  if (p === 'mission') sandboxFor = L.id;
   $('#lcard').dataset.phase = p; paintSteps(); sound.blip();
   requestAnimationFrame(() => { fitAll($('#p-lesson')); if (p === 'mission') termIn.focus({ preventScroll: true }); else $('#lNext').focus({ preventScroll: true }); });
 }
@@ -3554,12 +4527,29 @@ $('#lRestart').onclick = () => {
 
 $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; $('#resetBtn').hidden = true; };
 $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; $('#resetBtn').hidden = false; };
-$('#resetYes').onclick = () => { store.done = {}; store.steps = {}; store.phase = {}; save(); paintProgress(); paintSteps(); $('#resetNo').onclick(); go(PANELS[panelIdx].id); toast('Jar emptied. Fresh start!'); };
+$('#resetYes').onclick = () => { store.done = {}; store.steps = {}; store.phase = {}; save(); paintProgress(); paintSteps(); $('#resetNo').onclick(); go(PANELS[panelIdx].id); toast('This course\'s jellies are out of the jar. Fresh start!'); };
 $('#startBtn').onclick = () => go('whole');
 $('#bsNext').onclick = () => go(nextUp().id);
 
 /* ---------------- the end of a section: jelly into the jar, then a clear "next up" ---------------- */
-const bean = (color, cls = '') => `<svg class="bean-svg ${cls}" viewBox="0 0 60 70" aria-hidden="true"><path d="M30 4c18 0 26 14 24 32-2 20-12 30-25 30S5 56 6 38C7 18 12 4 30 4z" fill="${color}" stroke="${INK}" stroke-width="4"/><ellipse cx="18" cy="15" rx="5" ry="3" fill="#fff" opacity=".55"/><ellipse cx="22" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><ellipse cx="38" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><g class="pp"><circle cx="22" cy="31" r="3.6" fill="${INK}"/><circle cx="38" cy="31" r="3.6" fill="${INK}"/></g><path d="M22 45q8 7 16 0" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/></svg>`;
+let beanN = 0;
+const BEAN_PATH = 'M30 4c18 0 26 14 24 32-2 20-12 30-25 30S5 56 6 38C7 18 12 4 30 4z';
+// Fixed "random" sprinkles and sparkles, the same every time.
+const DOTS = Array.from({ length: 34 }, (_, i) => [(i * 37 % 52) + 4, (i * 23 % 62) + 4, ['#ff4d6d', '#62c934', '#3a5bff', '#ffc61a', '#9b5cff', '#fff'][i % 6]]);
+const LOOK_SVG = {
+  zebra: () => [6, 18, 30, 42, 54].map((x) => `<path d="M${x - 4} 0q6 20 0 35t2 35h5q-6-20 0-35t-2-35z" fill="${INK}" opacity=".85"/>`).join(''),
+  spotty: () => DOTS.slice(0, 12).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="#fff" opacity=".85"/>`).join(''),
+  stripy: () => [-40, -24, -8, 8, 24, 40, 56].map((x) => `<path d="M${x} 70l40-70h7l-40 70z" fill="#fff" opacity=".7"/>`).join(''),
+  swirly: () => [8, 16, 24, 32].map((r) => `<circle cx="30" cy="38" r="${r}" fill="none" stroke="#fff" stroke-width="3.5" opacity=".7"/>`).join(''),
+  sprinkle: () => DOTS.map(([x, y, c], i) => `<rect x="${x}" y="${y}" width="6" height="2.4" rx="1.2" fill="${c}" transform="rotate(${i * 47 % 180} ${x + 3} ${y + 1})"/>`).join(''),
+  checked: () => Array.from({ length: 49 }, (_, i) => (i % 7 + Math.floor(i / 7)) % 2 ? `<rect x="${i % 7 * 10}" y="${Math.floor(i / 7) * 10}" width="10" height="10" fill="#fff" opacity=".65"/>` : '').join(''),
+  'two-tone': (c) => `<rect x="0" y="36" width="60" height="40" fill="${JELLY[(JELLY.indexOf(c) + 3) % JELLY.length]}"/>`,
+  glitter: () => DOTS.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.2" fill="#fff"/>`).join(''),
+  rainbow: () => ['#ff4d6d', '#ff8a2b', '#ffc61a', '#62c934', '#3a5bff', '#9b5cff'].map((c, i) => `<rect x="0" y="${i * 12}" width="60" height="12" fill="${c}"/>`).join(''),
+  galaxy: (c) => `<rect width="60" height="70" fill="#120c38"/><circle cx="30" cy="38" r="16" fill="${c}" opacity=".45"/>` + DOTS.slice(0, 20).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1" fill="#fff"/>`).join(''),
+  golden: () => `<rect width="60" height="70" fill="#ffc61a"/>` + DOTS.slice(0, 14).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.3" fill="#fff"/>`).join(''),
+};
+const bean = (color, cls = '', lk = 'classic') => { const id = 'bn' + beanN++, art = LOOK_SVG[lk]?.(color) ?? ''; return `<svg class="bean-svg ${cls}" viewBox="0 0 60 70" aria-hidden="true">${art ? `<clipPath id="${id}"><path d="${BEAN_PATH}"/></clipPath>` : ''}<path d="${BEAN_PATH}" fill="${color}"/>${art ? `<g clip-path="url(#${id})">${art}</g>` : ''}<path d="${BEAN_PATH}" fill="none" stroke="${INK}" stroke-width="4"/><ellipse cx="18" cy="15" rx="5" ry="3" fill="#fff" opacity=".55"/><ellipse cx="22" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><ellipse cx="38" cy="29" rx="7" ry="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/><g class="pp"><circle cx="22" cy="31" r="3.6" fill="${INK}"/><circle cx="38" cy="31" r="3.6" fill="${INK}"/></g><path d="M22 45q8 7 16 0" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/></svg>`; };
 const upnext = $('#upnext'), G = { card: false };
 function renderGuide() { upnext.hidden = !G.card; }
 
@@ -3572,15 +4562,16 @@ function sectionDone(id) {
   if (PANELS[panelIdx]?.id !== id) return false;
   const item = ALL.find((a) => a.id === id), n = nextUp();
   G.card = true;
-  upnext.innerHTML = `<div class="un-card">${bean(item.color, 'un-bean')}
-    <div class="un-earned">You earned the <b style="color:${item.color}">${esc(item.word ?? item.name)}</b> jelly!</div>
+  upnext.innerHTML = `<div class="un-card">${bean(item.color, 'un-bean', look(id))}
+    <div class="un-earned">You earned the ${LOOK_NAMES[look(id)]} <b style="color:${item.color}">${esc(item.word ?? item.name)}</b> jelly!</div><button class="un-jar" id="unJar">See it in my jar</button>
     ${n.id !== 'recap' ? `<div class="un-label">Next up</div><div class="un-word" style="color:${n.color}">${esc(n.lesson ? n.tag : n.label)}</div>${n.lesson ? `<div class="un-name">${esc(n.label)}</div>` : ''}
     <div class="un-btns"><button class="btn go un-go" id="unGo">Go to ${esc(n.lesson ? n.tag : n.label)} →${ENTER}</button><button class="btn alt" id="unStay">Stay and play</button></div>`
-    : `<div class="un-word" style="color:var(--berry)">${esc(RECAP.wizard)}</div><div class="un-name">${esc(RECAP.wizardText)}</div>
+    : `<div class="un-word" style="color:var(--berry)">${esc(RECAP.wizard)}</div><div class="un-name">${esc(RECAP.wizardText)}</div>${nextCourseCard()}
     <div class="un-btns"><button class="btn go un-go" id="unGo">See what I’ve learnt →${ENTER}</button><button class="btn alt" id="unStay">Stay and play</button></div>`}</div>`;
   renderGuide();
   $('#unGo').onclick = () => { G.card = false; go(n.id); };
   $('#unStay').onclick = () => { G.card = false; renderGuide(); primaryButton()?.focus({ preventScroll: true }); };
+  $('#unJar').onclick = () => { G.card = false; renderGuide(); openJar(COURSE.id); };
   upnext.querySelector('.un-card').animate([{ transform: 'scale(.4) rotate(-6deg)', opacity: 0 }, { transform: 'scale(1.06) rotate(1deg)', opacity: 1 }, { transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.3,1.4,.5,1)' });
   flyToJar(upnext.querySelector('.un-bean'), item.color);
   $('#unGo').focus({ preventScroll: true });
@@ -3591,7 +4582,7 @@ function flyToJar(from, color) {
   const app = $('.app'), tucked = app.classList.contains('focus') && !app.classList.contains('peek');
   const last = [...document.querySelectorAll('.bean.on')].at(-1), jar = tucked ? $('#navHandle') : last?.offsetParent ? last : $('#jarCount');
   const a = from.getBoundingClientRect(), b = jar.getBoundingClientRect();
-  const fly = document.createElement('div'); fly.className = 'flyer'; fly.innerHTML = bean(color);
+  const fly = document.createElement('div'); fly.className = 'flyer'; fly.innerHTML = from.outerHTML.replace('un-bean', '');
   Object.assign(fly.style, { left: `${a.left + a.width / 2 - 20}px`, top: `${a.top + a.height / 2 - 24}px` });
   document.body.append(fly);
   const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
@@ -3600,7 +4591,7 @@ function flyToJar(from, color) {
 }
 
 /* ---------------- what I've learnt so far ---------------- */
-// Tell them what you told them: the whole game again in one line, then every magic word learnt so far.
+// Tell them what you told them: the overview again in one line, then every magic word learnt so far.
 // "Test me" turns each learnt card into a question to answer from memory before tapping to check.
 function renderRecap() {
   const learnt = LESSONS.filter((L) => store.done[L.id]).length, test = store.recapMode === 'test', seen = !!store.done.whole;
@@ -3608,7 +4599,7 @@ function renderRecap() {
     : learnt === LESSONS.length ? `You have learnt all ${LESSONS.length} magic words. Wow.` : `You have learnt ${learnt} of ${LESSONS.length} magic words so far.`;
   document.querySelectorAll('.rc-mode button').forEach((b) => b.classList.toggle('on', (b.dataset.mode === 'test') === test));
   $('#rcChain').innerHTML = `<div class="rc-stops${seen ? '' : ' dim-chain'}">${RECAP.chain.map((c, i) => `${i ? `<span class="rc-via"><small>${esc(c.via ?? '')}</small><b>→</b></span>` : ''}<div class="rc-stop"><b>${esc(c.label)}</b><small>${esc(c.sub)}</small></div>`).join('')}</div>
-    <p class="rc-line">${seen ? esc(RECAP.line) : 'Watch <button class="link" data-go="whole">The whole game</button> to fill in the big picture.'}</p>`;
+    <p class="rc-line">${seen ? esc(RECAP.line) : 'Watch the <button class="link" data-go="whole">Overview</button> to fill in the big picture.'}</p>`;
   $('#rcGrid').innerHTML = LESSONS.map((L) => {
     const R = RECAP.words[L.id], st = store.steps[L.id] ?? [], part = st.filter(Boolean).length;
     if (!store.done[L.id]) return `<button class="rc-card locked" data-go="${L.id}" style="--c:${L.color}"><span class="w">${esc(L.word)}</span><span class="d">${part ? `${part} of ${L.steps.length} done` : 'Not learnt yet'}</span><span class="go">Learn it →</span></button>`;
@@ -3632,25 +4623,22 @@ try { await Promise.race([document.fonts.load('64px "Titan One"'), sleep(2500)])
 fitNow();
 
 // 3D only starts on a big enough screen. The gate is pure CSS; this keeps phones from paying for WebGL they won't show.
-const roomy = () => innerWidth >= 900 && innerHeight >= 560;
+const roomy = () => !!PRESENT || (innerWidth >= 900 && innerHeight >= 560);
 let booted = false;
 function boot() {
   booted = true;
   const hero = new JellyStage($('#heroJelly'), { word: 'web', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 3, frame: 1.5, lookY: .8 });
   $('#heroDrop').onclick = () => { hero.drop(); sound.boing(300, .4); };
   lessonStage = new JellyStage($('#lessonJelly'), { word: LESSONS[cur].stageWord?.(store.steps[LESSONS[cur].id] ?? []) ?? LESSONS[cur].word, size: .07, bg: '#fff4d6', floor: '#ffe7a8', colorOffset: Math.max(0, JELLY.indexOf(LESSONS[cur].color)), frame: 1.3, lookY: .7 });
-  const town = new Town($('#town'));
+  const town = PR.town = new Town($('#town'));
   const dots = $('#townDots'); dots.innerHTML = TOWN_STEPS.map(() => '<i></i>').join('');
-  const townGo = (i) => {
-    town.step = i; town.resetView(); const s = TOWN_STEPS[i];
+  const townGo = PR.townGo = (i) => {
+    town.go(i); town.resetView(); const s = TOWN_STEPS[i];
     $('#townWho').textContent = s.who; $('#townText').textContent = s.text;
     [...dots.children].forEach((d, k) => d.classList.toggle('on', k <= i));
     $('#townPrev').disabled = i === 0;
     $('#townNext').innerHTML = (s.cta ? 'Zoom in on the screen' : 'Next') + ENTER;
     $('#townNext').classList.add('go');
-    town.setState(i, !s.fly);
-    if (s.fly) { town.fly(s.fly[0], s.fly[1], s.fly[2]); sound.boing(500, .3, .08); town.onLand = () => { town.setState(i, true); sound.blip(); }; }
-    else { town.curve = null; town.packet.visible = town.packetLabel.visible = false; }
     if (s.cta) complete('whole');
     fitAll($('#p-whole'));
   };
@@ -3664,6 +4652,7 @@ function boot() {
   requestAnimationFrame(frame);
 }
 if (roomy()) boot();
+if (PRESENT) presentStart(PRESENT);
 else addEventListener('resize', function wait() { if (roomy() && !booted) { removeEventListener('resize', wait); boot(); fitNow(); } });
 </script>
 </body>

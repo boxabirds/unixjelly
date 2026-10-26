@@ -4,13 +4,15 @@ These guides are for children of about 9 to 14 who have never used a command lin
 
 ## The order of the guides
 
+The order lives in `src/curriculum.json`; this is what it says today.
+
 1. **Jelly Shell**: moving around folders and working with files.
 2. **Jelly Shell 2**: users, file locks, writing your own commands, `sudo`, `grep` and pipes.
-3. **Jelly Git**: saving versions of your work and putting it on GitHub.
-4. **Jelly Web**: HTML, how a page travels across the internet, and publishing it.
-5. **Jelly Security** (prototype): thinking like an attacker, then building like a defender.
+3. **Jelly Git** and **Jelly Security 1**, in either order. Git: saving versions of your work and putting it on GitHub. Security 1 (prototype): thinking like an attacker, then building like a defender, on a pretend computer.
+4. **Jelly Web** (after Git, because publishing uses `git push`): HTML, how a page travels across the internet, and publishing it.
+5. **Jelly Security 2** (planned, after Web): attacking and defending a pretend website.
 
-Each guide may use anything taught by the guides before it, and nothing else. The [prerequisite map](#prerequisite-map) at the end lists who teaches what.
+Each guide may use anything taught by the courses it `needs` in the curriculum (and theirs), and nothing else. The [prerequisite map](#prerequisite-map) at the end lists who teaches what.
 
 ## The rules
 
@@ -138,6 +140,11 @@ Nothing replaces watching a real child. Treat every moment of confusion as a bug
 | `r w x` keys appeared before they were taught | Refusals were explained with keys and owners, and key letters showed on the file tree when jumping ahead | Everything about keys waits for `taught('locks')`; `tests/prereqs.mjs` and the play-throughs now catch any concept shown early |
 | "The i keeps falling over" | Thin letters had no base to stand on | Heavier base for thin letters; `tests/letters.mjs` catches it if it comes back |
 | `>>` looked like `>`, `../` like `./` | The code font was joining some symbols into one shape | Font ligatures switched off everywhere |
+| "You've earned a jelly" felt flat | A toast and a dot in the side menu | Every lesson's jelly has its own look, and the jellies live in a jar you can play with; tapping one reminds you what it taught. The jar only ever holds finished lessons, so it can't show anything not yet taught |
+| "They never introduced the ability for a program to ask a question" | "Write a secret-knock program" sounded like an interactive knock-knock joke, but programs had only printed text | The step says exactly what the program does: it prints `knock knock knock`, like the hello program |
+| A lesson's step failed for no reason the child could see | The sandbox carried over from the last lesson, so a command meant for home ran in the folder where the last lesson ended | Every lesson's mission starts on a fresh sandbox, unless it is already under way; `tests/fresh.mjs` checks it |
+| "The whole game" meant nothing to the tester | It's a teacher's phrase for the big picture, not a child's | Renamed **Overview** everywhere |
+| Backstage: the kernel's answer was "a thin transparent rectangle" | The data from the disk was a tiny blank sheet that flew off and vanished | It's a card showing what comes back (the names for `ls`, the diary's lines for `cat`), and the program carries it back to the screen |
 
 ## Prerequisite map
 

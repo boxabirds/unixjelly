@@ -32,14 +32,14 @@ Each guide is one `<script type="module">`, in these sections:
 |---|---|
 | Jelly physics | `JellyBody` (one squishy letter) and `JellyStage` (a row of letters on a floor, with a camera, dragging, hopping and walking home) |
 | 3D font | `makeLetter()` turns a glyph from the built-in font subset into a 3D shape |
-| The whole game | `Town`: the 3D tour (Shell, Git and Web only) |
+| Overview | `Town`: the engine's original 3D tour. Jelly Shell, Git and Web replace it with the Overview (see below); Shell 2 and Security have none |
 | Backstage | the flip-card animation of a command's journey (Shell, Git and Web only) |
 | The shell | **jellysh** (`src/shell/jellysh.js`), a self-contained module: the file tree, quoting, variables, wildcards, `;` `&&` `\|\|` `\|`, redirects, exit codes, the Unix commands, and people and locks. The page gets it as `SH`; `run(line)` is `SH.run(line)`, and `sh`, `find`, `pathOf` and the rest point at it. See `src/shell/README.md` |
 | The pretend computer | the starting files (`seed()`), and Shelly's explanations (`explainPath`), which reach the shell through hooks |
 | Terminal and file tree | typing, Tab, history, Ctrl keys, helper buttons, and drawing the tree |
 | Lessons and progress | `LESSONS`, `check(event)`, the saved `store`, and `taught(concept)`, which says whether a concept's lesson has been reached |
 | Panels and navigation | `PANELS`, `go()`, the Enter-means-carry-on handler (`primaryButton()`), `fitAll()` |
-| One lesson at a time | `setPhase()`, `paintSteps()`, `showLesson()`, Start over |
+| One lesson at a time | `setPhase()`, `paintSteps()`, `showLesson()`, Start over. Each lesson's mission starts on a fresh sandbox (at home, starting files) unless it is already under way, so no lesson depends on where the last one ended. Git and Web turn this off (`FRESH_SANDBOX = false`): Git sets up each lesson from its `need`, and Web keeps the child's website |
 | Recap | "What I've learnt", with its Test me mode |
 
 ## How the guides share code
@@ -57,6 +57,7 @@ build/jelly-shell.src.html
    + src/guides/web/build.py       → build/jelly-web.src.html
    + src/guides/shell2/build.py    → build/jelly-shell2.src.html
    + src/guides/security/build.py  → build/jelly-security.src.html
+   + src/guides/shell/build.py     → build/jelly-shell1.src.html   (Jelly Shell itself: its Overview and Backstage king)
 
 each *.src.html
    + the right jelly font subset (tools/inline-font.mjs)
@@ -65,7 +66,69 @@ each *.src.html
    = the guide's folder in the repo, for example jellyshell2/index.html
 ```
 
-`src/build.sh` runs the whole chain.
+`src/build.sh` runs the whole chain. Its last steps write the landing page from `src/landing.html` and `src/curriculum.json` (`tools/landing.py`), then stamp the version on it.
+
+### The Overview: `engine/overview-kit.js` and each guide's `overview.js`
+
+Jelly Shell, Git and Web each open with an Overview: a little 3D world in one style, where the thing the course is about travels from stop to stop.
+- **Jelly Shell:** a computer cut open like a doll's house. You and the terminal at the top, Shelly the shell, King Kernel on the ground floor, the hardware in the cellar, and the file tree growing underground as roots. `ls` rides a lift down as jelly letters; the answer climbs back up as jelly words.
+- **Jelly Git:** your computer is the house: your folder on the ground floor, the stage above it, the photo album (`.git`) at the top. The lift tower climbs past the roof into a see-through cloud where GitHub keeps its album, and a friend's house next door clones it. `game.py` travels as jelly letters; commits are photos.
+- **Jelly Web:** your house (you at the browser upstairs, the router downstairs), the DNS owl's treehouse next door, the internet cable along the bottom of a cut-open sea, and the server on the far shore. `gerbil.zone`, `203.0.113.7`, `GET /` and `200 OK` all travel as jelly letters.
+
+How it fits together:
+- **The kit** (`engine/overview-kit.js`) has the look and the machinery: materials, rooms, the lift, you at your desk, grass, soil, trees and roofs, signs and speech bubbles, jelly words, the step timeline, the camera and the old-machine handling. A guide's `overview.js` defines `TOWN_STEPS` and its world: `const Town = overview((k) => ({ SHOTS, PLAY, reset, tick }))`. `engine/use-overview.py`, run by each of the three builds, swaps the engine's original 3D tour for the kit plus that world.
+- **Same interface as the old tour.** `Town`, `TOWN_STEPS`, `step`, `active`, `tick(dt)`, `resize()` and `resetView()` work as before, so the stepper, presenter mode and the frame loop needed no changes. `go(i)` plays step `i` when it's the next one; any other jump replays every step from the start, rushed, so the world is always exactly where that step leaves it. While a step plays, the canvas has `data-playing`.
+- **Steps.** Each step names the camera shot it starts on and the one it ends on (`shot`, `ends`); each shot is a box the camera fits, wide or tall. `PLAY[i]` is a short async script of tweens (`hop`, `along`, `pop`, the lift's `in` and `to`, `say`).
+- **Look.** Buildings are toon with ink outlines of the same thickness everywhere; characters and travellers are rigid jelly (the welcome letters' material) that squashes and wobbles when poked. Eyes follow whatever is travelling.
+- **Old machines.** Everything that never moves is merged into one mesh per material (Jelly Shell's 680 draw calls became under 300, counting the see-through pass). If the first two seconds average under 30 frames a second, the jelly stops being see-through, the costliest effect, and keeps its gloss and colour. In software rendering Jelly Shell's costs about half what the welcome screen's letters do.
+- **On its own.** `python3 tools/overview-page.py shell|git|web [out.html]` writes one on a page of its own with Wide and Tall frames, for trying changes without the guide.
+
+### Jellies bumping into each other: `engine/collide-patch.py`
+
+Each jelly collides as a body-centred lattice: its cage corners plus the centre of every cage cell (the average of the cell's 8 corners). Points of different jellies keep a gap of 0.62 of a cell. The biggest hole in that lattice is about 0.56 of a cell, so no point can squeeze through another jelly. With corners alone, the hole in the middle of a cage square was wider than the gap, and jellies sank into each other.
+- **Sharing out a push.** A push on a centre point is shared out to its 8 corners by weight.
+- **Only nearby points.** Only pairs whose boxes overlap are checked, and only the points inside the overlap.
+- **No garbage.** The point arrays are made once per jelly and reused.
+- **Quiet resting.** A bump only plays a sound or wakes a sleeping jelly when the two are moving into each other.
+
+`tests/perf.mjs` measured it against the corners-only version: letters are unchanged within noise, and a settled jar costs about 2 ms per 3 s instead of 2,500–3,700 ms, because it now sleeps.
+
+### The jelly jar: `engine/jar-patch.py`
+
+Adds the jar to every guide.
+- **Physics.** A bean shape for the soft bodies, coarser cages for small jellies (`opts.cells`), a tap hook (`onTap`), and resting on other jellies as well as the floor (`opts.restAnywhere`).
+- **Rendering.** `JarStage`, a `JellyStage` with a round jar (the physics keeps jellies inside a circle, `bounds.r`) that doesn't tidy up or stand jellies back up. Its background is a sphere with a slow swirl shader instead of the grid floor, which becomes a shadow catcher. The jelly patterns are a small shader painted on each jelly's resting shape (`paintJelly`), so they squish with it. `bean()` draws the same looks in 2D for the cards.
+- **Data.** `collect()` keeps this course's finished lessons in `jelly.collection`, with each one's look and its recap line, so a jar in another course can label it.
+- **Save files.** `saveJellies()` writes `{ kind: "jelly-save", version: 1, collection, courses, progress }`, where `progress` holds each known course's own store. On claude.ai the file goes through the viewer's `downloads` permission (`claude.use("downloads")`; the hosted guides are published with `capabilities: { downloads: true }`). Anywhere else it is an ordinary browser download.
+  - **Loading** checks the file once at the boundary (`readSave`): only known courses, only lesson ticks, only `#rrggbb` colours and known looks.
+  - **Merging** (`useSave`) adds to what is there, then reloads.
+
+### Presenter mode: `engine/present-patch.py`
+
+For recording videos. Open a guide with `?present` (16:9) or `?present=tall` (9:16), or press **Shift+P**: once for 16:9, again for 9:16, and a third time to go back to the course. Shift+P works without a reload, so it also works on claude.ai, where a link can't pass `?present` to the page.
+- **Frames.** Each frame is one full-screen idea. Where a lesson's first panel is the **Overview** (the 3D town), that comes first, with a short card saying where we are. Then a lesson's jelly word, its story, its picture, each point, then for every mission step the task, the terminal (the command typed key by key, then its output) and the file tree if it changed, then the jelly earned. The course ends with its jar.
+- **Recorded, not acted live.** When presenting starts, the course runs once, silently, in the hidden app, from each lesson's `demo` list. The frames are recorded from what really happened, so **←** and **→** are instant and always agree.
+- **Nothing is saved.** Presenting never reads or writes anyone's progress.
+- **Resume.** A reload comes back to the same frame.
+- **Head shot.** The right-hand side (16:9) or the bottom (9:16) stays clear; `&face=none` uses the whole frame.
+- **One lesson.** `&lesson=lsl` presents just that lesson: a Short.
+- **Keys.** Space or **→** for the next frame, **←** for the previous one, Home / End for the first or last, M for sound.
+
+`tests/present.mjs` checks that every demo finishes its mission, that each kind of frame shows, that ← then → comes back to the same frame, and that nothing is saved. It writes a screenshot of every kind of frame in both shapes to `tests/out/present-*.png`.
+
+### The course map: `src/curriculum.json`
+
+One file says which courses exist and which must come first. Each course has an id, a title, its folder, the browser storage key it saves progress under, and `needs`: the courses that must be finished first (only the direct ones). A course with `"folder": null` is planned and shows as "coming later". The card fields (`cmd`, `blurb`, `button`, `colour`, `badge`) are for the landing page.
+
+From it, the build makes:
+- **the landing page** (`tools/landing.py`): one row per step, with courses on the same step side by side. Don't edit `index.html` by hand: edit `src/landing.html` or the curriculum, then build;
+- **the course map** in every guide's side menu (`engine/courses-patch.py`), with ticks for finished courses;
+- **the "Comes after" line** on each welcome screen;
+- **the next course** on a course's final card and on its "What I've learnt" page.
+
+A course's step is one more than the step of the latest course it needs. `tools/curriculum.py` reads the file for both, and stops the build if a course needs one that doesn't exist, or is listed before a course it needs.
+
+**Progress across courses.** Each guide also saves `{ done, total }` under one shared key, `jelly.courses`. Guides served from one website (the repo, GitHub Pages) share browser storage, so the map and the landing page can tick off other courses. Copies hosted one per page (such as claude.ai) each have their own storage, so there the map shows the order but only knows the current course's progress.
 
 ### How a patch works
 
@@ -93,10 +156,10 @@ The engine adds Jelly Shell's own voice in `src/engine/use-jellysh.py`. A guide 
 
 | Guide | Files | What it swaps or adds |
 |---|---|---|
-| Jelly Shell | `engine/` | the original. 15 lessons, the 3D tour and Backstage |
+| Jelly Shell | `engine/`, `guides/shell/` | the original. 15 lessons, the Overview (`guides/shell/overview.js`) and Backstage |
 | Jelly Shell 2 | `guides/shell2/` | removes the tour and Backstage. Adds users, groups and file locks (`s2.js`), programs and the PATH, `sudo`, `grep` and pipes, the `nano` editor, and padlocks for your missing keys on the file tree. 15 lessons |
-| Jelly Git | `guides/git/` | replaces the file tree with the git map (desk → stage → album → GitHub) and adds a pretend `git` (`git.js`). Has its own tour (`town.js`), Backstage (`show.js`) and 14 lessons. Each lesson's `need` sets up the sandbox for that point in the story |
-| Jelly Web | `guides/web/` | adds a pretend internet, a browser, an HTML editor with the tags checker, a Boxes view, and a small git with GitHub Pages (`web.js`). Has its own tour and Backstage, and 17 lessons. A lesson's `tool`, `home` and `project` pick the starting tool, page and folder |
+| Jelly Git | `guides/git/` | replaces the file tree with the git map (desk → stage → album → GitHub) and adds a pretend `git` (`git.js`). Has its own Overview (`overview.js`), Backstage (`show.js`) and 14 lessons. Each lesson's `need` sets up the sandbox for that point in the story |
+| Jelly Web | `guides/web/` | adds a pretend internet, a browser, an HTML editor with the tags checker, a Boxes view, and a small git with GitHub Pages (`web.js`). Has its own Overview (`overview.js`) and Backstage, and 17 lessons. A lesson's `tool`, `home` and `project` pick the starting tool, page and folder |
 | Jelly Security | `guides/security/` | Shell plus users and locks (`sec.js`), the black hat / white hat swap, and choice cards for the dilemmas. 3 prototype missions |
 
 ### The jelly font
@@ -125,7 +188,11 @@ By default, each guide links to `../`: the landing page next to the guide folder
 JELLY_HOME=https://example.com/jelly/ ./src/build.sh
 ```
 
-The link then opens that address in a new tab.
+The link then opens that address in a new tab. For the course map, set `JELLY_LINKS` to a JSON object of course id → address, and `LANDING` to where the landing page should be written:
+
+```sh
+JELLY_HOME=https://example.com/jelly/ JELLY_LINKS='{"git": "https://example.com/git/"}' LANDING=/tmp/home.html ./src/build.sh
+```
 
 ## Building
 
@@ -165,6 +232,12 @@ CHROMIUM=/path/to/chromium npm test                # or leave CHROMIUM unset to 
 | `fit.mjs` | opens every panel and lesson phase of every guide at 900 × 560, 1024 × 640, 1366 × 768, 1440 × 900 and 1920 × 1080, and fails if anything needs scrolling. `node tests/fit.mjs jellyweb 1366` checks one guide and saves screenshots at that width |
 | `prereqs.mjs` | opens every lesson of each guide that declares `teaches` (Shell 2 and Security so far), as a child jumping ahead would. Fails if any phase shows a concept before the lesson that teaches it. The Shell 2 and Security play-throughs run the same check after every command. Detectors are in `tests/concepts.json` |
 | `jellysh.mjs` | the shell module on its own, in Node with no browser: 81 checks of wildcards, exit codes, `&&` and `\|\|`, quoting, variables, pipes, redirects, scripts, the PATH, people and locks. Each check states what real bash does |
+| `curriculum.mjs` | `curriculum.json` against the build, in Node: every course it needs exists and comes earlier, every built course saves under the key the curriculum says and has the course map, and the landing page shows every course |
+| `overview.mjs` | the Overview in Jelly Shell, Git and Web: every step plays to its end without errors, the last earns its jelly, and Back then Next comes back to the same step. `node tests/overview.mjs jellygit` checks one guide |
+| `fresh.mjs` | Shell and Shell 2: a lesson finished inside a folder doesn't leave the next lesson's mission there, and a mission already under way isn't wiped by going back a phase and on again |
+| `jar.mjs` | earns a jelly and checks the card names its look and that it lands in the collection with what it taught. The card opens this course's jar, tapping a jelly shows its label, and the shelf shows one jar per course with the right counts (the planned course's shut). **Save my jellies** downloads a file with everything. In an emptied browser, a file that isn't a save is refused, and **Use my existing jellies** brings everything back. Keys stay in the jar until Escape closes it |
+| `present.mjs` | presenter mode, for every guide with demos (Jelly Shell, Jelly Shell 2): every lesson's `demo` finishes its mission, each kind of frame shows full screen, ← then → returns to the same frame, nothing is saved; screenshots of every kind of frame, 16:9 and 9:16 |
+| `perf.mjs` | not pass/fail: prints the physics work per 3 seconds of jelly time (letters dropping, a jar filling, a settled jar). Run it before and after any 3D or physics change, on the same machine |
 | `letters.mjs` | drops some jelly words eight times each and fails if any letter falls over more than half the time. This is the test that caught the falling i |
 
 Screenshots go to `src/tests/out/`.

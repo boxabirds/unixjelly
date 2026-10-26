@@ -17,12 +17,12 @@ rep('<h1>Jelly Shell needs a bigger screen</h1>', '<h1>Jelly Shell 2 needs a big
 rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to the command line · part 2</div>')
 rep('<h1>Boss your computer around with <em>tiny words</em>.</h1>', '<h1>Who\'s in <em>charge</em> here?</h1>')
 rep('<p>These words were invented in 1971. They still work today on Macs, Linux, Raspberry Pis and most of the computers that run the internet. Learn them once, use them for life.</p>',
-    '<p>Users, locks and keys. Write your own commands. Borrow the boss\'s power. Search files and join commands with pipes. Best after Jelly Shell: this guide uses everything from it.</p>')
+    '<p>Users, locks and keys. Write your own commands. Borrow the boss\'s power. Search files and join commands with pipes.</p>')
 rep('aria-label="Wobbly 3D jelly letters spelling ls, cd and cat. Drag them to squish."', 'aria-label="Wobbly 3D jelly letters spelling sudo. Drag them to squish."')
 rep("word: 'ls cd cat', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 0, frame: 1.4, lookY: .85", "word: 'sudo', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 2, frame: 1.5, lookY: .8")
 rep("const KEY = 'jellyshell.v1';", "const KEY = 'jellyshell2.v1';")
 # no 3D tour or backstage show: part 1 already did the big picture
-rep("""  { id: 'whole', group: 'The big picture', label: 'The whole game', tag: '1', color: '#ffc61a' },
+rep("""  { id: 'whole', group: 'The big picture', label: 'Overview', tag: '1', color: '#ffc61a' },
   { id: 'backstage', group: 'The big picture', label: 'Backstage', tag: '2', color: '#9b5cff' },
 """, "")
 # no tour here, so the recap shows the big-picture chain straight away
@@ -84,7 +84,7 @@ rep("  mapEl.innerHTML = rows.join('');", "  mapEl.innerHTML = rows.join(''); $(
 
 # ---------- lessons, recap, engine and styles ----------
 region('const isCmd = (e, c)', 'const ALL = [', open(V + 'lessons.js').read())
-rep("const ALL = [{ id: 'whole', name: 'The whole game', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];", "const ALL = [...LESSONS];")
+rep("const ALL = [{ id: 'whole', name: 'Overview', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];", "const ALL = [...LESSONS];")
 region('/* recap data */', '/* end recap data */\n', open(V + 'recap.js').read(), keep_end=False)
 rep("/* ---------------- boot ---------------- */", open(V + 's2.js').read() + "\n/* ---------------- boot ---------------- */")
 rep("</style>", open(V + 's2.css').read() + "</style>")
