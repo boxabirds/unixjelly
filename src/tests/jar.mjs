@@ -53,16 +53,35 @@ for (const fy of [.8, .75, .7, .85, .65]) for (const fx of [.5, .45, .55, .4, .6
 }
 if (!popped) problems.push('tapping the jellies never showed what one taught');
 else if (!/jelly/i.test(await p.textContent('#jarPop'))) problems.push('the jelly label is empty');
+// No jelly may sink into another: the closest two cage points of any two jellies, against the gap they should keep.
+// Measured: 0.28 when bigger jellies kept the letters' gap and slid into each other (1.8.2), 0.39 for the original small
+// jellies, 0.49 to 0.70 with the gap sized per jelly. It is a weak signal, so the jar screenshots get a look too.
+const closest = () => p.evaluate(() => {
+  const j = document.querySelector('#jarCanvas').stage, B = j.bodies, cells = j.opts.cells ?? 6.5; let worst = Infinity;
+  for (let a = 0; a < B.length; a++) for (let c = a + 1; c < B.length; c++) {
+    const P = B[a], Q = B[c], d = Math.max(P.size, Q.size) / cells * .62;
+    for (let i = 0; i < P.N; i++) for (let k = 0; k < Q.N; k++) worst = Math.min(worst, Math.hypot(P.x[i * 3] - Q.x[k * 3], P.x[i * 3 + 1] - Q.x[k * 3 + 1], P.x[i * 3 + 2] - Q.x[k * 3 + 2]) / d);
+  }
+  return worst;
+});
+const settled = await closest(); console.log('closest jellies after landing', settled.toFixed(2));
+if (settled < .35) problems.push(`jellies sink into each other after landing (closest ${settled.toFixed(2)} of the gap)`);
 await p.screenshot({ path: 'jar.png' });
 // Shake: the lid goes on, the jar really moves, the lid comes off, and every jelly is still inside the glass.
 await p.click('#jarShake');
 const jarIs = (f) => p.waitForFunction(f, null, { timeout: 60000, polling: 100 }).then(() => true, () => false);
 if (!await jarIs(() => document.querySelector('#jarCanvas').stage.bounds.top < Infinity)) problems.push('shaking: the lid never went on');
 if (!await jarIs(() => Math.abs(document.querySelector('#jarCanvas').stage.bounds.ox) > .005)) problems.push('shaking: the jar never moved');
+// while the lid is on, nothing gets above the neck
+const lidOn = () => p.evaluate(() => { const j = document.querySelector('#jarCanvas').stage; return j.bounds.top < Infinity ? j.bodies.filter((b) => b.center()[1] > j.H).length : -1; });
+for (let k = 0; k < 8; k++) { const up = await lidOn(); if (up > 0) { problems.push(`shaking: ${up} jellies above the neck with the lid on`); break; } await p.waitForTimeout(150); }
 await p.screenshot({ path: 'jar-shaking.png' });
 if (!await jarIs(() => document.querySelector('#jarCanvas').stage.shakeT == null)) problems.push('shaking: the lid never came off');
 const escaped = await p.evaluate(() => { const j = document.querySelector('#jarCanvas').stage; return j.bodies.filter((b) => { const c = b.center(); return Math.hypot(c[0], c[2]) > j.R || c[1] > j.H; }).length; });
 if (escaped) problems.push(`shaking: ${escaped} jellies ended up outside the jar`);
+await p.waitForTimeout(3000);
+const shaken = await closest(); console.log('closest jellies after shaking', shaken.toFixed(2));
+if (shaken < .35) problems.push(`jellies sink into each other after shaking (closest ${shaken.toFixed(2)} of the gap)`);
 await p.screenshot({ path: 'jar-shaken.png' });
 
 // The shelf: one jar per course, with Git's jellies in Git's jar and the planned course shut.

@@ -1467,10 +1467,12 @@ class JellyStage {
   // Jellies bump into each other: collision points of different jellies keep a minimum gap (see collide-patch.py).
   // Only pairs whose bounding boxes touch are checked, so jellies standing apart cost nothing.
   collide() {
-    const live = this.bodies.filter((b) => this.t >= b.spawnAt && b.lo), d = this.opts.size / (this.opts.cells ?? 6.5) * .62, d2 = d * d, cap = d * .3;
+    const live = this.bodies.filter((b) => this.t >= b.spawnAt && b.lo), cells = this.opts.cells ?? 6.5;
     for (let a = 0; a < live.length; a++) for (let c = a + 1; c < live.length; c++) {
       const P = live[a], Q = live[c];
       if (P.sleeping && Q.sleeping) continue;
+      // the gap comes from the jellies' own size (their cage cells), not the stage's: jar jellies are bigger than letters
+      const d = Math.max(P.size, Q.size) / cells * .62, d2 = d * d, cap = d * .3;
       const lo = [0, 1, 2].map((k) => Math.max(P.lo[k], Q.lo[k]) - d), hi = [0, 1, 2].map((k) => Math.min(P.hi[k], Q.hi[k]) + d);
       if (lo.some((v, k) => v > hi[k])) continue;
       const ps = P.points(lo, hi), qs = Q.points(lo, hi);
@@ -1770,12 +1772,13 @@ class JarStage extends JellyStage {
   // walls really move, so the glass knocks the jellies about; while the lid is on it is a ceiling, so nobody escapes.
   shaking(dt) {
     const t = this.shakeT += dt, s = this.opts.size, B = this.bounds, L = this.lid, off = this.lidOff, ease = (q) => q * q * (3 - 2 * q);
-    const on = .45, rock = 1.15, open = on + rock, end = open + .5, amp = s * .4, hz = 2.6;
-    const x = t > on && t < open ? amp * Math.sin((t - on) * hz * Math.PI * 2) * Math.sin((t - on) / rock * Math.PI) : 0;
+    // rock: about 3 times the g-force of a gentle shake; then the lid stays on a moment (hold) so nothing is still flying when it lifts
+    const on = .45, rock = 1.15, hold = .6, open = on + rock + hold, end = open + .5, amp = s * .7, hz = 3.4;
+    const x = t > on && t < on + rock ? amp * Math.sin((t - on) * hz * Math.PI * 2) * Math.sin((t - on) / rock * Math.PI) : 0;
     B.ox = x; B.oz = x * .2; this.vessel.position.set(B.ox, 0, B.oz);
-    if (t > on && t < open) {
+    if (t > on && t < on + rock) {
       const half = Math.floor((t - on) * hz * 2); // a jolt each time the jar changes direction
-      if (half !== this.lastJolt) { this.lastJolt = half; for (const b of this.bodies) { b.wake(); for (let i = 0; i < b.N; i++) b.v[i * 3 + 1] += .25; } sound.boing(520 + Math.random() * 160, .07, .05); }
+      if (half !== this.lastJolt) { this.lastJolt = half; for (const b of this.bodies) { b.wake(); for (let i = 0; i < b.N; i++) b.v[i * 3 + 1] += .75; } sound.boing(520 + Math.random() * 160, .07, .05); }
     }
     for (const b of this.bodies) b.wake(); this.calm = 0;
     // the lid: down onto the neck, along for the ride, then back up to where it floats
@@ -1801,8 +1804,9 @@ class JarStage extends JellyStage {
   fill(items) {
     for (const b of this.bodies) { this.scene.remove(b.mesh); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); b.mesh.material.dispose(); }
     this.bodies = [];
-    // jellies twice the letters' size; past 10 they shrink a little, so even the biggest course's jar isn't overfull
-    const grow = 2 * Math.min(1, Math.cbrt(10 / Math.max(10, items.length)));
+    // jellies twice the letters' size; past 6 they shrink, keeping the jar about 60% full at most (15 fill it to the neck
+    // at 1.75 times), so there's room to shake
+    const grow = 2 * Math.min(1, Math.cbrt(6 / Math.max(6, items.length)));
     items.forEach((it, i) => {
       const b = new JellyBody(this, BEAN, it.colour, 0, this.opts.size * grow);
       paintJelly(b, it.look, JELLY[(JELLY.indexOf(it.colour) + 3) % JELLY.length] ?? '#ffffff');

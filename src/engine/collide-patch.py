@@ -13,10 +13,12 @@ rep("    this.elements = []; this.edges = [];", "    this.elements = []; this.ed
 region("  // Letters bump into each other: cage nodes of different letters keep a minimum gap.", "  // Stage two of tidying up", r'''  // Jellies bump into each other: collision points of different jellies keep a minimum gap (see collide-patch.py).
   // Only pairs whose bounding boxes touch are checked, so jellies standing apart cost nothing.
   collide() {
-    const live = this.bodies.filter((b) => this.t >= b.spawnAt && b.lo), d = this.opts.size / (this.opts.cells ?? 6.5) * .62, d2 = d * d, cap = d * .3;
+    const live = this.bodies.filter((b) => this.t >= b.spawnAt && b.lo), cells = this.opts.cells ?? 6.5;
     for (let a = 0; a < live.length; a++) for (let c = a + 1; c < live.length; c++) {
       const P = live[a], Q = live[c];
       if (P.sleeping && Q.sleeping) continue;
+      // the gap comes from the jellies' own size (their cage cells), not the stage's: jar jellies are bigger than letters
+      const d = Math.max(P.size, Q.size) / cells * .62, d2 = d * d, cap = d * .3;
       const lo = [0, 1, 2].map((k) => Math.max(P.lo[k], Q.lo[k]) - d), hi = [0, 1, 2].map((k) => Math.min(P.hi[k], Q.hi[k]) + d);
       if (lo.some((v, k) => v > hi[k])) continue;
       const ps = P.points(lo, hi), qs = Q.points(lo, hi);
