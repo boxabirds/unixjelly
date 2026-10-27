@@ -1,0 +1,83 @@
+{
+ "echo": [
+  "echo hello",
+  "echo Sam",
+  "ECHO hi"
+ ],
+ "pwd": [
+  "pwd",
+  "cd toys",
+  "pwd",
+  "cd ~"
+ ],
+ "ls": [
+  "ls",
+  "ls snacks",
+  "ls -a"
+ ],
+ "cd": [
+  "cd toys",
+  "cd ..",
+  "cd toys",
+  "cd"
+ ],
+ "root": [
+  "cd /",
+  "ls",
+  "cd /tmp/dark/cave"
+ ],
+ "home": [
+  "cd ~",
+  "cd ~/snacks",
+  "cat pizza.txt",
+  "cat ~/toys/robot.txt"
+ ],
+ "hunt": [
+  "cd ~/toys",
+  "cd box",
+  "cd /tmp/dark",
+  "cd ~/pets",
+  "cd ~/snacks",
+  "cd ~"
+ ],
+ "cat": [
+  "cat /home/kid/toys/robot.txt",
+  "cat secret-diary.txt",
+  "cat snacks/pizza.txt snacks/cookie.txt"
+ ],
+ "mkdir": [
+  "mkdir fort",
+  "touch fort/flag.txt",
+  "ls fort"
+ ],
+ "cp": [
+  "cp snacks/pizza.txt snacks/pizza2.txt",
+  "cp snacks/cookie.txt toys"
+ ],
+ "mv": [
+  "mv pets/hamster.txt pets/sir-fluffington.txt",
+  "mv snacks/cookie.txt toys"
+ ],
+ "rm": [
+  "rm snacks/broccoli.txt",
+  "rm toys"
+ ],
+ "man": [
+  "man ls",
+  "cp --help"
+ ],
+ "quest": [
+  "cat note-from-gerbil.txt",
+  "cd /tmp/dark/cave",
+  "mv gerbil.txt ~/pets"
+ ],
+ "keys": [
+  "cd",
+  "@tab:cat secr",
+  "@enter",
+  "@up",
+  "cat",
+  "@ctrlc",
+  "clear"
+ ]
+}

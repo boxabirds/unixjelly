@@ -2,3 +2,5 @@ build/
 node_modules/
 tests/out/
 fonts/*.ttf
+__pycache__/
+brand/

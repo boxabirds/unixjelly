@@ -1,12 +1,12 @@
 # Jelly Unix
 
-Five playful guides: the shell, the shell part 2, git, the web, and a prototype of security. Open `index.html` for the landing page that links to all of them.
+Five playful guides: the shell, the shell part 2, git, the web, and security. Open `index.html` for the landing page that links to all of them.
 
 - **Jelly Shell** (`jellyshell/`): the command line.
 - **Jelly Shell 2** (`jellyshell2/`): users, file locks, writing your own commands, `sudo`, `grep` and pipes.
 - **Jelly Git** (`jellygit/`): git, built on the same ideas.
 - **Jelly Web** (`jellyweb/`): HTML, how web pages travel, and publishing with GitHub Pages.
-- **Jelly Security** (`jellysecurity/`, prototype): black hat and white hat. Break into a pretend computer, fix it, test it again. 3 of a planned 16 missions.
+- **Jelly Security 1** (`jellysecurity/`): black hat and white hat. Break into a pretend computer, fix it, test it again. 3 of a planned 16 missions.
 
 To use the guides there is no build step, no backend and no install. Each guide is a single HTML file. To change them, see [Contributing](#contributing).
 
@@ -21,8 +21,8 @@ python3 -m http.server 8000
 
 Requirements:
 
-- A laptop or desktop window of at least **900 × 560**. Smaller windows show a "needs a bigger screen" notice (a phone layout is not built yet).
-- An internet connection. Three.js (v0.169.0) loads from jsDelivr and fonts from Google Fonts.
+- A laptop or desktop window of at least **900 × 560**. Smaller windows, phones included, get a notice offering the **mobile slideshow** instead: the course as slides you tap through, with no typing and no saved progress.
+- An internet connection. Three.js (v0.186.1) loads from jsDelivr and fonts from Google Fonts.
 
 ## Jelly Shell
 
@@ -36,7 +36,7 @@ The app is a fixed left nav plus one full-window panel at a time:
 | --- | --- |
 | Welcome | Draggable 3D jelly letters spelling `ls`, `cd` and `cat`. |
 | Overview | A computer cut open like a 3D doll's house: you and the terminal, Shelly the shell, King Kernel and the hardware on their own floors, and the file tree growing underground as roots. Your `ls` rides a lift down as jelly letters, and the answer climbs back up. |
-| Backstage | A flip-card animation. Press Enter on the "green screen", then watch the shell, `/bin`, the kernel and the disk cooperate. Plays `ls`, `cat` and `mv`. |
+| Backstage | The Overview's house, up close. Press Enter (or pick a command) and follow it: Shelly snips it into words, the program steps out of the `/bin` cupboard, asks King Kernel, visits the file tree in the roots, and carries the answer back. Plays `ls`, `cat` and `mv`. |
 | Lessons | 15 short missions, each with a mnemonic and a live terminal sandbox. |
 
 Lessons, in order: the shell is listening, `pwd`, `ls`, `cd`, `/` (the very top, and the slash's two jobs), `~` (home), a "Jelly hunt" navigation game, `cat`, `mkdir`, `cp`, `mv` (and why it also renames), `rm`, Tab and history, `man`, and a final "Great Gerbil Rescue" challenge.
@@ -67,7 +67,7 @@ Same format as Jelly Shell (same nav, 3D cutaway, backstage animation and sandbo
 | --- | --- |
 | Welcome | Intro to git as "a time machine for your code". |
 | Overview | Your computer as a 3D doll's house: your folder, the stage and the photo album on their own floors, and a lift tower up to GitHub in a see-through cloud. `game.py` rides up as jelly letters, gets photographed, pushed, and cloned to a friend's house. |
-| Backstage | A flip-card animation of `git add` and friends. |
+| Backstage | The house up close. Follow `git add`, `git commit` and `git push`: a jelly git robot carries `game.py` onto the stage, takes the photo and pins it in the album, then a jelly pigeon flies a copy up to GitHub, which asks for your token. |
 | Lessons | 14 short missions with a live sandbox. |
 
 Lessons, in order: meet git, `config`, `init`, `status`, `add`, `commit`, `log`, `diff`, `restore`, `remote`, `push`, `pull`, `.gitignore`, and a final "daily loop" quest.
@@ -82,18 +82,18 @@ Same format again, applied to the web. The lesson panel swaps the file tree for 
 | --- | --- |
 | Welcome | Intro: every web page is a text file that crosses the planet. |
 | Overview | A little 3D world: your house, the DNS owl's treehouse, a cut-open sea with the internet cable on its floor, and the server on the far shore. `gerbil.zone`, its number, `GET /` and `200 OK` travel there and back as jelly letters. |
-| Backstage | A flip-card animation of the browser crew loading `gerbil.zone`, a 404, and a teapot's 418. |
+| Backstage | The world up close. Follow an address: Browsy the browser splits it into how to talk, which computer and which file, the DNS owl looks up the number, the letter crosses the sea, and the server answers: the page (200), a 404, or a jelly teapot's 418. |
 | Lessons | 17 short missions with an editor, a terminal and a live browser. |
 
 Lessons, in order: view source, tags as boxes with lids, boxes inside boxes, standalone tags (`<hr/>`), lists, `<a>`, `<img/>`, CSS, reading a URL, `curl`, HTTP `GET`, status codes, DNS, `ping`, HTTPS, publishing with `git push` to GitHub Pages, and a final mission to fix Gerald's broken website.
 
 Everything runs on a pretend internet built into the page (`jelly.fun`, `gerbil.zone`, `teapot.jelly`, `moon.base` and friends), so no real network requests are made. The sandbox adds `curl [-I] [-v] [-L] [-o]`, `ping [-c]`, `nslookup`, `open`, and a small `git` with `status`, `add`, `commit`, `push`, `log` and `remote`. HTML is taught the tidy (XHTML) way throughout: every tag is closed, lids close in reverse order, and standalone tags close themselves (`<hr/>`, `<br/>`, `<img/>`). A tag checker under the editor enforces those rules and points at the line, and a Boxes view draws the page as nested boxes. Pages are previewed in a sandboxed frame with scripts removed. The pretend computer (including the kid's website) is saved in `localStorage`, so it survives a reload. Progress is 19 jellies.
 
-## Jelly Security (prototype)
+## Jelly Security 1
 
 Same skills, different permission. Each mission is a hat swap: wear the black hat (attacker, red team) to break in, the white hat (defender, blue team) to fix it with a named principle, then the black hat again to watch the attack fail. Modern terms come first, with the older words kids will hear alongside. It teaches no new commands: everything it uses comes from the earlier guides.
 
-The prototype has 3 missions: picking your hat and signing a permission slip, least privilege with `ls -l`, `su` and `chmod go-rw`, and a "grey zone" of choices about what to do when you stumble on a way in.
+It has 3 missions: picking your hat and signing a permission slip, least privilege with `ls -l`, `su` and `chmod go-rw`, and a "grey zone" of choices about what to do when you stumble on a way in.
 
 ## How every guide flows
 
@@ -128,12 +128,12 @@ Commit the source changes and the rebuilt guide folders together.
 
 ## Repo layout
 
-- `index.html`: landing page pointing to all five guides, in order. Edited by hand.
+- `index.html`: landing page pointing to all five guides, in order, with the problem each lesson solves. Built from `src/landing.html`, `src/curriculum.json` and `src/problems.json`: don't edit it by hand.
 - `jellyshell/index.html`: Jelly Shell, the app described above.
 - `jellyshell2/index.html`: Jelly Shell 2, users, locks and pipes.
 - `jellygit/index.html`: Jelly Git, the follow-on guide to git.
 - `jellyweb/index.html`: Jelly Web, the guide to HTML, HTTP and publishing.
-- `jellysecurity/index.html`: Jelly Security, the prototype.
+- `jellysecurity/index.html`: Jelly Security 1.
 - `src/`: the source every guide is built from, the build script and the browser tests. See [docs/architecture.md](docs/architecture.md).
 - `docs/`: how the guides teach, look and are built, and how to add a lesson.
 

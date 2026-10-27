@@ -15,7 +15,6 @@ def region(start, end, new, keep_end=True):
 rep('<title>Jelly Shell</title>', '<title>Jelly Web</title>')
 rep('<div class="brand">Jelly <b>Shell</b></div>', '<div class="brand">Jelly <b>Web</b></div>')
 rep('aria-label="Jelly Shell navigation"', 'aria-label="Jelly Web navigation"')
-rep('<h1>Jelly Shell needs a bigger screen</h1>', '<h1>Jelly Web needs a bigger screen</h1>')
 rep('<span class="more"> Letters in Titan One', f'<span class="more"> The third guide, after <a href="{SHELL_URL}" target="_blank" rel="noopener">Jelly Shell</a> and <a href="{GIT_URL}" target="_blank" rel="noopener">Jelly Git</a>. Letters in Titan One')
 rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to the web</div>')
 rep('<h1>Boss your computer around with <em>tiny words</em>.</h1>', '<h1>Make a <em>web page</em>, then send it round the world.</h1>')
@@ -26,30 +25,6 @@ rep('<p>Follow one command, <code>ls</code>, all the way down to the disk and ba
     '<p>Follow one web page, <code>gerbil.zone</code>, from your screen to a server far away and back. Press Next. Drag to turn the world, scroll to zoom, double-click to straighten up.</p>')
 rep('aria-label="A 3D cartoon of a computer cut into layers: you and the terminal, the shell, the kernel, the hardware and the file tree."',
     'aria-label="A 3D cartoon world: your house with your computer upstairs and the router downstairs, the DNS owl in a treehouse next door, the internet cable along the bottom of a cut-open sea, and the server in a building on the far shore."')
-rep('<p>Someone types at the green screen. Then it flips around, and you see the crew inside putting the command together.</p>',
-    '<p>Someone types an address into the browser. Then it flips around, and you see the crew that fetches and builds the page.</p>')
-rep('<span class="face-tag">Front: the green screen</span>', '<span class="face-tag">Front: the browser</span>')
-rep('<div class="crt-brand">JELLY-TERM 3000</div>', '<div class="crt-brand">JELLY-SCREEN 3000</div>')
-rep('aria-label="Press Enter to watch ls happen"', 'aria-label="Press Enter to watch gerbil.zone load"')
-region('<div class="face back" id="back">', '          </div>\n        </div>\n      </div>\n      <div class="show-ui">', '''<div class="face back" id="back">
-              <span class="face-tag">Backstage</span>
-              <div class="tiles" id="tiles"></div>
-              <div class="pageframe"><div class="pf-bar" id="pfBar"></div><div class="pf-body" id="pfBody"></div></div>
-              <div class="sign" style="left:5%;bottom:2%">THE BROWSER WINDOW</div>
-              <div class="actor" id="aOwl" style="left:44%;top:13%;width:15%"></div>
-              <div class="sign" style="left:44%;top:3%">DNS PHONEBOOK</div>
-              <div class="actor" id="aRouter" style="left:46%;bottom:5%;width:12%"></div>
-              <div class="sign" style="left:47.5%;bottom:2%">ROUTER</div>
-              <div class="cable"></div>
-              <div class="actor" id="aServer" style="left:73%;bottom:6%;width:22%"></div>
-              <div class="sign" id="serverSign" style="left:73%;bottom:2%">THE SERVER</div>
-              <div class="actor" id="aBrowsy" style="left:30%;bottom:4%;width:11%;z-index:4"></div>
-              <div class="envelope" id="env"></div>
-              <div class="bubble" id="bOwl" style="left:60%;top:12%"></div>
-            </div>
-''')
-rep('<span><b>Ready?</b> Press <kbd>Enter</kbd> on your keyboard (or click the yellow key) and watch what happens inside the computer.</span>',
-    '<span><b>Ready?</b> Press <kbd>Enter</kbd> on your keyboard (or click the yellow key) and watch the crew fetch a web page.</span>')
 rep('''          <button class="btn" data-show="ls">Play <code>ls</code></button>
           <button class="btn" data-show="cat">Play <code>cat secret-diary.txt</code></button>
           <button class="btn" data-show="mv">Play <code>mv hamster.txt sir-fluffington.txt</code></button>''',
@@ -81,7 +56,11 @@ rep('<a class="ni" href="#${p.id}" data-id="${p.id}" data-teaches=', '<a class="
 # ---------- script ----------
 rep("const KEY = 'jellyshell.v1';", "const KEY = 'jellyweb.v1';")
 exec(open('engine/use-overview.py').read())
-region('/* ---------------- section 2: backstage show ---------------- */', '/* ---------------- section 3: the pretend computer ---------------- */', open(V + 'show.js').read())
+# Backstage: the world up close (engine/use-backstage.py, Backstage in overview.js)
+BS_HEAD = 'The same world, up close. Pick an address and follow it: Browsy splits it, the DNS owl looks up the number, the letter crosses the sea, and the server answers.'
+BS_LABEL = 'The cut-open world from the Overview. Browsy the browser splits the address you pick into its parts, the DNS owl looks up the number, the letter crosses the internet cable under the sea to the server, and the reply comes back: a page, a 404, or a teapot saying 418.'
+BS_PICK, BS_FIRST = 'an address', 'page'
+exec(open('engine/use-backstage.py').read())
 rep("const BIN = ['cat', 'clear', 'cp', 'echo', 'ls', 'man', 'mkdir', 'mv', 'pwd', 'rm', 'touch'];", "const BIN = ['cat', 'clear', 'cp', 'curl', 'echo', 'git', 'ls', 'man', 'mkdir', 'mv', 'nslookup', 'open', 'ping', 'pwd', 'rm', 'touch'];")
 INDEX = '<!DOCTYPE html>\\n<html>\\n  <head>\\n    <title>My page</title>\\n  </head>\\n  <body>\\n    <h1>Hello, world!</h1>\\n    <p>This is my very own web page.</p>\\n  </body>\\n</html>\\n'
 ABOUT = '<!DOCTYPE html>\\n<html>\\n  <head>\\n    <title>About me</title>\\n  </head>\\n  <body>\\n    <h1>About me</h1>\\n    <p>I am learning HTML. It is going great.</p>\\n    <p><a href="index.html">Back home</a></p>\\n  </body>\\n</html>\\n'
@@ -132,12 +111,12 @@ s = s[:i] + """function welcome() {
   print('<span class="mute">Your website is in the folder site. Type help to see the words I know.</span>');""" + s[j:]
 region('/* file tree map with FLIP animations */', '/* ---------------- lessons + progress ---------------- */', open(V + 'web.js').read())
 region('const isCmd = (e, c)', 'const ALL = [', open(V + 'lessons.js').read())
+exec(open('engine/use-demos.py').read())
 rep("  cur = i; const L = LESSONS[i]; store.cur = L.id; save();", "  cur = i; const L = LESSONS[i]; store.cur = L.id; save();\n  webLesson(L);")
 # Start over unticks the mission. Only Gerald's mission puts files back, so your own website is never wiped by accident.
 rep("  resetSandbox(); paintSteps(); termIn.focus({ preventScroll: true });",
     "  if (L.project === 'gerald') { resetGerald(); } else { stopPing(); sh.cwd = sh.home; termOut.innerHTML = ''; welcome(); paintPrompt(); }\n  renderMap(); webLesson(L); paintSteps();")
 rep("word: 'ls cd cat', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 0, frame: 1.4, lookY: .85", "word: 'web', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 3, frame: 1.5, lookY: .8")
-rep("if (TOWN_STEPS[town.step].cta) { go('backstage'); setTimeout(() => runShow('ls'), REDUCED ? 0 : 500); return; }", "if (TOWN_STEPS[town.step].cta) { go('backstage'); setTimeout(() => runShow('page'), REDUCED ? 0 : 500); return; }")
 rep("else if (PANELS[panelIdx]?.lesson && $('#lcard').dataset.phase === 'mission') { e.preventDefault(); termIn.focus({ preventScroll: true }); }", "else if (PANELS[panelIdx]?.lesson && $('#lcard').dataset.phase === 'mission') { e.preventDefault(); (WB.tool === 'edit' ? edText : termIn).focus({ preventScroll: true }); }")
 rep("resetFS(); welcome(); paintPrompt(); renderMap(); paintProgress();", "resetFS(false); welcome(); paintPrompt(); renderMap(); paintProgress();")
 region('/* recap data */', '/* end recap data */\n', open(V + 'recap.js').read(), keep_end=False)

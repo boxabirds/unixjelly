@@ -96,13 +96,18 @@ The full list for each guide is in its `run` / `run1` function. Search for `info
 
 ## 3b. Give it a demo
 
-Add `demo: [...]` to the lesson: the actions a presenter's video should show, one per frame, in order. Each action is one of these:
+Add the lesson's demo to its guide's `src/guides/<guide>/demos.json`, under the lesson's id: the actions a presenter's video should show, one per frame, in order. The build puts it into the lesson. Each action is one of these:
 - a command, like `'ls -l'`;
 - `'@type:text'`, typed into nano (`\\n` for a new line);
 - `'@key:Control+x'`, a key pressed in nano.
-- `'@tab:cat secr'`, `'@up'`, `'@enter'` or `'@ctrlc'`, a special key in the terminal: Tab after typing the text, ↑, Enter on what is typed, or Ctrl+C.
+- `'@tab:cat secr'`, `'@up'`, `'@enter'` or `'@ctrlc'`, a special key in the terminal: Tab after typing the text, ↑, Enter on what is typed, or Ctrl+C;
+- `{ "click": "[data-gh=create]" }`, a button pressed (add `"label"` if the button has no words);
+- `{ "edit": ["from", "to"] }`, a change to the open file (Web);
+- `{ "visit": "jelly.fun" }`, an address typed in the browser, or `{ "link": "About me" }`, a link clicked in the page (Web);
+- `{ "choose": 2 }`, a choice card picked, counting from 0 (Security);
+- `{ "wait": 2600 }`, time passing (for example before stopping `ping`). Presenter mode doesn't need these.
 
-The demo must finish the mission: `node tests/present.mjs` fails if it doesn't. The play-through tests (`shell.mjs`, `shell2.mjs`) still have their own copies of the same commands, and should use the lessons' `demo` lists instead. Jelly Shell's demos live in `engine/demos-shell.py`, because its lessons are in the engine page.
+The demo must finish the mission. Both the guide's play-through test (it plays the same demos) and `node tests/present.mjs` fail if it doesn't.
 
 ## 4. Add any new command to the pretend computer
 
@@ -142,6 +147,7 @@ In Jelly Shell 2, `setup` runs when the mission starts and after Start over, and
    ```
    `quiz` is a question the child answers from memory in "Test me" mode, so make it a task, not a definition.
 3. Pick a colour different from the lessons either side of it.
+4. Add the problem the lesson solves to `src/problems.json`, in the learner's words ("Why does it say Permission denied?"). It shows on the landing page and the guide's small-screen page, and the build stops without it.
 
 ## 8. Build and test
 

@@ -1,7 +1,9 @@
 // Jelly Git's Overview: your computer is a house cut open like a doll's house. Your project folder on the ground
 // floor, the stage above it, and the photo album (.git) at the top. A lift tower climbs past the roof into a
 // see-through cloud where GitHub keeps its copy, and a friend's house next door gets one too.
-// game.py travels as jelly letters; commits are photos. Built with the Overview kit (engine/overview-kit.js).
+// game.py travels as jelly letters; commits are photos. Backstage is the same house up close, with one show per git
+// command: a jelly git robot does the work, and a jelly pigeon carries photos up to GitHub.
+// Built with the Overview kit (engine/overview-kit.js).
 const TOWN_STEPS = [
   { who: 'The overview', text: 'Your code makes a trip with four stops: your folder, the stage, the photo album, and GitHub in the cloud. Press Next to follow one change all the way up.', shot: 'whole' },
   { who: 'Your folder', text: 'This is your computer and your project folder. You just changed game.py: you added lasers! git notices the change, but nothing is saved yet.', shot: 'folder', ends: 'folder' },
@@ -12,8 +14,9 @@ const TOWN_STEPS = [
   { who: 'That\'s the overview', text: 'Change, git add, git commit, git push. Remember it as Cats Always Chase Pigeons. Now let\'s zoom in and watch the crew do it.', shot: 'whole', cta: true },
 ];
 
-const Town = overview((k) => {
-  const { V, solid, gel, rbox, blob, label, jellyWord, add, live, T } = k;
+// The house, for the Overview (mode 'overview': its steps) or Backstage (mode 'backstage': its shows).
+function gitHouse(k, mode) {
+  const { V, solid, gel, rbox, eye, blob, label, jellyWord, add, live, T } = k;
   const H = 3.3, W = 8.4, D = 4, SW = 1.9;
   const SX = W / 2 + T + SW / 2; // lift centre
   const LEVEL = { folder: 0, stage: H, album: 2 * H };
@@ -50,6 +53,7 @@ const Town = overview((k) => {
     me.refresh();
   };
   const setScreen = (lines) => { scr.lines = lines; drawScreen(); };
+  const wrap = (t) => t.match(/.{1,19}/g) ?? ['']; // the screen fits about 19 letters a line
   document.fonts?.ready.then(drawScreen);
   // README.md waits on a shelf; game.py is the one you changed
   const shelf = new THREE.Group(); shelf.position.set(-3.3, 0, -1.3); add(shelf);
@@ -111,7 +115,92 @@ const Town = overview((k) => {
   const { tween, wait, hop, along, pop, say, shot, look, poke } = k;
   const flashOn = () => { flash.visible = true; k.sfx((s) => s.boing(1800, .15, .12)); return tween(.5, (e) => { flash.scale.setScalar(.2 + e * 2.2); flash.material.opacity = .9 * (1 - e); if (e === 1) flash.visible = false; }); };
   let spotOn = 0;
+
+  /* Backstage's shows: one per git command */
+  const caption = (html) => { if (typeof showCap === 'function') showCap(html); };
+  const { character, robot, HEAD, settleTo } = k;
+  const bot = mode === 'backstage' ? robot('git', '#f05033') : null;
+  const wings = [];
+  const pigeon = mode === 'backstage' ? character((b) => {
+    const G = '#b9c3d8';
+    b.add(gel(new THREE.SphereGeometry(.32, 22, 16), G, { p: [0, .45, 0], s: [1.35, .9, .95] }));
+    b.add(gel(new THREE.SphereGeometry(.2, 18, 12), G, { p: [.38, .75, 0] }));
+    b.add(gel(new THREE.ConeGeometry(.07, .2, 10), '#ffc61a', { p: [.6, .73, 0], r: [0, 0, -Math.PI / 2] }));
+    [-1, 1].forEach((sd) => eye(b, [.46, .8, sd * .13], .05));
+    [-1, 1].forEach((sd) => { const w = new THREE.Group(); w.position.set(-.05, .55, sd * .25); w.add(gel(new THREE.SphereGeometry(.26, 14, 10), '#8e9ab5', { p: [-.1, 0, sd * .14], s: [1.3, .3, .8] })); b.add(w); wings.push([w, sd]); });
+  }) : null;
+  const PROMPT = '$ ', OUT = {
+    commit: ['[main e4f5a6b]', ' add lasers'],
+    push: ['main -> main', '(sent to GitHub)'],
+  };
+  async function type(line) {
+    setScreen([PROMPT]); me.typing = true;
+    for (let n = 1; n <= line.length; n++) { setScreen(wrap(PROMPT + line.slice(0, n))); k.sfx((x) => x.boing(1400, .03, .03)); await wait(.05); }
+    me.typing = false; await wait(.35); poke(me.kid, .15);
+  }
+  const done = async (line, text) => {
+    setScreen([...wrap(PROMPT + line), ...(OUT[line.split(' ')[1]] ?? []), PROMPT]); shot('folder'); look(null);
+    caption(`<b>Back to the front.</b> ${text}`); k.sfx((x) => x.ding()); await pop(bot, 0, .3);
+  };
+  const SCENES = mode !== 'backstage' ? null : {
+    async add() {
+      shot('folder'); caption('<b>Front.</b> You changed game.py: you added lasers! Now you type a git command.');
+      file.position.copy(FILE_HOME); await pop(file, 1, .3);
+      await type('git add game.py');
+      caption('<b>Enter!</b> The shell finds a program called <b>git</b> and starts it, just like ls in Jelly Shell. Its job: <b>add</b>. Which file: <b>game.py</b>.');
+      bot.position.set(1.6, 0, 1.3); look(bot); await pop(bot, 1, .45); poke(bot.userData.body, .3);
+      say('git here! Time to set the stage.', V(1.6, 2.75, 1.4)); await wait(1.5);
+      say(null); caption('<b>git add</b> picks up game.py from your folder...');
+      await hop(bot, V(.7, 0, 1.5), .5); bot.attach(file); await settleTo(file, V(0, HEAD, 0), .5);
+      caption('...and carries it up to <b>the stage</b>. Only files on the stage go into the next photo.');
+      await lift.in(bot, 0); shot('stage'); await lift.to(LEVEL.stage); await hop(bot, V(2.4, st, .7), .6);
+      k.scene.attach(file); await Promise.all([hop(file, STAGE_SPOT, .6), tween(.6, (e) => file.scale.setScalar(.5 + .5 * e))]);
+      tween(.4, (e) => { spotOn = e; }); say('Stand there and look nice. Photo later!', V(2.4, st + 2.75, .8)); await wait(1.7);
+      say(null); await done('git add game.py', 'git add only moves the file onto the stage. Nothing is saved yet. And the screen says nothing: no news is good news.');
+    },
+    async commit() {
+      file.position.copy(STAGE_SPOT); file.scale.setScalar(1); file.visible = true; spotOn = 1; // it was added already
+      shot('folder'); caption('<b>Front.</b> game.py is waiting on the stage. Time for the photo.');
+      await type('git commit -m "add lasers"');
+      caption('<b>Enter!</b> git starts again. The job is <b>commit</b>, and <b>-m "add lasers"</b> is the message to write on the photo.');
+      shot('stage'); bot.position.set(-1.2, st, 1.3); look(bot); await pop(bot, 1, .45);
+      say('Camera ready! Everybody on stage, smile!', V(-1.2, st + 2.75, 1.3)); await wait(1.5);
+      say(null); await hop(bot, V(-2.2, st, 1.7), .5);
+      caption('<b>SNAP!</b> git takes a photo of everything on the stage. The photo gets an ID, <b>e4f5a6b</b>, and your message.');
+      await flashOn(); newPhoto.position.copy(STAGE_SPOT).add(V(0, 1.2, .6)); look(newPhoto); await pop(newPhoto, 1, .35);
+      tween(.4, (e) => { spotOn = 1 - e; }); await pop(file, 0, .35); // after a commit the stage is empty again
+      caption('Into <b>the photo album</b>, the hidden <b>.git</b> folder. That version of game.py is saved forever, on this computer.');
+      await hop(bot, V(.6, st, 1.3), .5); bot.attach(newPhoto); await settleTo(newPhoto, V(0, HEAD + .3, 0), .8);
+      await lift.in(bot, 0); shot('album'); await lift.to(LEVEL.album); await hop(bot, V(-.2, al, 1.1), .6);
+      k.scene.attach(newPhoto); await Promise.all([hop(newPhoto, SLOT(1), .6, .5), tween(.6, (e) => newPhoto.scale.setScalar(.8 + .6 * e))]);
+      say('Saved! But only on this computer, until you push.', V(-.2, al + 2.75, 1.1)); await wait(2);
+      say(null); await done('git commit -m "add lasers"', 'git took a photo of everything on the stage and pinned it in the album as e4f5a6b. That version of game.py is saved forever.');
+    },
+    async push() {
+      newPhoto.position.copy(SLOT(1)); newPhoto.scale.setScalar(1.4); newPhoto.visible = true; // it was committed already
+      shot('folder'); caption('<b>Front.</b> The new photo is in the album. Now send it up to GitHub.');
+      await type('git push');
+      caption('<b>Enter!</b> Just two words. git already knows where GitHub is, because you told it once with <b>git remote</b>.');
+      shot('album'); bot.position.set(1.4, al, 1.2); look(bot); await pop(bot, 1, .45);
+      say('New photos for GitHub? Pigeon time!', V(1.4, al + 2.75, 1.2)); await wait(1.4);
+      say(null); pigeon.position.set(2.6, al + 1.9, 1.3); await pop(pigeon, 1, .4); poke(pigeon.userData.body, .3); k.sfx((x) => x.boing(900, .2, .08));
+      caption('<b>git push</b> gives the pigeon a copy of each photo GitHub doesn\'t have yet.');
+      pushed.position.copy(SLOT(1)).add(V(0, 0, .3)); await pop(pushed, .75, .3);
+      pigeon.attach(pushed); await settleTo(pushed, V(0, -.25, .45), .6, .5);
+      shot('cloud'); look(pigeon);
+      await along(pigeon, [pigeon.position.clone(), V(SX + .4, 3 * H + 1.5, 1.6), V(SX - .6, CY - 1.6, 1.8), V(CX + 1.6, CY - .6, 1.6)], 2.2);
+      caption('<b>GitHub</b> checks who is knocking. Only you may put photos in your repository.');
+      say('Who goes there? Show me your token!', V(CX - .6, CY + 1.3, 1.2)); await wait(1.8);
+      say('Token! Signed in as kid.', V(CX + 1.6, CY + .9, 1.6)); await wait(1.5);
+      say('Welcome! Photo saved on GitHub.', V(CX - .6, CY + 1.3, 1.2));
+      k.scene.attach(pushed); await Promise.all([hop(pushed, GH_SLOT(1), .6, .4), tween(.6, (e) => pushed.scale.setScalar(.6 + .15 * e))]); await wait(1.4);
+      say(null); await pop(pigeon, 0, .3);
+      await done('git push', 'The pigeon carried a copy of the new photo up to GitHub. Now the code is safe even if your computer gets eaten by a dog.');
+    },
+  };
   return {
+    START: mode === 'backstage' ? 'folder' : 'whole',
+    SCENES,
     SHOTS: {
       whole: { c: V(-4.2, 8.4, 0), w: 25, h: 21.5 },
       folder: { c: V(1.1, LEVEL.folder + 1.6, 0), w: 12, h: 4.3, room: true },
@@ -125,6 +214,7 @@ const Town = overview((k) => {
       newPhoto.visible = false; newPhoto.scale.setScalar(0); pushed.visible = false; pushed.scale.setScalar(0);
       pulled.forEach((p) => { p.visible = false; p.scale.setScalar(0); });
       flash.visible = false; spotOn = 0;
+      for (const c of [bot, pigeon]) if (c) { c.visible = false; c.scale.setScalar(0); }
       setScreen(['~/my-game$ ']); drawFriend(['~$ ']);
     },
     PLAY: [
@@ -169,7 +259,10 @@ const Town = overview((k) => {
     ],
     tick(dt, t) {
       spot.material.opacity = .06 + spotOn * .22 + Math.sin(t * 3) * .02;
+      wings.forEach(([w, sd]) => { w.rotation.x = sd * Math.sin(t * 16) * .5; });
       scr.t += dt; if (scr.t > .5) { scr.t = 0; scr.blink = !scr.blink; drawScreen(); }
     },
   };
-});
+}
+const Town = overview((k) => gitHouse(k, 'overview'));
+const Backstage = overview((k) => gitHouse(k, 'backstage'));

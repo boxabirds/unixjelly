@@ -1,17 +1,20 @@
 /* ---------------- security: users, locks and hats ---------------- */
 // The shell (locks, su, chmod) is jellysh, in src/shell/jellysh.js. This file gives it the two people on this
 // pretend computer, the made-up sign command, and Jelly Security's voice.
-// Everything at home belongs to the family group, so kid and sib share the middle set of keys.
-const SEC_USERS = { root: { uid: 0, groups: ['root'] }, kid: { uid: 1000, groups: ['family'] }, sib: { uid: 1001, groups: ['family'] } };
+// The same people and groups as Jelly Shell 2, which comes first: everyone has a group named after them, and family
+// is a shared club. So a child sees the same owners and groups in ls -l as before.
+const SEC_USERS = { root: { uid: 0, groups: ['root'] }, kid: { uid: 1000, groups: ['kid', 'sudo', 'family'] }, sib: { uid: 1001, groups: ['sib', 'family'] } };
 const own = SH.own, grp = SH.grp, modeOf = SH.modeOf, can = SH.can, triplet = SH.triplet, modeStr = SH.modeStr;
 // The lock in colour, so the three sets of keys stand apart (everyone-else keys glow when they let anyone in).
 const modeHTML = (n) => { const m = modeOf(n); return `<span class="perm">${n.type === 'dir' ? 'd' : '-'}<b class="pu">${triplet(m, 6)}</b><b class="pg">${triplet(m, 3)}</b><b class="po${m & 0o6 ? ' open' : ''}">${triplet(m, 0)}</b></span>`; };
-const inFamily = (n) => SEC_USERS[sh.user]?.groups.includes(grp(n));
-// Who owns what when the pretend computer starts. The diary is the hole: its lock gives everyone the keys.
+const inGroup = (n) => SEC_USERS[sh.user]?.groups.includes(grp(n));
+// Who owns what when the pretend computer starts, as in Jelly Shell 2. The diary is the hole: its lock gives
+// everyone else the keys too, so sib gets in as "everyone else".
 function secPerms() {
   const set = (n, owner, group) => { n.owner = owner; n.group = group; n.children?.forEach((c) => set(c, owner, group)); };
   set(sh.root, 'root', 'root');
-  set(find('/home/kid'), 'kid', 'family'); set(find('/home/sib'), 'sib', 'family');
+  find('/bin').children.forEach((c) => { c.mode = 0o755; });
+  set(find('/home/kid'), 'kid', 'kid'); set(find('/home/sib'), 'sib', 'sib');
   find('/home/kid/diary.txt').mode = 0o666;
   find('/home/sib/plans.txt').mode = 0o600;
   // sign is a made-up command, so its program is readable text: proof that anyone can write one.
@@ -22,16 +25,16 @@ const once = (k) => !store.seen?.[k] && ((store.seen ??= {})[k] = true, save(), 
 
 const base = SH.hooks;
 SH.configure({
-  users: SEC_USERS, gids: { root: 0, family: 1002 },
+  users: SEC_USERS, gids: { root: 0, sudo: 27, kid: 1000, sib: 1001, family: 1002 },
   hooks: {
     modeHTML,
     before: (c) => {
       base.before?.(c);
-      if (c.cmd === 'ls' && c.flags.has('l') && once('perm')) c.say('(How to read a line: the first letter is d for a folder or - for a file. The next nine letters are the lock: three sets of keys, for the owner, the group and everyone else. r = read, w = write, x = run (on a folder: go inside), - = no key. Then come the owner, the group, the size, the date and the name.)', 'tip');
+      if (c.cmd === 'ls' && c.flags.has('l') && once('perm')) c.say('(Remember the locks from Jelly Shell 2: d or -, then three sets of keys, for the owner, the group and everyone else. r = read, w = write, x = run, - = no key.)', 'tip');
     },
     denied: (c, { op, node, tip }) => {
       if (tip) return op === 'write' ? `You are ${sh.user}, and that set of keys has no w (write) key.` : tip;
-      if (op === 'read') c.note(`<span class="shelly">Shelly:</span> The lock on ${esc(node.name)} is ${modeHTML(node)}, owned by ${own(node)}. You are <b>${sh.user}</b>, ${own(node) === sh.user ? 'the owner' : inFamily(node) ? `in the ${grp(node)} group` : 'everyone else'}, and that set has no <b>r</b> key. No entry!`);
+      if (op === 'read') c.note(`<span class="shelly">Shelly:</span> The lock on ${esc(node.name)} is ${modeHTML(node)}, owned by ${own(node)}. You are <b>${sh.user}</b>, ${own(node) === sh.user ? 'the owner' : inGroup(node) ? `in the ${grp(node)} group` : 'everyone else'}, and that set has no <b>r</b> key. No entry!`);
     },
     tip: (key, text) => ({
       'chmod.usage': 'Try: chmod go-rw diary.txt',
@@ -46,7 +49,7 @@ SH.configure({
       base.after?.(c);
       if (c.cmd === 'cat' && c.info.hits?.length) for (const p of c.info.hits) {
         const n = find(p);
-        if (own(n) !== sh.user && SEC_USERS[own(n)] && own(n) !== 'root') c.note(shelly(`You got in! ${esc(n.name)} belongs to ${own(n)}, but you are <b>${sh.user}</b>, ${inFamily(n) ? `in the <b>${grp(n)}</b> group, so you get the middle set of keys in ${modeHTML(n)}. That set has an <b>r</b> key` : 'everyone else, so you get the last set of keys, and it has an <b>r</b> key'}.`));
+        if (own(n) !== sh.user && SEC_USERS[own(n)] && own(n) !== 'root') c.note(shelly(`You got in! ${esc(n.name)} belongs to ${own(n)}, but you are <b>${sh.user}</b>, ${inGroup(n) ? `in the <b>${grp(n)}</b> group, so you get the middle set of keys in ${modeHTML(n)}. That set has an <b>r</b> key` : 'everyone else, so you get the last set of keys, and it has an <b>r</b> key'}.`));
       }
       if (c.cmd === 'whoami') {
         if (once('whoami')) c.note(shelly('<b>whoami</b> asks: which <b>account</b> am I using? One computer can have lots of users, each with their own home folder. Your prompt says it too: the bit before the <b>@</b> is you.'));
@@ -56,7 +59,7 @@ SH.configure({
       if (c.cmd === 'chmod' && c.info.file) {
         const n = find(c.info.file), m = modeOf(n);
         c.note(`<span class="mute">(lock on ${esc(n.name)}: ${modeHTML({ ...n, mode: c.info.was })} → ${modeHTML(n)})</span>`);
-        c.say(`(${n.name} is now ${modeStr(n)}: ${!(m & 0o077) ? `only ${own(n)} has any keys` : m & 0o006 ? 'everyone still has keys' : 'the family has keys, strangers don\'t'}.)`, 'mute');
+        c.say(`(${n.name} is now ${modeStr(n)}: ${!(m & 0o077) ? `only ${own(n)} has any keys` : m & 0o006 ? 'everyone else still has keys' : 'the group has keys, everyone else doesn\'t'}.)`, 'mute');
       }
       if (c.cmd === 'su' && c.info.user) {
         c.say(`(su means switch user. You are now ${c.info.user}, so you only have ${c.info.user}'s keys. Look at the prompt: it says ${c.info.user}@jelly. Type exit to go back.)`, 'mute');

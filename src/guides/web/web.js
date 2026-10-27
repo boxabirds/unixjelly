@@ -1,4 +1,6 @@
 /* ---------------- the pretend internet ---------------- */
+// The browser bar's lock, for secure pages.
+const PADLOCK = `<svg viewBox="0 0 16 18" aria-hidden="true"><rect x="2" y="8" width="12" height="9" rx="2" fill="#62c934" stroke="${INK}" stroke-width="2"/><path d="M5 8V5.5a3 3 0 0 1 6 0V8" fill="none" stroke="${INK}" stroke-width="2"/></svg>`;
 // The commands this guide adds to the shell (src/shell/jellysh.js).
 SH.define('curl', (c) => curlRun(c.args, c.say, c.fail, c.info));
 ['nslookup', 'dig', 'host'].forEach((name) => SH.define(name, (c) => lookupRun(c.rest, c.say, c.fail, c.info)));

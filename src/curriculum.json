@@ -1,28 +1,30 @@
 {
-  "_about": "The one place that says which courses exist and which must come first. The build reads it to make the course map in every guide's side menu, the 'Comes after' line on each welcome screen, the next-course buttons at the end of a course, and the landing page. 'needs' lists the courses that must be finished first (only the direct ones: Git needs Shell 2, and Shell 2 already needs Shell). A course whose 'folder' is null is planned, not built: it shows as 'coming later'. 'store' is the browser storage key the guide keeps its progress under. Card fields (cmd, blurb, button, colour) are for the landing page. tests/curriculum.mjs checks this file.",
+  "_about": "The one place that says which courses exist and which must come first. The build reads it to make the course map in every guide's side menu, the 'Comes after' line on each welcome screen, the next-course buttons at the end of a course, and the landing page. 'lessons' is the file with the course's LESSONS; 'tagline' and 'about' are for page titles and search results (about: under 160 characters). 'pain' is the everyday problem the course fixes, for the landing page. 'needs' lists the courses that must be finished first (only the direct ones: Git needs Shell 2, and Shell 2 already needs Shell). A course whose 'folder' is null is planned, not built: it shows as 'coming later'. 'store' is the browser storage key the guide keeps its progress under. 'recap' is the file with its \"What I've learnt\" words, shown when someone asks what a course is about on the course map. Card fields (cmd, blurb, button, colour) are for the landing page. tests/curriculum.mjs checks this file.",
+  "_site": "The address the site is published at, like https://example.org/jelly/ (with the closing slash). With it set, the build writes canonical links, sitemap.xml and robots.txt for search engines. null leaves them out.",
+  "site": "https://unixjelly.com/",
   "courses": [
     {
-      "id": "shell", "title": "Jelly Shell", "folder": "jellyshell", "store": "jellyshell.v1", "needs": [],
+      "id": "shell", "pain": "A tutorial says “open a terminal”, and you freeze.", "lessons": "engine/shell.html", "tagline": "learn the command line", "about": "A free, interactive command line course for curious kids. Learn ls, cd, cat, mv and more in a safe pretend terminal in your browser. Nothing to install.", "recap": "engine/shell.html", "title": "Jelly Shell", "folder": "jellyshell", "store": "jellyshell.v1", "needs": [],
       "cmd": "$ ls  cd  cat  mv", "colour": "#d8f6e4", "button": "Start the shell",
       "blurb": "Boss your computer around with tiny words. Move around folders, read and copy files, and rescue the gerbil."
     },
     {
-      "id": "shell2", "title": "Jelly Shell 2", "folder": "jellyshell2", "store": "jellyshell2.v1", "needs": ["shell"],
+      "id": "shell2", "pain": "It says Permission denied, and you have no idea why.", "lessons": "guides/shell2/lessons.js", "tagline": "users, permissions and pipes", "about": "Free interactive course: users, file permissions, chmod, sudo, writing your own commands, grep and pipes, in a safe pretend terminal in your browser.", "recap": "guides/shell2/recap.js", "title": "Jelly Shell 2", "folder": "jellyshell2", "store": "jellyshell2.v1", "needs": ["shell"],
       "cmd": "$ whoami  chmod  sudo  |", "colour": "#ffe1d1", "button": "Then part 2",
       "blurb": "Who's in charge? Users, groups and file locks. Write your own commands, borrow the boss's power, and use pipes to find out who ate the cookies."
     },
     {
-      "id": "git", "title": "Jelly Git", "folder": "jellygit", "store": "jellygit.v1", "needs": ["shell2"],
+      "id": "git", "pain": "A week of work is gone, and there is no way back.", "lessons": "guides/git/lessons.js", "tagline": "learn git and GitHub", "about": "Learn git the friendly way: save snapshots, undo mistakes, and back your code up to GitHub. Free, interactive, in a safe pretend terminal in your browser.", "recap": "guides/git/recap.js", "title": "Jelly Git", "folder": "jellygit", "store": "jellygit.v1", "needs": ["shell2"],
       "cmd": "$ git add  commit  push", "colour": "#eadcff", "button": "Try git",
       "blurb": "Never lose your code again. Save snapshots, undo mistakes and work with other people without stepping on their changes."
     },
     {
-      "id": "security1", "title": "Jelly Security 1", "folder": "jellysecurity", "store": "jellysecurity.v1", "needs": ["shell2"], "badge": "Prototype",
+      "id": "security1", "pain": "You want to learn hacking, the legal way.", "lessons": "guides/security/lessons.js", "tagline": "think like a hacker, safely", "about": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.", "recap": "guides/security/recap.js", "title": "Jelly Security 1", "folder": "jellysecurity", "store": "jellysecurity.v1", "needs": ["shell2"],
       "cmd": "black hat → white hat", "colour": "#ffd9e1", "button": "Try security",
       "blurb": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. Three missions."
     },
     {
-      "id": "web", "title": "Jelly Web", "folder": "jellyweb", "store": "jellyweb.v1", "needs": ["git"],
+      "id": "web", "pain": "You want your own website, on the real internet.", "lessons": "guides/web/lessons.js", "tagline": "how websites work, and make your own", "about": "Write your own web page in HTML and CSS, follow it across the internet (DNS, HTTP, HTTPS), then publish it free with GitHub Pages. Free and in your browser.", "recap": "guides/web/recap.js", "title": "Jelly Web", "folder": "jellyweb", "store": "jellyweb.v1", "needs": ["git"],
       "cmd": "<h1>  curl  ping  push", "colour": "#fff0b3", "button": "Then the web",
       "blurb": "Write your own web page, find out how it crosses the planet in under a second, then put it on the internet with GitHub Pages."
     },
@@ -30,6 +32,31 @@
       "id": "security2", "title": "Jelly Security 2", "folder": null, "store": null, "needs": ["web", "security1"],
       "cmd": "401  403  https", "colour": "#ffd9e1",
       "blurb": "Attack and defend a pretend website: passwords, lookalike addresses, secret pages and who else can see your messages."
+    },
+    {
+      "id": "think1", "title": "Jelly Think 1", "folder": null, "store": null, "needs": ["web"],
+      "cmd": "forward()  repeat  if", "colour": "#dcecff",
+      "blurb": "Meet Wobble, a jelly robot that does exactly what you say and nothing more. Give it orders in real JavaScript, hunt the bugs, and learn to think like a programmer."
+    },
+    {
+      "id": "server", "title": "Jelly Server", "folder": null, "store": null, "needs": ["think1"],
+      "cmd": "app.get('/')", "colour": "#e2f7d4",
+      "blurb": "Make your website answer back. Write a pretend server in real JavaScript: a guestbook that shows everyone's messages."
+    },
+    {
+      "id": "think2", "title": "Jelly Think 2", "folder": null, "store": null, "needs": ["think1"],
+      "cmd": "can't  too slow  at once", "colour": "#dcecff",
+      "blurb": "What computers can't do, what takes forever, what goes wrong when two things happen at once, and what AI really is. Then: what you shouldn't build."
+    },
+    {
+      "id": "storage", "title": "Jelly Storage", "folder": null, "store": null, "needs": ["server"],
+      "cmd": "{ }  [ ]  JSON", "colour": "#fff4d6",
+      "blurb": "Your guestbook forgets everything when the server restarts. Teach it to remember, with files and JSON."
+    },
+    {
+      "id": "sql", "title": "Jelly SQL", "folder": null, "store": null, "needs": ["storage"],
+      "cmd": "SELECT * FROM", "colour": "#f3e3ff",
+      "blurb": "Ask a database questions. Find every message from one person, count them, and join tables together."
     }
   ]
 }

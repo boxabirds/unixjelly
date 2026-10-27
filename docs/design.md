@@ -70,7 +70,7 @@ The set of keys that applies to the person typing is underlined.
 
 ## Layout
 
-- **Desktop or tablet only, at least 900 × 560.** Smaller windows show a friendly "needs a bigger screen" notice instead. A phone layout isn't built yet.
+- **Desktop or tablet only, at least 900 × 560.** Smaller windows show a friendly notice instead, with a **Show mobile slideshow** button: presenter mode's frames, tapped through (see architecture.md). The interactive guide on a phone isn't built yet.
 - **One panel at a time:** Welcome, then the lessons, then "What I've learnt". The left menu (250px) is visible on Welcome and the recap. During lessons it slides away, and a tab on the left edge brings it back.
 - **No scrolling.** Every panel must fit the window at every size from 900 × 560 up to 1920 × 1080. Text in areas marked `data-fit` shrinks a little (down to 56%) to fit. The terminal and the file tree may scroll inside their own boxes. `tests/fit.mjs` checks every panel and phase at five window sizes.
 - **The lesson screen** has the jelly box in the top-left corner, with the title or the current mission step beside it. The work area sits below:
@@ -115,7 +115,9 @@ A plain padlock is never used: it could mean "can't read" or "can't change", and
 - **In the side menu**, under the jar, a "Course map" lists every course with its step number. The current course is yellow and says "you are here"; finished ones are green with "✓ finished"; planned ones are faded and say "coming later". The others say what they come after.
 - **On the welcome screen**, one line says which course comes first ("Comes after Jelly Shell 2 ✓").
 - **At the end of a course**, the final card offers up to two next courses as yellow buttons, and "What I've learnt" repeats them. The next course is one that isn't finished and whose needs are met.
-- **The landing page** shows the same map as steps. Courses on the same step sit side by side, labelled "do these in either order".
+- **The landing page** opens with the everyday problems the courses fix, then the courses in order as a grid, each card labelled with its step ("Step 3 · either order" where two share one), then every lesson with the problem it solves.
+
+- **What's in a course?** A `?` beside each course on the map opens a card: the course's one-line summary and every word it teaches, each with an example (from that course's "What I've learnt" page), and a link to open it. Planned courses show their short description.
 
 ## The Overview
 
@@ -134,6 +136,7 @@ A plain padlock is never used: it could mean "can't read" or "can't change", and
 - **The "you earned" card** names the look ("You earned the zebra `ls -l` jelly!"), shows that jelly, and has a **See it in my jar** link.
 - **The shelf.** **My jelly jars** in the side menu opens a shelf with one jar per course, in course order. Each jar wears its course's lid colour and shows its jellies piled inside, with "7 of 15 jellies", "empty" or "coming later" underneath. Empty jars are a set waiting to be completed.
 - **A jar** opens from the shelf, or from the card's link (that course's jar). It's a round sweet jar in the jelly style: see-through glass with a rainbow sheen, a white lip, a puffy berry lid that has popped off and bobs above it, and a lemon coaster. The jar is rigid; only the jellies wobble. Behind it, soft pastel rainbow swirls drift slowly (they stop when the computer asks for less motion). The jellies are the same soft bodies as the jelly letters, in the shape of the card's jelly, with their faces puffed into domes. Colours stay bright: the jar uses neutral tone mapping (the letters' filmic one washes bright colours out), very little sheen, and clear glass. Grab one and fling it, press **Shake it!**, or tap one to see its look, its word, the lesson, the course, what it does and an example.
+- **The sweets in a jar are real jelly too:** see-through, with their look either as layers inside the jelly or as things suspended in it, like chocolate chips, sprinkles, glitter, stars or gold leaf.
 - **Every course's jellies, everywhere.** Guides served from one website share them (the `jelly.collection` key), so the Shell 2 shelf shows the Git jar full too. Hosted one per page (claude.ai), each guide only sees its own, until the child loads a save file.
 - **Save my jellies** downloads `my-jellies-<date>.json`: every jelly, every course's ticks and the course map. **Use my existing jellies** loads one back. It only ever adds (nothing is taken away), and then says "Welcome back!". Progress otherwise lives only in this browser, so this is how a child keeps it safe, moves to another computer, or fills the other jars on claude.ai.
 - **Starting a course again** takes that course's jellies out of the jar, and nobody else's.
@@ -142,6 +145,7 @@ A plain padlock is never used: it could mean "can't read" or "can't change", and
 
 ## Motion and sound
 
+- **The jelly looks like jelly:** glossy, with window highlights, colour that deepens where it's thick and lightens at the edges, and a soft glow of its colour on the floor. Bright, saturated sweet colours, not pastels (see architecture.md, The jelly's look).
 - Jelly letters drop in, wobble, hop when you get something right, and walk back to their places if knocked out of line. Thin letters have a heavier base so they stay upright (`tests/letters.mjs` checks this).
 - Earning a lesson's jelly gives confetti, a sound, and the jelly flying into the jar.
 - **Reduced motion** is respected. When the computer asks for less movement, there is no confetti and nothing flies to the jar. Panels and the file tree appear without sliding, and animations in the tours run faster. The jelly letters still wobble when touched.

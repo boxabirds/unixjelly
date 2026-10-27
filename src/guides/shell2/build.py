@@ -13,7 +13,6 @@ def region(start, end, new, keep_end=True):
 rep('<title>Jelly Shell</title>', '<title>Jelly Shell 2</title>')
 rep('<div class="brand">Jelly <b>Shell</b></div>', '<div class="brand">Jelly <b>Shell 2</b></div>')
 rep('aria-label="Jelly Shell navigation"', 'aria-label="Jelly Shell 2 navigation"')
-rep('<h1>Jelly Shell needs a bigger screen</h1>', '<h1>Jelly Shell 2 needs a bigger screen</h1>')
 rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to the command line · part 2</div>')
 rep('<h1>Boss your computer around with <em>tiny words</em>.</h1>', '<h1>Who\'s in <em>charge</em> here?</h1>')
 rep('<p>These words were invented in 1971. They still work today on Macs, Linux, Raspberry Pis and most of the computers that run the internet. Learn them once, use them for life.</p>',
@@ -84,6 +83,7 @@ rep("  mapEl.innerHTML = rows.join('');", "  mapEl.innerHTML = rows.join(''); $(
 
 # ---------- lessons, recap, engine and styles ----------
 region('const isCmd = (e, c)', 'const ALL = [', open(V + 'lessons.js').read())
+exec(open('engine/use-demos.py').read())
 rep("const ALL = [{ id: 'whole', name: 'Overview', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];", "const ALL = [...LESSONS];")
 region('/* recap data */', '/* end recap data */\n', open(V + 'recap.js').read(), keep_end=False)
 rep("/* ---------------- boot ---------------- */", open(V + 's2.js').read() + "\n/* ---------------- boot ---------------- */")

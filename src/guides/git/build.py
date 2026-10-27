@@ -22,35 +22,6 @@ rep('<p>Follow one command, <code>ls</code>, all the way down to the disk and ba
     '<p>Follow one change to <code>game.py</code> from your folder all the way up to GitHub. Press Next. Drag to turn the house, scroll to zoom, double-click to straighten up.</p>')
 rep('aria-label="A 3D cartoon of a computer cut into layers: you and the terminal, the shell, the kernel, the hardware and the file tree."',
     'aria-label="A 3D cartoon house, cut open like a doll\'s house: your folder on the ground floor, the stage above it, the photo album at the top, and GitHub in a see-through cloud at the top of a lift tower. A friend\'s house next door gets a copy too."')
-rep('<p>Someone types at the green screen. Then it flips around, and you see the crew inside putting the command together.</p>',
-    '<p>Someone types a git command at the green screen. Then it flips around, and you see the git crew at work.</p>')
-rep('aria-label="Press Enter to watch ls happen"', 'aria-label="Press Enter to watch git add happen"')
-region('<div class="face back" id="back">', '          </div>\n        </div>\n      </div>\n      <div class="show-ui">', '''<div class="face back" id="back">
-              <span class="face-tag">Backstage</span>
-              <div class="tube"></div>
-              <div class="tiles" id="tiles"></div>
-              <div class="actor" id="aShelly" style="left:2%;bottom:4%;width:17%"></div>
-              <div class="sign" style="left:4%;bottom:2%">THE SHELL</div>
-              <div class="actor" id="aCab" style="left:21%;bottom:6%;width:11%"></div>
-              <div class="sign" style="left:22.5%;bottom:2%">/bin</div>
-              <div class="actor" id="aDesk" style="left:34%;bottom:3%;width:19%"></div>
-              <div class="sign" style="left:36%;bottom:2%">YOUR FOLDER</div>
-              <div class="actor" id="aStage" style="left:56%;bottom:3%;width:22%"></div>
-              <div class="sign" style="left:61%;bottom:2%">THE STAGE</div>
-              <div class="album" id="album"></div>
-              <div class="sign" style="left:36%;top:3%">PHOTO ALBUM (.git)</div>
-              <div id="aCloud" style="right:2%;top:3%;width:22%"><div class="cphotos" id="cloudPhotos"></div></div>
-              <div class="pfile" id="fGame">game.py</div>
-              <div class="pfile" id="fReadme">README.md</div>
-              <div class="actor" id="aProg" style="left:22%;bottom:3%;width:9%;opacity:0;z-index:4"></div>
-              <div class="actor" id="aPigeon" style="left:66%;top:20%;width:8%;opacity:0;z-index:4"></div>
-              <div class="flash" id="flash"></div>
-              <div class="bubble" id="bShelly" style="left:4%;top:20%"></div>
-              <div class="bubble" id="bCloud" style="right:5%;top:36%"></div>
-            </div>
-''')
-rep('<span><b>Ready?</b> Press <kbd>Enter</kbd> on your keyboard (or click the yellow key) and watch what happens inside the computer.</span>',
-    '<span><b>Ready?</b> Press <kbd>Enter</kbd> on your keyboard (or click the yellow key) and watch the git crew at work.</span>')
 rep('''          <button class="btn" data-show="ls">Play <code>ls</code></button>
           <button class="btn" data-show="cat">Play <code>cat secret-diary.txt</code></button>
           <button class="btn" data-show="mv">Play <code>mv hamster.txt sir-fluffington.txt</code></button>''',
@@ -63,9 +34,11 @@ rep('</style>', open(V + 'git.css').read() + '</style>')
 # ---------- script ----------
 rep("const KEY = 'jellyshell.v1';", "const KEY = 'jellygit.v1';")
 exec(open('engine/use-overview.py').read())
-show = open(V + 'show.js').read().replace("querySelector(`[data-k=\"${ch === ' ' ? 'space' : ch}\"]`)", "querySelector(`[data-k=\"${ch === ' ' ? 'space' : CSS.escape(ch)}\"]`)")
-assert 'CSS.escape' in show
-region('/* ---------------- section 2: backstage show ---------------- */', '/* ---------------- section 3: the pretend computer ---------------- */', show)
+# Backstage: the house up close (engine/use-backstage.py, Backstage in overview.js)
+BS_HEAD = 'The same house, up close. Pick a git command and follow it: a git robot carries game.py onto the stage, takes the photo, and sends a pigeon up to GitHub.'
+BS_LABEL = 'The cut-open house from the Overview. A git robot carries game.py from your folder up to the stage, photographs it with a flash and pins the photo in the album, then a jelly pigeon flies a copy up to GitHub in the cloud.'
+BS_PICK, BS_FIRST = 'a git command', 'add'
+exec(open('engine/use-backstage.py').read())
 rep("const BIN = ['cat', 'clear', 'cp', 'echo', 'ls', 'man', 'mkdir', 'mv', 'pwd', 'rm', 'touch'];", "const BIN = ['cat', 'clear', 'cp', 'echo', 'git', 'ls', 'man', 'mkdir', 'mv', 'pwd', 'rm', 'touch'];")
 region('  const spec = {', '  const make = (name, content, parent) => {', '''  const spec = {
     'bin/': Object.fromEntries(BIN.map((n) => [n, '01001010 01000101 01001100 01001100 01011001\\n(This is a program. It is written in computer language, so it looks like gibberish to us.)'])),
@@ -96,6 +69,7 @@ s = s[:i] + """function welcome() {
   print('<span class="mute">Your project lives in the folder my-game. Type git on its own to see git\\'s words, or help for the shell ones.</span>');""" + s[j:]
 region('/* file tree map with FLIP animations */', '/* ---------------- lessons + progress ---------------- */', open(V + 'git.js').read())
 region('const isCmd = (e, c)', 'const ALL = [', open(V + 'lessons.js').read())
+exec(open('engine/use-demos.py').read())
 rep("  cur = i; const L = LESSONS[i]; store.cur = L.id; save();", "  cur = i; const L = LESSONS[i]; store.cur = L.id; save();\n  if (stateLevel() < L.need) resetSandbox(L.need); // jumped ahead: set the sandbox up so this lesson can be done")
 rep("word: 'ls cd cat', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 0, frame: 1.4, lookY: .85", "word: 'git', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 2, frame: 1.5, lookY: .8")
 region('/* recap data */', '/* end recap data */\n', open(V + 'recap.js').read(), keep_end=False)

@@ -1,0 +1,44 @@
+{
+ "hats": [
+  "cat permission-slip.txt",
+  "sign permission-slip.txt",
+  "cat /bin/sign",
+  "whoami"
+ ],
+ "keys": [
+  "ls -l",
+  "su sib",
+  "cat diary.txt",
+  "exit",
+  "chmod go-rw diary.txt",
+  "ls -l",
+  "su sib",
+  "cat diary.txt"
+ ],
+ "grey": [
+  {
+   "choose": 0
+  },
+  {
+   "choose": 2
+  },
+  {
+   "choose": 0
+  },
+  {
+   "choose": 2
+  },
+  {
+   "choose": 0
+  },
+  {
+   "choose": 2
+  },
+  {
+   "choose": 0
+  },
+  {
+   "choose": 2
+  }
+ ]
+}

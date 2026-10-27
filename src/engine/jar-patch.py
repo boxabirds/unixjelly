@@ -29,7 +29,9 @@ rep("geo.translate(sx, sy, sz); geo.computeBoundingBox();", r"""geo.translate(sx
     eyeZ = (x, y) => z0 * puff(x, y);
   }""")
 rep("const out = { geo, polys, box: geo.boundingBox.clone(), centerShift: -sx };", "const out = { geo, polys, box: geo.boundingBox.clone(), centerShift: -sx, eyeZ };")
-rep("this.eyes = this.makeEyes(polys, box, bind);", "this.eyeZ = L.eyeZ; this.eyes = this.makeEyes(polys, box, bind);")
+rep("this.eyes = this.makeEyes(polys, box, bind);", "this.eyeZ = L.eyeZ; this.eyes = this.makeEyes(polys, box, bind); this.inside = { bind, polys, box }; // for what a sweet has suspended inside")
+# a sweet's suspended bits ride its wobble, like the eyes
+rep("      b.updateEyes(dt, this.look, this.t);", "      b.updateEyes(dt, this.look, this.t); b.bits?.update();")
 rep("return { b: bind(x, y, z), r, ball, pupil,", "return { b: bind(x, y, this.eyeZ ? this.eyeZ(x, y) : z), r, ball, pupil,")
 # A jelly baby is puffier than a letter: thinner middle, much rounder edges.
 rep("let geo = new THREE.ExtrudeGeometry(shapes, { depth: size * .3, curveSegments: 7, bevelEnabled: true, bevelThickness: size * .09, bevelSize: size * .05, bevelSegments: 4 });",
@@ -65,17 +67,74 @@ vec3 jellyPattern(vec3 base) {
   else if (uPat == 11) { vec3 g = floor(vR * 45.); on = step(.9, jh(g.xy + g.z * 7.1)); }
   return mix(base, c2, on);
 }`;
+// A sweet is made like the jelly letters: see-through, deep colour where it's thick. Its look is either layers in the
+// jelly itself (the pattern colours the light passing through, so stripes are clear or coloured bands inside), or bits
+// suspended in it: chocolate chips, sprinkles, glitter, stars, gold leaf. Solid things inside see-through jelly show
+// through it, bent by it, so the bits are ordinary little meshes that ride the jelly's wobble like the eyes.
+const BITS = {
+  spotty: { n: 14, geo: () => new THREE.SphereGeometry(1, 10, 8), s: [.075, .055, .075], mat: () => new THREE.MeshStandardMaterial({ color: '#4a2a17', roughness: .55 }) },
+  sprinkle: { n: 26, reach: 1.2, geo: () => new THREE.CapsuleGeometry(.4, 1.6, 3, 6), s: [.022, .032, .022], mat: () => new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .4 }), colours: ['#ff4d6d', '#ffc61a', '#62c934', '#3a5bff', '#ffffff', '#ff8ad8'] },
+  glitter: { n: 70, geo: () => new THREE.OctahedronGeometry(1), s: [.04, .04, .012], mat: () => new THREE.MeshStandardMaterial({ color: '#f4f6ff', metalness: 1, roughness: .15 }) },
+  galaxy: { n: 60, geo: () => new THREE.IcosahedronGeometry(1), s: [.022, .022, .022], mat: () => new THREE.MeshBasicMaterial({ color: '#fffbe0' }) },
+  golden: { n: 16, reach: .5, geo: () => new THREE.BoxGeometry(1, 1, 1), s: [.3, .05, .008], mat: () => new THREE.MeshStandardMaterial({ color: '#ffc84a', metalness: 1, roughness: .25 }) },
+};
+const COMPASS = Array.from({ length: 8 }, (_, i) => [Math.cos(i * Math.PI / 4), Math.sin(i * Math.PI / 4)]);
+const bitParts = new Map(); // one geometry and material per kind, shared by every sweet
+const LAYERED = ['zebra', 'stripy', 'swirly', 'checked', 'two-tone', 'rainbow']; // looks made of bands inside the jelly
 function paintJelly(b, look, color2) {
   const pat = LOOKS.indexOf(look), m = b.mesh.material, P = b.geo.attributes.position.array;
   b.geo.setAttribute('aR', new THREE.BufferAttribute(Float32Array.from(P, (v) => v / b.size), 3));
-  if (look === 'golden') { m.color.set('#ffc61a'); m.attenuationColor.set('#ffb000'); m.metalness = .45; }
-  m.transmission = pat > 0 ? .15 : .35; m.thickness = b.size * .2; m.sheen = .12; // brighter than the letters, so they pop against the jar
-  m.onBeforeCompile = (sh) => {
-    sh.uniforms.uPat = { value: pat }; sh.uniforms.uC2 = { value: new THREE.Color(color2) };
-    sh.vertexShader = 'attribute vec3 aR;\nvarying vec3 vR;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vR = aR;');
-    sh.fragmentShader = 'varying vec3 vR;\nuniform int uPat;\nuniform vec3 uC2;\n' + PATTERN_GLSL + '\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n  diffuseColor.rgb = jellyPattern(diffuseColor.rgb);');
+  if (look === 'golden') { m.color.set('#ffe7a3'); m.attenuationColor.set('#ffb000'); } // clear amber, for the gold leaf
+  if (look === 'galaxy') { m.color.set('#6a5acd'); m.attenuationColor.set('#24164f'); } // deep space
+  // Also blended over what's behind it: three.js's see-through pass never shows other see-through things, and in a jar
+  // the thing behind a sweet is usually another sweet.
+  m.transparent = true; m.opacity = .9;
+  if (LAYERED.includes(look)) {
+    const jellyLook = m.onBeforeCompile;
+    m.onBeforeCompile = (sh) => {
+      jellyLook(sh);
+      sh.uniforms.uPat = { value: pat }; sh.uniforms.uC2 = { value: new THREE.Color(color2) };
+      sh.vertexShader = 'attribute vec3 aR;\nvarying vec3 vR;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vR = aR;');
+      sh.fragmentShader = 'varying vec3 vR;\nuniform int uPat;\nuniform vec3 uC2;\n' + PATTERN_GLSL + '\n' + sh.fragmentShader
+        .replace('material.attenuationColor = attenuationColor;', 'material.attenuationColor = jellyPattern(attenuationColor);');
+    };
+    m.customProgramCacheKey = () => 'jelly-layers' + b.size;
+  }
+  const kind = BITS[look];
+  if (!kind) return;
+  // scatter the bits through the inside of the sweet's resting shape, then bind each to the jelly's cage
+  const parts = bitParts.get(look) ?? bitParts.set(look, { geo: kind.geo(), mat: kind.mat() }).get(look);
+  const { bind, polys, box } = b.inside, zMid = (box.min.z + box.max.z) / 2, zHalf = (box.max.z - box.min.z) * .22;
+  const mesh = new THREE.InstancedMesh(parts.geo, parts.mat, kind.n); mesh.frustumCulled = false;
+  const items = [];
+  for (let tries = 0; items.length < kind.n && tries < kind.n * 40; tries++) {
+    const x = box.min.x + Math.random() * (box.max.x - box.min.x), y = box.min.y + Math.random() * (box.max.y - box.min.y);
+    // a bit turns any way, so the whole of its reach has to fit inside the letter, or it pokes out through the jelly
+    const sc = b.size * (.75 + Math.random() * .5), r = Math.max(...kind.s) * (kind.reach ?? 1) * sc * .85;
+    if (!inside(polys, x, y) || !COMPASS.every(([dx, dy]) => inside(polys, x + dx * r, y + dy * r))) continue;
+    const local = new THREE.Matrix4().compose(new THREE.Vector3(), new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)),
+      new THREE.Vector3(...kind.s).multiplyScalar(sc));
+    items.push({ b: bind(x, y, zMid + (Math.random() * 2 - 1) * zHalf), local });
+  }
+  mesh.count = items.length;
+  if (kind.colours) items.forEach((_, i) => mesh.setColorAt(i, new THREE.Color(kind.colours[i % kind.colours.length])));
+  b.mesh.add(mesh); // the jelly's mesh is in world space, so this stays put; it goes when the jelly goes
+  const F = new THREE.Matrix4(), M = new THREE.Matrix4();
+  let fresh = true;
+  b.bits = {
+    // follow the jelly: each bit sits where its cage points are now, stretched and turned the way the jelly is there
+    update() {
+      if (b.sleeping && !fresh) return; fresh = false;
+      const x = b.x, nF = b.nodalF;
+      items.forEach((it, i) => {
+        let px = 0, py = 0, pz = 0; const f = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        for (const [id, w] of it.b) { px += x[id * 3] * w; py += x[id * 3 + 1] * w; pz += x[id * 3 + 2] * w; for (let k = 0; k < 9; k++) f[k] += nF[id * 9 + k] * w; }
+        F.set(f[0], f[1], f[2], 0, f[3], f[4], f[5], 0, f[6], f[7], f[8], 0, 0, 0, 0, 1);
+        M.multiplyMatrices(F, it.local).setPosition(px, py, pz); mesh.setMatrixAt(i, M);
+      });
+      mesh.instanceMatrix.needsUpdate = true;
+    },
   };
-  m.customProgramCacheKey = () => 'jelly-pattern';
 }
 // A square glass sweet jar. Jellies are dropped in one by one and tumble onto each other.
 class JarStage extends JellyStage {

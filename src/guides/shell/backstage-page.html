@@ -1,0 +1,131 @@
+<title>Jelly Backstage Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Lexend:wght@400;600;800&family=VT323&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: one full-window panel, as in the guide: a header, the 3D house filling the middle, the caption and stepper under it. Single light look, like the guides. */
+:root{
+  --ink:#24133b; --ink-soft:#56467a; --card:#ffffff; --line:#24133b26; --paper:#fff0b3; --stage:#fff6cf;
+  --berry:#ff4d6d; --blue:#3a5bff; --lemon:#ffc61a; --lime:#62c934;
+  --display:"Titan One","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
+  --body:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+h2{font-family:var(--display);font-weight:400;line-height:1.02;margin:0;font-size:clamp(1.6rem,1rem + 2vh,2.4rem)}
+p{margin:0}
+code{font-family:var(--mono);font-size:.92em;background:#24133b12;padding:.05em .35em;border-radius:6px;white-space:nowrap}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px}
+.page{height:100%;display:flex;flex-direction:column;gap:clamp(8px,1.4vh,14px);padding-block:clamp(10px,2vh,22px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ph{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 18px}
+.ph .eyebrow{font-family:var(--display);color:var(--berry);font-size:clamp(.9rem,.6rem + .8vh,1.15rem);width:100%;margin-bottom:-6px}
+.ph .lede{flex:1 1 30ch;min-width:0;max-width:62ch;color:var(--ink-soft);font-size:.95rem}
+.proto{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.85rem}
+.proto .tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:2px 8px;border-radius:999px}
+.seg{display:inline-flex;border:3px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:none;padding:3px 10px;font-family:var(--display);font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--lemon)}
+.btn{background:var(--lemon);color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:7px 15px;font-family:var(--display);font-size:1.02rem;box-shadow:0 4px 0 var(--ink);transition:transform .08s;white-space:nowrap}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.alt{background:var(--card)}
+.btn[disabled]{opacity:.45;cursor:default}
+.stagewrap{flex:1;min-height:0;display:flex;justify-content:center}
+.town{flex:1;min-height:0;min-width:0;display:flex;flex-direction:column;background:var(--stage);border:4px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:0 6px 0 var(--ink)}
+.tall .town{flex:0 0 auto;height:100%;aspect-ratio:9/16;min-width:min(100%,360px);max-width:100%}
+.cv{flex:1;min-height:0;position:relative}
+.cv canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.town-ui{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:center;padding:12px 16px;border-top:4px solid var(--ink);background:var(--card);min-height:clamp(92px,15vh,128px)}
+.tall .town-ui{grid-template-columns:1fr}
+.cap{display:grid;gap:2px;min-width:0;align-content:center}
+.cap .who{font-family:var(--display);font-size:1.25em;color:var(--blue)}
+.cap p{max-width:70ch;font-size:.98rem}
+.ctrls{display:flex;gap:10px;align-items:center;justify-content:flex-end}
+.dots{display:flex;gap:6px}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line);display:block}
+.dots i.on{background:var(--berry)}
+details.what{font-size:.85rem;max-width:72ch}
+details.what summary{cursor:pointer;font-weight:600}
+details.what ul{margin:.3em 0 0;padding-left:1.2em}
+.tall .ctrls{flex-wrap:wrap;justify-content:space-between}
+.tall .dots{flex:1 0 100%}
+.tall .ctrls .btn{flex:1 1 0;min-width:0;padding-inline:8px;font-size:.95rem;white-space:normal}
+@media (max-width:640px){.town-ui{grid-template-columns:1fr}.ph .lede{font-size:.88rem}.ctrls{flex-wrap:wrap;justify-content:space-between}.dots{flex:1 0 100%}.ctrls .btn{flex:1 1 0;min-width:0;padding-inline:8px}}
+.shows{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.shows .btn code{background:none;padding:0;font-size:.85em}
+.tall .shows{justify-content:stretch}.tall .shows .btn{flex:1 1 100%;white-space:normal}
+@media (max-width:640px){.shows{justify-content:stretch}.shows .btn{flex:1 1 100%;white-space:normal}}
+.cap p b{color:var(--berry)}
+</style>
+
+<div class="page" id="page">
+  <header class="ph">
+    <div class="eyebrow">Behind the scenes · 2 of 2</div>
+    <h2>Backstage</h2>
+    <p class="lede">The same house as the Overview, filmed closer. Pick a command and watch it travel. Drag to turn the house, scroll to zoom, double-click to straighten up.</p>
+    <div class="proto">
+      <span class="tag">Prototype</span>
+      <span class="seg" role="group" aria-label="Frame shape"><button id="wide" aria-pressed="true">Wide</button><button id="tall" aria-pressed="false">Tall</button></span>
+    </div>
+  </header>
+  <div class="stagewrap">
+    <div class="town">
+      <div class="cv"><canvas id="town" aria-label="The cut-open house from the Overview. A command you pick is typed at the top, rides the lift down to Shelly the shell, who splits it into the program and its arguments. The program steps out of the /bin cupboard as a character, asks King Kernel for permission, visits the file tree in the roots, and carries the answer back up to the screen."></canvas></div>
+      <div class="town-ui">
+        <div class="cap" aria-live="polite"><p id="showCap"><b>Ready.</b> Pick a command and watch what happens inside the computer.</p></div>
+        <div class="shows">
+          <button class="btn" data-show="ls">Play <code>ls</code></button>
+          <button class="btn" data-show="cat">Play <code>cat secret-diary.txt</code></button>
+          <button class="btn" data-show="mv">Play <code>mv hamster.txt sir-fluffington.txt</code></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <details class="what"><summary>What's different from the old Backstage</summary>
+    <ul>
+      <li><b>The same house as the Overview</b>, so Backstage zooms into a place you've already seen, instead of a new flat drawing.</li>
+      <li><b>Your typed line arrives as jelly words</b>, and Shelly snips it at the spaces. The program word turns pink and the arguments blue, with little tags.</li>
+      <li><b>The program is a character.</b> The ls and mv robots and the cat step out of the /bin cupboard, holding the arguments over their heads.</li>
+      <li><b>The lift replaces the glass tube</b>, and King Kernel gives permission on his own floor.</li>
+      <li><b>The answer is a card</b>, not a thin see-through rectangle: it shows the lines that will appear on the screen. <code>mv</code> changes the hamster's label in the roots and carries nothing back.</li>
+    </ul>
+  </details>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}
+</script>
+<script type="module">
+// Jelly Shell's Backstage on its own, for trying out changes. Built by tools/overview-page.py backstage from guides/shell/overview.js.
+import * as THREE from 'three';
+import { Font } from 'three/addons/loaders/FontLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { mergeVertices, mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+
+const FONT = new Font(/*FONT_JSON*/);
+const INK = '#24133b', REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (s) => document.querySelector(s), clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const towns = [];
+await Promise.all(['64px "Titan One"', '36px VT323', '700 40px "JetBrains Mono"'].map((f) => document.fonts.load(f).catch(() => {})));
+
+const showCap = (h) => { $('#showCap').innerHTML = h; };
+
+/*OVERVIEW*/
+
+const stage = new Backstage($('#town'));
+const buttons = [...document.querySelectorAll('[data-show]')];
+for (const b of buttons) b.addEventListener('click', () => { stage.resetView(); stage.play(b.dataset.show); });
+for (const [id, tall] of [['wide', false], ['tall', true]]) $('#' + id).addEventListener('click', () => { $('#page').classList.toggle('tall', tall); $('#wide').setAttribute('aria-pressed', !tall); $('#tall').setAttribute('aria-pressed', tall); });
+let last = performance.now();
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  for (const s of towns) if (s.active && !document.hidden) s.tick(dt);
+}
+requestAnimationFrame(frame);
+</script>

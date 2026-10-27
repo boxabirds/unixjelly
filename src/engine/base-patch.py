@@ -102,6 +102,7 @@ rep("</style>", """/* tutorial sections get the whole window: the nav slides awa
 .home-link{display:inline-flex;align-items:center;gap:6px;width:max-content;padding:2px 6px;font-weight:700;font-size:.82rem;color:var(--lemon);text-decoration:none;border-radius:8px}
 .home-link:hover{text-decoration:underline}
 .gate .home-link{color:var(--blue);font-size:1rem}
+.gate .gate-slides{font-size:1.1rem;padding:12px 22px}
 @media (prefers-reduced-motion:reduce){.side,.stage,.nav-handle{transition:none}}
 /* small windows: the recap packs its cards tighter */
 @media (max-height:700px),(max-width:1150px){

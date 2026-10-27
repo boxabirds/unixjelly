@@ -1,0 +1,84 @@
+{
+ "git": [
+  "git --version",
+  "git"
+ ],
+ "config": [
+  "git config --global user.name \"Sam Coder\"",
+  "git config --global user.email \"sam@example.com\"",
+  "git config --list"
+ ],
+ "init": [
+  "cd my-game",
+  "git init",
+  "ls -a"
+ ],
+ "status": [
+  "git status",
+  "cd ..",
+  "git status",
+  "cd my-game"
+ ],
+ "add": [
+  "git add game.py",
+  "git status",
+  "git add ."
+ ],
+ "commit": [
+  "git commit -m \"first version\"",
+  "git status"
+ ],
+ "log": [
+  "git log",
+  "git log --oneline"
+ ],
+ "diff": [
+  "echo \"lives = 5\" >> game.py",
+  "git diff",
+  "git add game.py",
+  "git commit -m \"more lives\""
+ ],
+ "restore": [
+  "echo \"OOPS\" > game.py",
+  "cat game.py",
+  "git restore game.py",
+  "cat game.py"
+ ],
+ "remote": [
+  {
+   "click": "[data-gh=create]"
+  },
+  "git remote add origin https://github.com/kid/my-game.git",
+  "git remote -v"
+ ],
+ "push": [
+  "git push",
+  "git push -u origin main",
+  "echo \"speed = 2\" >> game.py",
+  "git commit -am \"faster robots\"",
+  "git push"
+ ],
+ "pull": [
+  "cd ~",
+  "git clone https://github.com/kid/my-game.git my-game-copy",
+  {
+   "click": "[data-gh=edit]"
+  },
+  "cd ~/my-game",
+  "git status",
+  "git pull"
+ ],
+ "ignore": [
+  "echo \"password=jellybean\" > secrets.txt",
+  "git status",
+  "echo \"secrets.txt\" > .gitignore",
+  "git status",
+  "git add secrets.txt"
+ ],
+ "quest": [
+  "echo \"print('Level 2!')\" >> game.py",
+  "git add .",
+  "git commit -m \"level 2\"",
+  "git push"
+ ]
+}

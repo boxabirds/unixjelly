@@ -1,0 +1,38 @@
+<title>Jelly icon</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap">
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#bfe6ff}canvas{display:block;width:100vw;height:100vh}</style>
+<canvas id="icon"></canvas>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}
+</script>
+<script type="module">
+// Jelly Shell's Overview on its own, for trying out changes. Built by tools/overview-page.py from guides/shell/overview.js.
+import * as THREE from 'three';
+import { Font } from 'three/addons/loaders/FontLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { mergeVertices, mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+
+const FONT = new Font(/*FONT_JSON*/);
+const INK = '#24133b', REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (s) => document.querySelector(s), clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const towns = [];
+await Promise.all(['64px "Titan One"', '36px VT323', '700 40px "JetBrains Mono"'].map((f) => document.fonts.load(f).catch(() => {})));
+
+
+/*KIT*/
+// The site's icon: the jelly kid from the Overviews, head and shoulders, on the sky.
+const Icon = overview((k) => {
+  const { V, gel, eye, smile, live } = k;
+  const kid = live(new THREE.Group()), C = '#9b5cff';
+  kid.add(gel(new THREE.CapsuleGeometry(.36, .42, 8, 24), C, { p: [0, 1.05, 0] }));
+  kid.add(gel(new THREE.SphereGeometry(.4, 40, 28), C, { p: [0, 1.78, 0] }));
+  [-.15, .15].forEach((ex) => eye(kid, [ex, 1.86, .33], .095)); smile(kid, [0, 1.68, .38], .09);
+  [-1, 1].forEach((sd) => kid.add(gel(new THREE.CapsuleGeometry(.1, .34, 6, 14), C, { p: [sd * .44, 1.2, .1], r: [0, 0, sd * .5] })));
+  return { START: 'a', SHOTS: { a: { c: V(0, 1.52, 0), w: 1.55, h: 1.55, d: 0 } }, PLAY: [], reset() {}, tick() {} };
+});
+const icon = new Icon(document.querySelector('#icon'));
+let last = performance.now(), frames = 0;
+function frame(now) { requestAnimationFrame(frame); const dt = Math.min(.05, (now - last) / 1000); last = now; for (const s of towns) s.tick(dt); if (++frames === 8) document.documentElement.dataset.ready = 1; }
+requestAnimationFrame(frame);
+</script>

@@ -1,0 +1,278 @@
+{
+ "404": [
+  {
+   "visit": "jelly.fun/unicorns"
+  },
+  "curl https://teapot.jelly/coffee",
+  {
+   "visit": "jelly.fun/broken"
+  }
+ ],
+ "html": [
+  {
+   "click": "[data-view=source]"
+  },
+  {
+   "click": "[data-view=page]"
+  },
+  "cat site/index.html",
+  "open site/index.html"
+ ],
+ "tags": [
+  {
+   "edit": [
+    "Hello, world!",
+    "Sam the Great"
+   ]
+  },
+  {
+   "edit": [
+    "</h1>",
+    ""
+   ]
+  },
+  {
+   "edit": [
+    "Sam the Great",
+    "Sam the Great</h1>"
+   ]
+  }
+ ],
+ "p": [
+  {
+   "edit": [
+    "</body>",
+    "  <p>I like cheese.</p>\n  </body>"
+   ]
+  },
+  {
+   "edit": [
+    "I like cheese.",
+    "I like <b>cheese</b>."
+   ]
+  },
+  {
+   "edit": [
+    "<b>cheese</b>.</p>",
+    "<b>cheese.</p></b>"
+   ]
+  },
+  {
+   "click": "[data-view=boxes]"
+  },
+  {
+   "click": "[data-view=page]"
+  },
+  {
+   "edit": [
+    "<b>cheese.</p></b>",
+    "<b>cheese</b>.</p>"
+   ]
+  }
+ ],
+ "hr": [
+  {
+   "edit": [
+    "</h1>",
+    "</h1>\n    <hr/>"
+   ]
+  },
+  {
+   "edit": [
+    "I like <b>",
+    "I like<br/><b>"
+   ]
+  },
+  {
+   "edit": [
+    "<hr/>",
+    "<hr>"
+   ]
+  },
+  {
+   "edit": [
+    "<hr>",
+    "<hr/>"
+   ]
+  }
+ ],
+ "ul": [
+  {
+   "edit": [
+    "</body>",
+    "  <ul></ul>\n  </body>"
+   ]
+  },
+  {
+   "edit": [
+    "<ul></ul>",
+    "<ul>\n      <li>pizza</li>\n    </ul>"
+   ]
+  },
+  {
+   "edit": [
+    "<li>pizza</li>",
+    "<li>pizza</li>\n      <li>gerbils</li>\n      <li>lasers</li>"
+   ]
+  },
+  {
+   "click": "[data-view=boxes]"
+  },
+  {
+   "click": "[data-view=page]"
+  }
+ ],
+ "a": [
+  {
+   "edit": [
+    "</body>",
+    "  <p><a href=\"https://jelly.fun\">Jelly Fun</a> and <a href=\"about.html\">About me</a></p>\n  </body>"
+   ]
+  },
+  {
+   "link": "Jelly Fun"
+  },
+  {
+   "click": "#bwBack",
+   "label": "← Back"
+  },
+  {
+   "link": "About me"
+  }
+ ],
+ "img": [
+  {
+   "edit": [
+    "</body>",
+    "  <img src=\"images/gerbil.png\" alt=\"Gerald\"/>\n  </body>"
+   ]
+  },
+  {
+   "edit": [
+    "images/gerbil.png",
+    "images/gerbal.png"
+   ]
+  },
+  {
+   "edit": [
+    "images/gerbal.png",
+    "images/gerbil.png"
+   ]
+  }
+ ],
+ "css": [
+  {
+   "edit": [
+    "</head>",
+    "  <style>\n      h1 { color: hotpink; }\n    </style>\n  </head>"
+   ]
+  },
+  {
+   "edit": [
+    "h1 { color: hotpink; }",
+    "h1 { color: hotpink; }\n      body { background: lightyellow; }"
+   ]
+  },
+  {
+   "edit": [
+    "background: lightyellow;",
+    "background: lightyellow; color: purple;"
+   ]
+  }
+ ],
+ "url": [
+  {
+   "visit": "jelly.fun/snacks/cookie.html"
+  },
+  {
+   "visit": "jelly.fun/snacks/pizza.html"
+  },
+  {
+   "visit": "jelly.fun/snacks/"
+  }
+ ],
+ "curl": [
+  "curl https://jelly.fun",
+  "curl https://jelly.fun/snacks/cookie.html",
+  "curl https://jelly.fun > jelly.html",
+  "open jelly.html"
+ ],
+ "get": [
+  "curl -v https://jelly.fun",
+  "curl -I https://jelly.fun",
+  "curl -I https://gerbil.zone/gerbil.png"
+ ],
+ "dns": [
+  "nslookup jelly.fun",
+  "nslookup gerbil.zone",
+  {
+   "visit": "203.0.113.42"
+  }
+ ],
+ "ping": [
+  "ping jelly.fun",
+  {
+   "wait": 2600
+  },
+  "@ctrlc",
+  "ping moon.base",
+  {
+   "wait": 3000
+  },
+  "@ctrlc"
+ ],
+ "https": [
+  {
+   "visit": "jelly.fun"
+  },
+  {
+   "click": "#bwLock",
+   "label": "The padlock"
+  },
+  {
+   "visit": "old.jelly"
+  },
+  {
+   "click": "#bwLock",
+   "label": "Not secure"
+  },
+  "curl -I http://jelly.fun"
+ ],
+ "push": [
+  "cd ~/site",
+  "git status",
+  "git add .",
+  "git commit -m \"my website\"",
+  "git push",
+  {
+   "visit": "kid.github.io"
+  }
+ ],
+ "quest": [
+  {
+   "edit": [
+    "Homepage\n",
+    "Homepage</h1>\n"
+   ]
+  },
+  {
+   "edit": [
+    "gerbal.png",
+    "gerbil.png"
+   ]
+  },
+  {
+   "edit": [
+    "abuot.html",
+    "about.html"
+   ]
+  },
+  "cd ~/gerald",
+  "git add .",
+  "git commit -m \"fixed it\"",
+  "git push",
+  {
+   "visit": "gerald.github.io"
+  }
+ ]
+}

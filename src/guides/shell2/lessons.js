@@ -11,7 +11,6 @@ const LESSONS = [
     mnem: 'who @ which computer : where $',
     points: ['<code>whoami</code> asks the computer which account you are using.', '<code>hostname</code> asks the computer its own name.', 'Every person gets a home folder inside <code>/home</code>. Yours is <code>/home/kid</code>. That is what <code>~</code> means.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['whoami', 'hostname', 'ls /home'],
     steps: [
       { t: 'Ask the computer who you are: <code>whoami</code>', ok: (e) => isCmd(e, 'whoami') },
       { t: 'Ask the computer its own name: <code>hostname</code>', ok: (e) => isCmd(e, 'hostname') },
@@ -23,7 +22,6 @@ const LESSONS = [
     mnem: 'One arrow wipes. Two arrows add.',
     points: ['<code>&gt; note.txt</code> means "put the words in note.txt instead of on the screen". If note.txt doesn\'t exist yet, it gets made.', 'Careful: one <code>&gt;</code> wipes whatever was in the file first.', 'Two arrows, <code>&gt;&gt;</code>, add to the end and keep what was there.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['echo I like cheese > note.txt', 'cat note.txt', 'echo and jelly >> note.txt', 'cat note.txt'],
     steps: [
       { t: 'Write a note: <code>echo I like cheese &gt; note.txt</code>', ok: (e) => e.info.wrote?.name === 'note.txt' && e.info.wrote.mode === '>' },
       { t: 'Read it back: <code>cat note.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('/note.txt')) },
@@ -37,7 +35,6 @@ const LESSONS = [
     mnem: 'Ctrl+O saves. Ctrl+X exits.',
     points: ['<code>nano note.txt</code> opens the file. If it doesn\'t exist yet, nano starts a new one.', '<kbd>Ctrl</kbd>+<kbd>O</kbd> saves (O for Output). <kbd>Ctrl</kbd>+<kbd>X</kbd> exits. You can also tap the buttons.', 'Forgot to save? nano asks before it lets you leave.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['nano note.txt', '@type:I like pizza\\nand jelly', '@key:Control+x', '@key:y', 'cat note.txt'],
     steps: [
       { t: 'Open your note: <code>nano note.txt</code>', ok: (e) => isCmd(e, 'nano') && e.info.nano?.path === '/home/kid/note.txt' },
       { t: 'Change some words: swap cheese for something you like more. Then save: <kbd>Ctrl</kbd>+<kbd>O</kbd>', ok: (e) => e.type === 'nano' && e.saved === '/home/kid/note.txt' && e.changed },
@@ -50,7 +47,6 @@ const LESSONS = [
     mnem: 'A command is a file. which says where.',
     points: ['<code>which ls</code> answers: /bin/ls.', 'The files in /bin are written in computer language, so they look like gibberish to us.', 'A few words, like <code>cd</code>, are not files at all. They are built into the shell itself.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['which ls', 'ls /bin', 'which cd'],
     steps: [
       { t: 'Find where ls lives: <code>which ls</code>', ok: (e) => isCmd(e, 'which') && e.ok && e.args.includes('ls') },
       { t: 'Look at all the programs: <code>ls /bin</code>', ok: (e) => isCmd(e, 'ls') && e.info.target === '/bin' },
@@ -63,7 +59,6 @@ const LESSONS = [
     afterNano: (n) => { if (n?.name === 'hello' && n.parent === find('/home/kid') && !/^\s*echo\s/.test(n.content)) { print(shelly(`Your hello file says <b>${esc(n.content.split('\n')[0] || '(nothing)')}</b>. A program is a list of <b>commands</b>, so its line should start with one. Open it again and make it say: <b>echo Hello from my program!</b>`)); scrollDown(); } },
     points: ['A program\'s lines are commands. Its one line here is <code>echo Hello from my program!</code>, so running it will say hello.', 'The shell only looks for programs in special folders like /bin. For a program in the folder you are in, say where it is: <code>./hello</code>.', 'Programs can be called anything. Someone just picked the names <b>ls</b> and <b>cat</b>!'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['nano hello', '@type:hello', '@key:Control+o', '@key:Control+x', 'chmod u+x hello', './hello', 'chmod u-x hello', 'nano hello', '@type:echo Hello from my program!', '@key:Control+o', '@key:Control+x', 'cat hello', 'hello', './hello'],
     steps: [
       { t: 'Write a program: <code>nano hello</code>. Type <code>echo Hello from my program!</code>, then save (<kbd>Ctrl</kbd>+<kbd>O</kbd>) and exit (<kbd>Ctrl</kbd>+<kbd>X</kbd>).', ok: (e) => (e.type === 'nano' && e.exit || e.info?.wrote?.name === 'hello') && /^\s*echo\s/.test(kidFile('hello')?.content ?? '') },
       { t: 'Read it: <code>cat hello</code>. It is just a command, in a file.', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('/hello')) },
@@ -77,7 +72,6 @@ const LESSONS = [
     mnem: 'Owner, group, everyone else. r, w, x.',
     points: ['<code>ls -l</code> is the long list. The <b>l</b> is for long. It shows each file\'s lock, owner and group.', 'The very first letter is not a key: <b>d</b> means folder, <b>-</b> means file.', 'You made hello, so you own it. Your group is called kid too: everyone gets a group of their own.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['ls -l', 'ls -l /bin', 'ls -l /home'],
     steps: [
       { t: 'See the locks in your home: <code>ls -l</code>. Find hello.', ok: (e) => isCmd(e, 'ls') && e.args.some((a) => /^-\w*l/.test(a)) && !e.info.peek },
       { t: 'Now look at the real programs: <code>ls -l /bin</code>. What do they have that hello doesn\'t?', ok: (e) => isCmd(e, 'ls') && e.args.some((a) => /^-\w*l/.test(a)) && e.info.target === '/bin' },
@@ -90,7 +84,6 @@ const LESSONS = [
     mnem: 'Who, plus or minus, which keys.',
     points: ['<code>chmod u+x hello</code>: give the owner (you) the x key.', '<code>chmod go-r hello</code>: take the read key away from the group and others.', 'Only the owner can change a lock. That is the rule that keeps everybody\'s things safe.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['chmod u+x hello', 'ls -l', './hello'],
     steps: [
       { t: 'Give yourself the run key: <code>chmod u+x hello</code>', ok: (e) => isCmd(e, 'chmod') && e.ok && !!(modeOf(kidFile('hello') ?? {}) & 0o100) },
       { t: 'Check the lock: <code>ls -l</code>. Spot the new x.', ok: (e) => isCmd(e, 'ls') && e.args.some((a) => /^-\w*l/.test(a)) },
@@ -103,7 +96,6 @@ const LESSONS = [
     mnem: 'Put it on the PATH, and it\'s a command.',
     points: ['<code>echo $PATH</code> shows the list. The <b>$</b> means "the value of": PATH is a word the shell remembers.', 'You can name your program anything you like. Somebody made up <b>ls</b> once. Now you\'re doing it too.', 'That is exactly how the <b>sign</b> command in Jelly Security was made: someone wrote a script and put it on the PATH.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['echo $PATH', 'mkdir ~/bin', 'mv hello ~/bin/hi', 'cd /', 'hi', 'cd'],
     steps: [
       { t: 'See where the shell looks: <code>echo $PATH</code>', ok: (e) => isCmd(e, 'echo') && /\$PATH/.test(e.line ?? '') },
       { t: 'Make your own bin folder: <code>mkdir ~/bin</code>', ok: (e) => isCmd(e, 'mkdir') && find('/home/kid/bin')?.type === 'dir' },
@@ -116,7 +108,6 @@ const LESSONS = [
     mnem: 'Owner keys for me. Group keys for my club.',
     points: ['<code>id</code> shows your ID card: your user, your number, and all your groups.', '<code>chgrp family comics</code> CHanges the GRoup of comics to family. You must own it, and be in that group.', 'You\'re also in a group called <b>sudo</b>. That one is a secret for later.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['id', 'id sib', 'mkdir comics', 'chgrp family comics', 'chmod g+w comics'],
     steps: [
       { t: 'Look at your ID card: <code>id</code>', ok: (e) => isCmd(e, 'id') && !e.args.length },
       { t: 'And sib\'s: <code>id sib</code>. Which group do you share?', ok: (e) => isCmd(e, 'id') && e.args[0] === 'sib' },
@@ -131,7 +122,6 @@ const LESSONS = [
     mnem: 'su to switch. exit to come back.',
     points: ['After <code>su sib</code>, you are standing in the same folder, but as sib.', '<code>~</code> always means the home of whoever you are. As sib, ~ is /home/sib.', '<code>exit</code> stops being sib and takes you back to being kid.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['su sib', 'whoami', 'cat diary.txt', 'touch comics/kapow.txt', 'exit'],
     steps: [
       { t: 'Become sib: <code>su sib</code>. Watch the prompt.', ok: (e) => isCmd(e, 'su') && e.ok && sh.user === 'sib' },
       { t: 'Check: <code>whoami</code>', ok: (e) => isCmd(e, 'whoami') && sh.user === 'sib' },
@@ -145,7 +135,6 @@ const LESSONS = [
     mnem: 'sudo: one command as the boss. Think first!',
     points: ['Only people in the <b>sudo</b> group may use sudo. Remember your <code>id</code>? You are in it. sib is not.', 'sudo asks for <b>your own</b> password, to prove it is really you.', 'Root can delete the whole computer, and nothing will say Permission denied. Never type sudo just because a website or a video said so.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['cat /tmp/chest.txt', 'sudo whoami', 'sudo cat /tmp/chest.txt'],
     steps: [
       { t: 'There is a chest in /tmp. Try to open it: <code>cat /tmp/chest.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.denied },
       { t: 'Who would you be with sudo? <code>sudo whoami</code>', ok: (e) => isCmd(e, 'sudo') && e.info.inner?.cmd === 'whoami' },
@@ -157,7 +146,6 @@ const LESSONS = [
     mnem: 'grep: the word first, then where to look.',
     points: ['<code>grep cookie diary.txt</code> prints every line of the diary with "cookie" in it.', 'grep cares about capitals. Add <code>-i</code> to ignore them.', '<code>-c</code> counts the lines instead of printing them.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['grep cookie diary.txt', 'grep gerald story.txt', 'grep -i gerald story.txt'],
     steps: [
       { t: 'Find the cookies in your diary: <code>grep cookie diary.txt</code>', ok: (e) => isCmd(e, 'grep') && e.info.matches > 0 && e.args.includes('diary.txt') },
       { t: 'Find Gerald in the story: <code>grep gerald story.txt</code>. Hmm…', ok: (e) => isCmd(e, 'grep') && e.args.includes('story.txt') && e.info.matches === 0 },
@@ -169,7 +157,6 @@ const LESSONS = [
     mnem: 'Left side pours into the right side.',
     points: ['The | key is usually above Enter, or next to Z. Press Shift with it.', '<code>wc -l</code> counts lines. wc is short for word count.', 'You can join as many as you like: <code>a | b | c</code>.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['grep cookie kitchen.log', 'grep cookie kitchen.log | grep sib', 'grep cookie kitchen.log | grep sib | wc -l'],
     steps: [
       { t: 'Find every cookie line in the log: <code>grep cookie kitchen.log</code>', ok: (e) => isCmd(e, 'grep') && e.args.includes('kitchen.log') && e.info.matches > 0 },
       { t: 'Pipe it into another grep to see sib\'s visits: <code>grep cookie kitchen.log | grep sib</code>', ok: (e) => e.info.pipe?.length >= 2 && /sib/.test(e.line ?? '') },
@@ -184,7 +171,6 @@ const LESSONS = [
     mnem: 'r = 4, w = 2, x = 1. Add them up.',
     points: ['<code>chmod 644 note.txt</code> means rw- (6) for you, r-- (4) for the group, r-- (4) for everyone else.', 'Three switches can add up to 7 at most. So there is no 8 or 9!', 'You\'ll see the numbers in grown-up instructions. The letter way is easier to read.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['chmod 600 note.txt', 'chmod 644 note.txt', 'chmod 900 note.txt'],
     steps: [
       { t: 'Lock your note so only you can read and write it: <code>chmod 600 note.txt</code>', ok: (e) => isCmd(e, 'chmod') && e.ok && (modeOf(kidFile('note.txt') ?? {}) & 0o777) === 0o600 },
       { t: 'Let everyone read it again: <code>chmod 644 note.txt</code>', ok: (e) => isCmd(e, 'chmod') && e.ok && (modeOf(kidFile('note.txt') ?? {}) & 0o777) === 0o644 },
@@ -195,7 +181,6 @@ const LESSONS = [
     mnem: 'Build it. Lock it. Test it as someone else.',
     points: ['A folder needs <b>x</b> to go inside it, and <b>r</b> to list it.', 'Take keys away from <b>o</b>thers with <code>chmod o-rx</code>.', 'Write the knock program with <code>nano clubhouse/knock</code>, then give only yourself the x key.'],
     // what the presenter types (presenter mode), one action per beat
-    demo: ['mkdir clubhouse', 'chgrp family clubhouse', 'chmod o-rx clubhouse', 'echo "echo knock knock knock" > clubhouse/knock', 'chmod u+x clubhouse/knock', 'su sib', './clubhouse/knock', 'exit'],
     steps: [
       { t: 'Build it: <code>mkdir clubhouse</code>', ok: (e) => kidFile('clubhouse')?.type === 'dir' },
       { t: 'Give it to the family group.', ok: (e) => grp(kidFile('clubhouse') ?? {}) === 'family' },

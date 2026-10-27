@@ -13,7 +13,6 @@ def region(start, end, new, keep_end=True):
 rep('<title>Jelly Shell</title>', '<title>Jelly Security</title>')
 rep('<div class="brand">Jelly <b>Shell</b></div>', '<div class="brand">Jelly <b>Security</b></div>')
 rep('aria-label="Jelly Shell navigation"', 'aria-label="Jelly Security navigation"')
-rep('<h1>Jelly Shell needs a bigger screen</h1>', '<h1>Jelly Security needs a bigger screen</h1>')
 rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to security · part 1</div>')
 rep('<h1>Boss your computer around with <em>tiny words</em>.</h1>', '<h1>Think like a <em>hacker</em>. Build like a defender.</h1>')
 rep('<p>These words were invented in 1971. They still work today on Macs, Linux, Raspberry Pis and most of the computers that run the internet. Learn them once, use them for life.</p>',
@@ -62,25 +61,9 @@ rep("  print('<span class=\"tip\">Welcome to the sandbox! This is a pretend comp
 
 # ---------- missions, hats and recap ----------
 region('const isCmd = (e, c)', 'const ALL = [', open(V + 'lessons.js').read())
+exec(open('engine/use-demos.py').read())
 rep("const ALL = [{ id: 'whole', name: 'Overview', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];", "const ALL = [...LESSONS];")
-region('/* recap data */', '/* end recap data */\n', """/* recap data */
-const RECAP = {
-  wizard: 'Security wizard!', wizardText: 'You wore both hats. Now go and build things that are hard to break.',
-  chain: [
-    { label: 'Black hat', sub: 'finds the way in' },
-    { label: 'White hat', sub: 'fixes the hole', via: 'swap hats' },
-    { label: 'Black hat', sub: 'tries again, fails', via: 'test it' },
-    { label: 'Report', sub: 'tell the owner', via: 'disclose' },
-  ],
-  line: 'Same skills, different permission. Attack only with permission, fix what you find, tell the owner.',
-  words: {
-    hats: { does: 'Black hat breaks in without permission. White hat (ethical hacker) has permission and reports.', ex: 'sign permission-slip.txt', quiz: 'What is the one difference between a black hat and a white hat?' },
-    keys: { does: 'Least privilege: only the keys you need. chmod changes the lock.', ex: 'chmod go-rw diary.txt', quiz: 'Lock your diary so only you can read it.' },
-    grey: { does: 'Found a way in? Stop, don\\'t peek, tell the owner.', ex: 'coordinated vulnerability disclosure', quiz: 'You can see another pupil\\'s marks by accident. What now?' },
-  },
-};
-/* end recap data */
-""", keep_end=False)
+region('/* recap data */', '/* end recap data */\n', open(V + 'recap.js').read(), keep_end=False)
 rep("/* ---------------- boot ---------------- */", open(V + 'sec.js').read() + "\n/* ---------------- boot ---------------- */")
 rep("</style>", open(V + 'sec.css').read() + "</style>")
 open('build/jelly-security.src.html', 'w').write(s)

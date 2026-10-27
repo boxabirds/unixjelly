@@ -1,6 +1,6 @@
 # Presenter mode: assessment
 
-**Status: Jelly Shell and Jelly Shell 2 are built, in 16:9 and 9:16.** Shift+P starts it (twice for 9:16, three times to stop), and the Overview's 3D town comes first. Git, Web and Security need `demo` scripts and their own special frames (pretend GitHub, pretend browser, hats).
+**Status: built for every guide (Shell, Shell 2, Git, Web, Security), in 16:9 and 9:16.** Shift+P starts it (twice for 9:16, three times to stop), and the Overview's 3D town comes first. Tab hides the Overview's card; there are no "you earned" frames. On small screens the same show is the **mobile slideshow**, offered by the gate and tapped through. Each guide's demos are in `src/guides/<guide>/demos.json`, shared with its play-through test.
 
 **What changed from the proposal:** it is not a screencast of the app. Each frame is one idea, full screen: the task, then the terminal (keys typed, then the result), then the file tree if it changed. The course is run once silently when presenting starts, and the frames are recorded from what really happened.
 

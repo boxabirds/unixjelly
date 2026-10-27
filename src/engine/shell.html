@@ -243,16 +243,24 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
 .confetti{position:fixed;width:14px;height:20px;border-radius:50%/42%;z-index:39;pointer-events:none;border:2px solid var(--ink)}
 
-/* small screens: not yet. The phone version is a separate job. */
-.gate{display:none;position:fixed;inset:0;background:var(--sky);place-items:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));text-align:center}
-.gate-card{display:grid;gap:14px;justify-items:center;max-width:30rem}
-.gate-card svg{width:150px;height:auto}
+/* small screens: the full guide needs a desktop; a phone can watch the course as a slide show (present-patch.py) */
+.gate{display:none;position:fixed;inset:0;overflow-y:auto;background:var(--sky);justify-items:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));text-align:center}
+.gate-card{display:grid;gap:14px;justify-items:center;max-width:34rem;margin-block:auto} /* centred while it fits, scrolls from the top when it doesn't */
+.gate-tag{font-size:1.05rem}
+.gate-lessons{display:grid;gap:10px;justify-self:stretch;text-align:left;margin-top:8px}
+.gate-lessons h2{font-family:var(--display);font-weight:400;font-size:1.3rem;text-align:center}
+.gate-lessons ol{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.gate-lessons li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline;background:#ffffffb3;border:2px solid #24133b22;border-radius:14px;padding:8px 12px}
+.gate-lessons code{font-family:var(--mono);font-weight:700;font-size:.85rem;background:var(--ink);color:#fff;border-radius:8px;padding:1px 8px;white-space:nowrap}
+.gate-lessons li span{font-size:.92rem;color:var(--ink)}
+.gate-card>svg{width:150px;height:auto}
 .gate-card h1{font-size:2.1rem}
 .gate-card p{color:var(--ink-soft)}
 .gate-credit{display:grid;gap:4px;justify-items:center;font-size:.8rem;margin-top:10px}
 .gate-credit .repo{color:var(--ink)!important}
 .gate-credit a{color:var(--ink)}
-@media (max-width:899px),(max-height:559px){.app{display:none}.gate{display:grid}}
+/* !important: base-patch.py lays the app out again further down, which would otherwise win */
+@media (max-width:899px),(max-height:559px){.app{display:none!important}.gate{display:grid}}
 /* the guide: numbered areas, a moving spotlight, a jelly-bean coach, and "next up" */
 .guide{position:absolute;inset:0;pointer-events:none;z-index:30}
 .dim{opacity:.48;filter:saturate(.55);transition:opacity .35s,filter .35s}
@@ -332,14 +340,17 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 </style>
 
 <script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}
 </script>
 
 <div class="gate" role="alert">
   <div class="gate-card">
     <svg viewBox="0 0 200 150" aria-hidden="true"><g stroke="#24133b" stroke-width="5" stroke-linejoin="round"><circle cx="118" cy="62" r="46" fill="#b18cff"/><ellipse cx="96" cy="108" rx="70" ry="30" fill="#ff5a4e"/><path d="M70 88 L64 52 M100 86 L104 50" fill="none"/><circle cx="64" cy="46" r="13" fill="#fff"/><circle cx="104" cy="44" r="13" fill="#fff"/><circle cx="64" cy="50" r="5" fill="#24133b"/><circle cx="104" cy="48" r="5" fill="#24133b"/><path d="M82 120 q14 -10 28 0" fill="none" stroke-linecap="round"/></g></svg>
-    <h1>Jelly Shell needs a bigger screen</h1>
-    <p>Open this on a laptop or desktop computer, with the window at least 900 × 560. A phone version is on the way.</p>
+    <h1>Jelly Shell</h1>
+    <!-- gate: about (tools/seo.py) -->
+    <button class="btn gate-slides" id="slides" type="button">Show mobile slideshow</button>
+    <p>The full rich interactivity and progress tracking is currently only available on desktop: a laptop or desktop computer, with the window at least 900 × 560.</p>
+    <!-- gate: lessons (tools/seo.py) -->
     <div class="gate-credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a><p>Jelly physics ported from <a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener">Jelly Baby</a> by Scott Sun (GPL-3.0).</p></div>
   </div>
 </div>
@@ -556,6 +567,22 @@ function makeLetter(ch, size) {
   const bb = geo.boundingBox, sx = -(bb.min.x + bb.max.x) / 2, sy = -bb.min.y, sz = -(bb.min.z + bb.max.z) / 2;
   geo.translate(sx, sy, sz); geo.computeBoundingBox();
   const polys = shapes.flatMap((s) => { const e = s.extractPoints(7); return [e.shape, ...e.holes].map((p) => p.map((v) => ({ x: v.x + sx, y: v.y + sy }))); });
+  // How much jelly the light passes through behind each point (aThick, read by jellyMaterial): the full depth on the
+  // front and back faces, and on the walls the stroke width, found by a 2D ray across the glyph's outline.
+  // Worked out once per letter and size. It rides the vertices, so it squishes with the jelly.
+  const P = geo.attributes.position.array, N = geo.attributes.normal.array, depth = size * .48, th = new Float32Array(P.length / 3);
+  for (let i = 0; i < th.length; i++) {
+    const x = P[i * 3], y = P[i * 3 + 1], nx = N[i * 3], ny = N[i * 3 + 1], l = Math.hypot(nx, ny) || 1, dx = -nx / l, dy = -ny / l;
+    let best = size * 1.2;
+    for (const p of polys) for (let a = 0, b = p.length - 1; a < p.length; b = a++) {
+      const ex = p[a].x - p[b].x, ey = p[a].y - p[b].y, den = dx * ey - dy * ex; if (Math.abs(den) < 1e-12) continue;
+      const wx = p[b].x - x, wy = p[b].y - y, t = (wx * ey - wy * ex) / den, u = (wx * dy - wy * dx) / den;
+      if (t > size * .01 && u >= 0 && u <= 1 && t < best) best = t;
+    }
+    const w = Math.abs(N[i * 3 + 2]);
+    th[i] = Math.max(size * .04, w * depth + (1 - w) * best);
+  }
+  geo.setAttribute('aThick', new THREE.BufferAttribute(th, 1));
   const out = { geo, polys, box: geo.boundingBox.clone(), centerShift: -sx };
   letterCache.set(key, out);
   return { ...out, geo: geo.clone() };
@@ -644,11 +671,10 @@ class JellyBody {
     geo.attributes.position.setUsage(THREE.DynamicDrawUsage); geo.attributes.normal.setUsage(THREE.DynamicDrawUsage);
     this.geo = geo;
     const c = new THREE.Color(color);
-    this.mesh = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({
-      color: c, transmission: .9, thickness: size * .45, roughness: .14, ior: 1.36, attenuationColor: c.clone().multiplyScalar(.85),
-      attenuationDistance: size * .5, clearcoat: 1, clearcoatRoughness: .06, sheen: .5, sheenColor: new THREE.Color('#ffffff'), specularIntensity: 1,
-    }));
+    this.mesh = new THREE.Mesh(geo, jellyMaterial(c, size, stage.rich));
     this.mesh.castShadow = true; this.mesh.frustumCulled = false; this.mesh.userData.body = this;
+    this.glow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: glowTexture, color: c.clone().lerp(new THREE.Color('#ffffff'), .25), transparent: true, opacity: .55, depthWrite: false, toneMapped: false }));
+    this.glow.rotation.x = -Math.PI / 2; this.glow.scale.set(this.width * 1.5, size * 1.3, 1); this.glow.renderOrder = 1;
 
     this.eyes = this.makeEyes(polys, box, bind);
     this.grab = null; this.sleeping = false; this.quiet = 0; this.spawnAt = 0; this.visible = true;
@@ -922,22 +948,67 @@ function floorTexture(base, line) {
   return t;
 }
 
+// The jelly letters' material: see-through and glossy, with a little rainbow at the edges (dispersion), lit from
+// inside where the jelly is thin, and brighter at the rim. A cheap stand-in for light scattering inside real jelly.
+// rich: the rainbow edges, only for machines that have shown they're fast (it reads the see-through image three times).
+function jellyMaterial(c, size, rich = false) {
+  // deeper relative to each colour's own lightness: a fixed dark turns yellow and orange brown
+  const hsl = c.getHSL({}), deep = new THREE.Color().setHSL(hsl.h, 1, Math.max(.4, hsl.l * .78));
+  const m = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color().setHSL(hsl.h, Math.min(1, hsl.s * 1.1), Math.max(.62, hsl.l)), transmission: .96, thickness: 1, roughness: .05, ior: 1.4,
+    attenuationColor: deep, attenuationDistance: size * .3, clearcoat: 1, clearcoatRoughness: .03, specularIntensity: 1,
+    dispersion: rich ? .35 : 0,
+  });
+  m.onBeforeCompile = (sh) => {
+    sh.vertexShader = 'attribute float aThick;\nvarying float vThick;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vThick = aThick;');
+    sh.fragmentShader = 'varying float vThick;\n' + sh.fragmentShader
+      .replace('#include <transmission_fragment>', THREE.ShaderChunk.transmission_fragment.replace('material.thickness = thickness;', 'material.thickness = vThick;'))
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+        { vec3 V = normalize(vViewPosition); float thin = clamp(1. - vThick / ${(size * .9).toFixed(5)}, .15, 1.);
+          float rim = pow(1. - clamp(dot(normal, V), 0., 1.), 3.) * .5;
+          totalEmissiveRadiance += diffuse * (thin * .4 + rim) * .15; }`);
+  };
+  m.customProgramCacheKey = () => 'jelly-letter' + size;
+  return m;
+}
+
+// The light the jelly reflects: the usual soft room, plus a big four-pane window behind the viewer and a smaller one
+// to the left. Every letter then carries crisp window highlights, the strongest cue that something is wet and glassy.
+function studio(renderer) {
+  const room = new RoomEnvironment(), glow = new THREE.MeshBasicMaterial({ color: new THREE.Color(7, 7, 6.6) });
+  const panes = (x, y, z, w, h, ry) => [[-1, 1], [1, 1], [-1, -1], [1, -1]].forEach(([a, b]) => {
+    const pane = new THREE.Mesh(new THREE.PlaneGeometry(w * .46, h * .46), glow);
+    pane.position.set(x + Math.cos(ry) * a * w * .25, y + b * h * .25, z - Math.sin(ry) * a * w * .25); pane.rotation.y = ry; room.add(pane);
+  });
+  panes(-3, 10, 13, 9, 7, Math.PI); panes(-14, 8, 2, 5, 5, Math.PI / 2);
+  return new THREE.PMREMGenerator(renderer).fromScene(room, .015).texture;
+}
+// The coloured light a jelly throws on the floor, where light comes through it: a soft patch of its colour.
+const glowTexture = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, '#ffffffff'); gr.addColorStop(.35, '#ffffff99'); gr.addColorStop(1, '#ffffff00'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+})();
+
 const stages = new Set();
 class JellyStage {
   constructor(canvas, opts) {
     this.canvas = canvas; this.opts = opts; this.bodies = []; this.acc = 0; this.active = true; this.t = 0;
     const r = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-    r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
-    r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.toneMapping = THREE.NeutralToneMapping; r.toneMappingExposure = 1; // ACES greyed the jelly's colours
+    this.rich = false; this.speed = { n: 0, t0: 0 };
+    r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFShadowMap; // PCFSoftShadowMap was removed in three.js 0.181
     const s = this.scene = new THREE.Scene();
     s.background = new THREE.Color(opts.bg); s.fog = new THREE.Fog(opts.bg, 1.2, 3.2);
-    const pm = new THREE.PMREMGenerator(r); s.environment = pm.fromScene(new RoomEnvironment(), .04).texture; s.environmentIntensity = .9;
+    s.environment = studio(r); s.environmentIntensity = .9;
     this.camera = new THREE.PerspectiveCamera(26, 1, .01, 20);
     s.add(new THREE.HemisphereLight('#ffffff', opts.floor, 1.1));
     const sun = this.sun = new THREE.DirectionalLight('#fff6e6', 2.6); sun.position.set(.35, 1, .7); sun.castShadow = true;
     sun.shadow.mapSize.set(1024, 1024); sun.shadow.bias = -.0004; sun.shadow.normalBias = .002; s.add(sun, sun.target);
     const tex = floorTexture(opts.floor, INK); tex.repeat.set(75, 75);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(12, 12), new THREE.MeshStandardMaterial({ map: tex, roughness: .85 }));
+    // The floor skips tone mapping, so it keeps its own colour and fades into the page around it. Lit, it would come out
+    // far brighter than its colour, so it is dimmed (color) to land back on it; shadows still darken it.
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(12, 12), new THREE.MeshStandardMaterial({ map: tex, roughness: .85, toneMapped: false, color: new THREE.Color(.42, .42, .42) }));
     floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; s.add(floor);
     this.ray = new THREE.Raycaster(); this.ptr = new THREE.Vector2(); this.look = new THREE.Vector3(0, .05, .2); this.plane = new THREE.Plane();
     this.bindPointer();
@@ -947,7 +1018,7 @@ class JellyStage {
     this.setWord(opts.word);
   }
   setWord(word, palette = JELLY) {
-    for (const b of this.bodies) { this.scene.remove(b.mesh); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); }
+    for (const b of this.bodies) { this.scene.remove(b.mesh, b.glow); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); }
     this.bodies = []; this.word = word;
     const size = this.opts.size, scale = size / FONT.data.resolution, gap = size * .14;
     const glyphs = [...word].map((ch) => FONT.data.glyphs[ch] || FONT.data.glyphs['?']);
@@ -959,7 +1030,7 @@ class JellyStage {
       if (ch !== ' ') {
         const cx = cursor + (g.x_min + g.x_max) / 2 * scale;
         const b = new JellyBody(this, ch, palette[(this.opts.colorOffset + ci++) % palette.length], cx, size);
-        this.bodies.push(b); this.scene.add(b.mesh); b.eyes.forEach((e) => this.scene.add(e.ball, e.pupil));
+        this.bodies.push(b); this.scene.add(b.mesh, b.glow); b.eyes.forEach((e) => this.scene.add(e.ball, e.pupil));
       }
       cursor += widths[i] + gap;
     });
@@ -1141,11 +1212,22 @@ class JellyStage {
     this.shuffleHome(dt);
   }
   tick(dt) {
+    // Measure the frames after the first few (which build shaders). Under 30 a second, the see-through pass drops to half
+    // resolution. Over 55, the jelly gets its rainbow edges. Old machines stay at least as fast as before.
+    if (this.speed.n < 140 && ++this.speed.n === 20) this.speed.t0 = performance.now();
+    else if (this.speed.n === 140) {
+      this.speed.n++; const ms = (performance.now() - this.speed.t0) / 120;
+      if (ms > 1000 / 30) this.renderer.transmissionResolutionScale = .5;
+      if (ms < 1000 / 55) { this.rich = true; for (const b of this.bodies) { b.mesh.material.dispersion = .35; b.mesh.material.needsUpdate = true; } }
+    }
     this.simulate(dt);
     for (const b of this.bodies) {
       b.visibleNow(this.t >= b.spawnAt);
       if (b.dirty) b.updateSurface();
       b.updateEyes(dt, this.look, this.t);
+      // the glow lands on the far side from the sun, and fades as the letter leaves the floor
+      const [x, y, z] = b.center(); b.glow.visible = b.mesh.visible;
+      b.glow.position.set(x - this.opts.size * .12, .0008, z - this.opts.size * .35); b.glow.material.opacity = .55 * clamp(1 - (y - b.height * .5) / b.size, 0, 1);
     }
     this.renderer.render(this.scene, this.camera);
   }

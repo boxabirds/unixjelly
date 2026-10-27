@@ -3,6 +3,7 @@
 // signs painted on walls, and things you can follow (jelly words, a lift, a letter) instead of tubes and packets.
 // A guide supplies TOWN_STEPS (who, text, the camera shot it starts on, and where it ends) and a world:
 //   const Town = overview((k) => ({ SHOTS, PLAY, reset, tick }));
+// A world can instead offer named SCENES, each played from the start with play(name), and a START shot (Backstage).
 // `k` holds the building blocks below. PLAY[i] is an async script for step i, made of k's tweens.
 // Needs from the page: THREE, FONT, INK, REDUCED, clamp, mergeVertices, mergeGeometries, RoundedBoxGeometry, RoomEnvironment,
 // and `towns`, whose members the page's frame loop ticks while they're on screen.
@@ -21,10 +22,15 @@ function makeOverview(canvas, world) {
   const OUTLINE = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
   const cache = new Map(), memo = (key, f) => cache.get(key) ?? cache.set(key, f()).get(key);
   const toon = (c) => memo('t' + c, () => new THREE.MeshToonMaterial({ color: c, gradientMap: toonGrad }));
-  const jelly = (c) => memo('j' + c, () => new THREE.MeshPhysicalMaterial({
-    color: c, transmission: .45, thickness: .7, roughness: .16, ior: 1.38, attenuationColor: new THREE.Color(c), attenuationDistance: .35,
-    clearcoat: 1, clearcoatRoughness: .07, sheen: .35, sheenRoughness: .4, sheenColor: new THREE.Color('#ffffff'), specularIntensity: .9,
-  }));
+  // The same jelly as the guides' letters: a light surface, colour that deepens through thick parts, crisp highlights.
+  const jelly = (c) => memo('j' + c, () => {
+    const hsl = new THREE.Color(c).getHSL({});
+    return new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color().setHSL(hsl.h, Math.min(1, hsl.s * 1.1), Math.max(.62, hsl.l)), transmission: .6, thickness: .7, roughness: .06, ior: 1.4,
+      attenuationColor: new THREE.Color().setHSL(hsl.h, 1, Math.max(.4, hsl.l * .78)), attenuationDistance: .3,
+      clearcoat: 1, clearcoatRoughness: .03, specularIntensity: 1,
+    });
+  });
   // An ink outline of the same thickness on every part, whatever its size.
   function solid(geo, color, { p = [0, 0, 0], s = [1, 1, 1], r = [0, 0, 0], line = .035 } = {}) {
     const m = new THREE.Mesh(geo, toon(color)); m.position.set(...p); m.scale.set(...s); m.rotation.set(...r);
@@ -83,11 +89,12 @@ function makeOverview(canvas, world) {
     return memo('L' + ch + size, () => {
       let geo = new THREE.ExtrudeGeometry(FONT.generateShapes(ch, size), { depth: size * .3, curveSegments: 7, bevelEnabled: true, bevelThickness: size * .09, bevelSize: size * .05, bevelSegments: 4 });
       geo.deleteAttribute('uv'); geo.deleteAttribute('normal'); geo = mergeVertices(geo, size * 1e-4); geo.computeVertexNormals(); geo.computeBoundingBox();
-      const bb = geo.boundingBox; geo.translate(-(bb.min.x + bb.max.x) / 2, -bb.min.y, -(bb.min.z + bb.max.z) / 2); geo.computeBoundingBox();
+      // centred across, but kept on the font's baseline, so - stays in the middle and y hangs below
+      const bb = geo.boundingBox; geo.translate(-(bb.min.x + bb.max.x) / 2, 0, -(bb.min.z + bb.max.z) / 2); geo.computeBoundingBox();
       return geo;
     });
   }
-  // A word standing on y = 0, centred on x = 0. Big words get eyes, like the letters on the welcome screen.
+  // A word on the baseline y = 0, centred on x = 0. Big words get eyes, like the letters on the welcome screen.
   function jellyWord(text, size, color, withEyes = false) {
     const g = new THREE.Group(), gap = size * .1, sp = size * .35; let x = 0;
     const ls = [...text].map((ch) => {
@@ -105,7 +112,8 @@ function makeOverview(canvas, world) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75)); renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene(); scene.background = new THREE.Color('#bfe6ff');
-  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), .04).texture; scene.environmentIntensity = .7;
+  // the guides' window light (studio(), in shell.html) where the page has it; the plain room on the prototype pages
+  scene.environment = typeof studio === 'function' ? studio(renderer) : new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), .04).texture; scene.environmentIntensity = .7;
   scene.add(new THREE.HemisphereLight('#ffffff', '#ffd98a', 1.5));
   const sun = new THREE.DirectionalLight('#ffffff', 2.1); sun.position.set(5, 14, 10); scene.add(sun);
   const camera = new THREE.PerspectiveCamera(36, 16 / 9, .1, 260);
@@ -205,6 +213,8 @@ function makeOverview(canvas, world) {
   function hop(o, to, dur = .55, up = .8) { unride(o); const from = o.position.clone(); return tween(dur, (e) => { o.position.lerpVectors(from, to, e); o.position.y += Math.sin(Math.PI * e) * up; }); }
   function along(o, pts, dur) { unride(o); const c = new THREE.CatmullRomCurve3(pts); return tween(dur, (e) => o.position.copy(c.getPoint(e))); }
   const pop = (o, to = 1, dur = .35) => { const from = o.scale.x; o.visible = true; return tween(dur, (e) => { o.scale.setScalar(from + (to - from) * e); if (e === 1 && to === 0) o.visible = false; }, (e) => 1 - (1 - e) ** 3); };
+  // move something inside whatever carries it (a character holding it up) to a new spot and size
+  const settleTo = (o, to, size, dur = .5) => { const p0 = o.position.clone(), s0 = o.scale.x; return tween(dur, (e) => { o.position.lerpVectors(p0, to, e); o.scale.setScalar(s0 + (size - s0) * e); }); };
   const bubbles = [];
   function say(text, at) {
     bubbles.splice(0).forEach((b) => b.removeFromParent());
@@ -213,12 +223,37 @@ function makeOverview(canvas, world) {
   }
 
   /* camera: each shot is a box to fit, whatever the frame's shape */
+  /* Backstage's cast: programs as characters, and the card that carries an answer */
+  // A program is a character: it pops (outer) and wobbles (body) separately, so the two never fight over its size.
+  const character = (build) => { const o = live(new THREE.Group()), body = new THREE.Group(); body.scale.setScalar(1.35); wobbly(body); o.add(body); build(body); o.userData.body = body; return o; };
+  const HEAD = 2.65; // just over a character's head, where it holds what it carries
+  const robot = (name, color) => character((b) => {
+    b.add(gel(rbox(.8, .7, .6, .18), color, { p: [0, .58, 0] }));
+    b.add(gel(rbox(.66, .5, .5, .16), '#e9ecf5', { p: [0, 1.22, 0] }));
+    [-.15, .15].forEach((x) => eye(b, [x, 1.25, .27], .085));
+    b.add(solid(new THREE.CylinderGeometry(.025, .025, .3, 6), INK, { p: [0, 1.6, 0], line: 0 }));
+    b.add(gel(new THREE.SphereGeometry(.07, 12, 8), '#ff4d6d', { p: [0, 1.78, 0] }));
+    [-.2, .2].forEach((x) => b.add(solid(new THREE.CylinderGeometry(.05, .05, .26, 8), INK, { p: [x, .13, 0], line: 0 })));
+    const t = textPlane(name, .5, .26, { bg: '#ffffff' }); t.position.set(0, .58, .31); b.add(t);
+  });
+  // The answer a program carries back: a card with the lines it will print.
+  // Shown big beside the roots so it can be read, then shrunk to be carried.
+  const card = (rows) => {
+    const c = document.createElement('canvas'), w = 1024, g = c.getContext('2d'), font = (px) => `700 ${px}px "JetBrains Mono", monospace`;
+    g.font = font(100); const px = Math.min(46, Math.floor(100 * (w - 80) / Math.max(...rows.map((r) => g.measureText(r).width))));
+    const lh = Math.round(px * 1.45), h = 56 + rows.length * lh; c.width = w; c.height = h;
+    g.fillStyle = '#ffffff'; g.strokeStyle = INK; g.lineWidth = 12; g.beginPath(); g.roundRect(6, 6, w - 12, h - 12, 30); g.fill(); g.stroke();
+    g.fillStyle = INK; g.font = font(px); g.textBaseline = 'middle'; rows.forEach((r, i) => g.fillText(r, 40, 28 + lh * (i + .5)));
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+    const m = live(new THREE.Mesh(new THREE.PlaneGeometry(4.8, 4.8 * h / w), new THREE.MeshBasicMaterial({ map: t, side: THREE.DoubleSide, transparent: true }))); m.visible = false; return m;
+  };
   const view = { yaw: 0, pitch: 0, zoom: 1 }, cam = { c: V(), dist: 0, shot: null };
   let gaze = null;
   const k = {
     V, ease, toon, jelly, solid, gel, rbox, eye, smile, wobbly, poke, blob, label, textPlane, jellyWord, sfx,
     scene, add, live, camera, T, room, lift, you, grass, soil, pebbles, tree, cloud, sunBall, roof,
     tween, wait, hop, along, pop, ride, unride, say,
+    character, robot, card, HEAD, settleTo,
     shot: (s) => { cam.shot = s; }, look: (o) => { gaze = o; },
     get rush() { return rush; },
   };
@@ -284,6 +319,16 @@ function makeOverview(canvas, world) {
       });
       return queue;
     },
+    // Play one of the world's named scenes from the start (Backstage's shows). Resolves when it ends or is cut short.
+    play(name) {
+      return new Promise((done) => {
+        queue = queue.then(async () => {
+          if (playing) { rush = true; for (const tw of [...tweens]) { tw.fn(1); tw.res(); } tweens.clear(); await playing; rush = false; }
+          reset(); cam.shot = W.START; canvas.dataset.playing = name;
+          playing = W.SCENES[name]().finally(() => { playing = null; delete canvas.dataset.playing; done(); });
+        });
+      });
+    },
     tick(dt) {
       t += dt;
       if (speed.n < 140 && ++speed.n > 20) { speed.time += dt; if (speed.n === 140 && speed.time / 120 > 1 / 30) plainJelly(); }
@@ -314,7 +359,7 @@ function makeOverview(canvas, world) {
   };
   new ResizeObserver(resize).observe(canvas); resize();
   new IntersectionObserver(([en]) => { api.active = en.isIntersecting; }).observe(canvas);
-  cam.shot = TOWN_STEPS[0].shot; cam.c.copy(W.SHOTS[cam.shot].c); reset(); cam.dist = fitDist(W.SHOTS[cam.shot]);
+  cam.shot = W.START ?? TOWN_STEPS[0].shot; cam.c.copy(W.SHOTS[cam.shot].c); reset(); cam.dist = fitDist(W.SHOTS[cam.shot]);
   towns.push(api);
   return api;
 }

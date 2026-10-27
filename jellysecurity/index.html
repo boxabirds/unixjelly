@@ -4,7 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
-<title>Jelly Security</title>
+<title>Jelly Security 1: think like a hacker, safely</title>
+<meta name="description" content="Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAwFBMVEX79/fI7f3B7//B6//B6v7A6/7A6f/A6P+/6P6/5v+/5va/5f+/5f6/5P++5/6+5P7L3Pa94Pu62/m31fTHyPy1y/bRtfmttPLMoP7Flf+qpfOsmPG+i/yjjPK+gf+rf/y2df+pdfyub/6jbfygbP+dcf+cb/+cbP+YfPCTbPeNesWnZ/2iaf+haf+hZ/+gaf+gaP+fZv+daf+daP+cZv6XZ/6XZf+NZu+hYv+aYv6TYv6IYeuXXP6DW+h6Us1JMnXpVW3vAAACK0lEQVR42m3Ti3KiMBQG4AwWtBsrBRUMJhRRboKoyDWAvP9b7cHblm7PjIxjvvkj5yTo/Xvhvga/vKPB8kSSpBl8+R1gSVQWi8XndDbBvwEsqjqhlBJtoUj4f4DFJTEtU9PgQZci/gnwaElXNqyZlm3bm3/iCcYKswi1LZuuCNHIlzIegg9B334iRK0VQVAk1YWPYYLoE9TtNYq0z26PthV77nEHeKwWFAAJidWDS+WrY/wdvM1rriGtgaKwU8OLufQDtJwnTVNVVVOlDc98dQDex/K+5jxPH58s82fDt5CFdVtn1y65tF3OeRAYgjwAU/gTbd1212vX5UUR+PO36fA15ZHetjUsd0UNpY/k4RZ4Igrruu3rem3btSANZ4ElZbFkm812u4UHdHqpDhKwpFLza2OvTAt6Ha7IyaTG7Bv4ENeh5TkwKhOtbDuME9sMH9NAt1HPtyXPvKgMLc0Mw7jMeVVu5FcCBJTnLMjSsq+4rJokyOPyHoFuZyWK88LPkuR8juNzmuZOwE/lRunn1QMISLjvZ15yPMUnAKnj13lUGn0EugVEeaGzHsSQcEkTjzF+LHf9wBCMwSh3Dfvju553PBziEwCXzYtHxC0haAIVgPsCDnsz2mNzB73Q1ZHCXHcH4HC6XAAoE1aw/lTd+wCtv4HdIeqBB2A8UmcSfrZaxg8QRYfjJfGctQL9v93R182aMNe5gwSAMXle4dd5EIzgAY6J6+ij5836C2g1YkHWaTbzAAAAAElFTkSuQmCC">
+<meta name="theme-color" content="#bfe6ff">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jelly Unix">
+<meta property="og:title" content="Jelly Security 1: think like a hacker, safely">
+<meta property="og:description" content="Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://unixjelly.com/jellysecurity/">
+<meta property="og:url" content="https://unixjelly.com/jellysecurity/">
+<link rel="icon" type="image/png" sizes="192x192" href="https://unixjelly.com/icons/icon-192.png">
+<link rel="apple-touch-icon" href="https://unixjelly.com/icons/icon-180.png">
+<meta property="og:image" content="https://unixjelly.com/icons/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Jelly Unix house: a computer cut open like a doll's house">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Course", "name": "Jelly Security 1", "description": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.", "url": "https://unixjelly.com/jellysecurity/", "provider": {"@type": "Organization", "name": "Jelly Unix", "sameAs": "https://github.com/boxabirds/unixjelly"}, "inLanguage": "en", "isAccessibleForFree": true, "educationalLevel": "Beginner", "audience": {"@type": "EducationalAudience", "audienceType": "Curious kids, about 9 to 14, and beginners of any age"}, "coursePrerequisites": ["Jelly Shell 2"], "offers": {"@type": "Offer", "category": "Free", "price": 0, "priceCurrency": "USD"}, "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "Online"}, "syllabusSections": [{"@type": "Syllabus", "name": "hats: Same skills, different permission", "description": "What is the difference between hacking and breaking the law?"}, {"@type": "Syllabus", "name": "chmod: Only the keys you need", "description": "Who can read my files, and how do I lock them properly?"}, {"@type": "Syllabus", "name": "grey: What would a white hat do?", "description": "I found a way in by accident. What should I do?"}]}</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,6 +84,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pr-town[hidden]{display:none}
 .pr-town canvas{width:100%;height:100%;display:block}
 .pr-stage[data-k=whole] .pr-body{justify-content:flex-end}
+.pr-stage[data-k=browser]{background:#d4eeff}
 .present-tall .pr-stage[data-k=whole] .pr-body{justify-content:flex-start}
 .pr-town-card{background:#fffffff0;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2.4 * var(--u));box-shadow:0 var(--u) 0 var(--ink);padding:calc(2.4 * var(--u)) calc(3 * var(--u));display:grid;gap:var(--u);max-width:min(100%, calc(62 * var(--u)))}
 .pr-town-card .pr-h{font-size:calc(3.6 * var(--u))}
@@ -103,12 +121,48 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pr-stage .pr-files{flex:none;font-size:calc((3.2 * var(--u)) * var(--s, 1));background:#fff;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2.4 * var(--u));padding:.8em 1em;box-shadow:0 calc(1 * var(--u)) 0 var(--ink);overflow:visible;align-self:flex-start;min-width:50%}
 .pr-files .pr-new{background:#fff3b8;outline:calc(.3 * var(--u)) solid #ffc61a}
 .pr-files .mrow .lock-ico{width:1.9em;height:1.25em}
-.pr-earned{display:grid;justify-items:center;gap:calc(3 * var(--u));text-align:center}
-.pr-earned .pr-bean{width:calc(22 * var(--u))}
-.pr-earned .pr-big{font-family:var(--display);max-width:none}
+.pr-hat{align-self:flex-start;font-size:calc(2.6 * var(--u))}
+.pr-click{display:flex;align-items:center;gap:calc(2 * var(--u))}
+.pr-btn,.pr-link{font-size:calc(5 * var(--u));line-height:1.2;max-width:100%}
+.pr-btn{font-family:var(--display);background:var(--lemon);border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));padding:.35em .8em;box-shadow:0 calc(1 * var(--u)) 0 var(--ink)}
+.pr-link{color:#1a3fd6;text-decoration:underline;text-decoration-thickness:.08em;font-family:Verdana,sans-serif}
+.pr-stage .pr-code{margin:0;font-family:var(--mono);font-size:calc(3.1 * var(--u) * var(--s, 1));line-height:1.45;white-space:pre-wrap;background:#fff;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));padding:.7em 1em;box-shadow:0 calc(1 * var(--u)) 0 var(--ink)}
+.pr-code ins{text-decoration:none;background:#fff3b8;outline:calc(.25 * var(--u)) solid #ffc61a;border-radius:.15em}
+.pr-code del{background:#ffe1e7;color:#b0002a}
+.pr-browser{display:flex;flex-direction:column;background:#fff;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));box-shadow:0 calc(1 * var(--u)) 0 var(--ink);overflow:hidden;flex:1;min-height:0}
+.pr-bw-top{display:flex;align-items:center;gap:calc(1.4 * var(--u));padding:calc(1.2 * var(--u)) calc(1.6 * var(--u));background:#eef0f6;border-bottom:calc(.3 * var(--u)) solid #24133b22}
+.pr-bw-top .bw-lock{height:auto;font-size:calc(2 * var(--u));padding:.2em .7em}
+.pr-url{flex:1;font-family:var(--mono);font-size:calc(3.2 * var(--u));background:#fff;border:calc(.3 * var(--u)) solid var(--ink);border-radius:999px;padding:.15em .8em;min-height:1.5em}
+.pr-journey{zoom:1.8;min-height:0}
+.present-tall .pr-journey{zoom:1.2}
+.pr-page{position:relative;flex:1;min-height:0;display:flex}
+.pr-page iframe{border:0;width:100%;flex:1;zoom:1.6}
+.present-tall .pr-page iframe{zoom:1.2}
+.pr-page .bw-source,.pr-page .bw-boxes{flex:1;margin:0;overflow:hidden;font-size:calc(2.4 * var(--u));padding:calc(1.6 * var(--u))}
+.pr-page .pr-pop{position:absolute;inset:auto calc(2 * var(--u)) calc(2 * var(--u)) auto;max-width:70%;font-size:calc(2.4 * var(--u))}
+.pr-q{font-size:calc(4 * var(--u));line-height:1.3;margin:0;max-width:34ch}
+.pr-q .addr{font-family:var(--mono)}
+.pr-choices{display:grid;gap:calc(1.2 * var(--u))}
+.pr-choice{font-size:calc(3 * var(--u));border:calc(.4 * var(--u)) solid #24133b33;border-radius:calc(1.6 * var(--u));padding:.4em .8em;background:#fff;color:#24133b99}
+.pr-choice.good{border-color:var(--ink);background:#d8f6e4;color:var(--ink)}
+.pr-choice.bad{border-color:var(--ink);background:#ffe1e7;color:var(--ink)}
+.pr-say{font-size:calc(3 * var(--u));line-height:1.35;margin:0;max-width:40ch}
+.pr-stage .pr-files:has(.gm){zoom:1.7;font-size:1rem;padding:.4em;min-width:0}
+.present-tall .pr-stage .pr-files:has(.gm){zoom:1.25}
+/* Tab hides the Overview's card, so it never covers what the scene is showing */
+.pr-town-card{transition:opacity .25s,transform .25s}
+.pr-nocard .pr-town-card{opacity:0;transform:translateY(calc(2 * var(--u)))}
 .pr-bar{position:absolute;left:0;right:0;bottom:0;height:calc(.6 * var(--u));background:#24133b14;z-index:2}
 .pr-bar i{display:block;height:100%;width:0;background:var(--c, #ff4d6d);transition:width .3s}
 .pr-stage[data-k=term] .pr-bar,.pr-stage[data-k=nano] .pr-bar{background:#ffffff14}
+/* the mobile slideshow: the whole stage takes the taps (nothing inside it is interactive), plus a close button and a first hint */
+.slides .pr-stage{touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.slides .pr-stage>*:not(.pr-close),.slides .jarbox{pointer-events:none}
+.slides .pr-stage *{cursor:default!important}
+.slides .pr-body{top:calc(var(--pad) + 40px)} /* clear of the close button */
+.pr-close{position:absolute;z-index:3;top:calc(10px + env(safe-area-inset-top,0px));right:calc(10px + env(safe-area-inset-right,0px));width:40px;height:40px;border-radius:50%;border:3px solid var(--ink);background:#fff;color:var(--ink);font:700 18px/1 var(--body,inherit);box-shadow:0 3px 0 var(--ink)}
+.pr-hint{position:absolute;z-index:3;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);text-align:center;background:var(--ink);color:#fff;border-radius:999px;padding:8px 16px;font-size:.9rem;animation:prHint 1.6s ease-in-out infinite alternate}
+@keyframes prHint{to{transform:translateX(-50%) translateY(-4px)}}
 /* the last frame is the jar, full screen */
 .present .jarbox{visibility:visible;z-index:75;padding:0;background:none;backdrop-filter:none}
 .present .jar-card{width:100vw;height:100vh;border:0;border-radius:0;box-shadow:none;padding:calc(4 * var(--u))}
@@ -169,6 +223,20 @@ button{font:inherit;color:inherit;cursor:pointer}
 .hero-side .needs{font-size:.88em}
 .needs a,.rc-next a{color:var(--blue);font-weight:700}
 .un-next{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.co{align-items:center}
+.co-name{flex:1;min-width:0}
+.co-info{flex:none;width:1.5em;height:1.5em;border-radius:50%;border:2px solid #ffffff80;background:none;color:#fff;font-family:var(--display);font-size:.78rem;line-height:1;padding:0}
+.co-info:hover{background:#ffffff26}
+.co-pop{position:fixed;inset:0;z-index:65;display:grid;place-items:center;background:#24133b80;padding:16px}
+.co-card{position:relative;background:var(--card);color:var(--ink);border:4px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);width:min(560px,100%);max-height:86vh;overflow:auto;padding:20px 22px;display:grid;gap:10px}
+.co-card h3{font-family:var(--display);font-weight:400;font-size:1.7rem;margin:0}
+.co-k{font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.co-line{margin:0;font-weight:600}
+.co-words{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.co-words li{display:grid;grid-template-columns:minmax(0,11em) minmax(0,1fr);gap:10px;align-items:baseline;font-size:.92rem}
+.co-words code{justify-self:start;white-space:normal;overflow-wrap:anywhere}
+.co-x{position:absolute;top:10px;right:12px;border:0;background:none;font-size:1.6rem;line-height:1;color:var(--ink)}
+.co-go a{color:var(--blue);font-weight:700}
 .un-next a{font-family:var(--display);font-size:1.1rem;color:var(--ink);text-decoration:none;background:var(--lemon);border:3px solid var(--ink);border-radius:14px;padding:6px 14px;box-shadow:0 4px 0 var(--ink)}
 .stepper{display:grid;grid-template-columns:1fr 1.4fr;gap:6px}
 .stepper .btn{padding:6px 10px;font-size:1rem}
@@ -393,16 +461,24 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
 .confetti{position:fixed;width:14px;height:20px;border-radius:50%/42%;z-index:39;pointer-events:none;border:2px solid var(--ink)}
 
-/* small screens: not yet. The phone version is a separate job. */
-.gate{display:none;position:fixed;inset:0;background:var(--sky);place-items:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));text-align:center}
-.gate-card{display:grid;gap:14px;justify-items:center;max-width:30rem}
-.gate-card svg{width:150px;height:auto}
+/* small screens: the full guide needs a desktop; a phone can watch the course as a slide show (present-patch.py) */
+.gate{display:none;position:fixed;inset:0;overflow-y:auto;background:var(--sky);justify-items:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));text-align:center}
+.gate-card{display:grid;gap:14px;justify-items:center;max-width:34rem;margin-block:auto} /* centred while it fits, scrolls from the top when it doesn't */
+.gate-tag{font-size:1.05rem}
+.gate-lessons{display:grid;gap:10px;justify-self:stretch;text-align:left;margin-top:8px}
+.gate-lessons h2{font-family:var(--display);font-weight:400;font-size:1.3rem;text-align:center}
+.gate-lessons ol{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.gate-lessons li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline;background:#ffffffb3;border:2px solid #24133b22;border-radius:14px;padding:8px 12px}
+.gate-lessons code{font-family:var(--mono);font-weight:700;font-size:.85rem;background:var(--ink);color:#fff;border-radius:8px;padding:1px 8px;white-space:nowrap}
+.gate-lessons li span{font-size:.92rem;color:var(--ink)}
+.gate-card>svg{width:150px;height:auto}
 .gate-card h1{font-size:2.1rem}
 .gate-card p{color:var(--ink-soft)}
 .gate-credit{display:grid;gap:4px;justify-items:center;font-size:.8rem;margin-top:10px}
 .gate-credit .repo{color:var(--ink)!important}
 .gate-credit a{color:var(--ink)}
-@media (max-width:899px),(max-height:559px){.app{display:none}.gate{display:grid}}
+/* !important: base-patch.py lays the app out again further down, which would otherwise win */
+@media (max-width:899px),(max-height:559px){.app{display:none!important}.gate{display:grid}}
 /* the end of a section: a jelly flies into the jar, then a clear "next up" */
 .guide{position:absolute;inset:0;pointer-events:none;z-index:30}
 .upnext{position:absolute;inset:0;pointer-events:auto;display:grid;place-items:center;background:#24133b55;backdrop-filter:blur(2px)}
@@ -474,6 +550,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .home-link{display:inline-flex;align-items:center;gap:6px;width:max-content;padding:2px 6px;font-weight:700;font-size:.82rem;color:var(--lemon);text-decoration:none;border-radius:8px}
 .home-link:hover{text-decoration:underline}
 .gate .home-link{color:var(--blue);font-size:1rem}
+.gate .gate-slides{font-size:1.1rem;padding:12px 22px}
 @media (prefers-reduced-motion:reduce){.side,.stage,.nav-handle{transition:none}}
 /* small windows: the recap packs its cards tighter */
 @media (max-height:700px),(max-width:1150px){
@@ -548,7 +625,7 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
 </style>
 
 <script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}
 </script>
 
 </head>
@@ -556,8 +633,11 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
 <div class="gate" role="alert">
   <div class="gate-card">
     <svg viewBox="0 0 200 150" aria-hidden="true"><g stroke="#24133b" stroke-width="5" stroke-linejoin="round"><circle cx="118" cy="62" r="46" fill="#b18cff"/><ellipse cx="96" cy="108" rx="70" ry="30" fill="#ff5a4e"/><path d="M70 88 L64 52 M100 86 L104 50" fill="none"/><circle cx="64" cy="46" r="13" fill="#fff"/><circle cx="104" cy="44" r="13" fill="#fff"/><circle cx="64" cy="50" r="5" fill="#24133b"/><circle cx="104" cy="48" r="5" fill="#24133b"/><path d="M82 120 q14 -10 28 0" fill="none" stroke-linecap="round"/></g></svg>
-    <h1>Jelly Security needs a bigger screen</h1>
-    <p>Open this on a laptop or desktop computer, with the window at least 900 × 560. A phone version is on the way.</p>
+    <h1>Jelly Security 1</h1>
+    <p class="gate-tag">Same skills, different permission. Break into a pretend computer, fix the hole, then try again. Three missions.</p>
+    <button class="btn gate-slides" id="slides" type="button">Show mobile slideshow</button>
+    <p>The full rich interactivity and progress tracking is currently only available on desktop: a laptop or desktop computer, with the window at least 900 × 560.</p>
+    <section class="gate-lessons" aria-labelledby="gateLessons"><h2 id="gateLessons">What you will learn: 3 lessons</h2><ol><li><code>hats</code><span>What is the difference between hacking and breaking the law?</span></li><li><code>chmod</code><span>Who can read my files, and how do I lock them properly?</span></li><li><code>grey</code><span>I found a way in by accident. What should I do?</span></li></ol></section>
     <p><a class="home-link" href="../">← All the guides</a></p>
     <div class="gate-credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a><p>Jelly physics ported from <a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener">Jelly Baby</a> by Scott Sun (GPL-3.0).</p></div>
   </div>
@@ -807,6 +887,22 @@ function makeLetter(ch, size) {
     eyeZ = (x, y) => z0 * puff(x, y);
   }
   const polys = shapes.flatMap((s) => { const e = s.extractPoints(7); return [e.shape, ...e.holes].map((p) => p.map((v) => ({ x: v.x + sx, y: v.y + sy }))); });
+  // How much jelly the light passes through behind each point (aThick, read by jellyMaterial): the full depth on the
+  // front and back faces, and on the walls the stroke width, found by a 2D ray across the glyph's outline.
+  // Worked out once per letter and size. It rides the vertices, so it squishes with the jelly.
+  const P = geo.attributes.position.array, N = geo.attributes.normal.array, depth = size * .48, th = new Float32Array(P.length / 3);
+  for (let i = 0; i < th.length; i++) {
+    const x = P[i * 3], y = P[i * 3 + 1], nx = N[i * 3], ny = N[i * 3 + 1], l = Math.hypot(nx, ny) || 1, dx = -nx / l, dy = -ny / l;
+    let best = size * 1.2;
+    for (const p of polys) for (let a = 0, b = p.length - 1; a < p.length; b = a++) {
+      const ex = p[a].x - p[b].x, ey = p[a].y - p[b].y, den = dx * ey - dy * ex; if (Math.abs(den) < 1e-12) continue;
+      const wx = p[b].x - x, wy = p[b].y - y, t = (wx * ey - wy * ex) / den, u = (wx * dy - wy * dx) / den;
+      if (t > size * .01 && u >= 0 && u <= 1 && t < best) best = t;
+    }
+    const w = Math.abs(N[i * 3 + 2]);
+    th[i] = Math.max(size * .04, w * depth + (1 - w) * best);
+  }
+  geo.setAttribute('aThick', new THREE.BufferAttribute(th, 1));
   const out = { geo, polys, box: geo.boundingBox.clone(), centerShift: -sx, eyeZ };
   letterCache.set(key, out);
   return { ...out, geo: geo.clone() };
@@ -900,13 +996,12 @@ class JellyBody {
     geo.attributes.position.setUsage(THREE.DynamicDrawUsage); geo.attributes.normal.setUsage(THREE.DynamicDrawUsage);
     this.geo = geo;
     const c = new THREE.Color(color);
-    this.mesh = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({
-      color: c, transmission: .9, thickness: size * .45, roughness: .14, ior: 1.36, attenuationColor: c.clone().multiplyScalar(.85),
-      attenuationDistance: size * .5, clearcoat: 1, clearcoatRoughness: .06, sheen: .5, sheenColor: new THREE.Color('#ffffff'), specularIntensity: 1,
-    }));
+    this.mesh = new THREE.Mesh(geo, jellyMaterial(c, size, stage.rich));
     this.mesh.castShadow = true; this.mesh.frustumCulled = false; this.mesh.userData.body = this;
+    this.glow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: glowTexture, color: c.clone().lerp(new THREE.Color('#ffffff'), .25), transparent: true, opacity: .55, depthWrite: false, toneMapped: false }));
+    this.glow.rotation.x = -Math.PI / 2; this.glow.scale.set(this.width * 1.5, size * 1.3, 1); this.glow.renderOrder = 1;
 
-    this.eyeZ = L.eyeZ; this.eyes = this.makeEyes(polys, box, bind);
+    this.eyeZ = L.eyeZ; this.eyes = this.makeEyes(polys, box, bind); this.inside = { bind, polys, box }; // for what a sweet has suspended inside
     this.grab = null; this.sleeping = false; this.quiet = 0; this.spawnAt = 0; this.visible = true;
   }
 
@@ -1212,22 +1307,67 @@ function floorTexture(base, line) {
   return t;
 }
 
+// The jelly letters' material: see-through and glossy, with a little rainbow at the edges (dispersion), lit from
+// inside where the jelly is thin, and brighter at the rim. A cheap stand-in for light scattering inside real jelly.
+// rich: the rainbow edges, only for machines that have shown they're fast (it reads the see-through image three times).
+function jellyMaterial(c, size, rich = false) {
+  // deeper relative to each colour's own lightness: a fixed dark turns yellow and orange brown
+  const hsl = c.getHSL({}), deep = new THREE.Color().setHSL(hsl.h, 1, Math.max(.4, hsl.l * .78));
+  const m = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color().setHSL(hsl.h, Math.min(1, hsl.s * 1.1), Math.max(.62, hsl.l)), transmission: .96, thickness: 1, roughness: .05, ior: 1.4,
+    attenuationColor: deep, attenuationDistance: size * .3, clearcoat: 1, clearcoatRoughness: .03, specularIntensity: 1,
+    dispersion: rich ? .35 : 0,
+  });
+  m.onBeforeCompile = (sh) => {
+    sh.vertexShader = 'attribute float aThick;\nvarying float vThick;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vThick = aThick;');
+    sh.fragmentShader = 'varying float vThick;\n' + sh.fragmentShader
+      .replace('#include <transmission_fragment>', THREE.ShaderChunk.transmission_fragment.replace('material.thickness = thickness;', 'material.thickness = vThick;'))
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+        { vec3 V = normalize(vViewPosition); float thin = clamp(1. - vThick / ${(size * .9).toFixed(5)}, .15, 1.);
+          float rim = pow(1. - clamp(dot(normal, V), 0., 1.), 3.) * .5;
+          totalEmissiveRadiance += diffuse * (thin * .4 + rim) * .15; }`);
+  };
+  m.customProgramCacheKey = () => 'jelly-letter' + size;
+  return m;
+}
+
+// The light the jelly reflects: the usual soft room, plus a big four-pane window behind the viewer and a smaller one
+// to the left. Every letter then carries crisp window highlights, the strongest cue that something is wet and glassy.
+function studio(renderer) {
+  const room = new RoomEnvironment(), glow = new THREE.MeshBasicMaterial({ color: new THREE.Color(7, 7, 6.6) });
+  const panes = (x, y, z, w, h, ry) => [[-1, 1], [1, 1], [-1, -1], [1, -1]].forEach(([a, b]) => {
+    const pane = new THREE.Mesh(new THREE.PlaneGeometry(w * .46, h * .46), glow);
+    pane.position.set(x + Math.cos(ry) * a * w * .25, y + b * h * .25, z - Math.sin(ry) * a * w * .25); pane.rotation.y = ry; room.add(pane);
+  });
+  panes(-3, 10, 13, 9, 7, Math.PI); panes(-14, 8, 2, 5, 5, Math.PI / 2);
+  return new THREE.PMREMGenerator(renderer).fromScene(room, .015).texture;
+}
+// The coloured light a jelly throws on the floor, where light comes through it: a soft patch of its colour.
+const glowTexture = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, '#ffffffff'); gr.addColorStop(.35, '#ffffff99'); gr.addColorStop(1, '#ffffff00'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+})();
+
 const stages = new Set();
 class JellyStage {
   constructor(canvas, opts) {
     this.canvas = canvas; this.opts = opts; this.bodies = []; this.acc = 0; this.active = true; this.t = 0;
     const r = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-    r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
-    r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.toneMapping = THREE.NeutralToneMapping; r.toneMappingExposure = 1; // ACES greyed the jelly's colours
+    this.rich = false; this.speed = { n: 0, t0: 0 };
+    r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFShadowMap; // PCFSoftShadowMap was removed in three.js 0.181
     const s = this.scene = new THREE.Scene();
     s.background = new THREE.Color(opts.bg); s.fog = new THREE.Fog(opts.bg, 1.2, 3.2);
-    const pm = new THREE.PMREMGenerator(r); s.environment = pm.fromScene(new RoomEnvironment(), .04).texture; s.environmentIntensity = .9;
+    s.environment = studio(r); s.environmentIntensity = .9;
     this.camera = new THREE.PerspectiveCamera(26, 1, .01, 20);
     s.add(new THREE.HemisphereLight('#ffffff', opts.floor, 1.1));
     const sun = this.sun = new THREE.DirectionalLight('#fff6e6', 2.6); sun.position.set(.35, 1, .7); sun.castShadow = true;
     sun.shadow.mapSize.set(1024, 1024); sun.shadow.bias = -.0004; sun.shadow.normalBias = .002; s.add(sun, sun.target);
     const tex = floorTexture(opts.floor, INK); tex.repeat.set(75, 75);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(12, 12), new THREE.MeshStandardMaterial({ map: tex, roughness: .85 }));
+    // The floor skips tone mapping, so it keeps its own colour and fades into the page around it. Lit, it would come out
+    // far brighter than its colour, so it is dimmed (color) to land back on it; shadows still darken it.
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(12, 12), new THREE.MeshStandardMaterial({ map: tex, roughness: .85, toneMapped: false, color: new THREE.Color(.42, .42, .42) }));
     floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; s.add(floor);
     this.ray = new THREE.Raycaster(); this.ptr = new THREE.Vector2(); this.look = new THREE.Vector3(0, .05, .2); this.plane = new THREE.Plane();
     this.bindPointer();
@@ -1237,7 +1377,7 @@ class JellyStage {
     this.setWord(opts.word);
   }
   setWord(word, palette = JELLY) {
-    for (const b of this.bodies) { this.scene.remove(b.mesh); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); }
+    for (const b of this.bodies) { this.scene.remove(b.mesh, b.glow); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); }
     this.bodies = []; this.word = word;
     const size = this.opts.size, scale = size / FONT.data.resolution, gap = size * .14;
     const glyphs = [...word].map((ch) => FONT.data.glyphs[ch] || FONT.data.glyphs['?']);
@@ -1249,7 +1389,7 @@ class JellyStage {
       if (ch !== ' ') {
         const cx = cursor + (g.x_min + g.x_max) / 2 * scale;
         const b = new JellyBody(this, ch, palette[(this.opts.colorOffset + ci++) % palette.length], cx, size);
-        this.bodies.push(b); this.scene.add(b.mesh); b.eyes.forEach((e) => this.scene.add(e.ball, e.pupil));
+        this.bodies.push(b); this.scene.add(b.mesh, b.glow); b.eyes.forEach((e) => this.scene.add(e.ball, e.pupil));
       }
       cursor += widths[i] + gap;
     });
@@ -1429,11 +1569,22 @@ class JellyStage {
     this.shuffleHome(dt);
   }
   tick(dt) {
+    // Measure the frames after the first few (which build shaders). Under 30 a second, the see-through pass drops to half
+    // resolution. Over 55, the jelly gets its rainbow edges. Old machines stay at least as fast as before.
+    if (this.speed.n < 140 && ++this.speed.n === 20) this.speed.t0 = performance.now();
+    else if (this.speed.n === 140) {
+      this.speed.n++; const ms = (performance.now() - this.speed.t0) / 120;
+      if (ms > 1000 / 30) this.renderer.transmissionResolutionScale = .5;
+      if (ms < 1000 / 55) { this.rich = true; for (const b of this.bodies) { b.mesh.material.dispersion = .35; b.mesh.material.needsUpdate = true; } }
+    }
     this.simulate(dt);
     for (const b of this.bodies) {
       b.visibleNow(this.t >= b.spawnAt);
       if (b.dirty) b.updateSurface();
-      b.updateEyes(dt, this.look, this.t);
+      b.updateEyes(dt, this.look, this.t); b.bits?.update();
+      // the glow lands on the far side from the sun, and fades as the letter leaves the floor
+      const [x, y, z] = b.center(); b.glow.visible = b.mesh.visible;
+      b.glow.position.set(x - this.opts.size * .12, .0008, z - this.opts.size * .35); b.glow.material.opacity = .55 * clamp(1 - (y - b.height * .5) / b.size, 0, 1);
     }
     this.renderer.render(this.scene, this.camera);
   }
@@ -1461,17 +1612,74 @@ vec3 jellyPattern(vec3 base) {
   else if (uPat == 11) { vec3 g = floor(vR * 45.); on = step(.9, jh(g.xy + g.z * 7.1)); }
   return mix(base, c2, on);
 }`;
+// A sweet is made like the jelly letters: see-through, deep colour where it's thick. Its look is either layers in the
+// jelly itself (the pattern colours the light passing through, so stripes are clear or coloured bands inside), or bits
+// suspended in it: chocolate chips, sprinkles, glitter, stars, gold leaf. Solid things inside see-through jelly show
+// through it, bent by it, so the bits are ordinary little meshes that ride the jelly's wobble like the eyes.
+const BITS = {
+  spotty: { n: 14, geo: () => new THREE.SphereGeometry(1, 10, 8), s: [.075, .055, .075], mat: () => new THREE.MeshStandardMaterial({ color: '#4a2a17', roughness: .55 }) },
+  sprinkle: { n: 26, reach: 1.2, geo: () => new THREE.CapsuleGeometry(.4, 1.6, 3, 6), s: [.022, .032, .022], mat: () => new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .4 }), colours: ['#ff4d6d', '#ffc61a', '#62c934', '#3a5bff', '#ffffff', '#ff8ad8'] },
+  glitter: { n: 70, geo: () => new THREE.OctahedronGeometry(1), s: [.04, .04, .012], mat: () => new THREE.MeshStandardMaterial({ color: '#f4f6ff', metalness: 1, roughness: .15 }) },
+  galaxy: { n: 60, geo: () => new THREE.IcosahedronGeometry(1), s: [.022, .022, .022], mat: () => new THREE.MeshBasicMaterial({ color: '#fffbe0' }) },
+  golden: { n: 16, reach: .5, geo: () => new THREE.BoxGeometry(1, 1, 1), s: [.3, .05, .008], mat: () => new THREE.MeshStandardMaterial({ color: '#ffc84a', metalness: 1, roughness: .25 }) },
+};
+const COMPASS = Array.from({ length: 8 }, (_, i) => [Math.cos(i * Math.PI / 4), Math.sin(i * Math.PI / 4)]);
+const bitParts = new Map(); // one geometry and material per kind, shared by every sweet
+const LAYERED = ['zebra', 'stripy', 'swirly', 'checked', 'two-tone', 'rainbow']; // looks made of bands inside the jelly
 function paintJelly(b, look, color2) {
   const pat = LOOKS.indexOf(look), m = b.mesh.material, P = b.geo.attributes.position.array;
   b.geo.setAttribute('aR', new THREE.BufferAttribute(Float32Array.from(P, (v) => v / b.size), 3));
-  if (look === 'golden') { m.color.set('#ffc61a'); m.attenuationColor.set('#ffb000'); m.metalness = .45; }
-  m.transmission = pat > 0 ? .15 : .35; m.thickness = b.size * .2; m.sheen = .12; // brighter than the letters, so they pop against the jar
-  m.onBeforeCompile = (sh) => {
-    sh.uniforms.uPat = { value: pat }; sh.uniforms.uC2 = { value: new THREE.Color(color2) };
-    sh.vertexShader = 'attribute vec3 aR;\nvarying vec3 vR;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vR = aR;');
-    sh.fragmentShader = 'varying vec3 vR;\nuniform int uPat;\nuniform vec3 uC2;\n' + PATTERN_GLSL + '\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n  diffuseColor.rgb = jellyPattern(diffuseColor.rgb);');
+  if (look === 'golden') { m.color.set('#ffe7a3'); m.attenuationColor.set('#ffb000'); } // clear amber, for the gold leaf
+  if (look === 'galaxy') { m.color.set('#6a5acd'); m.attenuationColor.set('#24164f'); } // deep space
+  // Also blended over what's behind it: three.js's see-through pass never shows other see-through things, and in a jar
+  // the thing behind a sweet is usually another sweet.
+  m.transparent = true; m.opacity = .9;
+  if (LAYERED.includes(look)) {
+    const jellyLook = m.onBeforeCompile;
+    m.onBeforeCompile = (sh) => {
+      jellyLook(sh);
+      sh.uniforms.uPat = { value: pat }; sh.uniforms.uC2 = { value: new THREE.Color(color2) };
+      sh.vertexShader = 'attribute vec3 aR;\nvarying vec3 vR;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vR = aR;');
+      sh.fragmentShader = 'varying vec3 vR;\nuniform int uPat;\nuniform vec3 uC2;\n' + PATTERN_GLSL + '\n' + sh.fragmentShader
+        .replace('material.attenuationColor = attenuationColor;', 'material.attenuationColor = jellyPattern(attenuationColor);');
+    };
+    m.customProgramCacheKey = () => 'jelly-layers' + b.size;
+  }
+  const kind = BITS[look];
+  if (!kind) return;
+  // scatter the bits through the inside of the sweet's resting shape, then bind each to the jelly's cage
+  const parts = bitParts.get(look) ?? bitParts.set(look, { geo: kind.geo(), mat: kind.mat() }).get(look);
+  const { bind, polys, box } = b.inside, zMid = (box.min.z + box.max.z) / 2, zHalf = (box.max.z - box.min.z) * .22;
+  const mesh = new THREE.InstancedMesh(parts.geo, parts.mat, kind.n); mesh.frustumCulled = false;
+  const items = [];
+  for (let tries = 0; items.length < kind.n && tries < kind.n * 40; tries++) {
+    const x = box.min.x + Math.random() * (box.max.x - box.min.x), y = box.min.y + Math.random() * (box.max.y - box.min.y);
+    // a bit turns any way, so the whole of its reach has to fit inside the letter, or it pokes out through the jelly
+    const sc = b.size * (.75 + Math.random() * .5), r = Math.max(...kind.s) * (kind.reach ?? 1) * sc * .85;
+    if (!inside(polys, x, y) || !COMPASS.every(([dx, dy]) => inside(polys, x + dx * r, y + dy * r))) continue;
+    const local = new THREE.Matrix4().compose(new THREE.Vector3(), new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)),
+      new THREE.Vector3(...kind.s).multiplyScalar(sc));
+    items.push({ b: bind(x, y, zMid + (Math.random() * 2 - 1) * zHalf), local });
+  }
+  mesh.count = items.length;
+  if (kind.colours) items.forEach((_, i) => mesh.setColorAt(i, new THREE.Color(kind.colours[i % kind.colours.length])));
+  b.mesh.add(mesh); // the jelly's mesh is in world space, so this stays put; it goes when the jelly goes
+  const F = new THREE.Matrix4(), M = new THREE.Matrix4();
+  let fresh = true;
+  b.bits = {
+    // follow the jelly: each bit sits where its cage points are now, stretched and turned the way the jelly is there
+    update() {
+      if (b.sleeping && !fresh) return; fresh = false;
+      const x = b.x, nF = b.nodalF;
+      items.forEach((it, i) => {
+        let px = 0, py = 0, pz = 0; const f = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        for (const [id, w] of it.b) { px += x[id * 3] * w; py += x[id * 3 + 1] * w; pz += x[id * 3 + 2] * w; for (let k = 0; k < 9; k++) f[k] += nF[id * 9 + k] * w; }
+        F.set(f[0], f[1], f[2], 0, f[3], f[4], f[5], 0, f[6], f[7], f[8], 0, 0, 0, 0, 1);
+        M.multiplyMatrices(F, it.local).setPosition(px, py, pz); mesh.setMatrixAt(i, M);
+      });
+      mesh.instanceMatrix.needsUpdate = true;
+    },
   };
-  m.customProgramCacheKey = () => 'jelly-pattern';
 }
 // A square glass sweet jar. Jellies are dropped in one by one and tumble onto each other.
 class JarStage extends JellyStage {
@@ -2778,7 +2986,7 @@ const chose = (k) => (e) => e.type === 'choice' && e.k === k;
 // Each mission step says which hat you wear: black (think like the attacker) or white (fix it).
 // In the sandbox both are allowed: Jelly Security HQ signed your permission slip, so you are a red team, not a criminal.
 const LESSONS = [
-  { id: 'hats', teaches: ['hats', 'permission'], word: 'hats', name: 'Pick your hat', stands: 'Ethical hacking', color: '#ff4d6d', tool: 'term', seq: true, onlyHere: true,
+  { id: 'hats', demo: ["cat permission-slip.txt", "sign permission-slip.txt", "cat /bin/sign", "whoami"], teaches: ['hats', 'permission'], word: 'hats', name: 'Pick your hat', stands: 'Ethical hacking', color: '#ff4d6d', tool: 'term', seq: true, onlyHere: true,
     visual: `<table class="terms"><thead><tr><th>You will hear</th><th>Grown-ups now say</th></tr></thead><tbody>
       <tr><td><b class="hat-chip black">black hat</b></td><td>malicious hacker, attacker, criminal</td></tr>
       <tr><td><b class="hat-chip white">white hat</b></td><td>ethical hacker, security researcher, penetration tester ("pentester": paid to break in, with permission)</td></tr>
@@ -2792,12 +3000,12 @@ const LESSONS = [
       { t: 'Sign it with the little program HQ made for you: <code>sign permission-slip.txt</code>', ok: (e) => isCmd(e, 'sign') && e.ok },
       { t: 'Ask the computer which account you are using: <code>whoami</code>', ok: (e) => isCmd(e, 'whoami') && store.signed },
     ] },
-  { id: 'keys', teaches: ['least-privilege'], word: 'chmod', name: 'Keys you don\'t need', stands: 'Least privilege', color: '#9b5cff', tool: 'term', seq: true, onlyHere: true,
-    visual: `<div class="permviz"><p class="tv-note">Your diary, as <code>ls -l</code> shows it:</p><div class="lsl"><span class="pv t">-</span><span class="pv u">rw-</span><span class="pv g">rw-</span><span class="pv o">rw-</span><span class="pv n">kid</span><span class="pv n">family</span><span class="pv n">diary.txt</span>
-      <small>file</small><small>owner's keys</small><small>family's keys</small><small>everyone else's keys</small><small>owner</small><small>group</small><small>name</small></div><p class="tv-note"><b>r</b> read · <b>w</b> write · <b>x</b> run · <b>-</b> no key</p></div>`,
-    title: 'Only the keys you need', why: 'Look at your diary in the picture. Every file has a lock with three sets of keys: one for its <b>owner</b> (you, kid), one for its <b>group</b> (the family: you and your sibling), and one for <b>everyone else</b>. All three sets say <b>rw-</b>: read and write. So the diary\'s lock hands keys to everybody. Security engineers have a rule for this, called <b>least privilege</b>: give each person only the keys they really need. Nobody needs to read your diary except you.',
+  { id: 'keys', demo: ["ls -l", "su sib", "cat diary.txt", "exit", "chmod go-rw diary.txt", "ls -l", "su sib", "cat diary.txt"], teaches: ['least-privilege'], word: 'chmod', name: 'Keys you don\'t need', stands: 'Least privilege', color: '#9b5cff', tool: 'term', seq: true, onlyHere: true,
+    visual: `<div class="permviz"><p class="tv-note">The lock on your diary, as <code>ls -l</code> shows it:</p><div class="lsl"><span class="pv t">-</span><span class="pv u">rw-</span><span class="pv g">rw-</span><span class="pv o">rw-</span><span class="pv n">kid</span><span class="pv n">kid</span><span class="pv n">diary.txt</span>
+      <small>file</small><small>owner's keys</small><small>group's keys</small><small>everyone else's keys</small><small>owner</small><small>group</small><small>name</small></div><p class="tv-note"><b>r</b> read · <b>w</b> write · <b>x</b> run · <b>-</b> no key</p></div>`,
+    title: 'Only the keys you need', why: 'Remember the locks from Jelly Shell 2? Every file has three sets of keys: for its <b>owner</b> (you, kid), its <b>group</b> (kid: just you) and <b>everyone else</b>. Look at the lock on your diary, <code>diary.txt</code>. All three sets say <b>rw-</b>: read and write. So your sibling, who counts as everyone else, has keys too. Security engineers have a rule for this, called <b>least privilege</b>: give each person only the keys they really need. Nobody needs to read your diary except you.',
     mnem: 'Only the keys you need. No spare keys.',
-    points: ['<code>ls -l</code> (l for long) shows every file\'s lock. <code>su sib</code> lets you be your sibling for a bit, and <code>exit</code> brings you back.', '<code>chmod</code> changes the lock. Say who, then <b>-</b> to take keys away or <b>+</b> to give them, then which keys. <code>chmod go-rw diary.txt</code>: <b>g</b>roup and <b>o</b>thers lose <b>r</b> and <b>w</b>.', 'Who: <b>u</b> = owner (it stands for user), <b>g</b> = group, <b>o</b> = others (everyone else). Only a file\'s owner can change its lock.'],
+    points: ['From Jelly Shell 2: <code>ls -l</code> shows every file\'s lock, <code>su sib</code> lets you be your sibling for a bit, and <code>exit</code> brings you back.', 'Also from Jelly Shell 2: <code>chmod</code> changes a lock. <code>chmod go-rw diary.txt</code> means the <b>g</b>roup and <b>o</b>thers lose <b>r</b> and <b>w</b>.', 'Least privilege is the new idea: every key you hand out is a way in. Give out only the ones that are needed.'],
     steps: [
       { hat: 'black', t: 'You are the attacker now. Look at the locks on the files: <code>ls -l</code>. Who has keys to the diary?', ok: (e) => isCmd(e, 'ls') && e.args.some((a) => /^-\w*l/.test(a)) },
       { hat: 'black', t: 'Become your little sibling: <code>su sib</code>', ok: (e) => isCmd(e, 'su') && e.ok && sh.user === 'sib' },
@@ -2806,7 +3014,7 @@ const LESSONS = [
       { hat: 'white', t: 'Take the keys away from the group and everyone else: <code>chmod go-rw diary.txt</code>', ok: (e) => isCmd(e, 'chmod') && e.ok && !(modeOf(find('/home/kid/diary.txt')) & 0o077) },
       { hat: 'black', t: 'Black hat back on. Try the attack again: <code>su sib</code>, then <code>cat diary.txt</code>', ok: (e) => isCmd(e, 'cat') && sh.user === 'sib' && e.info.denied },
     ] },
-  { id: 'grey', teaches: ['disclosure', 'grey-zone'], word: 'grey', name: 'The grey zone', stands: 'Doing the right thing', color: '#ffc61a', tool: 'term', seq: true, onlyHere: true,
+  { id: 'grey', demo: [{"choose": 0}, {"choose": 2}, {"choose": 0}, {"choose": 2}, {"choose": 0}, {"choose": 2}, {"choose": 0}, {"choose": 2}], teaches: ['disclosure', 'grey-zone'], word: 'grey', name: 'The grey zone', stands: 'Doing the right thing', color: '#ffc61a', tool: 'term', seq: true, onlyHere: true,
     visual: `<div class="permviz"><div class="tz-eq">Found a way in <b>≠</b> allowed in</div><p class="tv-note">Stop. Don't peek. Tell the owner.</p></div>`,
     title: 'What would a white hat do?', why: 'Sometimes you stumble on a way in without even trying. A <b>grey hat</b> goes through anyway, even if they mean well. That is still breaking in, and still against the law. A white hat stops, doesn\'t look around, and tells the owner the right way. Nobody here is in trouble: these are choices to practise.',
     mnem: 'Stop. Don\'t peek. Tell the owner.',
@@ -2902,7 +3110,7 @@ function confetti(color) {
 }
 
 /* ---------------- the course map (src/curriculum.json) ---------------- */
-const COURSES = [{"id": "shell", "title": "Jelly Shell", "store": "jellyshell.v1", "needs": [], "step": 1, "href": "../jellyshell/", "away": false, "folder": "jellyshell"}, {"id": "shell2", "title": "Jelly Shell 2", "store": "jellyshell2.v1", "needs": ["shell"], "step": 2, "href": "../jellyshell2/", "away": false, "folder": "jellyshell2"}, {"id": "git", "title": "Jelly Git", "store": "jellygit.v1", "needs": ["shell2"], "step": 3, "href": "../jellygit/", "away": false, "folder": "jellygit"}, {"id": "security1", "title": "Jelly Security 1", "store": "jellysecurity.v1", "needs": ["shell2"], "step": 3, "href": "../jellysecurity/", "away": false, "folder": "jellysecurity"}, {"id": "web", "title": "Jelly Web", "store": "jellyweb.v1", "needs": ["git"], "step": 4, "href": "../jellyweb/", "away": false, "folder": "jellyweb"}, {"id": "security2", "title": "Jelly Security 2", "store": null, "needs": ["web", "security1"], "step": 5, "href": null, "away": false, "folder": null}], COURSE = COURSES.find((c) => c.store === KEY);
+const COURSES = [{"id": "shell", "title": "Jelly Shell", "store": "jellyshell.v1", "needs": [], "step": 1, "href": "../jellyshell/", "away": false, "folder": "jellyshell", "blurb": "Boss your computer around with tiny words. Move around folders, read and copy files, and rescue the gerbil."}, {"id": "shell2", "title": "Jelly Shell 2", "store": "jellyshell2.v1", "needs": ["shell"], "step": 2, "href": "../jellyshell2/", "away": false, "folder": "jellyshell2", "blurb": "Who's in charge? Users, groups and file locks. Write your own commands, borrow the boss's power, and use pipes to find out who ate the cookies."}, {"id": "git", "title": "Jelly Git", "store": "jellygit.v1", "needs": ["shell2"], "step": 3, "href": "../jellygit/", "away": false, "folder": "jellygit", "blurb": "Never lose your code again. Save snapshots, undo mistakes and work with other people without stepping on their changes."}, {"id": "security1", "title": "Jelly Security 1", "store": "jellysecurity.v1", "needs": ["shell2"], "step": 3, "href": "../jellysecurity/", "away": false, "folder": "jellysecurity", "blurb": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. Three missions."}, {"id": "web", "title": "Jelly Web", "store": "jellyweb.v1", "needs": ["git"], "step": 4, "href": "../jellyweb/", "away": false, "folder": "jellyweb", "blurb": "Write your own web page, find out how it crosses the planet in under a second, then put it on the internet with GitHub Pages."}, {"id": "security2", "title": "Jelly Security 2", "store": null, "needs": ["web", "security1"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Attack and defend a pretend website: passwords, lookalike addresses, secret pages and who else can see your messages."}, {"id": "think1", "title": "Jelly Think 1", "store": null, "needs": ["web"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Meet Wobble, a jelly robot that does exactly what you say and nothing more. Give it orders in real JavaScript, hunt the bugs, and learn to think like a programmer."}, {"id": "server", "title": "Jelly Server", "store": null, "needs": ["think1"], "step": 6, "href": null, "away": false, "folder": null, "blurb": "Make your website answer back. Write a pretend server in real JavaScript: a guestbook that shows everyone's messages."}, {"id": "think2", "title": "Jelly Think 2", "store": null, "needs": ["think1"], "step": 6, "href": null, "away": false, "folder": null, "blurb": "What computers can't do, what takes forever, what goes wrong when two things happen at once, and what AI really is. Then: what you shouldn't build."}, {"id": "storage", "title": "Jelly Storage", "store": null, "needs": ["server"], "step": 7, "href": null, "away": false, "folder": null, "blurb": "Your guestbook forgets everything when the server restarts. Teach it to remember, with files and JSON."}, {"id": "sql", "title": "Jelly SQL", "store": null, "needs": ["storage"], "step": 8, "href": null, "away": false, "folder": null, "blurb": "Ask a database questions. Find every message from one person, count them, and join tables together."}], COURSE = COURSES.find((c) => c.store === KEY);
 const course = (id) => COURSES.find((c) => c.id === id);
 const courseStore = () => { try { return JSON.parse(localStorage.getItem('jelly.courses')) || {}; } catch { return {}; } };
 const finishedCourse = (id, all = courseStore()) => !!all[id] && all[id].done >= all[id].total;
@@ -2914,6 +3122,18 @@ function nextCourses() {
   const all = courseStore(), met = new Set([COURSE.id, ...before(COURSE)]);
   return COURSES.filter((c) => c !== COURSE && c.folder && !finishedCourse(c.id, all) && c.needs.every((n) => met.has(n) || finishedCourse(n, all))).slice(0, 2);
 }
+// "What's in it?": a card for any course on the map, with its summary and every word it teaches.
+const RECAPS = {"shell": {"line": "Every command makes this trip, down and back up, in less than a blink.", "words": [["echo hello", "Repeats what you say. Proves the shell is listening."], ["pwd", "Prints the address of the folder you are in."], ["ls -a", "Lists what is in a folder. -a shows hidden files."], ["cd toys", "Walks into a folder. cd .. climbs back up."], ["cd ~", "/ is the root, ~ is home, .. is the parent folder."], ["cat notes.txt", "Prints a file on the screen. Glues files together."], ["mkdir fort", "Makes a folder. touch makes an empty file."], ["cp pizza.txt pizza2.txt", "Copies a file: first where it IS, then where it GOES."], ["mv hamster.txt hammy.txt", "Moves or renames. Same job: change the label."], ["rm broccoli.txt", "Deletes forever. No undo! Add -r for folders."], ["Ctrl+C", "Tab finishes words, ↑ remembers, Ctrl+C stops, clear wipes."], ["man ls", "Opens the built-in manual for any command."], ["ls · cd · cat · mv", "Look, walk, read and move, all together."]]}, "shell2": {"line": "Every file has an owner, a group and a lock. The kernel checks your keys every single time.", "words": [["whoami", "Prints which account you are using. The prompt says it too: who@computer:where$"], ["echo hi > note.txt", "> sends a command's words into a file. >> adds to the end."], ["nano note.txt", "A little text editor in the terminal. Ctrl+O saves, Ctrl+X exits."], ["which ls", "Every command is a program file. which says where it lives."], ["./hello", "A script is a file of commands. ./ runs the one in this folder."], ["ls -l", "Shows every lock: owner, group and everyone else. r read, w write, x run."], ["chmod u+x hello", "Changes a lock. Who (u g o a), + or -, which keys."], ["echo $PATH", "The PATH is where the shell looks for programs. Put yours in ~/bin to use it anywhere."], ["chgrp family comics", "id shows your groups. A group shares the middle set of keys."], ["su sib", "Become another user, with their keys. exit comes back."], ["sudo whoami", "One command as root, the boss user. Only the sudo group may. Think first!"], ["grep cookie diary.txt", "Prints every line with a word in it. -i ignores capitals."], ["grep cookie kitchen.log | wc -l", "Pours one command's words into the next one."], ["chmod 600 note.txt", "r = 4, w = 2, x = 1. Add them for each set: 644, 755, 600."], ["su sib", "Build it, lock it, test it as someone else."]]}, "git": {"line": "Cats Always Chase Pigeons: Change, Add, Commit, Push. And git pull brings it all back down.", "words": [["git --version", "git is the camera. GitHub keeps the album safe."], ["git config --global user.name \"Sam\"", "Signs your photos with your name and email."], ["git init", "Turns a folder into a repository by adding .git."], ["git status", "Says what changed and what is on the stage."], ["git add .", "Puts files on the stage, ready for the photo."], ["git commit -m \"add lasers\"", "Takes a photo of the stage, with a message."], ["git log --oneline", "Shows the album: every photo, newest first."], ["git diff", "Spots the difference: + lines new, - lines gone."], ["git restore game.py", "The oops button: back to the saved version."], ["git remote add origin <address>", "Saves GitHub's address under the nickname origin."], ["git push", "Sends your photos up to GitHub."], ["git pull", "clone copies it all down. pull fetches new photos."], ["echo \"secrets.txt\" > .gitignore", ".gitignore keeps secrets and junk out of git."], ["git add . · git commit -m \"…\" · git push", "Change, add, commit, push: the daily loop."]]}, "security1": {"line": "Same skills, different permission. Attack only with permission, fix what you find, tell the owner.", "words": [["sign permission-slip.txt", "Black hat breaks in without permission. White hat (ethical hacker) has permission and reports."], ["chmod go-rw diary.txt", "Least privilege: only the keys you need. chmod changes the lock."], ["coordinated vulnerability disclosure", "Found a way in? Stop, don't peek, tell the owner."]]}, "web": {"line": "Every page you have ever seen made this trip, there and back, in less than a second.", "words": [["418 I'm a teapot", "200 yay, 301 over there, 404 not found, 500 server broke."], ["View source", "The text that every web page is made of."], ["<h1>Hi!</h1>", "A tag opens a box. The same tag with a slash is its lid."], ["<p>I like <b>cheese</b></p>", "Boxes go inside boxes. Last opened, first closed."], ["<hr/>", "A tag with nothing inside closes itself with />."], ["<ul><li>pizza</li></ul>", "A list box, with an <li></li> box for every item."], ["<a href=\"about.html\">About</a>", "A link. href says where it jumps to."], ["<img src=\"cat.png\" alt=\"A cat\"/>", "A picture. It stands alone: src says where, alt says what."], ["h1 { color: tomato; }", "Paints the page. Styles pour down like a waterfall."], ["https://jelly.fun/snacks/", "An address: how, which computer, which file."], ["curl https://jelly.fun", "Fetches a page and shows it as plain text."], ["curl -v https://jelly.fun", "The letter your browser sends: \"give me this, please\"."], ["nslookup jelly.fun", "The phonebook that turns names into numbers."], ["ping jelly.fun", "Sonar for computers: how long there and back?"], ["https://", "The padlock: letters in a locked box, not postcards."], ["git add . · commit · push", "Sends your site to GitHub Pages, live for everyone."], ["edit · git push", "Look, fix, check, publish. All of it together."]]}};
+function courseCard(id) {
+  const c = course(id), r = RECAPS[id], here = c === COURSE, all = courseStore();
+  const status = here ? 'You are here' : finishedCourse(id, all) ? 'Finished ✓' : !c.folder ? 'Coming later' : c.needs.length ? `Comes after ${c.needs.map((n) => course(n).title).join(' and ')}` : 'The first course';
+  $('#coPop').innerHTML = `<div class="co-card" role="document"><button class="co-x" aria-label="Close">×</button>
+    <div class="co-k">Step ${c.step} · ${esc(status)}</div><h3 id="coPopTitle">${esc(c.title)}</h3>
+    <p class="co-line">${esc(r?.line ?? c.blurb ?? '')}</p>
+    ${r ? `<ul class="co-words">${r.words.map(([ex, does]) => `<li><code>${esc(ex)}</code><span>${esc(does)}</span></li>`).join('')}</ul>` : ''}
+    <div class="co-go">${here ? '' : c.folder ? `Open ${courseLink(c)}` : ''}</div></div>`;
+  $('#coPop').hidden = false; $('#coPop .co-x').focus();
+}
 const nextCourseCard = () => { const nx = nextCourses(); return nx.length ? `<div class="un-label">Next course</div><div class="un-next">${nx.map(courseLink).join('')}</div>` : ''; };
 function paintCourses(done, total) {
   const all = courseStore();
@@ -2922,11 +3142,15 @@ function paintCourses(done, total) {
   $('#courseList').innerHTML = COURSES.map((c) => {
     const p = all[c.id], here = c === COURSE, fin = finishedCourse(c.id, all);
     const note = here ? `you are here · ${done} / ${total}` : fin ? '✓ finished' : !c.folder ? 'coming later' : p?.done ? `${p.done} / ${p.total} jellies` : c.needs.length ? `after ${c.needs.map((n) => course(n).title).join(' and ')}` : 'the first course';
-    return `<li class="co${here ? ' here' : ''}${fin ? ' fin' : ''}${c.folder ? '' : ' later'}"><span class="co-step">${c.step}</span><span class="co-name">${here ? esc(c.title) : courseLink(c)}<small>${esc(note)}</small></span></li>`;
+    return `<li class="co${here ? ' here' : ''}${fin ? ' fin' : ''}${c.folder ? '' : ' later'}"><span class="co-step">${c.step}</span><span class="co-name">${here ? esc(c.title) : courseLink(c)}<small>${esc(note)}</small></span><button class="co-info" data-co="${c.id}" aria-label="What's in ${esc(c.title)}?">?</button></li>`;
   }).join('');
   const nx = nextCourses();
   $('#rcNext').innerHTML = nx.length ? `Next course: ${nx.map(courseLink).join(' or ')}` : 'That\'s every course so far. More are on the way!';
 }
+document.body.insertAdjacentHTML('beforeend', '<div class="co-pop" id="coPop" role="dialog" aria-modal="true" aria-labelledby="coPopTitle" hidden></div>');
+$('#courseList').addEventListener('click', (e) => { const b = e.target.closest('.co-info'); if (b) courseCard(b.dataset.co); });
+$('#coPop').addEventListener('click', (e) => { if (e.target === e.currentTarget || e.target.closest('.co-x')) $('#coPop').hidden = true; });
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#coPop').hidden) { e.stopImmediatePropagation(); $('#coPop').hidden = true; } }, true);
 $('#startBtn').insertAdjacentHTML('beforebegin', `<p class="needs">${COURSE.needs.length
   ? `Comes after ${COURSE.needs.map((n) => courseLink(course(n)) + (finishedCourse(n) ? ' ✓' : '')).join(' and ')}. The course map in the menu shows the order.`
   : 'The very first course. You don\'t need any other course before this one.'}</p>`);
@@ -3069,56 +3293,112 @@ $('#jarFile').onchange = async (e) => {
 { const n = readKey('jelly.welcomeBack'); if (n) { try { localStorage.removeItem('jelly.welcomeBack'); } catch {} setTimeout(() => toast(`Welcome back! ${n} jellies are on your shelf.`), 900); } }
 
 /* ---------------- presenter mode: recording the frames ---------------- */
+// A pretend clock while recording: things that wait (a browser's trip, ping's replies, a choice card's answer) happen
+// at once and in order, so recording a whole course takes seconds, not minutes. The real timers come back afterwards.
+const CLOCK = { now: 0, timers: new Map(), id: 1, real: null };
+function clockOn() {
+  CLOCK.real = { setTimeout: window.setTimeout, clearTimeout: window.clearTimeout, setInterval: window.setInterval, clearInterval: window.clearInterval };
+  const add = (fn, ms, a, every) => { const id = CLOCK.id++; CLOCK.timers.set(id, { at: CLOCK.now + Math.max(0, +ms || 0), fn, a, every }); return id; };
+  window.setTimeout = (fn, ms, ...a) => add(fn, ms, a, 0);
+  window.setInterval = (fn, ms, ...a) => add(fn, ms, a, Math.max(1, +ms || 0));
+  window.clearTimeout = window.clearInterval = (id) => { CLOCK.timers.delete(id); };
+}
+function clockOff() { Object.assign(window, CLOCK.real); CLOCK.timers.clear(); }
+// Let promises settle, then run every timer due in the next few pretend seconds, earliest first.
+async function prFlush(ms = 3000) {
+  const end = CLOCK.now + ms;
+  for (let n = 0; n < 3000; n++) {
+    for (let k = 0; k < 20; k++) await null;
+    let next = null;
+    for (const e of CLOCK.timers) if (e[1].at <= end && (!next || e[1].at < next[1].at)) next = e;
+    if (!next) return;
+    const [id, t] = next; CLOCK.now = t.at;
+    if (t.every) t.at += t.every; else CLOCK.timers.delete(id);
+    if (typeof t.fn === 'function') t.fn(...t.a);
+  }
+}
+// Jelly Web's browser, as a frame needs it (null in guides without one, or before the first page).
+const prBrowser = () => typeof BW === 'undefined' || !BW.url ? null : {
+  url: BW.url, view: BW.view, lock: bwLock.className, lockHtml: bwLock.innerHTML, journey: bwJourney.innerHTML, pop: bwPop.hidden ? '' : bwPop.innerHTML,
+  page: BW.view === 'page' ? bwFrame.srcdoc : BW.view === 'source' ? $('#bwSource').innerHTML : $('#bwBoxes').innerHTML,
+};
+// A page in the browser loads for real (it's a frame), so wait for it before the next step uses it.
+async function prLoaded(before) {
+  if (typeof bwFrame === 'undefined' || BW.view !== 'page' || bwFrame.srcdoc === before) return;
+  await new Promise((r) => { const done = () => { bwFrame.removeEventListener('load', done); r(); }; bwFrame.addEventListener('load', done); CLOCK.real.setTimeout.call(window, done, 1500); });
+  await prFlush();
+}
+// Jelly Web has a terminal and an editor in one place: switch to the one the next action needs.
+const prTool = (t) => { const tab = document.querySelector(`.wtab[data-tool=${t}]`); if (tab && WB.tool !== t) tab.click(); };
+
 // Run every lesson's demo once, silently, and record a frame for each thing worth a whole screen.
-function prCapture() {
+// A demo is a list of actions. A string is typed in the terminal ('@tab:', '@up', '@enter', '@ctrlc' press a key;
+// '@type:' and '@key:' work nano). An object does something else:
+//   { click: selector }   press a button (GitHub's, the browser's)    { edit: [from, to] }  change the open file
+//   { visit: address }    type an address in the browser bar          { link: text }        click a link in the page
+//   { choose: n | 'good' | 'bad' }   pick a choice card      { wait: ms }  let time pass (here it already does: see prFlush)
+async function prCapture() {
   const frames = [{ k: 'intro' }], muted = sound.muted, ok = [];
   // the overview (Jelly Shell, Git and Web): one frame per step of the 3D town, right after the intro
   if (PR.townGo && PANELS.some((p) => p.id === 'whole')) TOWN_STEPS.forEach((_, n) => frames.push({ k: 'whole', n }));
   sound.muted = true; store.done = {}; store.steps = {};
-  LESSONS.forEach((L, li) => {
+  clockOn();
+  for (const [li, L] of LESSONS.entries()) {
     frames.push({ k: 'title', li }, { k: 'story', li });
     if (L.visual) frames.push({ k: 'visual', li });
     L.points.forEach((_, n) => frames.push({ k: 'point', li, n }));
-    if (!L.demo?.length) return;
-    go(L.id); resetSandbox(); setPhase('mission'); renderMap();
+    if (!L.demo?.length) continue;
+    // guides whose lessons build on each other (Git, Web) carry on from the lesson before, like a child would
+    go(L.id); if (FRESH_SANDBOX || li === 0) resetSandbox(); setPhase('mission'); renderMap(); await prFlush();
     let shown = -1;
     for (const a of L.demo) {
-      const st = store.steps[L.id] ?? [], i = L.steps.findIndex((s, k) => !st[k]);
+      const st = store.steps[L.id] ?? [], i = L.steps.findIndex((x, k) => !st[k]);
       if (i >= 0 && i !== shown) { frames.push({ k: 'task', li, n: i }); shown = i; }
-      const map0 = $('#map').innerHTML, prompt = promptText(), lines = termOut.children.length;
-      if (a.startsWith('@type:')) { nanoText.value = a.slice(6).replace(/\\n/g, '\n'); nanoText.dispatchEvent(new Event('input')); frames.push({ k: 'nano', li, file: $('#nanoName').textContent, text: nanoText.value, typed: true }); }
+      const mapHtml = () => $('#map')?.innerHTML ?? '', map0 = mapHtml(), web0 = prBrowser(), page0 = typeof bwFrame === 'undefined' ? '' : bwFrame.srcdoc, prompt = promptText(), lines = termOut.children.length;
+      const out = (skip = 1) => [...termOut.children].slice(lines + skip).map((e) => e.outerHTML).join('');
+      let term = null, visited = false;
+      if (typeof a === 'object') {
+        if (a.click) { const el = $(a.click); frames.push({ k: 'click', li, label: a.label ?? el.getAttribute('aria-label') ?? el.textContent.trim() }); el.click(); }
+        else if (a.edit) { prTool('edit'); const before = edText.value; edText.value = before.replace(a.edit[0], a.edit[1]); edText.dispatchEvent(new Event('input')); frames.push({ k: 'edit', li, file: ED.path, before, after: edText.value }); }
+        else if (a.visit) { bwUrl.value = a.visit; navigate(a.visit, 'bar'); visited = true; }
+        else if (a.link) { const l = [...bwFrame.contentDocument.querySelectorAll('a')].find((x) => x.textContent.includes(a.link)); frames.push({ k: 'click', li, label: l.textContent, link: true }); l.click(); }
+        else if ('choose' in a) { const c = L.steps[i].choices, n = a.choose === 'good' ? c.findIndex((x) => x.good) : a.choose === 'bad' ? c.findIndex((x) => !x.good) : a.choose; frames.push({ k: 'choice', li, n: i, pick: n }); document.querySelectorAll('.choice')[n].click(); }
+      } else if (a.startsWith('@type:')) { nanoText.value = a.slice(6).replace(/\\n/g, '\n'); nanoText.dispatchEvent(new Event('input')); frames.push({ k: 'nano', li, file: $('#nanoName').textContent, text: nanoText.value, typed: true }); }
       else if (a.startsWith('@key:')) {
         const k = a.slice(5), ctrl = /^Control\+/.test(k), before = { file: $('#nanoName').textContent, text: nanoText.value };
         nanoText.dispatchEvent(new KeyboardEvent('keydown', { key: ctrl ? k.slice(8) : k, ctrlKey: ctrl, bubbles: true, cancelable: true }));
         frames.push({ k: 'nano', li, ...before, key: ctrl ? `Ctrl+${k.slice(8).toUpperCase()}` : k.toUpperCase(), msg: $('#nanoMsg').textContent });
       } else if (/^@(tab:|up$|enter$|ctrlc$)/.test(a)) {
         // a special key in the terminal: Tab completes, ↑ brings back the last command, Enter runs what is typed, Ctrl+C stops
+        prTool('term');
         const typed = a.startsWith('@tab:') ? a.slice(5) : a === '@up' ? '' : termIn.value, key = { '@up': '↑', '@enter': 'Enter', '@ctrlc': 'Ctrl+C' }[a] ?? 'Tab';
         termIn.value = typed;
         if (key === 'Tab') completeTab(); else if (key === '↑') recall(-1); else if (key === 'Enter') submit(); else ctrlC();
-        const out = [...termOut.children].slice(lines + (key === 'Enter' ? 1 : 0)).map((e) => e.outerHTML).join('');
-        frames.push({ k: 'term', li, prompt, cmd: typed, key, after: key === 'Tab' || key === '↑' ? termIn.value : null, out });
-      } else {
-        termIn.value = a; submit();
-        if (typeof NANO !== 'undefined' && NANO.open) frames.push({ k: 'term', li, prompt, cmd: a, out: '' }, { k: 'nano', li, file: $('#nanoName').textContent, text: nanoText.value });
-        else frames.push({ k: 'term', li, prompt, cmd: a, out: [...termOut.children].slice(lines + 1).map((e) => e.outerHTML).join('') });
-      }
-      renderMap();
-      if ($('#map').innerHTML !== map0) frames.push({ k: 'files', li, before: map0, after: $('#map').innerHTML });
+        term = { k: 'term', li, prompt, cmd: typed, key, after: key === 'Tab' || key === '↑' ? termIn.value : null, skip: key === 'Enter' ? 1 : 0 };
+      } else { prTool('term'); termIn.value = a; submit(); term = { k: 'term', li, prompt, cmd: a, skip: 1 }; }
+      await prFlush(); await prLoaded(page0);
+      if (term && typeof NANO !== 'undefined' && NANO.open && !a.startsWith('@')) frames.push({ ...term, out: '' }, { k: 'nano', li, file: $('#nanoName').textContent, text: nanoText.value });
+      else if (term) frames.push({ ...term, out: out(term.skip) });
+      if (typeof BW === 'undefined') renderMap(); // Web's renderMap reloads the page; everywhere else it just redraws the tree
+      if (mapHtml() !== map0) frames.push({ k: 'files', li, before: map0, after: mapHtml() });
+      const web = prBrowser();
+      if (web && (visited || JSON.stringify(web) !== JSON.stringify(web0))) frames.push({ k: 'browser', li, ...web, typed: visited });
     }
     if (G.review === L.id) ok.push(L.id);
     G.review = null; store.done[L.id] = true; paintProgress();
-    frames.push({ k: 'earned', li });
-  });
+  }
+  clockOff();
   frames.push({ k: 'jar' });
   sound.muted = muted;
   document.documentElement.dataset.prOk = ok.length; // how many demos really finished their mission, for tests
+  document.documentElement.dataset.prDemos = LESSONS.filter((L) => L.demo?.length).length;
   return frames;
 }
 
 /* ---------------- presenter mode: showing a frame ---------------- */
 const PR = { i: 0, frames: [], typing: null, jelly: null };
 function presentGo(i) {
+  if (!PR.frames.length) return; // still recording
   i = Math.max(0, Math.min(PR.frames.length - 1, i));
   if (PR.typing) { PR.typing.skip = true; return; } // a press while typing finishes the typing at once
   const forward = i === PR.i + 1;
@@ -3140,11 +3420,14 @@ function prShow(f, animate) {
     story: () => `${label(esc(L.word))}<h2 class="pr-h">${esc(L.title)}</h2><p class="pr-big">${L.why}</p>`,
     visual: () => `<div class="pr-visual">${L.visual}</div>`,
     point: () => `${label(`Remember it · ${f.n + 1} of ${L.points.length}`)}<p class="pr-big">${L.points[f.n]}</p>`,
-    task: () => `${label(`Mission · step ${f.n + 1} of ${L.steps.length}`)}<p class="pr-big">${L.steps[f.n].t}</p>`,
+    task: () => `${label(`Mission · step ${f.n + 1} of ${L.steps.length}`)}${L.steps[f.n].hat ? `<b class="hat-chip ${L.steps[f.n].hat} pr-hat">${L.steps[f.n].hat} hat</b>` : ''}<p class="pr-big">${L.steps[f.n].t}</p>`,
+    click: () => `${label(f.link ? 'Click the link' : 'Click')}<div class="pr-click"><span class="${f.link ? 'pr-link' : 'pr-btn'}">${esc(f.label)}</span></div>`,
+    edit: () => `${label(`Change ${esc(f.file.split('/').pop())}`)}<pre class="pr-code">${prChange(f.before, f.after)}</pre>`,
+    browser: () => `<div class="pr-browser"><div class="pr-bw-top"><span class="${esc(f.lock)}">${f.lockHtml}</span><span class="pr-url"></span></div><div class="bw-journey pr-journey">${f.journey}</div><div class="pr-page">${f.view === 'page' ? `<iframe sandbox="" title="The web page" srcdoc="${esc(f.page)}"></iframe>` : f.view === 'source' ? `<pre class="bw-source">${f.page}</pre>` : `<div class="bw-boxes">${f.page}</div>`}${f.pop ? `<div class="bw-pop pr-pop">${f.pop}</div>` : ''}</div></div>`,
+    choice: () => { const st = L.steps[f.n], c = st.choices[f.pick]; return `${label(`Mission · step ${f.n + 1} of ${L.steps.length}`)}<p class="pr-q">${st.t}</p><div class="pr-choices">${st.choices.map((x, k) => `<div class="pr-choice${k === f.pick ? (x.good ? ' good' : ' bad') : ''}">${x.c}</div>`).join('')}</div><p class="pr-say">${c.say}</p>`; },
     term: () => `<div class="pr-term term-body"><div class="ln"><span class="p">${esc(f.prompt)}</span> <span class="pr-typed"></span><span class="pr-caret"></span></div><div class="pr-out">${f.out}</div></div>${f.key ? `<div class="pr-key pr-termkey">${esc(f.key)}</div>` : ''}`,
     nano: () => `<div class="pr-nano"><div class="nano-top"><span>GNU nano</span><b>${esc(f.file)}</b><span></span></div><pre class="pr-nano-text"></pre><div class="nano-msg">${esc(f.msg ?? '')}</div>${f.key ? `<div class="pr-key">${esc(f.key)}</div>` : ''}</div>`,
-    files: () => `${label('The file tree')}<div class="pr-files map-list">${prDiff(f.before, f.after)}</div>`,
-    earned: () => `<div class="pr-earned">${bean(L.color, 'pr-bean', look(L.id))}<div class="pr-big">You earned the ${LOOK_NAMES[look(L.id)]} <b style="color:${L.color}">${esc(L.word)}</b> jelly!</div></div>`,
+    files: () => `${label(f.after.includes('class="gm"') ? 'The git map' : 'The file tree')}<div class="pr-files map-list">${prDiff(f.before, f.after)}</div>`,
     jar: () => '',
   }[f.k]();
   // the town only draws while it is on screen; moved out of the hidden app, it is told so directly
@@ -3154,13 +3437,17 @@ function prShow(f, animate) {
   if (f.k === 'title' || f.k === 'intro') prJelly(f.k === 'intro' ? COURSE.title.replace(/^Jelly /, '').toLowerCase() : L.word, L?.color);
   if (f.k === 'nano') $('.pr-nano-text').textContent = f.text;
   if (f.k === 'term') $('.pr-typed').textContent = f.after ?? f.cmd;
+  if (f.k === 'browser') $('.pr-url').textContent = f.url;
   prFit(body);
   if (!animate || REDUCED) return;
   body.animate([{ opacity: 0, transform: 'translateY(26px) scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
   if (f.k === 'term') prType($('.pr-typed'), f.cmd, $('.pr-out'), f);
   if (f.k === 'nano' && f.typed) prType($('.pr-nano-text'), f.text);
   if (f.k === 'files') body.querySelectorAll('.pr-new').forEach((r, n) => r.animate([{ background: '#ffc61a', transform: 'scale(1.04)' }, { transform: 'none' }], { duration: 900, delay: 250 + n * 120 }));
-  if (f.k === 'earned') { $('.pr-bean').animate([{ transform: 'scale(.3) rotate(-20deg)' }, { transform: 'scale(1.15) rotate(6deg)' }, { transform: 'none' }], { duration: 700, easing: 'cubic-bezier(.3,1.5,.5,1)' }); confetti(L.color); sound.ding(); }
+  if (f.k === 'click') { sound.boing(520, .15, .06); $('.pr-click > span').animate([{ transform: 'none' }, { transform: 'translateY(.12em) scale(.94)', boxShadow: 'none' }, { transform: 'none' }], { duration: 420, delay: 450 }); }
+  if (f.k === 'edit' && $('.pr-code ins')) prType($('.pr-code ins'), $('.pr-code ins').textContent);
+  if (f.k === 'browser' && f.typed) prType($('.pr-url'), f.url, $('.pr-page'));
+  if (f.k === 'choice') { $('.pr-choice.good, .pr-choice.bad')?.animate([{ transform: 'scale(.9)' }, { transform: 'scale(1.05)' }, { transform: 'none' }], { duration: 450, delay: 300, easing: 'cubic-bezier(.3,1.5,.5,1)' }); $('.pr-say').animate([{ opacity: 0 }, { opacity: 0, offset: .5 }, { opacity: 1 }], { duration: 1200 }); }
 }
 // Keys typed one at a time, then the result appears.
 async function prType(el, text, then, f) {
@@ -3180,10 +3467,23 @@ async function prType(el, text, then, f) {
   PR.typing = null;
 }
 // The file tree after the step, with rows that are new or changed marked.
+// Jelly Git's map keeps its four zones, with its changed rows marked the same way.
 function prDiff(before, after) {
-  const rows = (h) => { const t = document.createElement('template'); t.innerHTML = h; return [...t.content.querySelectorAll('.mrow')]; };
-  const old = new Map(rows(before).map((r) => [r.dataset.path ?? r.textContent, r.outerHTML]));
-  return rows(after).map((r) => { if (old.get(r.dataset.path ?? r.textContent) !== r.outerHTML) r.classList.add('pr-new'); return r.outerHTML; }).join('');
+  const parse = (h) => { const t = document.createElement('template'); t.innerHTML = h; return t.content; }, rows = (c) => [...c.querySelectorAll('.mrow,.grow')], key = (r) => r.dataset.path ?? r.dataset.k ?? r.textContent;
+  const old = new Map(rows(parse(before)).map((r) => [key(r), r.outerHTML])), now = parse(after);
+  rows(now).forEach((r) => { if (old.get(key(r)) !== r.outerHTML) r.classList.add('pr-new'); });
+  const gm = now.querySelector('.gm');
+  if (gm) { gm.querySelectorAll('button').forEach((b) => b.remove()); return gm.outerHTML; }
+  return rows(now).map((r) => r.outerHTML).join('');
+}
+// The open file with this step's change: the new text marked (typed in when the frame shows), the removed text struck out.
+// Only the lines around the change, so it stays big enough to read.
+function prChange(before, after) {
+  let a = 0; while (a < before.length && a < after.length && before[a] === after[a]) a++;
+  let z = 0; while (z < before.length - a && z < after.length - a && before[before.length - 1 - z] === after[after.length - 1 - z]) z++;
+  const pre = after.slice(0, a).split('\n').slice(-5).join('\n'), post = after.slice(after.length - z).split('\n').slice(0, 5).join('\n');
+  const gone = before.slice(a, before.length - z), [, lead, added, trail] = after.slice(a, after.length - z).match(/^(\s*)([\s\S]*?)(\s*)$/); // spaces and line breaks around the change aren't marked
+  return esc(pre) + (gone.trim() ? `<del>${esc(gone)}</del>` : '') + esc(lead) + (added ? `<ins>${esc(added)}</ins>` : '') + esc(trail) + esc(post);
 }
 // The jelly word on the title frames: its own full-size 3D stage, made the first time it is needed.
 function prJelly(word, color) {
@@ -3202,7 +3502,7 @@ function prFit(el) {
     let z = Math.min(3, (el.clientWidth * .9) / Math.max(1, v.scrollWidth)); v.style.zoom = z;
     while ((el.scrollHeight > el.clientHeight + 1 || v.getBoundingClientRect().width > el.clientWidth) && z > .6) { z -= .1; v.style.zoom = z; }
   }
-  for (const t of el.querySelectorAll('.pr-big,.pr-files,.pr-term')) {
+  for (const t of el.querySelectorAll('.pr-big,.pr-files,.pr-term,.pr-code')) {
     let s = 1; t.style.setProperty('--s', 1);
     while (el.scrollHeight > el.clientHeight + 1 && s > .5) { s -= .05; t.style.setProperty('--s', s.toFixed(2)); }
   }
@@ -3211,14 +3511,17 @@ function prFit(el) {
 // Start presenting: hide the app, record the frames, show the first (or the one a reload came back to).
 // Runs at start-up for ?present, or straight away from Shift+P with no reload: inside claude.ai the page can't see
 // its address, so a keypress is the only way in there.
-function presentStart(shape) {
+async function presentStart(shape, slides = false) {
   PRESENT = shape;
   store.done = {}; store.steps = {}; store.phase = {}; sound.muted = true; // fresh, and nothing is saved from here on
-  const face = new URLSearchParams(location.search).get('face') ?? 'right';
+  const face = slides ? 'none' : new URLSearchParams(location.search).get('face') ?? 'right';
   document.documentElement.classList.add('present', `present-${shape}`, `face-${face}`);
-  document.body.insertAdjacentHTML('beforeend', '<div class="pr-stage" id="prStage"><canvas id="prJelly" hidden></canvas><div class="pr-town" id="prTown" hidden></div><div class="pr-body" id="prBody"></div><div class="pr-bar"><i id="prBar"></i></div></div>');
+  document.documentElement.classList.toggle('slides', slides);
+  document.body.insertAdjacentHTML('beforeend', '<div class="pr-stage" id="prStage"><canvas id="prJelly" hidden></canvas><div class="pr-town" id="prTown" hidden></div><div class="pr-body" id="prBody"></div><div class="pr-bar"><i id="prBar"></i></div>' + (slides ? '<button class="pr-close" id="prClose" type="button" aria-label="Close the slideshow">✕</button>' + (slidesHinted() ? '' : '<div class="pr-hint" id="prHint">Tap the right side to go on, the left to go back</div>') : '') + '</div>');
+  if (slides) slideControls();
   if (!booted) boot();
-  PR.frames = prCapture();
+  $('#prBody').innerHTML = '<div class="pr-label">Getting the show ready…</div>';
+  PR.frames = await prCapture();
   // &lesson=<id>: just that lesson's frames, for a Short
   const only = LESSONS.findIndex((L) => L.id === new URLSearchParams(location.search).get('lesson'));
   if (only >= 0) PR.frames = PR.frames.filter((f) => f.li === only);
@@ -3245,7 +3548,30 @@ addEventListener('keydown', (e) => {
   if (fwd || back) presentGo(PR.i + (fwd ? 1 : -1));
   else if (e.key === 'Home' || e.key === 'End') presentGo(e.key === 'Home' ? 0 : PR.frames.length - 1);
   else if (e.key === 'm' || e.key === 'M') sound.muted = !sound.muted;
+  else if (e.key === 'Tab') $('#prStage').classList.toggle('pr-nocard');
 }, true);
+
+// The mobile slideshow: the gate's button starts it, and a reload of the same tab comes straight back to it.
+const slideShape = () => innerWidth > innerHeight ? 'wide' : 'tall';
+const slidesHinted = () => { try { return sessionStorage.getItem('jelly.slidesHinted'); } catch {} };
+$('#slides').addEventListener('click', () => { try { sessionStorage.setItem('jelly.slides', '1'); } catch {} presentStart(slideShape(), true); });
+function slideControls() {
+  let down = null;
+  addEventListener('pointerdown', (e) => { down = e.clientX; });
+  addEventListener('pointerup', (e) => {
+    if (down === null || e.target.closest('#prClose')) return;
+    const dx = e.clientX - down; down = null;
+    $('#prHint')?.remove(); try { sessionStorage.setItem('jelly.slidesHinted', '1'); } catch {}
+    // a swipe goes the way the finger pushes; a tap goes by which side it lands on
+    presentGo(PR.i + (Math.abs(dx) > 40 ? (dx < 0 ? 1 : -1) : e.clientX > innerWidth / 3 ? 1 : -1));
+  });
+  $('#prClose').addEventListener('click', () => { try { sessionStorage.removeItem('jelly.slides'); } catch {} location.reload(); });
+  // turning the phone swaps 9:16 and 16:9
+  addEventListener('resize', () => {
+    if (slideShape() === PRESENT || !PR.frames.length) return;
+    document.documentElement.classList.replace(`present-${PRESENT}`, `present-${slideShape()}`); PRESENT = slideShape(); prShow(PR.frames[PR.i], false);
+  });
+}
 
 /* ---------------- panels + navigation ---------------- */
 // Every section is one full-window panel. The lesson panel is shared by all the magic words.
@@ -3497,17 +3823,20 @@ $('#recapBtn').onclick = () => go('recap');
 /* ---------------- security: users, locks and hats ---------------- */
 // The shell (locks, su, chmod) is jellysh, in src/shell/jellysh.js. This file gives it the two people on this
 // pretend computer, the made-up sign command, and Jelly Security's voice.
-// Everything at home belongs to the family group, so kid and sib share the middle set of keys.
-const SEC_USERS = { root: { uid: 0, groups: ['root'] }, kid: { uid: 1000, groups: ['family'] }, sib: { uid: 1001, groups: ['family'] } };
+// The same people and groups as Jelly Shell 2, which comes first: everyone has a group named after them, and family
+// is a shared club. So a child sees the same owners and groups in ls -l as before.
+const SEC_USERS = { root: { uid: 0, groups: ['root'] }, kid: { uid: 1000, groups: ['kid', 'sudo', 'family'] }, sib: { uid: 1001, groups: ['sib', 'family'] } };
 const own = SH.own, grp = SH.grp, modeOf = SH.modeOf, can = SH.can, triplet = SH.triplet, modeStr = SH.modeStr;
 // The lock in colour, so the three sets of keys stand apart (everyone-else keys glow when they let anyone in).
 const modeHTML = (n) => { const m = modeOf(n); return `<span class="perm">${n.type === 'dir' ? 'd' : '-'}<b class="pu">${triplet(m, 6)}</b><b class="pg">${triplet(m, 3)}</b><b class="po${m & 0o6 ? ' open' : ''}">${triplet(m, 0)}</b></span>`; };
-const inFamily = (n) => SEC_USERS[sh.user]?.groups.includes(grp(n));
-// Who owns what when the pretend computer starts. The diary is the hole: its lock gives everyone the keys.
+const inGroup = (n) => SEC_USERS[sh.user]?.groups.includes(grp(n));
+// Who owns what when the pretend computer starts, as in Jelly Shell 2. The diary is the hole: its lock gives
+// everyone else the keys too, so sib gets in as "everyone else".
 function secPerms() {
   const set = (n, owner, group) => { n.owner = owner; n.group = group; n.children?.forEach((c) => set(c, owner, group)); };
   set(sh.root, 'root', 'root');
-  set(find('/home/kid'), 'kid', 'family'); set(find('/home/sib'), 'sib', 'family');
+  find('/bin').children.forEach((c) => { c.mode = 0o755; });
+  set(find('/home/kid'), 'kid', 'kid'); set(find('/home/sib'), 'sib', 'sib');
   find('/home/kid/diary.txt').mode = 0o666;
   find('/home/sib/plans.txt').mode = 0o600;
   // sign is a made-up command, so its program is readable text: proof that anyone can write one.
@@ -3518,16 +3847,16 @@ const once = (k) => !store.seen?.[k] && ((store.seen ??= {})[k] = true, save(), 
 
 const base = SH.hooks;
 SH.configure({
-  users: SEC_USERS, gids: { root: 0, family: 1002 },
+  users: SEC_USERS, gids: { root: 0, sudo: 27, kid: 1000, sib: 1001, family: 1002 },
   hooks: {
     modeHTML,
     before: (c) => {
       base.before?.(c);
-      if (c.cmd === 'ls' && c.flags.has('l') && once('perm')) c.say('(How to read a line: the first letter is d for a folder or - for a file. The next nine letters are the lock: three sets of keys, for the owner, the group and everyone else. r = read, w = write, x = run (on a folder: go inside), - = no key. Then come the owner, the group, the size, the date and the name.)', 'tip');
+      if (c.cmd === 'ls' && c.flags.has('l') && once('perm')) c.say('(Remember the locks from Jelly Shell 2: d or -, then three sets of keys, for the owner, the group and everyone else. r = read, w = write, x = run, - = no key.)', 'tip');
     },
     denied: (c, { op, node, tip }) => {
       if (tip) return op === 'write' ? `You are ${sh.user}, and that set of keys has no w (write) key.` : tip;
-      if (op === 'read') c.note(`<span class="shelly">Shelly:</span> The lock on ${esc(node.name)} is ${modeHTML(node)}, owned by ${own(node)}. You are <b>${sh.user}</b>, ${own(node) === sh.user ? 'the owner' : inFamily(node) ? `in the ${grp(node)} group` : 'everyone else'}, and that set has no <b>r</b> key. No entry!`);
+      if (op === 'read') c.note(`<span class="shelly">Shelly:</span> The lock on ${esc(node.name)} is ${modeHTML(node)}, owned by ${own(node)}. You are <b>${sh.user}</b>, ${own(node) === sh.user ? 'the owner' : inGroup(node) ? `in the ${grp(node)} group` : 'everyone else'}, and that set has no <b>r</b> key. No entry!`);
     },
     tip: (key, text) => ({
       'chmod.usage': 'Try: chmod go-rw diary.txt',
@@ -3542,7 +3871,7 @@ SH.configure({
       base.after?.(c);
       if (c.cmd === 'cat' && c.info.hits?.length) for (const p of c.info.hits) {
         const n = find(p);
-        if (own(n) !== sh.user && SEC_USERS[own(n)] && own(n) !== 'root') c.note(shelly(`You got in! ${esc(n.name)} belongs to ${own(n)}, but you are <b>${sh.user}</b>, ${inFamily(n) ? `in the <b>${grp(n)}</b> group, so you get the middle set of keys in ${modeHTML(n)}. That set has an <b>r</b> key` : 'everyone else, so you get the last set of keys, and it has an <b>r</b> key'}.`));
+        if (own(n) !== sh.user && SEC_USERS[own(n)] && own(n) !== 'root') c.note(shelly(`You got in! ${esc(n.name)} belongs to ${own(n)}, but you are <b>${sh.user}</b>, ${inGroup(n) ? `in the <b>${grp(n)}</b> group, so you get the middle set of keys in ${modeHTML(n)}. That set has an <b>r</b> key` : 'everyone else, so you get the last set of keys, and it has an <b>r</b> key'}.`));
       }
       if (c.cmd === 'whoami') {
         if (once('whoami')) c.note(shelly('<b>whoami</b> asks: which <b>account</b> am I using? One computer can have lots of users, each with their own home folder. Your prompt says it too: the bit before the <b>@</b> is you.'));
@@ -3552,7 +3881,7 @@ SH.configure({
       if (c.cmd === 'chmod' && c.info.file) {
         const n = find(c.info.file), m = modeOf(n);
         c.note(`<span class="mute">(lock on ${esc(n.name)}: ${modeHTML({ ...n, mode: c.info.was })} → ${modeHTML(n)})</span>`);
-        c.say(`(${n.name} is now ${modeStr(n)}: ${!(m & 0o077) ? `only ${own(n)} has any keys` : m & 0o006 ? 'everyone still has keys' : 'the family has keys, strangers don\'t'}.)`, 'mute');
+        c.say(`(${n.name} is now ${modeStr(n)}: ${!(m & 0o077) ? `only ${own(n)} has any keys` : m & 0o006 ? 'everyone else still has keys' : 'the group has keys, everyone else doesn\'t'}.)`, 'mute');
       }
       if (c.cmd === 'su' && c.info.user) {
         c.say(`(su means switch user. You are now ${c.info.user}, so you only have ${c.info.user}'s keys. Look at the prompt: it says ${c.info.user}@jelly. Type exit to go back.)`, 'mute');
@@ -3640,6 +3969,7 @@ function boot() {
 }
 if (roomy()) boot();
 if (PRESENT) presentStart(PRESENT);
+else if (!roomy() && (() => { try { return sessionStorage.getItem('jelly.slides'); } catch {} })()) presentStart(slideShape(), true);
 else addEventListener('resize', function wait() { if (roomy() && !booted) { removeEventListener('resize', wait); boot(); fitNow(); } });
 </script>
 </body>
