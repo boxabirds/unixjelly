@@ -2,6 +2,7 @@
 // "you earned" card; the card opens this course's jar, tapping a jelly shows what it taught, and the shelf shows one jar
 // per course. "Save my jellies" downloads a file and "Use my existing jellies" brings it all back into an empty browser.
 // Escape closes the jars, and keys pressed while they are open don't reach the lesson behind.
+// Shaking puts the lid on, rocks the jar and takes the lid off again, with every jelly still inside.
 import fs from 'node:fs';
 import { launch, guideUrl, verdict } from './lib.mjs';
 
@@ -53,6 +54,16 @@ for (const fy of [.8, .75, .7, .85, .65]) for (const fx of [.5, .45, .55, .4, .6
 if (!popped) problems.push('tapping the jellies never showed what one taught');
 else if (!/jelly/i.test(await p.textContent('#jarPop'))) problems.push('the jelly label is empty');
 await p.screenshot({ path: 'jar.png' });
+// Shake: the lid goes on, the jar really moves, the lid comes off, and every jelly is still inside the glass.
+await p.click('#jarShake');
+const jarIs = (f) => p.waitForFunction(f, null, { timeout: 60000, polling: 100 }).then(() => true, () => false);
+if (!await jarIs(() => document.querySelector('#jarCanvas').stage.bounds.top < Infinity)) problems.push('shaking: the lid never went on');
+if (!await jarIs(() => Math.abs(document.querySelector('#jarCanvas').stage.bounds.ox) > .005)) problems.push('shaking: the jar never moved');
+await p.screenshot({ path: 'jar-shaking.png' });
+if (!await jarIs(() => document.querySelector('#jarCanvas').stage.shakeT == null)) problems.push('shaking: the lid never came off');
+const escaped = await p.evaluate(() => { const j = document.querySelector('#jarCanvas').stage; return j.bodies.filter((b) => { const c = b.center(); return Math.hypot(c[0], c[2]) > j.R || c[1] > j.H; }).length; });
+if (escaped) problems.push(`shaking: ${escaped} jellies ended up outside the jar`);
+await p.screenshot({ path: 'jar-shaken.png' });
 
 // The shelf: one jar per course, with Git's jellies in Git's jar and the planned course shut.
 await p.click('#jarBack'); await p.waitForTimeout(400);

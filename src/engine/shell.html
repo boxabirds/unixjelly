@@ -733,7 +733,7 @@ class JellyBody {
     const B = this.stage.bounds;
     const x = this.center()[0] - this.restMean[0];
     this.cx = Math.abs(x - this.homeX) < this.size * .6 ? this.homeX : clamp(x, B.x0 + this.size * .5, B.x1 - this.size * .5); // close to home? stand up in its spot
-    this.place(this.size * .2, 0); sound.boing(480, .3, .1);
+    this.place(this.size * .2, 0); this.stoodAt = this.stage.t; sound.boing(480, .3, .1);
   }
   center() {
     const c = [0, 0, 0]; for (let i = 0; i < this.N; i++) for (let k = 0; k < 3; k++) c[k] += this.x[i * 3 + k] / this.N;
@@ -1134,6 +1134,8 @@ class JellyStage {
   // Stage two of tidying up: once everyone is standing still, letters that strayed go back into order.
   // An invisible hand holds each wanderer by the top and carries it home in bouncy hops, so it squishes
   // and dangles but cannot topple. A letter whose way is blocked goes round the front: forward, along, back.
+  // Explained, with every rule, in docs/design/letter-reshuffle.md. Each letter's decision this frame is kept in
+  // b.why (and where it is heading in b.goalX, b.goalZ), for the under-the-hood page that shows it working.
   shuffleHome(dt) {
     const B = this.bodies, size = this.opts.size, gap = size * .14;
     const drop = (b) => { if (b.carry) { if (b.grab === b.carry) b.grab = null; b.carry = null; b.wake(); } };
@@ -1141,34 +1143,34 @@ class JellyStage {
     const home = (b) => [b.homeX + b.restMean[0], b.restMean[2]];
     const atHome = (b, c) => { const [hx, hz] = home(b); return Math.abs(c[0] - hx) < size * .1 && Math.abs(c[2] - hz) < size * .2; };
     const centers = new Map(B.map((b) => [b, b.center()]));
-    const still = B.every((b) => !b.grab && !b.isFallen() && (b.sleeping || (b.grounded && b.rms < .03)));
+    const still = this.still = B.every((b) => !b.grab && !b.isFallen() && (b.sleeping || (b.grounded && b.rms < .03)));
     if (!this.homing) {
       this.calm = still ? (this.calm || 0) + dt : 0;
       if (this.calm < .6) return;
       const strays = B.filter((b) => !atHome(b, centers.get(b)));
-      B.filter((b) => !strays.includes(b) && !b.facingFront()).forEach((b) => { b.cx = b.homeX; b.place(size * .2, 0); sound.boing(480, .3, .1); });
+      B.filter((b) => !strays.includes(b) && !b.facingFront()).forEach((b) => { b.cx = b.homeX; b.place(size * .2, 0); b.turnedAt = this.t; sound.boing(480, .3, .1); });
       if (!strays.length) return;
       this.homing = true; this.homeTime = 0; this.lanes = {}; B.forEach((b) => { b.lane = null; b.stray = strays.includes(b); });
     }
     this.homeTime += dt;
     if (this.homeTime > 20) { // tangled up: everyone pops straight home instead
-      B.forEach((b) => { drop(b); b.cx = b.homeX; b.place(size * .15, 0); });
-      sound.boing(300, .5, .14); this.homing = false; this.lanes = {}; return;
+      B.forEach((b) => { drop(b); b.cx = b.homeX; b.place(size * .15, 0); b.why = null; });
+      sound.boing(300, .5, .14); this.homing = false; this.lanes = {}; this.tangledAt = this.t; return;
     }
     let moving = false;
     for (const b of B) {
       const c = centers.get(b), [hx, hz] = home(b), lane = hz + (b.lane === 'back' ? -1.15 : 1.15) * size;
       // only the letters that were out of place move; neighbours who just got jostled stay put
-      if (!b.stray) { if (Math.abs(c[0] - hx) > size * .5 || Math.abs(c[2] - hz) > size * .6) b.stray = true; else continue; }
+      if (!b.stray) { if (Math.abs(c[0] - hx) > size * .5 || Math.abs(c[2] - hz) > size * .6) b.stray = true; else { b.why = 'home'; continue; } }
       if (atHome(b, c) && b.carry) { // arrived: lower it gently onto its spot before letting go, so thin letters do not topple
-        const k = b.carry; k.landing = (k.landing || 0) + dt;
+        const k = b.carry; k.landing = (k.landing || 0) + dt; b.why = 'landing';
         k.p[0] += (hx + k.ox - k.p[0]) * .2; k.p[2] += (hz + k.oz - k.p[2]) * .2; k.p[1] += (k.y0 - k.p[1]) * .2;
         if (k.landing > .4) { b.stray = false; drop(b); if (b.lane) { this.lanes[b.lane] = null; b.lane = null; } }
         continue;
       }
       if (atHome(b, c)) {
-        b.stray = false; if (b.lane) { this.lanes[b.lane] = null; b.lane = null; }
-        if (!b.facingFront() && !b.isFallen() && b.grounded) { b.cx = b.homeX; b.place(size * .2, 0); sound.boing(480, .3, .1); }
+        b.stray = false; b.why = 'home'; if (b.lane) { this.lanes[b.lane] = null; b.lane = null; }
+        if (!b.facingFront() && !b.isFallen() && b.grounded) { b.cx = b.homeX; b.place(size * .2, 0); b.turnedAt = this.t; sound.boing(480, .3, .1); }
         continue;
       }
       moving = true;
@@ -1178,16 +1180,19 @@ class JellyStage {
       const between = others.some((o) => { const oc = centers.get(o); return main(oc) && (right ? oc[0] > c[0] && oc[0] < hx : oc[0] < c[0] && oc[0] > hx); });
       const blocked = between || !spotFree;
       let tx = hx, tz = hz;
+      b.why = 'straight';
       if (b.lane) {
-        if (Math.abs(c[2] - lane) > size * .2 && Math.abs(c[0] - hx) > size * .1) tx = c[0], tz = lane; // step out to the front lane
-        else if (Math.abs(c[0] - hx) > size * .1) tz = lane;                                             // shuffle along it
-        else if (!spotFree) { this.carry(b).hold = true; continue; }                                    // wait in front of the gap
+        if (Math.abs(c[2] - lane) > size * .2 && Math.abs(c[0] - hx) > size * .1) { tx = c[0]; tz = lane; b.why = 'step-out'; } // step out to the front lane
+        else if (Math.abs(c[0] - hx) > size * .1) { tz = lane; b.why = 'along'; }                                               // shuffle along it
+        else if (!spotFree) { this.carry(b).hold = true; b.why = 'hold'; b.goalX = hx; b.goalZ = lane; continue; }          // wait in front of the gap
+        else b.why = 'step-in';
       } else if (blocked) {
         // go round the front, or round the back if the front is busy; otherwise wait a turn
         const side = !this.lanes.front ? 'front' : !this.lanes.back ? 'back' : null;
-        if (!side) { drop(b); continue; }
-        this.lanes[side] = b; b.lane = side; tx = c[0]; tz = hz + (side === 'back' ? -1.15 : 1.15) * size;
+        if (!side) { drop(b); b.why = 'wait'; continue; }
+        this.lanes[side] = b; b.lane = side; tx = c[0]; tz = hz + (side === 'back' ? -1.15 : 1.15) * size; b.why = 'step-out';
       }
+      b.goalX = tx; b.goalZ = tz;
       const k = this.carry(b); k.hold = false;
       const sp = .16 * dt, p = k.p, gx = tx + k.ox - p[0], gz = tz + k.oz - p[2], gd = Math.hypot(gx, gz), f = gd > sp ? sp / gd : 1;
       p[0] += gx * f; p[2] += gz * f;

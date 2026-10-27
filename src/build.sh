@@ -35,7 +35,10 @@ guide jelly-git titan.json jellygit
 guide jelly-web titan-web.json jellyweb
 guide jelly-security titan.json jellysecurity
 
-# 4. Write the landing page from curriculum.json and problems.json (and, once curriculum.json has the site's address,
+# 4. The "under the hood" pages: the real engine, explained (tools/under-the-hood.py).
+python3 tools/under-the-hood.py
+
+# 5. Write the landing page from curriculum.json and problems.json (and, once curriculum.json has the site's address,
 #    robots.txt and sitemap.xml beside it), then stamp it with the version and a fingerprint of the guides.
 #    LANDING=path writes it somewhere else (for copies hosted elsewhere; see JELLY_LINKS in tools/curriculum.py).
 python3 tools/landing.py "${LANDING:-../index.html}"

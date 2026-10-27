@@ -77,6 +77,9 @@ data = {'@context': 'https://schema.org', '@type': 'ItemList', 'name': SITE_NAME
 page = open('landing.html').read()
 page = page.replace('<title>Unix Jelly</title>', f'<title>{e(title)}</title>\n' + head(title, description, SITE, data), 1)
 page = page.replace('<!-- courses: written by tools/landing.py from curriculum.json -->', body, 1)
+# the under-the-hood page lives next door on the site; a copy hosted somewhere else says where (JELLY_LINKS "reshuffle")
+away = json.loads(os.environ.get('JELLY_LINKS') or '{}').get('reshuffle')
+if away: page = page.replace('href="under-the-hood/reshuffle.html"', f'href="{e(away)}" target="_blank" rel="noopener"', 1)
 assert body in page and description in page, 'landing.html: a marker is missing'
 for out in sys.argv[1:]:
     open(out, 'w').write(page)
@@ -86,5 +89,6 @@ for out in sys.argv[1:]:
     shutil.copytree('icons', os.path.join(here, 'icons'), dirs_exist_ok=True)
     if SITE:
         urls = [SITE] + [SITE + c['folder'] + '/' for c in built if not c['away']]
+        urls += [SITE + 'under-the-hood/' + f for f in sorted(os.listdir(os.path.join(here, 'under-the-hood')))] if os.path.isdir(os.path.join(here, 'under-the-hood')) else []
         open(os.path.join(here, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(f'  <url><loc>{e(u)}</loc></url>\n' for u in urls) + '</urlset>\n')
         open(os.path.join(here, 'robots.txt'), 'w').write(f'User-agent: *\nAllow: /\nSitemap: {SITE}sitemap.xml\n')

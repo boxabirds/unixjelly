@@ -39,7 +39,7 @@ rep("let geo = new THREE.ExtrudeGeometry(shapes, { depth: size * .3, curveSegmen
 rep('cell = size / 6.5', 'cell = size / (stage.opts.cells ?? 6.5)')
 # A round jar: jellies are kept inside a circle instead of a box.
 rep("      x[j] = clamp(x[j], B.x0, B.x1); x[j + 2] = clamp(x[j + 2], B.z0, B.z1);",
-    "      if (B.r) { const rr = Math.hypot(x[j], x[j + 2]); if (rr > B.r) { x[j] *= B.r / rr; x[j + 2] *= B.r / rr; } }\n      else { x[j] = clamp(x[j], B.x0, B.x1); x[j + 2] = clamp(x[j + 2], B.z0, B.z1); }")
+    "      if (B.r) { const dx = x[j] - B.ox, dz = x[j + 2] - B.oz, rr = Math.hypot(dx, dz); if (rr > B.r) { x[j] = B.ox + dx * B.r / rr; x[j + 2] = B.oz + dz * B.r / rr; } if (x[j + 1] > B.top) x[j + 1] = B.top; }\n      else { x[j] = clamp(x[j], B.x0, B.x1); x[j + 2] = clamp(x[j + 2], B.z0, B.z1); }")
 rep("if (tap) { d.b.hop(1.1); sound.boing(380, .4); }", "if (tap) { d.b.hop(1.1); sound.boing(380, .4); this.onTap?.(d.b); }")
 # Letters only rest on the floor. Jellies in a jar rest on each other, so they may fall asleep anywhere once still.
 rep('this.quiet = !this.grab && grounded && rms < .005', 'this.quiet = !this.grab && (grounded || this.stage.opts.restAnywhere) && rms < .005')
@@ -142,7 +142,8 @@ class JarStage extends JellyStage {
   // and a coaster, floating on soft rainbow swirls. The jar is rigid; only the jellies wobble.
   setWord() {
     const s = this.opts.size, R = this.R = s * 1.9, Rn = this.Rn = s * 1.45, H = this.H = s * 4.6, t = s * .12;
-    this.bounds = { r: R, x0: -R, x1: R, z0: -R, z1: R }; this.wordWidth = R * 2;
+    // ox, oz: where the jar's middle is (it moves when shaken); top: the ceiling, which is only low while the lid is on
+    this.bounds = { r: R, ox: 0, oz: 0, top: Infinity, x0: -R, x1: R, z0: -R, z1: R }; this.wordWidth = R * 2;
     // Neutral tone mapping keeps the jellies' colours bright; the filmic one used for the letters washes bright colours out.
     this.renderer.toneMapping = THREE.NeutralToneMapping; this.renderer.toneMappingExposure = 1;
     // the background: a big sphere painted with slowly morphing pastel swirls (the jellies refract it, too)
@@ -171,17 +172,19 @@ class JarStage extends JellyStage {
     for (let k = 1; k <= 10; k++) { const q = k / 10, e = q * q * (3 - 2 * q); prof.push(new THREE.Vector2(R + t - (R - Rn) * e, H * .74 + H * .18 * q)); }
     prof.push(new THREE.Vector2(Rn + t, H));
     const glass = new THREE.Mesh(new THREE.LatheGeometry(prof, 64), new THREE.MeshPhysicalMaterial({ color: '#e6f7ff', transparent: true, opacity: .1, roughness: .06, clearcoat: 1, clearcoatRoughness: .04, iridescence: .7, iridescenceIOR: 1.3, specularIntensity: 1, side: THREE.DoubleSide, depthWrite: false }));
-    glass.renderOrder = 2; this.scene.add(glass);
+    glass.renderOrder = 2;
+    const vessel = this.vessel = new THREE.Group(); vessel.add(glass); this.scene.add(vessel);
     // a chunky white lip round the neck
-    const lip = new THREE.Mesh(new THREE.TorusGeometry(Rn + t, s * .13, 16, 64), jelly('#ffffff', .2)); lip.rotation.x = Math.PI / 2; lip.position.y = H; this.scene.add(lip);
+    const lip = new THREE.Mesh(new THREE.TorusGeometry(Rn + t, s * .13, 16, 64), jelly('#ffffff', .2)); lip.rotation.x = Math.PI / 2; lip.position.y = H; vessel.add(lip);
     // the lid has popped off and bobs above the jar, tilted, so jellies can drop in
     const puck = (r, h, round) => { const pts = [new THREE.Vector2(0, 0)]; for (let k = 0; k <= 12; k++) { const a = -Math.PI / 2 + Math.PI * k / 12; pts.push(new THREE.Vector2(r - round + round * Math.cos(a), h / 2 + h / 2 * Math.sin(a))); } pts.push(new THREE.Vector2(0, h)); return new THREE.LatheGeometry(pts, 48); };
     const lid = this.lid = new THREE.Group();
     const cap = this.cap = new THREE.Mesh(puck(Rn + s * .3, s * .55, s * .26), jelly('#ff4d6d', .35)); cap.castShadow = true;
     const knob = new THREE.Mesh(new THREE.SphereGeometry(s * .32, 24, 16), jelly('#ffc61a', .3)); knob.scale.y = .75; knob.position.y = s * .62; knob.castShadow = true;
     lid.add(cap, knob); lid.position.set(R * .85, H + s * .75, -s * .3); lid.rotation.set(.2, 0, -.6); this.scene.add(lid);
+    this.lidOff = { p: lid.position.clone(), r: lid.rotation.clone() };
     // a lemon coaster to stand on
-    const coaster = new THREE.Mesh(puck(R + s * .7, s * .2, s * .1), jelly('#ffc61a', .25)); coaster.position.y = -s * .2 - t; coaster.receiveShadow = true; this.scene.add(coaster);
+    const coaster = new THREE.Mesh(puck(R + s * .7, s * .2, s * .1), jelly('#ffc61a', .25)); coaster.position.y = -s * .2 - t; coaster.receiveShadow = true; vessel.add(coaster);
     const sc = this.sun.shadow.camera; sc.left = -R * 2.5; sc.right = R * 2.5; sc.top = H * 1.6; sc.bottom = -R * 2.5; sc.near = .01; sc.far = 4; sc.updateProjectionMatrix();
     this.sun.position.set(R * .8, H * 3, H * 1.6); this.sun.target.position.set(0, H * .3, 0);
     this.resize();
@@ -193,8 +196,31 @@ class JarStage extends JellyStage {
     cam.aspect = a; cam.position.set(0, this.H * .95, dist); cam.lookAt(0, this.H * .58, 0); cam.updateProjectionMatrix();
   }
   tick(dt) {
-    if (!REDUCED) { this.bg.uniforms.uT.value += dt; this.lid.position.y = this.H + this.opts.size * (.75 + .1 * Math.sin(this.bg.uniforms.uT.value * 1.6)); }
+    if (!REDUCED) this.bg.uniforms.uT.value += dt;
+    if (this.shakeT != null) this.shaking(dt);
+    else if (!REDUCED) this.lid.position.y = this.H + this.opts.size * (.75 + .1 * Math.sin(this.bg.uniforms.uT.value * 1.6));
     super.tick(dt);
+  }
+  // Shake the jar: the lid goes on, the jar rocks from side to side three times, and the lid pops off again. The jar's
+  // walls really move, so the glass knocks the jellies about; while the lid is on it is a ceiling, so nobody escapes.
+  shaking(dt) {
+    const t = this.shakeT += dt, s = this.opts.size, B = this.bounds, L = this.lid, off = this.lidOff, ease = (q) => q * q * (3 - 2 * q);
+    const on = .45, rock = 1.15, open = on + rock, end = open + .5, amp = s * .4, hz = 2.6;
+    const x = t > on && t < open ? amp * Math.sin((t - on) * hz * Math.PI * 2) * Math.sin((t - on) / rock * Math.PI) : 0;
+    B.ox = x; B.oz = x * .2; this.vessel.position.set(B.ox, 0, B.oz);
+    if (t > on && t < open) {
+      const half = Math.floor((t - on) * hz * 2); // a jolt each time the jar changes direction
+      if (half !== this.lastJolt) { this.lastJolt = half; for (const b of this.bodies) { b.wake(); for (let i = 0; i < b.N; i++) b.v[i * 3 + 1] += .25; } sound.boing(520 + Math.random() * 160, .07, .05); }
+    }
+    for (const b of this.bodies) b.wake(); this.calm = 0;
+    // the lid: down onto the neck, along for the ride, then back up to where it floats
+    const q = t < on ? ease(t / on) : t < open ? 1 : 1 - ease(Math.min(1, (t - open) / (end - open)));
+    L.position.set(off.p.x + (B.ox - off.p.x) * q, off.p.y + (this.H + s * .05 - off.p.y) * q + (t > open ? s * .6 * Math.sin(Math.min(1, (t - open) / (end - open)) * Math.PI) : 0), off.p.z + (B.oz - off.p.z) * q);
+    L.rotation.set(off.r.x * (1 - q), 0, off.r.z * (1 - q));
+    B.top = t >= on && t < open ? this.H - s * .1 : Infinity;
+    if (t >= on && !this.lidDown) { this.lidDown = true; sound.boing(300, .18, .08); }
+    if (t >= open && !this.lidUp) { this.lidUp = true; sound.boing(720, .3, .1); }
+    if (t >= end) { this.shakeT = null; B.ox = B.oz = 0; B.top = Infinity; this.vessel.position.set(0, 0, 0); }
   }
   // No tidying up and no standing up: jellies in a jar just lie where they land.
   simulate(dt) {
@@ -210,8 +236,10 @@ class JarStage extends JellyStage {
   fill(items) {
     for (const b of this.bodies) { this.scene.remove(b.mesh); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); b.mesh.material.dispose(); }
     this.bodies = [];
+    // jellies twice the letters' size; past 10 they shrink a little, so even the biggest course's jar isn't overfull
+    const grow = 2 * Math.min(1, Math.cbrt(10 / Math.max(10, items.length)));
     items.forEach((it, i) => {
-      const b = new JellyBody(this, BEAN, it.colour, 0, this.opts.size);
+      const b = new JellyBody(this, BEAN, it.colour, 0, this.opts.size * grow);
       paintJelly(b, it.look, JELLY[(JELLY.indexOf(it.colour) + 3) % JELLY.length] ?? '#ffffff');
       b.item = it; this.bodies.push(b); this.scene.add(b.mesh); b.eyes.forEach((e) => this.scene.add(e.ball, e.pupil));
       this.toss(b, i * (REDUCED ? .02 : .09));
@@ -226,6 +254,9 @@ class JarStage extends JellyStage {
     b.spawnAt = this.t + delay; b.visibleNow(false);
   }
   shake() {
+    if (this.shakeT != null) return;
+    if (!REDUCED) { this.shakeT = 0; this.lastJolt = -1; this.lidDown = this.lidUp = false; return; }
+    // reduced motion: no lid and no rocking, just a quick hop for everyone
     this.calm = 0;
     for (const b of this.bodies) { b.wake(); for (let i = 0; i < b.N; i++) { b.v[i * 3] += (Math.random() - .5) * .6; b.v[i * 3 + 1] += .5 + Math.random() * .6; b.v[i * 3 + 2] += (Math.random() - .5) * .3; } }
     sound.boing(240, .5, .14);
@@ -349,8 +380,8 @@ function showJar(c) {
   $('#jarTip').textContent = 'Grab a jelly and fling it. Tap one to see where you got it.';
   $('#jarShelf').hidden = true; $('#jarCanvas').hidden = false; $('#jarEmpty').hidden = items.length > 0; $('#jarBack').hidden = false; $('#jarShake').hidden = false;
   if (booted && !jar) {
-    jar = new JarStage($('#jarCanvas'), { word: '', size: .052 * Math.min(1, Math.cbrt(20 / Math.max(20, items.length))), bg: '#e9f5ff', floor: '#cfe6ff', cells: 3.4, restAnywhere: true });
-    jar.onTap = (b) => showJelly(b.item);
+    jar = new JarStage($('#jarCanvas'), { word: '', size: .052 * Math.min(1, Math.cbrt(20 / Math.max(20, items.length))), bg: '#e9f5ff', floor: '#cfe6ff', cells: 3, restAnywhere: true });
+    jar.onTap = (b) => showJelly(b.item); $('#jarCanvas').stage = jar; // tests find the jar here
   }
   const keys = c.id + '|' + items.map((it) => it.word + it.at).join();
   if (jar && keys !== jarKeys) { jarKeys = keys; jar.cap.material.color.set(lidColour(c)); jar.cap.material.attenuationColor.set(lidColour(c)); jar.fill(items); }

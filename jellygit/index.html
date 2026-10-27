@@ -1068,7 +1068,7 @@ class JellyBody {
     const B = this.stage.bounds;
     const x = this.center()[0] - this.restMean[0];
     this.cx = Math.abs(x - this.homeX) < this.size * .6 ? this.homeX : clamp(x, B.x0 + this.size * .5, B.x1 - this.size * .5); // close to home? stand up in its spot
-    this.place(this.size * .2, 0); sound.boing(480, .3, .1);
+    this.place(this.size * .2, 0); this.stoodAt = this.stage.t; sound.boing(480, .3, .1);
   }
   center() {
     const c = [0, 0, 0]; for (let i = 0; i < this.N; i++) for (let k = 0; k < 3; k++) c[k] += this.x[i * 3 + k] / this.N;
@@ -1169,7 +1169,7 @@ class JellyBody {
     for (let i = 0; i < this.N; i++) {
       const j = i * 3;
       if (x[j + 1] < 0) { this.normal[i] -= x[j + 1]; x[j + 1] = 0; }
-      if (B.r) { const rr = Math.hypot(x[j], x[j + 2]); if (rr > B.r) { x[j] *= B.r / rr; x[j + 2] *= B.r / rr; } }
+      if (B.r) { const dx = x[j] - B.ox, dz = x[j + 2] - B.oz, rr = Math.hypot(dx, dz); if (rr > B.r) { x[j] = B.ox + dx * B.r / rr; x[j + 2] = B.oz + dz * B.r / rr; } if (x[j + 1] > B.top) x[j + 1] = B.top; }
       else { x[j] = clamp(x[j], B.x0, B.x1); x[j + 2] = clamp(x[j + 2], B.z0, B.z1); }
     }
   }
@@ -1468,6 +1468,8 @@ class JellyStage {
   // Stage two of tidying up: once everyone is standing still, letters that strayed go back into order.
   // An invisible hand holds each wanderer by the top and carries it home in bouncy hops, so it squishes
   // and dangles but cannot topple. A letter whose way is blocked goes round the front: forward, along, back.
+  // Explained, with every rule, in docs/design/letter-reshuffle.md. Each letter's decision this frame is kept in
+  // b.why (and where it is heading in b.goalX, b.goalZ), for the under-the-hood page that shows it working.
   shuffleHome(dt) {
     const B = this.bodies, size = this.opts.size, gap = size * .14;
     const drop = (b) => { if (b.carry) { if (b.grab === b.carry) b.grab = null; b.carry = null; b.wake(); } };
@@ -1475,34 +1477,34 @@ class JellyStage {
     const home = (b) => [b.homeX + b.restMean[0], b.restMean[2]];
     const atHome = (b, c) => { const [hx, hz] = home(b); return Math.abs(c[0] - hx) < size * .1 && Math.abs(c[2] - hz) < size * .2; };
     const centers = new Map(B.map((b) => [b, b.center()]));
-    const still = B.every((b) => !b.grab && !b.isFallen() && (b.sleeping || (b.grounded && b.rms < .03)));
+    const still = this.still = B.every((b) => !b.grab && !b.isFallen() && (b.sleeping || (b.grounded && b.rms < .03)));
     if (!this.homing) {
       this.calm = still ? (this.calm || 0) + dt : 0;
       if (this.calm < .6) return;
       const strays = B.filter((b) => !atHome(b, centers.get(b)));
-      B.filter((b) => !strays.includes(b) && !b.facingFront()).forEach((b) => { b.cx = b.homeX; b.place(size * .2, 0); sound.boing(480, .3, .1); });
+      B.filter((b) => !strays.includes(b) && !b.facingFront()).forEach((b) => { b.cx = b.homeX; b.place(size * .2, 0); b.turnedAt = this.t; sound.boing(480, .3, .1); });
       if (!strays.length) return;
       this.homing = true; this.homeTime = 0; this.lanes = {}; B.forEach((b) => { b.lane = null; b.stray = strays.includes(b); });
     }
     this.homeTime += dt;
     if (this.homeTime > 20) { // tangled up: everyone pops straight home instead
-      B.forEach((b) => { drop(b); b.cx = b.homeX; b.place(size * .15, 0); });
-      sound.boing(300, .5, .14); this.homing = false; this.lanes = {}; return;
+      B.forEach((b) => { drop(b); b.cx = b.homeX; b.place(size * .15, 0); b.why = null; });
+      sound.boing(300, .5, .14); this.homing = false; this.lanes = {}; this.tangledAt = this.t; return;
     }
     let moving = false;
     for (const b of B) {
       const c = centers.get(b), [hx, hz] = home(b), lane = hz + (b.lane === 'back' ? -1.15 : 1.15) * size;
       // only the letters that were out of place move; neighbours who just got jostled stay put
-      if (!b.stray) { if (Math.abs(c[0] - hx) > size * .5 || Math.abs(c[2] - hz) > size * .6) b.stray = true; else continue; }
+      if (!b.stray) { if (Math.abs(c[0] - hx) > size * .5 || Math.abs(c[2] - hz) > size * .6) b.stray = true; else { b.why = 'home'; continue; } }
       if (atHome(b, c) && b.carry) { // arrived: lower it gently onto its spot before letting go, so thin letters do not topple
-        const k = b.carry; k.landing = (k.landing || 0) + dt;
+        const k = b.carry; k.landing = (k.landing || 0) + dt; b.why = 'landing';
         k.p[0] += (hx + k.ox - k.p[0]) * .2; k.p[2] += (hz + k.oz - k.p[2]) * .2; k.p[1] += (k.y0 - k.p[1]) * .2;
         if (k.landing > .4) { b.stray = false; drop(b); if (b.lane) { this.lanes[b.lane] = null; b.lane = null; } }
         continue;
       }
       if (atHome(b, c)) {
-        b.stray = false; if (b.lane) { this.lanes[b.lane] = null; b.lane = null; }
-        if (!b.facingFront() && !b.isFallen() && b.grounded) { b.cx = b.homeX; b.place(size * .2, 0); sound.boing(480, .3, .1); }
+        b.stray = false; b.why = 'home'; if (b.lane) { this.lanes[b.lane] = null; b.lane = null; }
+        if (!b.facingFront() && !b.isFallen() && b.grounded) { b.cx = b.homeX; b.place(size * .2, 0); b.turnedAt = this.t; sound.boing(480, .3, .1); }
         continue;
       }
       moving = true;
@@ -1512,16 +1514,19 @@ class JellyStage {
       const between = others.some((o) => { const oc = centers.get(o); return main(oc) && (right ? oc[0] > c[0] && oc[0] < hx : oc[0] < c[0] && oc[0] > hx); });
       const blocked = between || !spotFree;
       let tx = hx, tz = hz;
+      b.why = 'straight';
       if (b.lane) {
-        if (Math.abs(c[2] - lane) > size * .2 && Math.abs(c[0] - hx) > size * .1) tx = c[0], tz = lane; // step out to the front lane
-        else if (Math.abs(c[0] - hx) > size * .1) tz = lane;                                             // shuffle along it
-        else if (!spotFree) { this.carry(b).hold = true; continue; }                                    // wait in front of the gap
+        if (Math.abs(c[2] - lane) > size * .2 && Math.abs(c[0] - hx) > size * .1) { tx = c[0]; tz = lane; b.why = 'step-out'; } // step out to the front lane
+        else if (Math.abs(c[0] - hx) > size * .1) { tz = lane; b.why = 'along'; }                                               // shuffle along it
+        else if (!spotFree) { this.carry(b).hold = true; b.why = 'hold'; b.goalX = hx; b.goalZ = lane; continue; }          // wait in front of the gap
+        else b.why = 'step-in';
       } else if (blocked) {
         // go round the front, or round the back if the front is busy; otherwise wait a turn
         const side = !this.lanes.front ? 'front' : !this.lanes.back ? 'back' : null;
-        if (!side) { drop(b); continue; }
-        this.lanes[side] = b; b.lane = side; tx = c[0]; tz = hz + (side === 'back' ? -1.15 : 1.15) * size;
+        if (!side) { drop(b); b.why = 'wait'; continue; }
+        this.lanes[side] = b; b.lane = side; tx = c[0]; tz = hz + (side === 'back' ? -1.15 : 1.15) * size; b.why = 'step-out';
       }
+      b.goalX = tx; b.goalZ = tz;
       const k = this.carry(b); k.hold = false;
       const sp = .16 * dt, p = k.p, gx = tx + k.ox - p[0], gz = tz + k.oz - p[2], gd = Math.hypot(gx, gz), f = gd > sp ? sp / gd : 1;
       p[0] += gx * f; p[2] += gz * f;
@@ -1676,7 +1681,8 @@ class JarStage extends JellyStage {
   // and a coaster, floating on soft rainbow swirls. The jar is rigid; only the jellies wobble.
   setWord() {
     const s = this.opts.size, R = this.R = s * 1.9, Rn = this.Rn = s * 1.45, H = this.H = s * 4.6, t = s * .12;
-    this.bounds = { r: R, x0: -R, x1: R, z0: -R, z1: R }; this.wordWidth = R * 2;
+    // ox, oz: where the jar's middle is (it moves when shaken); top: the ceiling, which is only low while the lid is on
+    this.bounds = { r: R, ox: 0, oz: 0, top: Infinity, x0: -R, x1: R, z0: -R, z1: R }; this.wordWidth = R * 2;
     // Neutral tone mapping keeps the jellies' colours bright; the filmic one used for the letters washes bright colours out.
     this.renderer.toneMapping = THREE.NeutralToneMapping; this.renderer.toneMappingExposure = 1;
     // the background: a big sphere painted with slowly morphing pastel swirls (the jellies refract it, too)
@@ -1705,17 +1711,19 @@ class JarStage extends JellyStage {
     for (let k = 1; k <= 10; k++) { const q = k / 10, e = q * q * (3 - 2 * q); prof.push(new THREE.Vector2(R + t - (R - Rn) * e, H * .74 + H * .18 * q)); }
     prof.push(new THREE.Vector2(Rn + t, H));
     const glass = new THREE.Mesh(new THREE.LatheGeometry(prof, 64), new THREE.MeshPhysicalMaterial({ color: '#e6f7ff', transparent: true, opacity: .1, roughness: .06, clearcoat: 1, clearcoatRoughness: .04, iridescence: .7, iridescenceIOR: 1.3, specularIntensity: 1, side: THREE.DoubleSide, depthWrite: false }));
-    glass.renderOrder = 2; this.scene.add(glass);
+    glass.renderOrder = 2;
+    const vessel = this.vessel = new THREE.Group(); vessel.add(glass); this.scene.add(vessel);
     // a chunky white lip round the neck
-    const lip = new THREE.Mesh(new THREE.TorusGeometry(Rn + t, s * .13, 16, 64), jelly('#ffffff', .2)); lip.rotation.x = Math.PI / 2; lip.position.y = H; this.scene.add(lip);
+    const lip = new THREE.Mesh(new THREE.TorusGeometry(Rn + t, s * .13, 16, 64), jelly('#ffffff', .2)); lip.rotation.x = Math.PI / 2; lip.position.y = H; vessel.add(lip);
     // the lid has popped off and bobs above the jar, tilted, so jellies can drop in
     const puck = (r, h, round) => { const pts = [new THREE.Vector2(0, 0)]; for (let k = 0; k <= 12; k++) { const a = -Math.PI / 2 + Math.PI * k / 12; pts.push(new THREE.Vector2(r - round + round * Math.cos(a), h / 2 + h / 2 * Math.sin(a))); } pts.push(new THREE.Vector2(0, h)); return new THREE.LatheGeometry(pts, 48); };
     const lid = this.lid = new THREE.Group();
     const cap = this.cap = new THREE.Mesh(puck(Rn + s * .3, s * .55, s * .26), jelly('#ff4d6d', .35)); cap.castShadow = true;
     const knob = new THREE.Mesh(new THREE.SphereGeometry(s * .32, 24, 16), jelly('#ffc61a', .3)); knob.scale.y = .75; knob.position.y = s * .62; knob.castShadow = true;
     lid.add(cap, knob); lid.position.set(R * .85, H + s * .75, -s * .3); lid.rotation.set(.2, 0, -.6); this.scene.add(lid);
+    this.lidOff = { p: lid.position.clone(), r: lid.rotation.clone() };
     // a lemon coaster to stand on
-    const coaster = new THREE.Mesh(puck(R + s * .7, s * .2, s * .1), jelly('#ffc61a', .25)); coaster.position.y = -s * .2 - t; coaster.receiveShadow = true; this.scene.add(coaster);
+    const coaster = new THREE.Mesh(puck(R + s * .7, s * .2, s * .1), jelly('#ffc61a', .25)); coaster.position.y = -s * .2 - t; coaster.receiveShadow = true; vessel.add(coaster);
     const sc = this.sun.shadow.camera; sc.left = -R * 2.5; sc.right = R * 2.5; sc.top = H * 1.6; sc.bottom = -R * 2.5; sc.near = .01; sc.far = 4; sc.updateProjectionMatrix();
     this.sun.position.set(R * .8, H * 3, H * 1.6); this.sun.target.position.set(0, H * .3, 0);
     this.resize();
@@ -1727,8 +1735,31 @@ class JarStage extends JellyStage {
     cam.aspect = a; cam.position.set(0, this.H * .95, dist); cam.lookAt(0, this.H * .58, 0); cam.updateProjectionMatrix();
   }
   tick(dt) {
-    if (!REDUCED) { this.bg.uniforms.uT.value += dt; this.lid.position.y = this.H + this.opts.size * (.75 + .1 * Math.sin(this.bg.uniforms.uT.value * 1.6)); }
+    if (!REDUCED) this.bg.uniforms.uT.value += dt;
+    if (this.shakeT != null) this.shaking(dt);
+    else if (!REDUCED) this.lid.position.y = this.H + this.opts.size * (.75 + .1 * Math.sin(this.bg.uniforms.uT.value * 1.6));
     super.tick(dt);
+  }
+  // Shake the jar: the lid goes on, the jar rocks from side to side three times, and the lid pops off again. The jar's
+  // walls really move, so the glass knocks the jellies about; while the lid is on it is a ceiling, so nobody escapes.
+  shaking(dt) {
+    const t = this.shakeT += dt, s = this.opts.size, B = this.bounds, L = this.lid, off = this.lidOff, ease = (q) => q * q * (3 - 2 * q);
+    const on = .45, rock = 1.15, open = on + rock, end = open + .5, amp = s * .4, hz = 2.6;
+    const x = t > on && t < open ? amp * Math.sin((t - on) * hz * Math.PI * 2) * Math.sin((t - on) / rock * Math.PI) : 0;
+    B.ox = x; B.oz = x * .2; this.vessel.position.set(B.ox, 0, B.oz);
+    if (t > on && t < open) {
+      const half = Math.floor((t - on) * hz * 2); // a jolt each time the jar changes direction
+      if (half !== this.lastJolt) { this.lastJolt = half; for (const b of this.bodies) { b.wake(); for (let i = 0; i < b.N; i++) b.v[i * 3 + 1] += .25; } sound.boing(520 + Math.random() * 160, .07, .05); }
+    }
+    for (const b of this.bodies) b.wake(); this.calm = 0;
+    // the lid: down onto the neck, along for the ride, then back up to where it floats
+    const q = t < on ? ease(t / on) : t < open ? 1 : 1 - ease(Math.min(1, (t - open) / (end - open)));
+    L.position.set(off.p.x + (B.ox - off.p.x) * q, off.p.y + (this.H + s * .05 - off.p.y) * q + (t > open ? s * .6 * Math.sin(Math.min(1, (t - open) / (end - open)) * Math.PI) : 0), off.p.z + (B.oz - off.p.z) * q);
+    L.rotation.set(off.r.x * (1 - q), 0, off.r.z * (1 - q));
+    B.top = t >= on && t < open ? this.H - s * .1 : Infinity;
+    if (t >= on && !this.lidDown) { this.lidDown = true; sound.boing(300, .18, .08); }
+    if (t >= open && !this.lidUp) { this.lidUp = true; sound.boing(720, .3, .1); }
+    if (t >= end) { this.shakeT = null; B.ox = B.oz = 0; B.top = Infinity; this.vessel.position.set(0, 0, 0); }
   }
   // No tidying up and no standing up: jellies in a jar just lie where they land.
   simulate(dt) {
@@ -1744,8 +1775,10 @@ class JarStage extends JellyStage {
   fill(items) {
     for (const b of this.bodies) { this.scene.remove(b.mesh); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); b.mesh.material.dispose(); }
     this.bodies = [];
+    // jellies twice the letters' size; past 10 they shrink a little, so even the biggest course's jar isn't overfull
+    const grow = 2 * Math.min(1, Math.cbrt(10 / Math.max(10, items.length)));
     items.forEach((it, i) => {
-      const b = new JellyBody(this, BEAN, it.colour, 0, this.opts.size);
+      const b = new JellyBody(this, BEAN, it.colour, 0, this.opts.size * grow);
       paintJelly(b, it.look, JELLY[(JELLY.indexOf(it.colour) + 3) % JELLY.length] ?? '#ffffff');
       b.item = it; this.bodies.push(b); this.scene.add(b.mesh); b.eyes.forEach((e) => this.scene.add(e.ball, e.pupil));
       this.toss(b, i * (REDUCED ? .02 : .09));
@@ -1760,6 +1793,9 @@ class JarStage extends JellyStage {
     b.spawnAt = this.t + delay; b.visibleNow(false);
   }
   shake() {
+    if (this.shakeT != null) return;
+    if (!REDUCED) { this.shakeT = 0; this.lastJolt = -1; this.lidDown = this.lidUp = false; return; }
+    // reduced motion: no lid and no rocking, just a quick hop for everyone
     this.calm = 0;
     for (const b of this.bodies) { b.wake(); for (let i = 0; i < b.N; i++) { b.v[i * 3] += (Math.random() - .5) * .6; b.v[i * 3 + 1] += .5 + Math.random() * .6; b.v[i * 3 + 2] += (Math.random() - .5) * .3; } }
     sound.boing(240, .5, .14);
@@ -4023,8 +4059,8 @@ function showJar(c) {
   $('#jarTip').textContent = 'Grab a jelly and fling it. Tap one to see where you got it.';
   $('#jarShelf').hidden = true; $('#jarCanvas').hidden = false; $('#jarEmpty').hidden = items.length > 0; $('#jarBack').hidden = false; $('#jarShake').hidden = false;
   if (booted && !jar) {
-    jar = new JarStage($('#jarCanvas'), { word: '', size: .052 * Math.min(1, Math.cbrt(20 / Math.max(20, items.length))), bg: '#e9f5ff', floor: '#cfe6ff', cells: 3.4, restAnywhere: true });
-    jar.onTap = (b) => showJelly(b.item);
+    jar = new JarStage($('#jarCanvas'), { word: '', size: .052 * Math.min(1, Math.cbrt(20 / Math.max(20, items.length))), bg: '#e9f5ff', floor: '#cfe6ff', cells: 3, restAnywhere: true });
+    jar.onTap = (b) => showJelly(b.item); $('#jarCanvas').stage = jar; // tests find the jar here
   }
   const keys = c.id + '|' + items.map((it) => it.word + it.at).join();
   if (jar && keys !== jarKeys) { jarKeys = keys; jar.cap.material.color.set(lidColour(c)); jar.cap.material.attenuationColor.set(lidColour(c)); jar.fill(items); }

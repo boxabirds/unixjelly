@@ -30,7 +30,8 @@ Each guide is one `<script type="module">`, in these sections:
 
 | Section | What it does |
 |---|---|
-| Jelly physics | `JellyBody` (one squishy letter) and `JellyStage` (a row of letters on a floor, with a camera, dragging, hopping and walking home) |
+| Jelly physics | `JellyBody` (one squishy letter) and `JellyStage` (a row of letters on a floor, with a camera, dragging, hopping and walking home: see [design/letter-reshuffle.md](design/letter-reshuffle.md)) |
+| Under the hood | `tools/under-the-hood.py` builds `under-the-hood/reshuffle.html`: the real engine, with the letters' tidying shown step by step on examples (`tools/under-the-hood/reshuffle.js`). It reads the decisions `shuffleHome` records (`b.why`, `b.goalX`, `b.goalZ`, `stage.still`) rather than recomputing them |
 | 3D font | `makeLetter()` turns a glyph from the built-in font subset into a 3D shape |
 | Overview | `Town`: the engine's original 3D tour. Shell Jelly, Git and Web replace it with the Overview (see below); Shell 2 and Security have none |
 | Backstage | a command's journey, as shows you can replay (Shell, Git and Web only): the guide's Overview world up close (`Backstage` in its `overview.js`), hooked up by `engine/use-backstage.py` |
@@ -111,7 +112,8 @@ Each jelly collides as a body-centred lattice: its cage corners plus the centre 
 ### The jelly jar: `engine/jar-patch.py`
 
 Adds the jar to every guide.
-- **Physics.** A bean shape for the soft bodies, coarser cages for small jellies (`opts.cells`), a tap hook (`onTap`), and resting on other jellies as well as the floor (`opts.restAnywhere`).
+- **Physics.** A bean shape for the soft bodies, coarser cages for small jellies (`opts.cells`), a tap hook (`onTap`), and resting on other jellies as well as the floor (`opts.restAnywhere`). Jellies are twice the letters' size, a little smaller past 10 per jar so a full jar still fits; their cage is coarser (3 cells across) to keep filling a jar no slower than before.
+- **Shake it!** The lid swoops down onto the neck, the jar rocks from side to side three times, and the lid pops off again. The jar's walls really move (`bounds.ox`, `bounds.oz`), so the glass knocks the jellies about, and while the lid is on it is a ceiling (`bounds.top`), so nothing escapes. With reduced motion it's a single hop instead.
 - **Rendering.** `JarStage`, a `JellyStage` with a round jar (the physics keeps jellies inside a circle, `bounds.r`) that doesn't tidy up or stand jellies back up. Its background is a sphere with a slow swirl shader instead of the grid floor, which becomes a shadow catcher. The jelly patterns are a small shader painted on each jelly's resting shape (`paintJelly`), so they squish with it. `bean()` draws the same looks in 2D for the cards.
 - **The sweets** (`paintJelly`) are made like the jelly letters, see-through with deep colour, and also blend over what's behind them, because three.js's see-through pass never shows other see-through things (in a jar, usually another sweet). A look is either **layers in the jelly** (zebra, stripy, swirly, checked, two-tone, rainbow: the pattern colours the light passing through) or **bits suspended inside** (`BITS`: chocolate chips for spotty, sprinkles, glitter, stars for galaxy, gold leaf for golden). The bits are small instanced meshes bound to the jelly's cage like the eyes, so they ride its wobble and stretch with it; a sleeping jelly's bits aren't updated.
 - **Data.** `collect()` keeps this course's finished lessons in `jelly.collection`, with each one's look and its recap line, so a jar in another course can label it.
@@ -276,10 +278,11 @@ CHROMIUM=/path/to/chromium npm test                # or leave CHROMIUM unset to 
 | `curriculum.mjs` | `curriculum.json` against the build, in Node: every course it needs exists and comes earlier, every built course saves under the key the curriculum says and has the course map, and the landing page shows every course |
 | `overview.mjs` | the Overview in Shell Jelly, Git and Web: every step plays to its end without errors, the last earns its jelly, and Back then Next comes back to the same step. `node tests/overview.mjs jellygit` checks one guide |
 | `fresh.mjs` | Shell and Shell 2: a lesson finished inside a folder doesn't leave the next lesson's mission there, and a mission already under way isn't wiped by going back a phase and on again |
-| `jar.mjs` | earns a jelly and checks the card names its look and that it lands in the collection with what it taught. The card opens this course's jar, tapping a jelly shows its label, and the shelf shows one jar per course with the right counts (the planned course's shut). **Save my jellies** downloads a file with everything. In an emptied browser, a file that isn't a save is refused, and **Use my existing jellies** brings everything back. Keys stay in the jar until Escape closes it |
+| `jar.mjs` | earns a jelly and checks the card names its look and that it lands in the collection with what it taught. The card opens this course's jar, tapping a jelly shows its label, and the shelf shows one jar per course with the right counts (the planned course's shut). **Save my jellies** downloads a file with everything. In an emptied browser, a file that isn't a save is refused, and **Use my existing jellies** brings everything back. Keys stay in the jar until Escape closes it. Shaking puts the lid on, rocks the jar and takes the lid off again, with every jelly still inside |
 | `present.mjs` | presenter mode in every guide: every lesson's demo finishes its mission, the guide's own kinds of frame show full screen, no "you earned" frames, Tab hides and restores the Overview card, ← then → returns to the same frame, nothing is saved; screenshots, 16:9 and (Shell, Web) 9:16. Then on a phone: the gate shows, a jelly letter can be grabbed and dragged without turning the page, its slideshow taps forward and back, turns to 16:9 sideways, saves nothing |
 | `perf.mjs` | not pass/fail: prints the physics work per 3 seconds of jelly time (letters dropping, a jar filling, a settled jar). Run it before and after any 3D or physics change, on the same machine |
 | `letters.mjs` | drops some jelly words eight times each and fails if any letter falls over more than half the time. This is the test that caught the falling i |
+| `reshuffle.mjs` | plays every example on the under-the-hood page with the real physics and checks each still ends the way the page says: tidies up, only turns, hits the 20-second timeout, or never starts |
 
 Screenshots go to `src/tests/out/`.
 
