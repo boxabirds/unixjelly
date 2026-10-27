@@ -67,3 +67,50 @@ export const leaks = (p, guide, { earlier = false } = {}) => !CONCEPTS[guide] ? 
   }
   return [...new Set(out)];
 }, { C: CONCEPTS[guide], key: guide + '.v1', earlier });
+
+// How far the jellies on a stage are inside each other: the biggest share of any jelly's drawn surface that is inside
+// another jelly's drawn surface (0 when none overlap). It works on any stage, letters or jar, and uses only what is
+// drawn, not the physics, so it can't be fooled by the physics' own idea of where things are. stage: a function, run in
+// the page, that returns the stage.
+export const overlap = (p, stage) => p.evaluate((src) => {
+  const B = (0, eval)(src)().bodies.filter((b) => b.lo && b.mesh.visible);
+  const world = (b) => { const V = b.bIds.length / 4, w = new Float64Array(V * 3); for (let v = 0; v < V; v++) for (let s = 0; s < 4; s++) for (let k = 0; k < 3; k++) w[v * 3 + k] += b.x[b.bIds[v * 4 + s] * 3 + k] * b.bW[v * 4 + s]; return w; };
+  // a point is inside a closed surface when a ray from it crosses the surface an odd number of times
+  const inside = (w, idx, x, y, z) => {
+    let c = 0;
+    for (let t = 0; t < idx.length; t += 3) {
+      const a = idx[t] * 3, b = idx[t + 1] * 3, e = idx[t + 2] * 3;
+      const d0 = (w[b + 1] - w[a + 1]) * (z - w[a + 2]) - (w[b + 2] - w[a + 2]) * (y - w[a + 1]), d1 = (w[e + 1] - w[b + 1]) * (z - w[b + 2]) - (w[e + 2] - w[b + 2]) * (y - w[b + 1]), d2 = (w[a + 1] - w[e + 1]) * (z - w[e + 2]) - (w[a + 2] - w[e + 2]) * (y - w[e + 1]);
+      if ((d0 > 0 && d1 > 0 && d2 > 0) || (d0 < 0 && d1 < 0 && d2 < 0)) c += (w[a] * d1 + w[b] * d2 + w[e] * d0) / (d0 + d1 + d2) > x ? 1 : 0;
+    }
+    return c % 2 === 1;
+  };
+  let worst = 0;
+  for (const P of B) for (const Q of B) {
+    if (P === Q || ![0, 1, 2].every((k) => P.lo[k] < Q.hi[k] && Q.lo[k] < P.hi[k])) continue;
+    const wp = world(P), wq = world(Q), idx = Q.geo.index.array;
+    let n = 0;
+    for (let v = 0; v < wp.length; v += 9) if (inside(wq, idx, wp[v], wp[v + 1], wp[v + 2])) n++;
+    worst = Math.max(worst, n / (wp.length / 9));
+  }
+  return worst;
+}, stage.toString());
+
+// How bent out of shape the jellies on a stage are: the biggest share of any jelly's cage cells (tetrahedra) that are
+// turned inside out or squashed to under half their size (0 when every jelly has sprung back). A jelly that is left
+// like this stays bent for good, because its own springs pull it towards the wrong shape.
+export const distortion = (p, stage) => p.evaluate((src) => {
+  const SQUASHED = .5;
+  let worst = 0;
+  for (const b of (0, eval)(src)().bodies.filter((b) => b.lo)) {
+    const x = b.x;
+    let bad = 0;
+    for (const e of b.elements) {
+      const [o0, o1, o2, o3] = e.o, d = (k, o) => x[o + k] - x[o0 + k];
+      const v = (d(0, o1) * (d(1, o2) * d(2, o3) - d(2, o2) * d(1, o3)) - d(1, o1) * (d(0, o2) * d(2, o3) - d(2, o2) * d(0, o3)) + d(2, o1) * (d(0, o2) * d(1, o3) - d(1, o2) * d(0, o3))) / 6;
+      if (v < e.vol * SQUASHED) bad++;
+    }
+    worst = Math.max(worst, bad / b.elements.length);
+  }
+  return worst;
+}, stage.toString());

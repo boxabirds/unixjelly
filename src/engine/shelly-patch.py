@@ -253,8 +253,6 @@ function complete(id) {""")
 exec(open('engine/use-jellysh.py').read())
 # The course map: which course comes before which (curriculum.json).
 exec(open('engine/courses-patch.py').read())
-# Jellies bumping into each other without sinking in.
-exec(open('engine/collide-patch.py').read())
 # The jelly jar: every lesson's jelly, collected across courses.
 exec(open('engine/jar-patch.py').read())
 # Shell Jelly's demo scripts, for presenter mode.

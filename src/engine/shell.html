@@ -599,10 +599,11 @@ const PERMS = [[0, 1], [0, 2], [1, 0], [1, 2], [2, 0], [2, 1]];
 const UP = new THREE.Vector3(0, 0, 1);
 
 class JellyBody {
-  constructor(stage, ch, color, cx, size) {
+  // cells: how many cage cells fit across one size. Fewer is cheaper and stiffer; big jellies can afford fewer.
+  constructor(stage, ch, color, cx, size, cells = 6.5) {
     const L = makeLetter(ch, size), geo = L.geo, box = L.box, polys = L.polys;
     this.stage = stage; this.size = size; this.cx = cx; this.homeX = cx; this.width = box.max.x - box.min.x; this.height = box.max.y;
-    const dx = box.max.x - box.min.x, dy = box.max.y - box.min.y, dz = box.max.z - box.min.z, cell = size / 6.5;
+    const dx = box.max.x - box.min.x, dy = box.max.y - box.min.y, dz = box.max.z - box.min.z, cell = this.cell = size / cells;
     const nx = Math.max(1, Math.round(dx / cell)), ny = Math.max(1, Math.round(dy / cell)), nz = Math.max(2, Math.round(dz / cell));
     const sx = dx / nx, sy = dy / ny, sz = dz / nz, ox = box.min.x, oy = box.min.y, oz = box.min.z;
     const col = (v, o, s, n) => clamp(Math.floor((v - o) / s), 0, n - 1);
@@ -611,7 +612,7 @@ class JellyBody {
     for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) for (const [a, b] of [[.25, .25], [.75, .25], [.25, .75], [.75, .75], [.5, .5]]) {
       if (inside(polys, ox + (i + a) * sx, oy + (j + b) * sy)) occ[i + j * nx] = 1;
     }
-    const index = new Map(), rest = [];
+    const index = new Map(), rest = [], cellNodes = [];
     const node = (i, j, k) => {
       const key = i + (nx + 1) * (j + (ny + 1) * k);
       let id = index.get(key);
@@ -621,7 +622,7 @@ class JellyBody {
     const corners = (i, j, k) => [0, 1, 2, 3, 4, 5, 6, 7].map((b) => node(i + (b & 1), j + (b >> 1 & 1), k + (b >> 2 & 1)));
     const tets = [];
     for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) if (occ[i + j * nx]) for (let k = 0; k < nz; k++) {
-      const c = corners(i, j, k);
+      const c = corners(i, j, k); cellNodes.push(c);
       for (const [A, B] of PERMS) tets.push([c[0], c[1 << A], c[(1 << A) | (1 << B)], c[7]]);
     }
     const nearest = (i, j) => {
@@ -650,7 +651,7 @@ class JellyBody {
     this.mass = new Float64Array(N); this.inv = new Float64Array(N); this.nodalVolume = new Float64Array(N);
     this.normal = new Float64Array(N); this.incoming = new Float64Array(N); this.nodalF = new Float64Array(N * 9);
     this.F = new Float64Array(9); this.dg = new Float64Array(12); this.hg = new Float64Array(12); this.co = new Float64Array(9);
-    this.elements = []; this.edges = [];
+    this.elements = []; this.edges = []; this.cellNodes = cellNodes; // for bumping: each cell's centre is the average of its 8 corners
     const seen = new Set(), p = this.rest;
     for (const t of tets) {
       let ids = t, o = ids.map((v) => v * 3);
@@ -685,7 +686,7 @@ class JellyBody {
     this.glow.rotation.x = -Math.PI / 2; this.glow.scale.set(this.width * 1.5, size * 1.3, 1); this.glow.renderOrder = 1;
 
     this.eyes = this.makeEyes(polys, box, bind);
-    this.grab = null; this.sleeping = false; this.quiet = 0; this.spawnAt = 0; this.visible = true;
+    this.grab = null; this.sleeping = false; this.quiet = 0; this.press = 0; this.spawnAt = 0; this.visible = true;
   }
 
   makeEyes(polys, box, bind) {
@@ -717,6 +718,42 @@ class JellyBody {
     for (const e of this.eyes) e.first = true;
   }
   wake() { this.sleeping = false; this.quiet = 0; }
+  // The bumping lattice: cage corners (ids 0…N-1), then cell centres (ids N…). Each point has a weighted inverse mass W,
+  // so a push on it is shared out to its corners. points() lists those inside a box (made once per jelly and reused);
+  // at() finds one point and returns its W; nudge() moves one point.
+  points(lo, hi) {
+    const x = this.x, v = this.v, C = this.cellNodes, N = this.N, n = N + C.length;
+    const s = this.pts ??= { id: new Int32Array(n), x: new Float64Array(n), y: new Float64Array(n), z: new Float64Array(n), vx: new Float64Array(n), vy: new Float64Array(n), vz: new Float64Array(n), m: 0 };
+    let m = 0;
+    const keep = (id, px, py, pz, vx, vy, vz) => {
+      if (px < lo[0] || px > hi[0] || py < lo[1] || py > hi[1] || pz < lo[2] || pz > hi[2]) return;
+      s.id[m] = id; s.x[m] = px; s.y[m] = py; s.z[m] = pz; s.vx[m] = vx; s.vy[m] = vy; s.vz[m] = vz; m++;
+    };
+    for (let i = 0; i < N; i++) { const j = i * 3; keep(i, x[j], x[j + 1], x[j + 2], v[j], v[j + 1], v[j + 2]); }
+    // a cell whose first corner is more than a cell away from the box can't have its centre inside it: skip the averaging
+    const e = this.cell * 2;
+    for (let k = 0; k < C.length; k++) {
+      const c = C[k], j0 = c[0] * 3;
+      if (x[j0] < lo[0] - e || x[j0] > hi[0] + e || x[j0 + 1] < lo[1] - e || x[j0 + 1] > hi[1] + e || x[j0 + 2] < lo[2] - e || x[j0 + 2] > hi[2] + e) continue;
+      let px = 0, py = 0, pz = 0, vx = 0, vy = 0, vz = 0;
+      for (let q = 0; q < 8; q++) { const j = c[q] * 3; px += x[j]; py += x[j + 1]; pz += x[j + 2]; vx += v[j]; vy += v[j + 1]; vz += v[j + 2]; }
+      keep(N + k, px / 8, py / 8, pz / 8, vx / 8, vy / 8, vz / 8);
+    }
+    s.m = m;
+    return s;
+  }
+  at(id, out) {
+    const x = this.x, inv = this.inv;
+    if (id < this.N) { const j = id * 3; out[0] = x[j]; out[1] = x[j + 1]; out[2] = x[j + 2]; return inv[id]; }
+    const c = this.cellNodes[id - this.N]; let w = 0; out[0] = out[1] = out[2] = 0;
+    for (let q = 0; q < 8; q++) { const j = c[q] * 3; out[0] += x[j] / 8; out[1] += x[j + 1] / 8; out[2] += x[j + 2] / 8; w += inv[c[q]]; }
+    return w / 64;
+  }
+  nudge(id, dx, dy, dz) {
+    const x = this.x, move = (i, w) => { const j = i * 3; x[j] += dx * w; x[j + 1] = Math.max(0, x[j + 1] + dy * w); x[j + 2] += dz * w; };
+    if (id < this.N) move(id, this.inv[id]);
+    else for (const i of this.cellNodes[id - this.N]) move(i, this.inv[i] / 8);
+  }
   updateBox() {
     const x = this.x, lo = this.lo ??= [0, 0, 0], hi = this.hi ??= [0, 0, 0];
     lo.fill(Infinity); hi.fill(-Infinity);
@@ -840,7 +877,9 @@ class JellyBody {
   step(h) { if (this.solve(h)) this.finish(h); }
   // Predict and solve the jelly's own constraints. The stage resolves letter-vs-letter contacts
   // between solve() and finish(), so the push turns into velocity like every other constraint.
-  solve(h) {
+  // One physics step comes in three parts, so the stage can solve every jelly and their bumps together (simulate):
+  // begin (everything moves on, and falls), iterate (each jelly pulls back towards its shape, several times), finish.
+  begin(h) {
     if (this.grab) this.wake();
     if (this.sleeping) return false;
     const x = this.x, v = this.v, old = this.prev, N3 = this.N * 3;
@@ -852,12 +891,12 @@ class JellyBody {
     for (let i = 0; i < N3; i++) x[i] += v[i] * h;
     for (const e of this.elements) e.lD = e.lH = e.lB = 0;
     for (const gr of this.grab?.multi ?? (this.grab ? [this.grab] : [])) gr.lambda = [0, 0, 0];
-    const E = this.elements, n = E.length;
-    for (let it = 0; it < PHYS.iterations; it++) {
-      for (let q = 0; q < n; q++) { const e = E[(it & 1) ? n - 1 - q : q]; this.solveElastic(e, h); this.solveBarrier(e); }
-      this.solveGrab(h); this.solveContacts();
-    }
     return true;
+  }
+  iterate(h, it) {
+    const E = this.elements, n = E.length;
+    for (let q = 0; q < n; q++) { const e = E[(it & 1) ? n - 1 - q : q]; this.solveElastic(e, h); this.solveBarrier(e); }
+    this.solveGrab(h); this.solveContacts();
   }
   finish(h) {
     const x = this.x, v = this.v, old = this.prev, N3 = this.N * 3;
@@ -885,9 +924,14 @@ class JellyBody {
       v[ia] += sa * nx; v[ia + 1] += sa * ny; v[ia + 2] += sa * nz; v[ib] -= sb * nx; v[ib + 1] -= sb * ny; v[ib + 2] -= sb * nz;
     }
     let energy = 0; for (let i = 0; i < this.N; i++) energy += .5 * this.mass[i] * (v[i * 3] ** 2 + v[i * 3 + 1] ** 2 + v[i * 3 + 2] ** 2);
-    const rms = Math.sqrt(2 * energy / this.totalMass);
-    this.grounded = grounded; this.rms = Math.sqrt(2 * energy / this.totalMass);
-    this.quiet = !this.grab && grounded && rms < .005 ? this.quiet + h : 0;
+    const rms = Math.sqrt(2 * energy / this.totalMass), held = !this.grab && (grounded || this.press > 0);
+    this.grounded = grounded; this.rms = rms;
+    // Settling: a jelly that is held up and already nearly still is slowed hard, so the last slow rocking of a rounded
+    // jelly dies away in about a second instead of going on and on. Anything faster is left alone.
+    if (held && rms < .03) { const k = Math.exp(-5 * h); for (let i = 0; i < N3; i++) v[i] *= k; }
+    // Still for a moment, resting on the floor or on another jelly, and not pressed into one (collide sets press): asleep.
+    // A sleeping jelly costs nothing and holds still until something pushes into it.
+    this.quiet = held && this.press < .3 && rms < .005 ? this.quiet + h : 0;
     if (this.quiet > .45) { this.sleeping = true; v.fill(0); }
     this.dirty = true; this.updateBox();
     if (!Number.isFinite(x[0])) this.place(.05, 0);
@@ -1102,33 +1146,68 @@ class JellyStage {
     };
     cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
   }
-  // Letters bump into each other: cage nodes of different letters keep a minimum gap.
-  // Only pairs whose bounding boxes touch are checked, so letters standing apart cost nothing.
-  collide() {
-    const live = this.bodies.filter((b) => this.t >= b.spawnAt && b.lo), d = this.opts.size / 6.5 * .7, d2 = d * d, cap = d * .3;
+  // Jellies bump into each other, every jelly in every guide: letters and the jar's jelly babies alike.
+  // Each jelly is a body-centred lattice of points: its cage corners plus the centre of every cage cell. Its biggest hole
+  // is about 0.56 of a cell, smaller than the gap d kept between jellies, so nothing can squeeze through. d comes from
+  // each jelly's own cage cells, so big and small jellies keep the right gap.
+  // Once a step, findContacts lists every pair of points from different jellies that are near each other. pushApart
+  // then keeps them apart in every solver pass, alongside each jelly pulling back to its own shape (as XPBD solves
+  // contacts), so a pile holds its weight instead of being squashed together and springing apart again.
+  // A sleeping jelly holds still like a solid thing: an awake one touching it takes the whole push. It wakes when
+  // something bumps it or presses into it, so two jellies can never fall asleep inside each other.
+  // Each jelly's press (its deepest point inside the gap, as a share of it) tells finish() whether it is resting on
+  // another jelly, and whether it is pressed too hard to fall asleep.
+  // Only pairs whose bounding boxes touch are checked, so jellies standing apart cost nothing. The lists are kept and
+  // reused, so bumping makes no garbage for old computers to clean up.
+  findContacts() {
+    const live = this.bodies.filter((b) => this.t >= b.spawnAt && b.lo), C = this.touch ??= { P: [], Q: [], a: [], b: [], d: [], ax: [], ay: [], az: [], n: 0 };
+    let n = 0;
+    for (const b of live) b.press = 0;
     for (let a = 0; a < live.length; a++) for (let c = a + 1; c < live.length; c++) {
       const P = live[a], Q = live[c];
       if (P.sleeping && Q.sleeping) continue;
-      const lo = [0, 1, 2].map((k) => Math.max(P.lo[k], Q.lo[k]) - d), hi = [0, 1, 2].map((k) => Math.min(P.hi[k], Q.hi[k]) + d);
+      // near: within the gap, plus room for this step's movement
+      const d = Math.max(P.cell, Q.cell) * .62, near = d * 1.5, n2 = near * near;
+      const lo = [0, 1, 2].map((k) => Math.max(P.lo[k], Q.lo[k]) - near), hi = [0, 1, 2].map((k) => Math.min(P.hi[k], Q.hi[k]) + near);
       if (lo.some((v, k) => v > hi[k])) continue;
-      const near = (b) => { const out = []; for (let i = 0; i < b.N; i++) { const j = i * 3; if (b.x[j] >= lo[0] && b.x[j] <= hi[0] && b.x[j + 1] >= lo[1] && b.x[j + 1] <= hi[1] && b.x[j + 2] >= lo[2] && b.x[j + 2] <= hi[2]) out.push(i); } return out; };
-      const ps = near(P), qs = near(Q);
-      let hit = false;
-      for (const i of ps) for (const j of qs) {
-        const pi = i * 3, qj = j * 3, dx = Q.x[qj] - P.x[pi], dy = Q.x[qj + 1] - P.x[pi + 1], dz = Q.x[qj + 2] - P.x[pi + 2], r2 = dx * dx + dy * dy + dz * dz;
-        if (r2 >= d2 || r2 < 1e-14) continue;
-        const r = Math.sqrt(r2), depth = d - r; if (depth < 1e-4) continue;
-        const wi = P.inv[i], wj = Q.inv[j], push = Math.min(depth, cap) / (wi + wj), nx = dx / r, ny = dy / r, nz = dz / r;
-        const si = push * wi, sj = push * wj;
-        P.x[pi] -= nx * si; P.x[pi + 1] -= ny * si; P.x[pi + 2] -= nz * si; Q.x[qj] += nx * sj; Q.x[qj + 1] += ny * sj; Q.x[qj + 2] += nz * sj;
-        if (P.x[pi + 1] < 0) P.x[pi + 1] = 0; if (Q.x[qj + 1] < 0) Q.x[qj + 1] = 0;
-        if (depth > d * .15) hit = true; // a real bump, not two letters resting cheek to cheek
-        P.dirty = Q.dirty = true;
+      const ps = P.points(lo, hi), qs = Q.points(lo, hi);
+      // the way from P's middle to Q's: pushes may never move a point towards the other jelly's middle (pushApart)
+      let ax = 0, ay = 0, az = 0;
+      { const m = [0, 1, 2].map((k) => (Q.lo[k] + Q.hi[k] - P.lo[k] - P.hi[k]) / 2), l = Math.hypot(...m) || 1; ax = m[0] / l; ay = m[1] / l; az = m[2] / l; }
+      let hit = false, deep = 0;
+      for (let a2 = 0; a2 < ps.m; a2++) for (let b2 = 0; b2 < qs.m; b2++) {
+        const dx = qs.x[b2] - ps.x[a2], dy = qs.y[b2] - ps.y[a2], dz = qs.z[b2] - ps.z[a2], r2 = dx * dx + dy * dy + dz * dz;
+        if (r2 >= n2) continue;
+        C.P[n] = P; C.Q[n] = Q; C.a[n] = ps.id[a2]; C.b[n] = qs.id[b2]; C.d[n] = d; C.ax[n] = ax; C.ay[n] = ay; C.az[n] = az; n++;
+        const r = Math.sqrt(r2);
+        if (r >= d) continue;
+        deep = Math.max(deep, 1 - r / d);
+        // a real bump: moving into each other, not two jellies resting cheek to cheek
+        if (r > 1e-7 && ((qs.vx[b2] - ps.vx[a2]) * dx + (qs.vy[b2] - ps.vy[a2]) * dy + (qs.vz[b2] - ps.vz[a2]) * dz) / r < -.12) hit = true;
       }
-      if (hit) {
-        for (const b of [P, Q]) { if (b.sleeping) b.wake(); b.updateBox(); }
-        if (performance.now() - (this.lastBump || 0) > 260) { this.lastBump = performance.now(); sound.boing(300 + Math.random() * 160, .18, .07); }
-      }
+      P.press = Math.max(P.press, deep); Q.press = Math.max(Q.press, deep);
+      if (hit || deep > .3) for (const b of [P, Q]) if (b.sleeping) b.wake();
+      if (hit && performance.now() - (this.lastBump || 0) > 260) { this.lastBump = performance.now(); sound.boing(300 + Math.random() * 160, .18, .07); }
+    }
+    C.n = n;
+  }
+  pushApart() {
+    const C = this.touch, p = this.pp ??= [0, 0, 0], q = this.pq ??= [0, 0, 0];
+    for (let k = 0; k < C.n; k++) {
+      const P = C.P[k], Q = C.Q[k], d = C.d[k], ip = P.at(C.a[k], p), iq = Q.at(C.b[k], q), wp = P.sleeping ? 0 : ip, wq = Q.sleeping ? 0 : iq;
+      const r = Math.hypot(q[0] - p[0], q[1] - p[1], q[2] - p[2]);
+      if (r >= d) continue;
+      // Push the two points apart, never towards the other jelly's middle: a point caught among the other jelly's points
+      // is pushed from all sides at once and would stay put, so the two jellies would stay inside each other.
+      // (the part of the push that points that way is dropped; what's left is never zero, so it can't flicker)
+      let nx = (q[0] - p[0]) / (r || 1), ny = (q[1] - p[1]) / (r || 1), nz = (q[2] - p[2]) / (r || 1);
+      const back = Math.min(0, nx * C.ax[k] + ny * C.ay[k] + nz * C.az[k]) - .05;
+      if (back < 0) { nx -= back * C.ax[k]; ny -= back * C.ay[k]; nz -= back * C.az[k]; const l = Math.hypot(nx, ny, nz); nx /= l; ny /= l; nz /= l; }
+      // at most half the gap a pass, so two jellies pushed deep inside each other come apart without a bang
+      const push = Math.min(d - r, d / 2) / (wp + wq);
+      if (wp) P.nudge(C.a[k], -nx * push, -ny * push, -nz * push);
+      if (wq) Q.nudge(C.b[k], nx * push, ny * push, nz * push);
+      P.dirty = Q.dirty = true;
     }
   }
   // Stage two of tidying up: once everyone is standing still, letters that strayed go back into order.
@@ -1220,8 +1299,18 @@ class JellyStage {
   simulate(dt) {
     this.t += dt; this.acc += Math.min(dt, 1 / 20);
     let n = 0;
-    while (this.acc >= PHYS.step && n < 7) { const moving = this.bodies.filter((b) => this.t >= b.spawnAt && b.solve(PHYS.step)); this.collide(); for (const b of moving) b.finish(PHYS.step); this.acc -= PHYS.step; n++; }
+    while (this.acc >= PHYS.step && n < 7) {
+      const h = PHYS.step, moving = this.bodies.filter((b) => this.t >= b.spawnAt && b.begin(h));
+      this.findContacts();
+      for (let it = 0; it < PHYS.iterations; it++) { for (const b of moving) b.iterate(h, it); this.pushApart(); }
+      for (const b of moving) b.finish(h);
+      this.acc -= h; n++;
+    }
     if (n === 7) this.acc = 0;
+    this.tidy(dt);
+  }
+  // What the jellies do once the physics has moved them. Letters stand back up and go home in order.
+  tidy(dt) {
     for (const b of this.bodies) {
       b.restTime = b.sleeping ? (b.restTime || 0) + dt : 0;
       if (b.restTime > 1.1) { b.restTime = 0; b.standUpIfFallen(); }

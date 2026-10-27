@@ -37,7 +37,7 @@ No. It's a hand-made combination of well-known ideas:
 
 ### When it runs
 
-`shuffleHome(dt)` is called from `JellyStage.simulate` after every physics frame.
+`shuffleHome(dt)` is called from `JellyStage.tidy`, which `JellyStage.simulate` calls after every physics frame.
 
 | Condition | Effect |
 |---|---|
@@ -46,7 +46,7 @@ No. It's a hand-made combination of well-known ideas:
 
 **Still** means, for every letter: not grabbed, not fallen, and either asleep or on the floor with an RMS speed under 0.03.
 
-**Fallen** (`isFallen`) means the letter's height is less than 75% of its standing height. Standing back up is separate from homing: in `simulate`, a letter that has been asleep for 1.1 s calls `standUpIfFallen()`. That re-places it upright with a small drop, at home if within 0.6 letter-sizes of its spot, otherwise where it lies. Homing waits for it, because a fallen letter isn't still.
+**Fallen** (`isFallen`) means the letter's height is less than 75% of its standing height. Standing back up is separate from homing: in `tidy`, a letter that has been asleep for 1.1 s calls `standUpIfFallen()`. That re-places it upright with a small drop, at home if within 0.6 letter-sizes of its spot, otherwise where it lies. Homing waits for it, because a fallen letter isn't still.
 
 ### Starting: who is a stray
 
