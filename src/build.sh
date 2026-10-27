@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p build
 
-# 1. The shared engine: Jelly Shell's page plus the patches every guide inherits.
+# 1. The shared engine: Shell Jelly's page plus the patches every guide inherits.
 python3 engine/base-patch.py
 # 2. Each other guide starts from that page and swaps in its own lessons, tools and styles.
 python3 guides/git/build.py

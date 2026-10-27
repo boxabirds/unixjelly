@@ -36,7 +36,7 @@ Colours are CSS variables on `:root` in `src/engine/shell.html`.
 | `Shelly:` | lilac, bold |
 | "Try:" chips | lemon buttons you can click |
 
-**Owner, group and everyone else** (Jelly Shell 2 and Security) always use the same three colours, in pictures and in `ls -l`:
+**Owner, group and everyone else** (Shell Jelly 2 and Security) always use the same three colours, in pictures and in `ls -l`:
 
 | Keys | Colour in story pictures | Colour in the terminal |
 |---|---|---|
@@ -105,15 +105,15 @@ Each lesson's story phase has one picture, made in HTML and CSS rather than imag
 |---|---|
 | **YOU ARE HERE** | the folder you are standing in |
 | `~ home` and `the very top` | home and `/` |
-| **▶ program** | a file that has an `x` key, in Jelly Shell 2 |
-| padlocks for the keys you're missing | Jelly Shell 2, only once "Read the locks" has been taught (`taught('locks')`). Padlock + eye: you can't read it. Padlock + pencil: you can't change it. Padlock + door: you can't go into this folder. A file with no `x` gets no padlock, because most files aren't programs |
+| **▶ program** | a file that has an `x` key, in Shell Jelly 2 |
+| padlocks for the keys you're missing | Shell Jelly 2, only once "Read the locks" has been taught (`taught('locks')`). Padlock + eye: you can't read it. Padlock + pencil: you can't change it. Padlock + door: you can't go into this folder. A file with no `x` gets no padlock, because most files aren't programs |
 
 A plain padlock is never used: it could mean "can't read" or "can't change", and testers asked which. Each padlock carries the thing you can't do, and the legend under the map says so. Clicking a folder types its `cd` command for you.
 
 ## The course map
 
 - **In the side menu**, under the jar, a "Course map" lists every course with its step number. The current course is yellow and says "you are here"; finished ones are green with "✓ finished"; planned ones are faded and say "coming later". The others say what they come after.
-- **On the welcome screen**, one line says which course comes first ("Comes after Jelly Shell 2 ✓").
+- **On the welcome screen**, one line says which course comes first ("Comes after Shell Jelly 2 ✓").
 - **At the end of a course**, the final card offers up to two next courses as yellow buttons, and "What I've learnt" repeats them. The next course is one that isn't finished and whose needs are met.
 - **The landing page** opens with the everyday problems the courses fix, then the courses in order as a grid, each card labelled with its step ("Step 3 · either order" where two share one), then every lesson with the problem it solves.
 
@@ -121,8 +121,8 @@ A plain padlock is never used: it could mean "can't read" or "can't change", and
 
 ## The Overview
 
-- **One style, three worlds.** Jelly Shell's computer is a doll's house; Jelly Git's is a house whose lift tower reaches a see-through cloud (GitHub), with a friend's house next door; Jelly Web's is a little world: your house, the DNS owl's treehouse, a cut-open sea with the cable on its floor, and the server on the far shore.
-- **A doll's house, cut open.** In Jelly Shell each layer of the computer is a floor: you and the terminal at the top (yellow), Shelly the shell (green), King Kernel on the ground floor (blue), the hardware in the cellar (orange). Floors stack, so nothing pokes into anything else, and each stop fills the frame, wide or tall.
+- **One style, three worlds.** Shell Jelly's computer is a doll's house; Git Jelly's is a house whose lift tower reaches a see-through cloud (GitHub), with a friend's house next door; Web Jelly's is a little world: your house, the DNS owl's treehouse, a cut-open sea with the cable on its floor, and the server on the far shore.
+- **A doll's house, cut open.** In Shell Jelly each layer of the computer is a floor: you and the terminal at the top (yellow), Shelly the shell (green), King Kernel on the ground floor (blue), the hardware in the cellar (orange). Floors stack, so nothing pokes into anything else, and each stop fills the frame, wide or tall.
 - **Things you can follow.** What the course is about travels as jelly letters (the same font as the welcome letters): `ls` and its answer, `game.py`, `gerbil.zone`, its number, `GET /` and `200 OK`. Commits are photos. No tube, packets or blank sheets that need explaining.
 - **See-through where it helps.** GitHub's cloud and the sea are see-through, so you can see GitHub's album and the cable on the sea floor.
 - **The file tree is the roots**, growing down from the disk under the house, so "a tree that grows upside down" is something you see. `/` is berry, folders are lemon.

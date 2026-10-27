@@ -1,4 +1,4 @@
-# Jelly Shell: the engine page, plus what only Jelly Shell has.
+# Shell Jelly: the engine page, plus what only Shell Jelly has.
 # The Overview is a computer cut open like a doll's house (overview.js), and Backstage is the same house up close.
 s = open('build/jelly-shell.src.html').read()
 V = 'guides/shell/'

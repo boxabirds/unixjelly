@@ -1,4 +1,4 @@
-<title>Jelly Shell</title>
+<title>Shell Jelly</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -337,6 +337,14 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .rc-card.quiz.shown{background:#fff}
 .rc-card.quiz.shown .ans{display:grid}
 .rc-card.quiz.shown .reveal{display:none}
+/* the lesson's jelly letters, full screen: the expand button in their window, ✕ or Escape to come back */
+.ljelly-grow{position:absolute;right:10px;bottom:8px;z-index:1;width:34px;height:34px;border-radius:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:700 18px/1 var(--body,inherit);box-shadow:0 2px 0 var(--ink);cursor:pointer}
+.ljelly-grow:hover{background:#fff4d6}
+.jelly-full{position:fixed;inset:0;z-index:95;background:#fff4d6}
+.jelly-full[hidden]{display:none}
+.jelly-full canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.jelly-close{position:absolute;z-index:1;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:3px solid var(--ink);background:#fff;color:var(--ink);font:700 20px/1 var(--body,inherit);box-shadow:0 3px 0 var(--ink);cursor:pointer}
+.jelly-full-tip{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);margin:0;width:max-content;max-width:calc(100% - 32px);background:var(--ink);color:#fff;border-radius:999px;padding:8px 18px;font-size:.95rem;pointer-events:none}
 </style>
 
 <script type="importmap">
@@ -346,7 +354,7 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 <div class="gate" role="alert">
   <div class="gate-card">
     <svg viewBox="0 0 200 150" aria-hidden="true"><g stroke="#24133b" stroke-width="5" stroke-linejoin="round"><circle cx="118" cy="62" r="46" fill="#b18cff"/><ellipse cx="96" cy="108" rx="70" ry="30" fill="#ff5a4e"/><path d="M70 88 L64 52 M100 86 L104 50" fill="none"/><circle cx="64" cy="46" r="13" fill="#fff"/><circle cx="104" cy="44" r="13" fill="#fff"/><circle cx="64" cy="50" r="5" fill="#24133b"/><circle cx="104" cy="48" r="5" fill="#24133b"/><path d="M82 120 q14 -10 28 0" fill="none" stroke-linecap="round"/></g></svg>
-    <h1>Jelly Shell</h1>
+    <h1>Shell Jelly</h1>
     <!-- gate: about (tools/seo.py) -->
     <button class="btn gate-slides" id="slides" type="button">Show mobile slideshow</button>
     <p>The full rich interactivity and progress tracking is currently only available on desktop: a laptop or desktop computer, with the window at least 900 × 560.</p>
@@ -356,8 +364,8 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 </div>
 
 <div class="app">
-  <aside class="side" aria-label="Jelly Shell navigation">
-    <div class="brand">Jelly <b>Shell</b></div>
+  <aside class="side" aria-label="Shell Jelly navigation">
+    <div class="brand"><b>Shell</b> Jelly</div>
     <div class="jar" aria-label="Your progress"><div class="beans" id="beans"></div><div class="jar-count" id="jarCount">0 / 15 jellies</div></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
@@ -972,9 +980,13 @@ function jellyMaterial(c, size, rich = false) {
   return m;
 }
 
+// Tests that only check text, layout or physics switch the 3D drawing off (tests/lib.mjs sets JELLY_DRAW before the
+// page loads). Everything still moves and collides exactly as before; it just isn't painted.
+const DRAW = window.JELLY_DRAW !== false;
 // The light the jelly reflects: the usual soft room, plus a big four-pane window behind the viewer and a smaller one
 // to the left. Every letter then carries crisp window highlights, the strongest cue that something is wet and glassy.
 function studio(renderer) {
+  if (!DRAW) return null;
   const room = new RoomEnvironment(), glow = new THREE.MeshBasicMaterial({ color: new THREE.Color(7, 7, 6.6) });
   const panes = (x, y, z, w, h, ry) => [[-1, 1], [1, 1], [-1, -1], [1, -1]].forEach(([a, b]) => {
     const pane = new THREE.Mesh(new THREE.PlaneGeometry(w * .46, h * .46), glow);
@@ -1229,7 +1241,7 @@ class JellyStage {
       const [x, y, z] = b.center(); b.glow.visible = b.mesh.visible;
       b.glow.position.set(x - this.opts.size * .12, .0008, z - this.opts.size * .35); b.glow.material.opacity = .55 * clamp(1 - (y - b.height * .5) / b.size, 0, 1);
     }
-    this.renderer.render(this.scene, this.camera);
+    if (DRAW) this.renderer.render(this.scene, this.camera);
   }
 }
 
@@ -1437,7 +1449,7 @@ class Town {
     sph.theta += V.yaw + (this.drag ? 0 : Math.sin(t * .4) * .05);
     sph.phi = clamp(sph.phi - V.pitch, .12, Math.PI - .12); sph.radius *= V.zoom;
     this.camera.position.copy(this.camLook).add(new THREE.Vector3().setFromSpherical(sph)); this.camera.lookAt(this.camLook);
-    this.renderer.render(this.scene, this.camera);
+    if (DRAW) this.renderer.render(this.scene, this.camera);
   }
 }
 const TOWN_STEPS = [
@@ -2382,6 +2394,21 @@ resetFS(); welcome(); paintPrompt(); renderMap(); paintProgress();
 go(location.hash.slice(1) || store.panel || 'welcome');
 try { await Promise.race([document.fonts.load('64px "Titan One"'), sleep(2500)]); } catch {}
 fitNow();
+
+// The lesson's jelly letters, full screen, for squishing. The same canvas moves into the overlay and back, so the
+// letters carry on wobbling where they were.
+document.body.insertAdjacentHTML('beforeend', '<div class="jelly-full" id="jellyFull" hidden role="dialog" aria-label="Jelly letters, full screen"><button class="jelly-close" id="jellyClose" type="button" aria-label="Close (Esc)" title="Close (Esc)">✕</button><p class="jelly-full-tip">Grab, squish and fling the letters. Tap one to make it hop.</p></div>');
+$('.ljelly').insertAdjacentHTML('beforeend', '<button class="ljelly-grow" id="jellyGrow" type="button" aria-label="Make the jelly letters full screen" title="Full screen">⤢</button>');
+function jellyFull(open) {
+  if (open === !$('#jellyFull').hidden) return;
+  $('#jellyFull').hidden = !open;
+  if (open) { jellyFull.back = document.activeElement; $('#jellyFull').prepend($('#lessonJelly')); $('#jellyClose').focus(); sound.boing(420, .3, .08); }
+  else { $('.ljelly').prepend($('#lessonJelly')); jellyFull.back?.focus?.({ preventScroll: true }); }
+}
+$('#jellyGrow').onclick = () => jellyFull(true);
+$('#jellyClose').onclick = () => jellyFull(false);
+// While it's open, keys belong to it: Escape closes, and Enter can't carry on the lesson hidden behind it.
+addEventListener('keydown', (e) => { if ($('#jellyFull').hidden) return; e.stopImmediatePropagation(); if (e.key === 'Escape') { e.preventDefault(); jellyFull(false); } }, true);
 
 // 3D only starts on a big enough screen. The gate is pure CSS; this keeps phones from paying for WebGL they won't show.
 const roomy = () => innerWidth >= 900 && innerHeight >= 560;

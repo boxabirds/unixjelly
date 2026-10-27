@@ -15,6 +15,58 @@
   "su sib",
   "cat diary.txt"
  ],
+ "guess": [
+  "cat leak/players.txt",
+  "fingerprint jelly",
+  "fingerprint Jelly",
+  "head leak/common.txt",
+  "grep b76b2dbb leak/common.txt",
+  "fingerprint purplecactusbanjo",
+  "grep 1c5d4876 leak/common.txt"
+ ],
+ "knock": [
+  "head server/server.log",
+  "grep -c FAILED server/server.log",
+  "grep OK server/server.log",
+  "cat server/settings.txt",
+  "echo admin_password=purplecactusbanjo > server/settings.txt",
+  "bots"
+ ],
+ "room": [
+  "cat Downloads/free-coins",
+  "chmod u+x Downloads/free-coins",
+  "./Downloads/free-coins",
+  "su room",
+  "~/free-coins",
+  "exit",
+  "ls homework"
+ ],
+ "layers": [
+  {
+   "choose": 0
+  },
+  {
+   "choose": 1
+  },
+  {
+   "choose": 1
+  },
+  {
+   "choose": 0
+  },
+  {
+   "choose": 0
+  },
+  {
+   "choose": 2
+  },
+  {
+   "choose": 0
+  },
+  {
+   "choose": 1
+  }
+ ],
  "grey": [
   {
    "choose": 0

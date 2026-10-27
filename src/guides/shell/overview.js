@@ -1,4 +1,4 @@
-// Jelly Shell's Overview: a computer cut open like a doll's house. You and the terminal at the top, Shelly the shell,
+// Shell Jelly's Overview: a computer cut open like a doll's house. You and the terminal at the top, Shelly the shell,
 // King Kernel on the ground floor, the hardware in the cellar, and the file tree growing underground as roots.
 // The letters you type travel as jelly in a little lift, and the answer climbs back up as jelly words.
 // Backstage uses the same house, filmed closer, with one show per command (ls, cat, mv): Shelly snips the line into

@@ -4,7 +4,7 @@
 build.sh          builds every guide into its folder at the top of the repo, then stamps the version on the landing page
 VERSION           the version number shown on the landing page (bump it for a release)
 shell/            jellysh: the shell every guide uses, as one self-contained module (see shell/README.md)
-engine/           Jelly Shell's page and the patches every guide inherits
+engine/           Shell Jelly's page and the patches every guide inherits
 guides/<name>/    each other guide: build.py, lessons.js, its own engine code and CSS
 fonts/            the jelly-letter font subsets, and the script that makes them
 tools/            small build helpers

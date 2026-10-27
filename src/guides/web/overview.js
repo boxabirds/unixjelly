@@ -1,4 +1,4 @@
-// Jelly Web's Overview: one page's trip across a little world. Your house (you at the browser upstairs, the router
+// Web Jelly's Overview: one page's trip across a little world. Your house (you at the browser upstairs, the router
 // downstairs), the DNS owl's treehouse next door, the internet cable along the bottom of a cut-open sea, and the
 // server's building on the far shore. The name, the number, GET / and 200 OK all travel as jelly letters.
 // Backstage is the same world up close, with one show per address: a jelly Browsy splits the address, the owl looks up

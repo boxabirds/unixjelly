@@ -39,3 +39,23 @@
 /* a web address drawn like an address bar, so the grey-zone dilemma needs no knowledge of how addresses work */
 .addr{font-family:var(--mono);font-size:.9em;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:0 .6em;white-space:nowrap}
 .addr b{background:var(--lemon);border-radius:4px;padding:0 .1em}
+/* the guessing machine: a password goes in, its fingerprint comes out, and there is no way back */
+.fpviz{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4em;font-size:1.1em}
+.fpviz .tv-note{flex-basis:100%;text-align:center}
+.fp-go{font-size:1.4em;font-weight:700}
+.fp-machine{font-family:var(--display);text-align:center;line-height:1.05;background:var(--lemon);border:4px solid var(--ink);border-radius:14px;padding:.35em .6em;box-shadow:0 4px 0 var(--ink)}
+.pv.fp{background:#d8e4ff;border-style:solid}
+/* a night of the server's log */
+.logviz{margin:0;font-family:var(--mono);font-size:clamp(.55em,1.4vw,.8em);line-height:1.5;background:#1b0f2c;color:#cfc6e6;border:4px solid var(--ink);border-radius:14px;padding:.6em .9em;overflow-x:auto;max-width:100%}
+.logviz b{color:#ff8fa3}
+/* kid's room and the spare room */
+.roomviz{display:flex;gap:.8em;justify-content:center;flex-wrap:wrap}
+.rv-room{display:grid;gap:.25em;justify-items:center;min-width:8em;background:#fff;border:4px solid var(--ink);border-radius:16px;padding:.5em .8em;box-shadow:0 4px 0 var(--ink)}
+.rv-room.spare{background:#fff4d6;border-style:dashed}
+.rv-room span{font-family:var(--mono);font-size:.85em}
+.rv-mod{background:var(--berry);color:#fff;border-radius:999px;padding:0 .6em}
+/* castle layers: each ring is one layer of defence, your stuff in the middle */
+.castle{display:flex;justify-content:center;font-size:.85em}
+.cl{border:4px solid var(--ink);border-radius:18px;padding:.25em .45em .45em;text-align:center;font-weight:700;background:#fff}
+.castle>.cl{background:#d4eeff}.castle>.cl>.cl{background:#e9fbe4}.castle>.cl>.cl>.cl{background:#fff0b3}.castle>.cl>.cl>.cl>.cl{background:#ffe1ea}
+.cl-keep{margin-top:.3em;font-family:var(--display);font-weight:400;background:var(--lemon);border:3px solid var(--ink);border-radius:12px;padding:.2em .6em}

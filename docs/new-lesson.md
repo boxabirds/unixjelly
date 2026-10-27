@@ -14,7 +14,7 @@ Answer these before writing any code.
 
 ## 2. Write the lesson
 
-Lessons live in `src/guides/<guide>/lessons.js`. Jelly Shell's lessons are in `src/engine/shell.html` and `src/engine/shelly-patch.py`. The order in the `LESSONS` list is the order in the menu.
+Lessons live in `src/guides/<guide>/lessons.js`. Shell Jelly's lessons are in `src/engine/shell.html` and `src/engine/shelly-patch.py`. The order in the `LESSONS` list is the order in the menu.
 
 ```js
 { id: 'grep',                       // unique within the guide; used in the URL (#grep) and for saved progress
@@ -61,7 +61,7 @@ Events your `ok` can receive:
 
 | `e.type` | When | Useful fields |
 |---|---|---|
-| `cmd` | after every command | `cmd`, `args`, `toks`, `ok` (did it work), `cwd`, `info` (below); in Jelly Shell 2 also `line` (as typed) and `user` |
+| `cmd` | after every command | `cmd`, `args`, `toks`, `ok` (did it work), `cwd`, `info` (below); in Shell Jelly 2 also `line` (as typed) and `user` |
 | `tab`, `up`, `ctrlc`, `ctrld` | Tab, ↑, Ctrl+C, Ctrl+D | none |
 | `nano` (Shell 2) | nano saved or closed | `saved` (path), `changed`, `content`; or `exit`, `path` |
 | `edit` (Web) | the HTML editor changed | see `guides/web/web.js` |
@@ -88,7 +88,7 @@ The full list for each guide is in its `run` / `run1` function. Search for `info
 
 1. Give every new concept an id and put it in the lesson's `teaches`.
 2. Add how to spot it on screen in `src/tests/concepts.json`. That can be selectors, patterns in commands, or patterns in words.
-3. Anywhere the guide shows that concept **outside its own lesson**, ask `taught('id')` first, and say something simpler until it's taught. That covers Shelly messages, tips, notes and file tree markers. Example from Jelly Shell 2:
+3. Anywhere the guide shows that concept **outside its own lesson**, ask `taught('id')` first, and say something simpler until it's taught. That covers Shelly messages, tips, notes and file tree markers. Example from Shell Jelly 2:
    ```js
    const lockTip = (tip) => taught('locks') ? tip : 'The computer said no. The lesson "Read the locks" explains why.';
    ```
@@ -136,7 +136,7 @@ Children jump around, and press Start over. If the lesson needs files from earli
 setup: () => ensure('/home/kid/hello', () => run1(`echo "${HELLO}" > /home/kid/hello`), 'Your hello program wasn\'t here, so Shelly wrote it again.'),
 ```
 
-In Jelly Shell 2, `setup` runs when the mission starts and after Start over, and it only acts if the file is missing. Jelly Git does the same job with each lesson's `need` level, and Jelly Web with `project`. In another guide, copy Shell 2's two hooks from `guides/shell2/build.py`. Search for `L.setup`.
+In Shell Jelly 2, `setup` runs when the mission starts and after Start over, and it only acts if the file is missing. Git Jelly does the same job with each lesson's `need` level, and Web Jelly with `project`. In another guide, copy Shell 2's two hooks from `guides/shell2/build.py`. Search for `L.setup`.
 
 ## 7. Jelly word, recap and colour
 

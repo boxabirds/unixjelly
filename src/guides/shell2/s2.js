@@ -1,6 +1,6 @@
-/* ---------------- Jelly Shell 2: people, locks, programs and pipes ---------------- */
+/* ---------------- Shell Jelly 2: people, locks, programs and pipes ---------------- */
 // The shell itself (locks, su, sudo, scripts, the PATH, pipes) is jellysh, in src/shell/jellysh.js.
-// This file gives it the people on this computer and Jelly Shell 2's teaching voice.
+// This file gives it the people on this computer and Shell Jelly 2's teaching voice.
 // Three accounts, like a real computer: root (the boss), kid (you) and sib (your little sibling).
 // Everyone also has a group named after them. kid is in sudo, so kid may borrow root's power.
 const USERS = {
@@ -33,7 +33,7 @@ function s2Perms() {
   find('/tmp').mode = 0o1777; find('/tmp/chest.txt').mode = 0o600;
 }
 
-// Jelly Shell 2's voice, on top of Jelly Shell's (which explains paths and typos).
+// Shell Jelly 2's voice, on top of Shell Jelly's (which explains paths and typos).
 const base = SH.hooks;
 SH.configure({
   users: USERS, gids: GIDS,
@@ -82,7 +82,7 @@ SH.configure({
     },
   },
 });
-SH.define('help', (c) => { c.say('New words: ' + ['whoami', 'hostname', '>', '>>', 'nano', 'which', './', 'ls -l', 'chmod', 'echo $PATH', 'id', 'groups', 'chgrp', 'su', 'exit', 'sudo', 'grep', 'wc', 'sort', 'head', '|'].join('  ')); c.say('Jelly Shell words: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  ')); });
+SH.define('help', (c) => { c.say('New words: ' + ['whoami', 'hostname', '>', '>>', 'nano', 'which', './', 'ls -l', 'chmod', 'echo $PATH', 'id', 'groups', 'chgrp', 'su', 'exit', 'sudo', 'grep', 'wc', 'sort', 'head', '|'].join('  ')); c.say('Shell Jelly words: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  ')); });
 SH.define('nano', (c) => nanoOpen(c.rest[0], c.fail, c.info));
 
 // Missions build on each other. If an earlier one's file is missing (say, after Start over), put it back.

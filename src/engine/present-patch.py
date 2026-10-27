@@ -60,7 +60,7 @@ async function prFlush(ms = 3000) {
     if (typeof t.fn === 'function') t.fn(...t.a);
   }
 }
-// Jelly Web's browser, as a frame needs it (null in guides without one, or before the first page).
+// Web Jelly's browser, as a frame needs it (null in guides without one, or before the first page).
 const prBrowser = () => typeof BW === 'undefined' || !BW.url ? null : {
   url: BW.url, view: BW.view, lock: bwLock.className, lockHtml: bwLock.innerHTML, journey: bwJourney.innerHTML, pop: bwPop.hidden ? '' : bwPop.innerHTML,
   page: BW.view === 'page' ? bwFrame.srcdoc : BW.view === 'source' ? $('#bwSource').innerHTML : $('#bwBoxes').innerHTML,
@@ -71,7 +71,7 @@ async function prLoaded(before) {
   await new Promise((r) => { const done = () => { bwFrame.removeEventListener('load', done); r(); }; bwFrame.addEventListener('load', done); CLOCK.real.setTimeout.call(window, done, 1500); });
   await prFlush();
 }
-// Jelly Web has a terminal and an editor in one place: switch to the one the next action needs.
+// Web Jelly has a terminal and an editor in one place: switch to the one the next action needs.
 const prTool = (t) => { const tab = document.querySelector(`.wtab[data-tool=${t}]`); if (tab && WB.tool !== t) tab.click(); };
 
 // Run every lesson's demo once, silently, and record a frame for each thing worth a whole screen.
@@ -82,7 +82,7 @@ const prTool = (t) => { const tab = document.querySelector(`.wtab[data-tool=${t}
 //   { choose: n | 'good' | 'bad' }   pick a choice card      { wait: ms }  let time pass (here it already does: see prFlush)
 async function prCapture() {
   const frames = [{ k: 'intro' }], muted = sound.muted, ok = [];
-  // the overview (Jelly Shell, Git and Web): one frame per step of the 3D town, right after the intro
+  // the overview (Shell Jelly, Git and Web): one frame per step of the 3D town, right after the intro
   if (PR.townGo && PANELS.some((p) => p.id === 'whole')) TOWN_STEPS.forEach((_, n) => frames.push({ k: 'whole', n }));
   sound.muted = true; store.done = {}; store.steps = {};
   clockOn();
@@ -177,7 +177,7 @@ function prShow(f, animate) {
   if (PR.town) { PR.town.active = f.k === 'whole'; }
   if (f.k === 'whole') { if ($('#town').parentNode !== $('#prTown')) $('#prTown').append($('#town')); PR.town.resize(); PR.townGo(f.n); }
   if (f.k === 'jar') { store.done = Object.fromEntries(LESSONS.map((x) => [x.id, true])); paintProgress(); openJar(COURSE.id); }
-  if (f.k === 'title' || f.k === 'intro') prJelly(f.k === 'intro' ? COURSE.title.replace(/^Jelly /, '').toLowerCase() : L.word, L?.color);
+  if (f.k === 'title' || f.k === 'intro') prJelly(f.k === 'intro' ? COURSE.title.replace(' Jelly', '').toLowerCase() : L.word, L?.color);
   if (f.k === 'nano') $('.pr-nano-text').textContent = f.text;
   if (f.k === 'term') $('.pr-typed').textContent = f.after ?? f.cmd;
   if (f.k === 'browser') $('.pr-url').textContent = f.url;
@@ -210,7 +210,7 @@ async function prType(el, text, then, f) {
   PR.typing = null;
 }
 // The file tree after the step, with rows that are new or changed marked.
-// Jelly Git's map keeps its four zones, with its changed rows marked the same way.
+// Git Jelly's map keeps its four zones, with its changed rows marked the same way.
 function prDiff(before, after) {
   const parse = (h) => { const t = document.createElement('template'); t.innerHTML = h; return t.content; }, rows = (c) => [...c.querySelectorAll('.mrow,.grow')], key = (r) => r.dataset.path ?? r.dataset.k ?? r.textContent;
   const old = new Map(rows(parse(before)).map((r) => [key(r), r.outerHTML])), now = parse(after);

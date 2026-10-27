@@ -36,14 +36,14 @@ What to do with the assessment:
 | Piece | What it does |
 |---|---|
 | `teaches` and `previews` | Each lesson in a guide's `lessons.js` lists the concept ids it `teaches`, and any it deliberately `previews` (mentions on purpose, early, with an explanation). |
-| `taught('concept')` | Returns true only once the lesson that teaches the concept is finished, or while the child is in it. Concepts from earlier guides count as taught. Any code that shows a concept must check it first: Shelly messages, tips, notes, file tree markers. For example, in Jelly Shell 2, refusals before "Read the locks" say "The computer said no. The lesson Read the locks explains why" instead of talking about keys. |
+| `taught('concept')` | Returns true only once the lesson that teaches the concept is finished, or while the child is in it. Concepts from earlier guides count as taught. Any code that shows a concept must check it first: Shelly messages, tips, notes, file tree markers. For example, in Shell Jelly 2, refusals before "Read the locks" say "The computer said no. The lesson Read the locks explains why" instead of talking about keys. |
 | `src/tests/concepts.json` | How to spot each concept on screen: CSS selectors, patterns in commands shown, patterns in words. When you add a concept, add how to spot it here. |
 | `src/tests/prereqs.mjs` | Opens every lesson cold, as a child jumping ahead would, and checks each phase. |
 | The play-through tests (`shell2.mjs`, `security.mjs`) | Check the screen after every command. |
 
 Real command output is not checked. When a child types `ls -l` early, the real computer answers, and Shelly's tip explains it. Everything the guide itself says is checked.
 
-Jelly Security and Jelly Shell 2 declare `teaches`. **Jelly Shell, Jelly Git and Jelly Web don't yet**, so the tests can't check them. Add `teaches` and detectors to a guide the next time you work on it.
+Security Jelly and Shell Jelly 2 declare `teaches`. **Shell Jelly, Git Jelly and Web Jelly don't yet**, so the tests can't check them. Add `teaches` and detectors to a guide the next time you work on it.
 
 ## Definition of done
 
@@ -75,7 +75,7 @@ Some children have old computers. A change to the 3D or the physics must not mak
 ## Other house rules
 
 - UK English, short sentences, one new idea per paragraph. Shelly is kind and never sarcastic.
-- Jelly Security teaches **no new commands**. Anything it needs comes from an earlier guide.
+- Security Jelly teaches **no new commands**. Anything it needs comes from an earlier guide.
 - Use real command names and real error messages. Pretend only where necessary, and say when the sandbox differs from a real computer.
 - Modern terms first, with the older ones alongside (allow list / whitelist).
 - **Enter** and **→** do what the big green button does. **←** goes back a phase. The end of a mission waits on **Collect your jelly**, so the child can read the last output.

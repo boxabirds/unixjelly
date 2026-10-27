@@ -15,7 +15,7 @@ const b = await launch(), runs = [];
 for (let r = 0; r < 3; r++) {
   const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
   await p.goto('file://' + page + '#welcome'); await p.waitForTimeout(2500);
-  await p.evaluate(() => { const all = {}; for (let i = 0; i < 15; i++) all[`git:l${i}`] = { at: i, course: 'Jelly Git', word: 'w', name: 'n', colour: '#9b5cff', look: 'zebra', does: '', ex: '' }; localStorage.setItem('jelly.collection', JSON.stringify(all)); });
+  await p.evaluate(() => { const all = {}; for (let i = 0; i < 15; i++) all[`git:l${i}`] = { at: i, course: 'Git Jelly', word: 'w', name: 'n', colour: '#9b5cff', look: 'zebra', does: '', ex: '' }; localStorage.setItem('jelly.collection', JSON.stringify(all)); });
   await p.reload(); await p.waitForTimeout(2500);
   await p.evaluate(() => { document.querySelector('#jarOpen').click(); document.querySelector('.shelf-jar[data-course=git]').click(); });
   await p.waitForTimeout(500);

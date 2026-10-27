@@ -75,7 +75,7 @@ data = {'@context': 'https://schema.org', '@type': 'ItemList', 'name': SITE_NAME
                              'item': {'@type': 'Course', 'name': c['title'], 'description': c['about'], 'provider': {'@type': 'Organization', 'name': SITE_NAME, 'sameAs': REPO}}}
                             for i, c in enumerate(built)]}
 page = open('landing.html').read()
-page = page.replace('<title>Jelly Unix</title>', f'<title>{e(title)}</title>\n' + head(title, description, SITE, data), 1)
+page = page.replace('<title>Unix Jelly</title>', f'<title>{e(title)}</title>\n' + head(title, description, SITE, data), 1)
 page = page.replace('<!-- courses: written by tools/landing.py from curriculum.json -->', body, 1)
 assert body in page and description in page, 'landing.html: a marker is missing'
 for out in sys.argv[1:]:

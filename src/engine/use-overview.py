@@ -1,4 +1,4 @@
-# Every guide with an Overview (Jelly Shell, Git, Web): swap the engine's old Town for the Overview kit and the
+# Every guide with an Overview (Shell Jelly, Git, Web): swap the engine's old Town for the Overview kit and the
 # guide's own world (V + 'overview.js'). The stepper then just asks the Overview to show a step.
 rep("import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';",
     "import { mergeVertices, mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';\nimport { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';")

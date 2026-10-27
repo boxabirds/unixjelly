@@ -3,10 +3,10 @@
 import fs from 'node:fs';
 import { launch, guideUrl, verdict } from './lib.mjs';
 const words = process.argv.slice(2).length ? process.argv.slice(2) : ['whoami', 'ls -l', 'git', 'mkdir'];
-// A test copy of Jelly Shell 2 that lets the test reach the 3D stages.
+// A test copy of Shell Jelly 2 that lets the test reach the 3D stages.
 const html = fs.readFileSync(new URL(guideUrl('jellyshell2')), 'utf8').replace('    stages.add(this);', '    stages.add(this); window.__stages = stages;');
 fs.writeFileSync('letters.html', html);
-const b = await launch(), p = await b.newPage({ viewport: { width: 1366, height: 768 } });
+const b = await launch({ draw: false }), p = await b.newPage({ viewport: { width: 1366, height: 768 } });
 await p.goto('file://' + process.cwd() + '/letters.html#whoami', { waitUntil: 'load', timeout: 120000 }); await p.waitForTimeout(2500);
 const problems = [];
 for (const word of words) {

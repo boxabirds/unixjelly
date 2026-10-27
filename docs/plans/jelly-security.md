@@ -1,4 +1,4 @@
-# Jelly Security: the hat plan
+# Security Jelly: the hat plan
 
 Fourth guide in the Jelly series. Every mission is a hat swap in a pretend computer:
 
@@ -8,13 +8,22 @@ Fourth guide in the Jelly series. Every mission is a hat swap in a pretend compu
 
 The point is the same every time. **Same skills, different permission.** The child gets to be the attacker, with a signed permission slip, and finds out why defenders design systems instead of just hoping to spot every trick.
 
-A working prototype of missions 0, 5 and the grey zone is in `jellysecurity/`.
+**Security Jelly 1 is built** (`jellysecurity/`): seven missions on one theme, *protect your own computer*. See below.
 
 **Two parts** (agreed; see `course-order-and-recap.md`):
-- **Jelly Security 1** comes after Jelly Shell 2, beside Jelly Git. It holds the missions that need only the shell: 0 Pick your hat, 3 The Guessing Machine, 5 Keys you don't need, 6 The Sandbox Room, and the grey zone. The prototype in `jellysecurity/` is its start.
-- **Jelly Security 2** comes after Jelly Web. It holds the missions that need web pages, `curl`, DNS, HTTPS or git history. Each declares the courses it needs in `src/curriculum.json`.
+- **Security Jelly 1** comes after Shell Jelly 2, beside Git Jelly. It holds the missions that need only the shell, around one goal: *protect your own computer*.
+  1. **Pick your hat** (mission 0): permission and the law.
+  2. **Keys you don't need** (mission 5): least privilege.
+  3. **The guessing machine** (mission 3): fingerprints (hashes), dictionary attacks, three random words.
+  4. **Knock knock, all night** (a shell-only mission 2, with mission 10's idea): bots, logs with `grep`, default passwords, secure by default. The fix is `echo … > server/settings.txt`; HQ's practice `bots` replay the attack.
+  5. **A room of its own** (mission 6): a "free coins" mod deletes your homework; running it as the spare account `room` keeps it out of reach. Isolation, and `sudo` as a red flag.
+  6. **Castle layers** (mission 12, as choice cards): defence in depth, using the attacks from 2 to 5.
+  7. **The grey zone**: what a white hat does on finding a way in.
 
-> **Note.** Some "tie-ins" below assume things the earlier guides don't teach yet, such as forms, cookies, query strings, HTML comments, branches and `;`. Check each mission against the prerequisite map and the list of known gaps in `../pedagogy.md` before building it. Jelly Security must not teach new commands itself.
+  It adds two made-up programs, like `sign`: `fingerprint` (HQ's fingerprint machine) and `bots` (scripted attackers). Shell Jelly 2 taught that anyone can write a program, so neither is a new command to learn. Everything else comes from Shell Jelly 1 and 2.
+- **Security Jelly 2** comes after Web Jelly. It holds the missions that need web pages, `curl`, DNS, HTTPS or git history. Each declares the courses it needs in `src/curriculum.json`.
+
+> **Note.** Some "tie-ins" below assume things the earlier guides don't teach yet, such as forms, cookies, query strings, HTML comments, branches and `;`. Check each mission against the prerequisite map and the list of known gaps in `../pedagogy.md` before building it. Security Jelly must not teach new commands itself.
 
 ---
 

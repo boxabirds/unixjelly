@@ -1,4 +1,4 @@
-# Jelly Shell 2: the Shell engine with users, groups, file locks, programs you write yourself, sudo, grep and pipes.
+# Shell Jelly 2: the Shell engine with users, groups, file locks, programs you write yourself, sudo, grep and pipes.
 s = open('build/jelly-shell.src.html').read()
 V = 'guides/shell2/'
 def rep(a, b, n=1):
@@ -10,9 +10,9 @@ def region(start, end, new, keep_end=True):
     s = s[:i] + new + (s[j:] if keep_end else s[j + len(end):])
 
 # ---------- page shell ----------
-rep('<title>Jelly Shell</title>', '<title>Jelly Shell 2</title>')
-rep('<div class="brand">Jelly <b>Shell</b></div>', '<div class="brand">Jelly <b>Shell 2</b></div>')
-rep('aria-label="Jelly Shell navigation"', 'aria-label="Jelly Shell 2 navigation"')
+rep('<title>Shell Jelly</title>', '<title>Shell Jelly 2</title>')
+rep('<div class="brand"><b>Shell</b> Jelly</div>', '<div class="brand"><b>Shell</b> Jelly <b>2</b></div>')
+rep('aria-label="Shell Jelly navigation"', 'aria-label="Shell Jelly 2 navigation"')
 rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to the command line · part 2</div>')
 rep('<h1>Boss your computer around with <em>tiny words</em>.</h1>', '<h1>Who\'s in <em>charge</em> here?</h1>')
 rep('<p>These words were invented in 1971. They still work today on Macs, Linux, Raspberry Pis and most of the computers that run the internet. Learn them once, use them for life.</p>',
@@ -51,7 +51,7 @@ rep("  print('<span class=\"tip\">Welcome to the sandbox! This is a pretend comp
 
 # ---------- the shell ----------
 # Locks, su, sudo, scripts, the PATH and pipes all live in the shell module (src/shell/jellysh.js).
-# s2.js gives it this computer's people and Jelly Shell 2's teaching voice; nothing here edits the shell.
+# s2.js gives it this computer's people and Shell Jelly 2's teaching voice; nothing here edits the shell.
 
 # Tab: a first word with a slash in it is a path, like ./hello
 rep("  if (first) options = [...BIN, 'cd', 'help', 'history', 'whoami'].filter", "  if (first && !cur.includes('/')) options = [...new Set([...BIN, ...BUILTIN, ...(find(pathOf(sh.home) + '/bin')?.children ?? []).map((c) => c.name)])].filter")

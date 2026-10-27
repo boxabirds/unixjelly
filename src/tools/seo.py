@@ -9,7 +9,7 @@ sys.path.insert(0, 'tools')
 from curriculum import load, lessons
 
 e = html.escape
-SITE_NAME = 'Jelly Unix'
+SITE_NAME = 'Unix Jelly'
 REPO = 'https://github.com/boxabirds/unixjelly'
 
 def site():
@@ -34,7 +34,7 @@ def head(title, description, url, data):
                         f'<link rel="apple-touch-icon" href="{site()}icons/icon-180.png">',
                         f'<meta property="og:image" content="{site()}icons/og.jpg">',
                         '<meta property="og:image:width" content="1200">', '<meta property="og:image:height" content="630">',
-                        '<meta property="og:image:alt" content="The Jelly Unix house: a computer cut open like a doll\'s house">']
+                        '<meta property="og:image:alt" content="The Unix Jelly house: a computer cut open like a doll\'s house">']
     # </ can't appear inside a script element, so it is escaped in the JSON
     tags.append('<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False).replace('</', '<\\/') + '</script>')
     return '\n'.join(tags)

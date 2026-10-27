@@ -113,7 +113,7 @@ const LESSONS = [
       { t: 'Watch it cascade: add <code>color: purple;</code> to the body rule. Every paragraph changes!', ok: (e) => e.type === 'render' && e.file.endsWith('/site/index.html') && !['rgb(0, 0, 0)', null].includes(colourOf(e, 'body', 'color')) && colourOf(e, 'p', 'color') === colourOf(e, 'body', 'color') },
     ] },
   { id: 'url', word: 'url', name: 'Read an address', stands: 'Uniform Resource Locator', color: '#ff4d6d', tool: 'term', home: 'https://jelly.fun', onlyHere: true, seq: true,
-    title: 'A web address is a path', why: 'Look at <code>https://jelly.fun/snacks/cookie.html</code>. <b>https://</b> is how to talk. <b>jelly.fun</b> is which computer. <b>/snacks/cookie.html</b> is which file, in which folder. That last part is a path on someone else\'s computer, just like the paths in Jelly Shell.',
+    title: 'A web address is a path', why: 'Look at <code>https://jelly.fun/snacks/cookie.html</code>. <b>https://</b> is how to talk. <b>jelly.fun</b> is which computer. <b>/snacks/cookie.html</b> is which file, in which folder. That last part is a path on someone else\'s computer, just like the paths in Shell Jelly.',
     mnem: 'How, which computer, which file.',
     points: ['URL = Uniform Resource Locator. A fancy name for "address".', 'Folders end with a slash: <code>/snacks/</code>.', 'You can change any part of an address yourself. Go on, it will not break anything.'],
     steps: [
@@ -161,7 +161,7 @@ const LESSONS = [
   { id: 'ping', word: 'ping', name: 'Sonar', stands: 'the sound sonar makes', color: '#62c934', tool: 'term', home: 'https://moon.base', onlyHere: true, seq: true,
     title: 'Ping! Is anybody there?', why: 'Submarines find things with sonar: they send out a "ping!" sound and listen for the echo. The ping command does the same. It sends a tiny message to a computer and times how long the echo takes to come back.',
     mnem: 'Ping! ... pong. How far away are you?',
-    points: ['The time is there and back, in milliseconds (thousandths of a second).', 'Ping never stops by itself. <kbd>Ctrl</kbd>+<kbd>C</kbd> stops it, just like in Jelly Shell.', '<code>ping -c 4 jelly.fun</code> sends exactly four, then stops.'],
+    points: ['The time is there and back, in milliseconds (thousandths of a second).', 'Ping never stops by itself. <kbd>Ctrl</kbd>+<kbd>C</kbd> stops it, just like in Shell Jelly.', '<code>ping -c 4 jelly.fun</code> sends exactly four, then stops.'],
     steps: [
       { t: 'Send some pings: <code>ping jelly.fun</code>', ok: (e) => isCmd(e, 'ping') && e.ok && e.info.host === 'jelly.fun' },
       { t: 'Stop it with <kbd>Ctrl</kbd>+<kbd>C</kbd>.', ok: (e) => e.type === 'ctrlc' && e.ping },
@@ -177,7 +177,7 @@ const LESSONS = [
       { t: 'Watch the server send you round: <code>curl -I http://jelly.fun</code>', ok: (e) => isCmd(e, 'curl') && e.info.curl?.status === 301 },
     ] },
   { id: 'push', word: 'push', name: 'Go live!', stands: 'git push to GitHub Pages', color: '#3a5bff', tool: 'term', home: 'https://kid.github.io', onlyHere: true, seq: true,
-    title: 'Put your page on the internet', why: 'Your site folder is already a git repository (remember Jelly Git?). It is called <b>kid.github.io</b>, and GitHub has a trick: a repository with that name becomes a real website. Every time you push, GitHub Pages puts the new version live.',
+    title: 'Put your page on the internet', why: 'Your site folder is already a git repository (remember Git Jelly?). It is called <b>kid.github.io</b>, and GitHub has a trick: a repository with that name becomes a real website. Every time you push, GitHub Pages puts the new version live.',
     mnem: 'add, commit, push: hello, world!',
     points: ['A repository named <code>yourname.github.io</code> becomes a website automatically. For other names, switch it on in Settings → Pages.', 'On real GitHub it can take a minute to appear.', 'Anyone in the world can visit. Never put secrets on your website.'],
     steps: [

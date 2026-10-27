@@ -1,6 +1,6 @@
 // Presenter mode, in every guide: every lesson's demo really finishes its mission, the kinds of frame each guide
 // needs are there and show full screen with nothing from the app around it, ← then → comes back to the same frame,
-// and presenting saves nothing. Jelly Shell is checked frame kind by frame kind; the other guides check their own
+// and presenting saves nothing. Shell Jelly is checked frame kind by frame kind; the other guides check their own
 // special frames (nano, GitHub's buttons and the git map, the editor and the browser, the choice cards).
 // On a phone, the gate's mobile slideshow: tap right and left, dragging a letter isn't a page turn, turning the phone,
 // nothing saved.

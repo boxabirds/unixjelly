@@ -17,7 +17,7 @@
 Almost all of that can be done with the WebGL renderer we already use.
 
 **Recommendation.**
-1. **Upgrade three.js** from 0.169.0 to 0.186.1, keeping today's `WebGLRenderer`. I ran Jelly Shell on 0.186.1 with only the version in the import map changed. The letters, the jar and the Overview all work. The only warning is that `PCFSoftShadowMap` is gone.
+1. **Upgrade three.js** from 0.169.0 to 0.186.1, keeping today's `WebGLRenderer`. I ran Shell Jelly on 0.186.1 with only the version in the import map changed. The letters, the jar and the Overview all work. The only warning is that `PCFSoftShadowMap` is gone.
 2. **Bring the look across on WebGL first.** That means tone mapping, thickness per vertex, an inner glow, dispersion, and a cheaper see-through pass for slow machines. Every child gets these, and the old machines are exactly the ones that won't have WebGPU.
 3. **Then, if still wanted, add WebGPU as an optional extra.** One renderer factory tries WebGPU and otherwise builds today's `WebGLRenderer`. The materials stay classic three.js materials, which both renderers draw. Only our two hand-written GLSL pieces (the jar's swirl background and the jelly patterns) need a TSL twin.
 
@@ -112,7 +112,7 @@ These are from the experiment page's screenshots:
 - Jelly Baby uses r185, and its single-file study r180.
 - The current release is **0.186.1** (24 Sep 2026, [npm](https://www.npmjs.com/package/three)).
 
-**For the classic renderer alone, upgrading is cheap.** I swapped `three@0.169.0` for `three@0.186.1` in Jelly Shell's import map and changed nothing else. The welcome letters, the jar (all 12 looks, patterns included) and the Overview all rendered. The only new console message was the `PCFSoftShadowMap` warning.
+**For the classic renderer alone, upgrading is cheap.** I swapped `three@0.169.0` for `three@0.186.1` in Shell Jelly's import map and changed nothing else. The welcome letters, the jar (all 12 looks, patterns included) and the Overview all rendered. The only new console message was the `PCFSoftShadowMap` warning.
 
 Things to know about the upgrade ([migration guide](https://github.com/mrdoob/three.js/wiki/Migration-Guide)):
 
@@ -341,5 +341,5 @@ These are in the session scratch folder, `webgpu/`, not in the repo:
 | `exp/compare.src.html` | The experiment page. `exp/make.mjs` inlines the guides' font into it, giving `exp/compare.html`. It works from `file://` with a jsDelivr import map pinned to 0.186.1. It shows the word "jelly" four ways, each saying which backend really ran: (1) today's renderer and material; (2) WebGPURenderer with the same classic material; (3) WebGPURenderer with a TSL jelly (thickness per vertex, glow, dispersion, neutral tone mapping); (4) today's renderer with the same upgrades done in GLSL. `?force=webgl` forces the fallback, `?still` freezes the wobble, and `?perf=<panel>` times one panel |
 | `exp/out/compare-webgpu.png`, `exp/out/compare-nogpu.png` | The four panels with and without a WebGPU adapter |
 | `exp/perf.mjs`, `exp/out/perf*.txt` | The timings above |
-| `exp/upgrade.mjs`, `exp/out/upgrade-*.png` | Jelly Shell on 0.169.0 and 0.186.1 (welcome, jar, Overview), one above the other |
+| `exp/upgrade.mjs`, `exp/out/upgrade-*.png` | Shell Jelly on 0.169.0 and 0.186.1 (welcome, jar, Overview), one above the other |
 | `exp/lib.mjs` | Launches Chromium with or without WebGPU, serves three.js from local npm copies, and holds the swizzle shim |

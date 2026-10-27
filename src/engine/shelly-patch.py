@@ -257,7 +257,7 @@ exec(open('engine/courses-patch.py').read())
 exec(open('engine/collide-patch.py').read())
 # The jelly jar: every lesson's jelly, collected across courses.
 exec(open('engine/jar-patch.py').read())
-# Jelly Shell's demo scripts, for presenter mode.
+# Shell Jelly's demo scripts, for presenter mode.
 exec(open('engine/demos-shell.py').read())
 # Presenter mode, for recording videos.
 exec(open('engine/present-patch.py').read())

@@ -6,11 +6,11 @@ These guides are for children of about 9 to 14 who have never used a command lin
 
 The order lives in `src/curriculum.json`; this is what it says today.
 
-1. **Jelly Shell**: moving around folders and working with files.
-2. **Jelly Shell 2**: users, file locks, writing your own commands, `sudo`, `grep` and pipes.
-3. **Jelly Git** and **Jelly Security 1**, in either order. Git: saving versions of your work and putting it on GitHub. Security 1 (prototype): thinking like an attacker, then building like a defender, on a pretend computer.
-4. **Jelly Web** (after Git, because publishing uses `git push`): HTML, how a page travels across the internet, and publishing it.
-5. **Jelly Security 2** (planned, after Web): attacking and defending a pretend website.
+1. **Shell Jelly**: moving around folders and working with files.
+2. **Shell Jelly 2**: users, file locks, writing your own commands, `sudo`, `grep` and pipes.
+3. **Git Jelly** and **Security Jelly 1**, in either order. Git: saving versions of your work and putting it on GitHub. Security 1: thinking like an attacker, then building like a defender, to protect your own computer.
+4. **Web Jelly** (after Git, because publishing uses `git push`): HTML, how a page travels across the internet, and publishing it.
+5. **Security Jelly 2** (planned, after Web): attacking and defending a pretend website.
 
 Each guide may use anything taught by the courses it `needs` in the curriculum (and theirs), and nothing else. The [prerequisite map](#prerequisite-map) at the end lists who teaches what.
 
@@ -22,9 +22,9 @@ This is the most important rule, and the easiest one to break. It covers command
 
 Examples from testing:
 - **"Prompt"** was used before it was explained. It also means something different to a child who has used a chatbot.
-- **Shelly** started talking in Jelly Shell 2, but she was only ever introduced in Jelly Shell's 3D tour.
+- **Shelly** started talking in Shell Jelly 2, but she was only ever introduced in Shell Jelly's 3D tour.
 - **`chmod 600`** appeared before anyone had learnt binary. The tester asked "where did the number come from? What if you set it to 9?" Chapters now use the letter form (`chmod go-rw`). The numbers have their own optional lesson.
-- **`whoami`** and **`sign`** turned up as if from nowhere. The tester asked "how do they just make these commands?" That question became a whole lesson in Jelly Shell 2: make your own command.
+- **`whoami`** and **`sign`** turned up as if from nowhere. The tester asked "how do they just make these commands?" That question became a whole lesson in Shell Jelly 2: make your own command.
 
 Before a lesson ships, check every command, symbol and term it uses against the prerequisite map. If something isn't taught yet, teach it first, in an earlier lesson or an earlier guide. Don't explain it in passing.
 
@@ -38,15 +38,15 @@ Before a lesson ships, check every command, symbol and term it uses against the 
   - Both fail if anything appears before the lesson that teaches it.
 
   How each concept is spotted is in `src/tests/concepts.json`. Real command output isn't checked, but everything the guide itself says is.
-- **Not every guide is covered yet.** Jelly Shell 2 and Jelly Security declare `teaches`. Jelly Shell, Jelly Git and Jelly Web don't yet.
+- **Not every guide is covered yet.** Shell Jelly 2 and Security Jelly declare `teaches`. Shell Jelly, Git Jelly and Web Jelly don't yet.
 
 ### 2. Each guide teaches its own topic, not someone else's
 
-When a guide needs a skill from another topic, that skill belongs in the other guide. Jelly Security once taught users, groups and file locks on the side, as well as security. Children ended up learning two things at once and understanding neither. Those topics moved into Jelly Shell 2. The rule for Jelly Security is now strict: it teaches **no new commands**. It only adds ways of thinking, such as the hats, the attacker's goals and the security principles. It can also add pretend props that aren't commands, such as a permission slip or a robot.
+When a guide needs a skill from another topic, that skill belongs in the other guide. Security Jelly once taught users, groups and file locks on the side, as well as security. Children ended up learning two things at once and understanding neither. Those topics moved into Shell Jelly 2. The rule for Security Jelly is now strict: it teaches **no new commands**. It only adds ways of thinking, such as the hats, the attacker's goals and the security principles. It can also add pretend props that aren't commands, such as a permission slip or a robot.
 
 ### 3. Teach it once, then use it again
 
-A command taught once and never used again is forgotten. When you add a concept, decide where it gets used again, later in the same guide or in the next one. For example, `>` and `>>` are taught in Jelly Shell 2 and used again in Jelly Git (`echo "OOPS" > game.py`) and Jelly Web (`curl … > page.html`).
+A command taught once and never used again is forgotten. When you add a concept, decide where it gets used again, later in the same guide or in the next one. For example, `>` and `>>` are taught in Shell Jelly 2 and used again in Git Jelly (`echo "OOPS" > game.py`) and Web Jelly (`curl … > page.html`).
 
 ### 4. One thing at a time
 
@@ -96,13 +96,13 @@ Command names look random to a child. Every lesson explains where its word comes
 
 ### 10. Cliffhangers are fine, if you say so
 
-Jelly Shell 2 deliberately lets `./hello` fail with "Permission denied" so that the next lesson can explain locks. Without warning, a child will try to fix it themselves and get lost. The message now says: "That is the cliffhanger: don't try to fix it yet!"
+Shell Jelly 2 deliberately lets `./hello` fail with "Permission denied" so that the next lesson can explain locks. Without warning, a child will try to fix it themselves and get lost. The message now says: "That is the cliffhanger: don't try to fix it yet!"
 
 ### 11. Kind, funny, never scary
 
 - Short sentences and plain words, in UK English. At most one new idea per paragraph.
 - Jokes are welcome. Shelly is kind, never sarcastic about a mistake.
-- In Jelly Security, attackers are like the weather: always there, so you build a roof. There are no shock stories and no "a stranger will find you".
+- In Security Jelly, attackers are like the weather: always there, so you build a roof. There are no shock stories and no "a stranger will find you".
 
 ### 12. Security has its own extra rules
 
@@ -116,7 +116,7 @@ See `plans/jelly-security.md` for the full 16-mission plan, and `research/kids-i
 
 ### 13. Rewards
 
-Every finished lesson earns a jelly letter, which flies into the jar. The **Jelly hunt** in Jelly Shell turns path navigation into a game: letters hide in folders, and walking there with `cd` catches them. Use the jellies as rewards for doing things, not as decoration.
+Every finished lesson earns a jelly letter, which flies into the jar. The **Jelly hunt** in Shell Jelly turns path navigation into a game: letters hide in folders, and walking there with `cd` catches them. Use the jellies as rewards for doing things, not as decoration.
 
 ### 14. Watch a child use it
 
@@ -129,7 +129,7 @@ Nothing replaces watching a real child. Treat every moment of confusion as a bug
 | `cd ~/snacks`, then `ls snacks` | `/` and `~` were never really explained | "The very top" and "Home" became lessons of their own, plus the jelly hunt game; Shelly explains paths |
 | Couldn't follow web tags | Tags went by too fast, and the HTML style was inconsistent | A whole lesson on tags as boxes with lids, always in the tidy (XHTML) style: `<li></li>`, `<hr/>` |
 | "Where did 600 come from? What's 5? What about 9?" | Octal numbers before binary | Letter form (`go-rw`) first; numbers only in an optional binary lesson |
-| "What does sign mean? How did they make that command?" | A made-up command, never explained | Jelly Shell 2 teaches making your own command and putting it on the PATH |
+| "What does sign mean? How did they make that command?" | A made-up command, never explained | Shell Jelly 2 teaches making your own command and putting it on the PATH |
 | "What is Shelly?" | Shelly was introduced only in a 3D tour that Shell 2 doesn't have | Shelly introduces herself the first time she speaks |
 | "Prompt?" | The word was used before it was explained, and it means something else to chatbot users | Explained at first use, including the chatbot meaning |
 | "What does the lock mean?" | A padlock on a file could mean "can't read" or "can't change" | Each padlock shows what it stops: an eye (can't read), a pencil (can't change), a door (can't go in). Only after `ls -l` has been taught. Testers liked the padlocks; they only needed to know which kind |
@@ -151,7 +151,7 @@ Nothing replaces watching a real child. Treat every moment of confusion as a bug
 
 What each guide teaches, in order. A later guide may use anything above it.
 
-**Jelly Shell**
+**Shell Jelly**
 - the prompt (`$` means ready), Enter, capitals matter, spaces split words
 - `echo`, `pwd`, folder = directory
 - `ls`, `ls -a`, options (start with `-`), hidden dot files
@@ -162,7 +162,7 @@ What each guide teaches, in order. A later guide may use anything above it.
 - Tab completion, ↑ for history, `clear`, `man`, `--help`
 - Backstage: the shell finds programs in `/bin`; the kernel does the work; arguments
 
-**Jelly Shell 2**
+**Shell Jelly 2**
 - accounts and users, `whoami`, `hostname`, `/home`, the prompt taken apart
 - `>` and `>>`
 - `nano` (Ctrl+O saves, Ctrl+X exits)
@@ -176,7 +176,7 @@ What each guide teaches, in order. A later guide may use anything above it.
 - `grep` (`-i` `-c` `-n` `-v`), pipes `|`, `wc -l`, `sort`, `head`
 - optional: binary, and `chmod` numbers
 
-**Jelly Git**
+**Git Jelly**
 - `git`, `git --version`, `git config --global` (quotes around spaces)
 - repository, `git init`, the hidden `.git` folder
 - `git status`, the stage, `git add`, `git add .`
@@ -186,7 +186,7 @@ What each guide teaches, in order. A later guide may use anything above it.
 - `git clone`, `git pull`
 - `.gitignore`, `*.log`
 
-**Jelly Web**
+**Web Jelly**
 - HTML, view source, `open`
 - tags as boxes with lids, nesting, tags that close themselves (`<hr/>`, `<br/>`)
 - lists (`<ul>` `<ol>` `<li>`), links and attributes (`href`), pictures (`src`, `alt`)
@@ -197,9 +197,13 @@ What each guide teaches, in order. A later guide may use anything above it.
 - HTTPS and the padlock ("encrypted, not trustworthy"), being sent round from http to https
 - GitHub Pages: publishing with `git push`
 
-**Jelly Security** (prototype)
+**Security Jelly 1**
 - black hat, white hat and grey hat; red team and blue team; permission and the law
 - least privilege
+- password fingerprints (hashes), dictionary attacks, three random words
+- bots, logs, default passwords, secure by default
+- isolation (sandboxing), and `sudo` requests as a red flag
+- defence in depth
 - the grey zone and coordinated vulnerability disclosure
 
 ### Known gaps for planned Security missions

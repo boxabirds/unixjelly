@@ -10,9 +10,9 @@ def region(start, end, new, keep_end=True):
     s = s[:i] + new + (s[j:] if keep_end else s[j + len(end):])
 
 # ---------- page shell ----------
-rep('<title>Jelly Shell</title>', '<title>Jelly Git</title>')
-rep('<div class="brand">Jelly <b>Shell</b></div>', '<div class="brand">Jelly <b>Git</b></div>')
-rep('<span class="more"> Letters in Titan One', '<span class="more"> A companion to <a href="https://claude.ai/artifact/QKpnE1d1poehF9u2UX1wsW" target="_blank" rel="noopener">Jelly Shell</a>. Letters in Titan One')
+rep('<title>Shell Jelly</title>', '<title>Git Jelly</title>')
+rep('<div class="brand"><b>Shell</b> Jelly</div>', '<div class="brand"><b>Git</b> Jelly</div>')
+rep('<span class="more"> Letters in Titan One', '<span class="more"> A companion to <a href="https://claude.ai/artifact/QKpnE1d1poehF9u2UX1wsW" target="_blank" rel="noopener">Shell Jelly</a>. Letters in Titan One')
 rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to git and GitHub</div>')
 rep('<h1>Boss your computer around with <em>tiny words</em>.</h1>', '<h1>Never lose your <em>code</em> again.</h1>')
 rep('<p>These words were invented in 1971. They still work today on Macs, Linux, Raspberry Pis and most of the computers that run the internet. Learn them once, use them for life.</p>',

@@ -9,11 +9,22 @@ fs.mkdirSync(path.join(here, 'out'), { recursive: true }); process.chdir(path.jo
 
 export const guideUrl = (folder) => 'file://' + path.join(repo, folder, 'index.html');
 // CHROMIUM=/path/to/chromium picks a browser. Without it, Playwright uses the installed Google Chrome.
-// Software WebGL (SwiftShader) keeps the 3D jelly working on machines and CI runners without a GPU.
-export const launch = () => chromium.launch({
-  ...(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : { channel: 'chrome' }),
-  headless: false, args: ['--headless=new', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--hide-scrollbars'],
-});
+// The 3D uses the machine's GPU, falling back to software WebGL (SwiftShader) where there is none. JELLY_GL=swiftshader
+// forces software everywhere, for identical pixels on every machine.
+// draw: false is for tests that only check text, layout or physics: the 3D still runs, but isn't painted, which is
+// most of the cost without a GPU. JELLY_DRAW=1 paints it anyway, to look at those tests' screenshots.
+export async function launch({ draw = true } = {}) {
+  const b = await chromium.launch({
+    ...(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : { channel: 'chrome' }),
+    headless: false, args: ['--headless=new', '--ignore-gpu-blocklist', '--enable-unsafe-swiftshader', '--hide-scrollbars', ...(process.env.JELLY_GL === 'swiftshader' ? ['--use-gl=angle', '--use-angle=swiftshader'] : [])],
+  });
+  if (draw || process.env.JELLY_DRAW) return b;
+  const off = () => { window.JELLY_DRAW = false; };
+  const page = b.newPage.bind(b), context = b.newContext.bind(b);
+  b.newPage = async (o) => { const p = await page(o); await p.addInitScript(off); return p; };
+  b.newContext = async (o) => { const c = await context(o); await c.addInitScript(off); return c; };
+  return b;
+}
 // Every lesson in the guide's menu that has not earned its jelly yet.
 export const unfinished = (p, key) => p.evaluate((key) => {
   const done = JSON.parse(localStorage.getItem(key) ?? '{}').done ?? {};

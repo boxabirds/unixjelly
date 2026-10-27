@@ -1,4 +1,4 @@
-# Jelly Shell's lesson demos (src/guides/shell/demos.json): what presenter mode (present-patch.py) records its
+# Shell Jelly's lesson demos (src/guides/shell/demos.json): what presenter mode (present-patch.py) records its
 # videos from, and what tests/shell.mjs plays through the page. One list per lesson, one action per frame.
 # Actions: a command; @tab:text types and presses Tab, @enter presses Enter, @up recalls, @ctrlc stops.
 import json

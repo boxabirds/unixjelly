@@ -1,4 +1,4 @@
-# Jelly Think: plan
+# Think Jelly: plan
 
 **Status: agreed, not built.** On the course map as "coming later" (`src/curriculum.json`).
 
@@ -6,10 +6,10 @@ The research is in [`docs/research/jelly-think-software-engineering-thinking.md`
 
 ## Decisions
 
-- **The name is Jelly Think**, not Jelly Code. It teaches a way of thinking, and stays out of the "nobody will write code again" argument.
+- **The name is Think Jelly**, not Code Jelly. It teaches a way of thinking, and stays out of the "nobody will write code again" argument.
 - **Two courses:**
-  - **Jelly Think 1** ("Wobble"): arcs 1 to 4 (the obedient machine; names and patterns; remembering and deciding; data), plus mission 22, the front desk that hands over to Server. Comes after Jelly Web.
-  - **Jelly Think 2**: arcs 5 and 6 (what computers can't do, what is too slow, what goes wrong at once; what we shouldn't build, and what is science fiction). Comes after Think 1, alongside Jelly Server.
+  - **Think Jelly 1** ("Wobble"): arcs 1 to 4 (the obedient machine; names and patterns; remembering and deciding; data), plus mission 22, the front desk that hands over to Server. Comes after Web Jelly.
+  - **Think Jelly 2**: arcs 5 and 6 (what computers can't do, what is too slow, what goes wrong at once; what we shouldn't build, and what is science fiction). Comes after Think 1, alongside Server Jelly.
 - **The chain after Web** is Think 1, then Server, then Storage, then SQL ([`web-part-2.md`](web-part-2.md)). Think 2 can be done alongside Server.
 
 ## Before building

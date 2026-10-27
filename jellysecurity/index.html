@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
-<title>Jelly Security 1: think like a hacker, safely</title>
+<title>Security Jelly 1: think like a hacker, safely</title>
 <meta name="description" content="Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.">
-<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAwFBMVEX79/fI7f3B7//B6//B6v7A6/7A6f/A6P+/6P6/5v+/5va/5f+/5f6/5P++5/6+5P7L3Pa94Pu62/m31fTHyPy1y/bRtfmttPLMoP7Flf+qpfOsmPG+i/yjjPK+gf+rf/y2df+pdfyub/6jbfygbP+dcf+cb/+cbP+YfPCTbPeNesWnZ/2iaf+haf+hZ/+gaf+gaP+fZv+daf+daP+cZv6XZ/6XZf+NZu+hYv+aYv6TYv6IYeuXXP6DW+h6Us1JMnXpVW3vAAACK0lEQVR42m3Ti3KiMBQG4AwWtBsrBRUMJhRRboKoyDWAvP9b7cHblm7PjIxjvvkj5yTo/Xvhvga/vKPB8kSSpBl8+R1gSVQWi8XndDbBvwEsqjqhlBJtoUj4f4DFJTEtU9PgQZci/gnwaElXNqyZlm3bm3/iCcYKswi1LZuuCNHIlzIegg9B334iRK0VQVAk1YWPYYLoE9TtNYq0z26PthV77nEHeKwWFAAJidWDS+WrY/wdvM1rriGtgaKwU8OLufQDtJwnTVNVVVOlDc98dQDex/K+5jxPH58s82fDt5CFdVtn1y65tF3OeRAYgjwAU/gTbd1212vX5UUR+PO36fA15ZHetjUsd0UNpY/k4RZ4Igrruu3rem3btSANZ4ElZbFkm812u4UHdHqpDhKwpFLza2OvTAt6Ha7IyaTG7Bv4ENeh5TkwKhOtbDuME9sMH9NAt1HPtyXPvKgMLc0Mw7jMeVVu5FcCBJTnLMjSsq+4rJokyOPyHoFuZyWK88LPkuR8juNzmuZOwE/lRunn1QMISLjvZ15yPMUnAKnj13lUGn0EugVEeaGzHsSQcEkTjzF+LHf9wBCMwSh3Dfvju553PBziEwCXzYtHxC0haAIVgPsCDnsz2mNzB73Q1ZHCXHcH4HC6XAAoE1aw/lTd+wCtv4HdIeqBB2A8UmcSfrZaxg8QRYfjJfGctQL9v93R182aMNe5gwSAMXle4dd5EIzgAY6J6+ij5836C2g1YkHWaTbzAAAAAElFTkSuQmCC">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAwFBMVEX49vXE7f7C7P/B7P7B6v/A6f/A5/+/6P6/5v+/5f+/5P+/5fu+5/6+5f2+5P++5P7X2/a83/i43PW21vXIyPmvye6+s/jBpf29nP+4lP6hoOSkkOWvif+shv+ngP+kfP+iff+he/+hev+gev+nh/iiffmcgO2Lgcyief+fef+eeP+cd/2ddv2bdv+adP+Ydf6Xc/+Xcv6SdO+ScfWVbv2RbfyPbfWOafaKa+6JaPCEbNqHZux/ZNN7YtJ1V8xFNGbqxbWuAAACLUlEQVR42nXTaZuaMBAA4MglqReIHEEIKJeyAouKsATw//+rBlatbNs88IW8zGQyCRBHA9Ix/gJGswLPT+ci/A+AU3ambDYyN1/+E0BW1lA/dGkyh38DyKq+Y1uahixLk6fwJ4CMqiPHQoZh2djxFQ7+ALwcIh1hy6IpDD/czoQxWE3MiwQAsm0EAJBAqDLLcQS21sE92iBpI90jsAm2LHwHkF83PTB0MIA8O695+AYWjNLeJLA52Yaj00yXc/1c5gNwSlcWH9dTnJ7y4FScq0YZRRAFuSW3Mk/zLImv16Ik9bOMVxVRR/KuO7rdPbndqjaarEZgwagtqbp7R5+8qkirMotxmSvGbJqv7n7vboSQ1nwGeALIsxOzqUk/2TZNxPLjrYacoqlhEAT0DUPf9xV5+r5IOu+j4GIbtmUZCOuS5yNtIfwBv1gTG5cM67alIxtbhmcb+NENMLRa+XAykrkHxwA6xjjOctfxZf4F2O3BvTTX2HMs3cLYi69fKT5oQwgKlox6cmLSFnnqOaeDu0vyglx2OBj6BfrD6h/cImooOLo7b39M86KpE3ww2WUPYB8gqdS6/Ezj3X4/gDoqaYi+o0BcTswUl+aMguT4AmqdfocA/Sacy3r9Dfa7B5BN4qYmsxzWwCnqmpMfYLePk8+C/rCtwv5MDGVyE16cRWPA8cqMg8+tXkHhAVyXgoymECAnwPeLMx2BcCaKoyPX1/KVJZ7nOD24mc9rIf4GDuhcPQzKbckAAAAASUVORK5CYII=">
 <meta name="theme-color" content="#bfe6ff">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Jelly Unix">
-<meta property="og:title" content="Jelly Security 1: think like a hacker, safely">
+<meta property="og:site_name" content="Unix Jelly">
+<meta property="og:title" content="Security Jelly 1: think like a hacker, safely">
 <meta property="og:description" content="Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://unixjelly.com/jellysecurity/">
@@ -20,8 +20,8 @@
 <meta property="og:image" content="https://unixjelly.com/icons/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Jelly Unix house: a computer cut open like a doll's house">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Course", "name": "Jelly Security 1", "description": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.", "url": "https://unixjelly.com/jellysecurity/", "provider": {"@type": "Organization", "name": "Jelly Unix", "sameAs": "https://github.com/boxabirds/unixjelly"}, "inLanguage": "en", "isAccessibleForFree": true, "educationalLevel": "Beginner", "audience": {"@type": "EducationalAudience", "audienceType": "Curious kids, about 9 to 14, and beginners of any age"}, "coursePrerequisites": ["Jelly Shell 2"], "offers": {"@type": "Offer", "category": "Free", "price": 0, "priceCurrency": "USD"}, "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "Online"}, "syllabusSections": [{"@type": "Syllabus", "name": "hats: Same skills, different permission", "description": "What is the difference between hacking and breaking the law?"}, {"@type": "Syllabus", "name": "chmod: Only the keys you need", "description": "Who can read my files, and how do I lock them properly?"}, {"@type": "Syllabus", "name": "grey: What would a white hat do?", "description": "I found a way in by accident. What should I do?"}]}</script>
+<meta property="og:image:alt" content="The Unix Jelly house: a computer cut open like a doll's house">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Course", "name": "Security Jelly 1", "description": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.", "url": "https://unixjelly.com/jellysecurity/", "provider": {"@type": "Organization", "name": "Unix Jelly", "sameAs": "https://github.com/boxabirds/unixjelly"}, "inLanguage": "en", "isAccessibleForFree": true, "educationalLevel": "Beginner", "audience": {"@type": "EducationalAudience", "audienceType": "Curious kids, about 9 to 14, and beginners of any age"}, "coursePrerequisites": ["Shell Jelly 2"], "offers": {"@type": "Offer", "category": "Free", "price": 0, "priceCurrency": "USD"}, "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "Online"}, "syllabusSections": [{"@type": "Syllabus", "name": "hats: Same skills, different permission", "description": "What is the difference between hacking and breaking the law?"}, {"@type": "Syllabus", "name": "chmod: Only the keys you need", "description": "Who can read my files, and how do I lock them properly?"}, {"@type": "Syllabus", "name": "guess: Fingerprints and guessing machines", "description": "How do attackers crack passwords, and what makes one strong?"}, {"@type": "Syllabus", "name": "bots: The knockers never sleep", "description": "Who is trying to log in to my computer at 3 in the morning?"}, {"@type": "Syllabus", "name": "room: Free coins! (Not really)", "description": "Is that \"free coins\" download safe to run?"}, {"@type": "Syllabus", "name": "layers: One wall is never enough", "description": "One of my defences failed. Am I done for?"}, {"@type": "Syllabus", "name": "grey: What would a white hat do?", "description": "I found a way in by accident. What should I do?"}]}</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -533,6 +533,14 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .rc-card.quiz.shown{background:#fff}
 .rc-card.quiz.shown .ans{display:grid}
 .rc-card.quiz.shown .reveal{display:none}
+/* the lesson's jelly letters, full screen: the expand button in their window, ✕ or Escape to come back */
+.ljelly-grow{position:absolute;right:10px;bottom:8px;z-index:1;width:34px;height:34px;border-radius:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:700 18px/1 var(--body,inherit);box-shadow:0 2px 0 var(--ink);cursor:pointer}
+.ljelly-grow:hover{background:#fff4d6}
+.jelly-full{position:fixed;inset:0;z-index:95;background:#fff4d6}
+.jelly-full[hidden]{display:none}
+.jelly-full canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.jelly-close{position:absolute;z-index:1;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:3px solid var(--ink);background:#fff;color:var(--ink);font:700 20px/1 var(--body,inherit);box-shadow:0 3px 0 var(--ink);cursor:pointer}
+.jelly-full-tip{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);margin:0;width:max-content;max-width:calc(100% - 32px);background:var(--ink);color:#fff;border-radius:999px;padding:8px 18px;font-size:.95rem;pointer-events:none}
 /* tutorial sections get the whole window: the nav slides away and waits behind a small tab on the left */
 .app{display:block;position:relative;height:100%}
 .side{position:absolute;left:0;top:0;bottom:0;width:var(--nav);z-index:45;transition:transform .45s cubic-bezier(.3,1,.4,1),box-shadow .3s}
@@ -624,6 +632,26 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
 /* a web address drawn like an address bar, so the grey-zone dilemma needs no knowledge of how addresses work */
 .addr{font-family:var(--mono);font-size:.9em;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:0 .6em;white-space:nowrap}
 .addr b{background:var(--lemon);border-radius:4px;padding:0 .1em}
+/* the guessing machine: a password goes in, its fingerprint comes out, and there is no way back */
+.fpviz{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4em;font-size:1.1em}
+.fpviz .tv-note{flex-basis:100%;text-align:center}
+.fp-go{font-size:1.4em;font-weight:700}
+.fp-machine{font-family:var(--display);text-align:center;line-height:1.05;background:var(--lemon);border:4px solid var(--ink);border-radius:14px;padding:.35em .6em;box-shadow:0 4px 0 var(--ink)}
+.pv.fp{background:#d8e4ff;border-style:solid}
+/* a night of the server's log */
+.logviz{margin:0;font-family:var(--mono);font-size:clamp(.55em,1.4vw,.8em);line-height:1.5;background:#1b0f2c;color:#cfc6e6;border:4px solid var(--ink);border-radius:14px;padding:.6em .9em;overflow-x:auto;max-width:100%}
+.logviz b{color:#ff8fa3}
+/* kid's room and the spare room */
+.roomviz{display:flex;gap:.8em;justify-content:center;flex-wrap:wrap}
+.rv-room{display:grid;gap:.25em;justify-items:center;min-width:8em;background:#fff;border:4px solid var(--ink);border-radius:16px;padding:.5em .8em;box-shadow:0 4px 0 var(--ink)}
+.rv-room.spare{background:#fff4d6;border-style:dashed}
+.rv-room span{font-family:var(--mono);font-size:.85em}
+.rv-mod{background:var(--berry);color:#fff;border-radius:999px;padding:0 .6em}
+/* castle layers: each ring is one layer of defence, your stuff in the middle */
+.castle{display:flex;justify-content:center;font-size:.85em}
+.cl{border:4px solid var(--ink);border-radius:18px;padding:.25em .45em .45em;text-align:center;font-weight:700;background:#fff}
+.castle>.cl{background:#d4eeff}.castle>.cl>.cl{background:#e9fbe4}.castle>.cl>.cl>.cl{background:#fff0b3}.castle>.cl>.cl>.cl>.cl{background:#ffe1ea}
+.cl-keep{margin-top:.3em;font-family:var(--display);font-weight:400;background:var(--lemon);border:3px solid var(--ink);border-radius:12px;padding:.2em .6em}
 </style>
 
 <script type="importmap">
@@ -635,19 +663,19 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
 <div class="gate" role="alert">
   <div class="gate-card">
     <svg viewBox="0 0 200 150" aria-hidden="true"><g stroke="#24133b" stroke-width="5" stroke-linejoin="round"><circle cx="118" cy="62" r="46" fill="#b18cff"/><ellipse cx="96" cy="108" rx="70" ry="30" fill="#ff5a4e"/><path d="M70 88 L64 52 M100 86 L104 50" fill="none"/><circle cx="64" cy="46" r="13" fill="#fff"/><circle cx="104" cy="44" r="13" fill="#fff"/><circle cx="64" cy="50" r="5" fill="#24133b"/><circle cx="104" cy="48" r="5" fill="#24133b"/><path d="M82 120 q14 -10 28 0" fill="none" stroke-linecap="round"/></g></svg>
-    <h1>Jelly Security 1</h1>
-    <p class="gate-tag">Same skills, different permission. Break into a pretend computer, fix the hole, then try again. Three missions.</p>
+    <h1>Security Jelly 1</h1>
+    <p class="gate-tag">Same skills, different permission. Crack passwords, catch bots, trap a sneaky program and lock your files, all on a pretend computer. Seven missions.</p>
     <button class="btn gate-slides" id="slides" type="button">Show mobile slideshow</button>
     <p>The full rich interactivity and progress tracking is currently only available on desktop: a laptop or desktop computer, with the window at least 900 × 560.</p>
-    <section class="gate-lessons" aria-labelledby="gateLessons"><h2 id="gateLessons">What you will learn: 3 lessons</h2><ol><li><code>hats</code><span>What is the difference between hacking and breaking the law?</span></li><li><code>chmod</code><span>Who can read my files, and how do I lock them properly?</span></li><li><code>grey</code><span>I found a way in by accident. What should I do?</span></li></ol></section>
+    <section class="gate-lessons" aria-labelledby="gateLessons"><h2 id="gateLessons">What you will learn: 7 lessons</h2><ol><li><code>hats</code><span>What is the difference between hacking and breaking the law?</span></li><li><code>chmod</code><span>Who can read my files, and how do I lock them properly?</span></li><li><code>guess</code><span>How do attackers crack passwords, and what makes one strong?</span></li><li><code>bots</code><span>Who is trying to log in to my computer at 3 in the morning?</span></li><li><code>room</code><span>Is that &quot;free coins&quot; download safe to run?</span></li><li><code>layers</code><span>One of my defences failed. Am I done for?</span></li><li><code>grey</code><span>I found a way in by accident. What should I do?</span></li></ol></section>
     <p><a class="home-link" href="../">← All the guides</a></p>
     <div class="gate-credit"><a class="repo" href="https://github.com/boxabirds/unixjelly" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>boxabirds/unixjelly</span></a><p>Jelly physics ported from <a href="https://github.com/scottstts/Jelly-Baby" target="_blank" rel="noopener">Jelly Baby</a> by Scott Sun (GPL-3.0).</p></div>
   </div>
 </div>
 
 <div class="app">
-  <aside class="side" aria-label="Jelly Security navigation">
-    <div class="brand">Jelly <b>Security</b></div>
+  <aside class="side" aria-label="Security Jelly navigation">
+    <div class="brand"><b>Security</b> Jelly</div>
     <div class="jar" aria-label="Your progress"><div class="beans" id="beans"></div><button class="jar-open" id="jarOpen">My jelly jars</button><div class="jar-count" id="jarCount">0 / 15 jellies</div><a class="home-link" href="../">← All guides</a></div>
     <details class="courses" id="courses"><summary>Course map</summary><ol class="co-list" id="courseList"></ol></details>
     <nav class="nav" id="nav"></nav>
@@ -669,7 +697,7 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
         <div class="eyebrow">A wobbly guide to security · part 1</div>
         <h1>Think like a <em>hacker</em>. Build like a defender.</h1>
         <div class="hero-side">
-          <p>Security people wear two hats: one to find the way in, one to lock it. Learn both, safely, on a pretend computer. Part 1 has three missions.</p>
+          <p>Security people wear two hats: one to find the way in, one to lock it. Learn both, safely, on a pretend computer: passwords, bots, sneaky programs and locks. Part 1 has seven missions.</p>
           <button class="btn go" id="startBtn">Start the first mission<span class="ent">Enter ↵</span></button>
         </div>
       </div>
@@ -1333,9 +1361,13 @@ function jellyMaterial(c, size, rich = false) {
   return m;
 }
 
+// Tests that only check text, layout or physics switch the 3D drawing off (tests/lib.mjs sets JELLY_DRAW before the
+// page loads). Everything still moves and collides exactly as before; it just isn't painted.
+const DRAW = window.JELLY_DRAW !== false;
 // The light the jelly reflects: the usual soft room, plus a big four-pane window behind the viewer and a smaller one
 // to the left. Every letter then carries crisp window highlights, the strongest cue that something is wet and glassy.
 function studio(renderer) {
+  if (!DRAW) return null;
   const room = new RoomEnvironment(), glow = new THREE.MeshBasicMaterial({ color: new THREE.Color(7, 7, 6.6) });
   const panes = (x, y, z, w, h, ry) => [[-1, 1], [1, 1], [-1, -1], [1, -1]].forEach(([a, b]) => {
     const pane = new THREE.Mesh(new THREE.PlaneGeometry(w * .46, h * .46), glow);
@@ -1588,7 +1620,7 @@ class JellyStage {
       const [x, y, z] = b.center(); b.glow.visible = b.mesh.visible;
       b.glow.position.set(x - this.opts.size * .12, .0008, z - this.opts.size * .35); b.glow.material.opacity = .55 * clamp(1 - (y - b.height * .5) / b.size, 0, 1);
     }
-    this.renderer.render(this.scene, this.camera);
+    if (DRAW) this.renderer.render(this.scene, this.camera);
   }
 }
 
@@ -1983,7 +2015,7 @@ class Town {
     sph.theta += V.yaw + (this.drag ? 0 : Math.sin(t * .4) * .05);
     sph.phi = clamp(sph.phi - V.pitch, .12, Math.PI - .12); sph.radius *= V.zoom;
     this.camera.position.copy(this.camLook).add(new THREE.Vector3().setFromSpherical(sph)); this.camera.lookAt(this.camLook);
-    this.renderer.render(this.scene, this.camera);
+    if (DRAW) this.renderer.render(this.scene, this.camera);
   }
 }
 const TOWN_STEPS = [
@@ -2678,18 +2710,20 @@ const JellySh = (() => {
 })();
 
 let nid = 0;
-const BIN = ['cat', 'chmod', 'clear', 'cp', 'echo', 'id', 'ls', 'man', 'mkdir', 'mv', 'pwd', 'rm', 'sign', 'su', 'touch'];
+const BIN = ['bots', 'cat', 'chmod', 'clear', 'cp', 'echo', 'fingerprint', 'grep', 'head', 'id', 'ls', 'man', 'mkdir', 'mv', 'pwd', 'rm', 'sign', 'sort', 'su', 'touch', 'wc'];
 function seed() {
   const spec = {
     'bin/': Object.fromEntries(BIN.map((n) => [n, '01001010 01000101 01001100 01001100 01011001\n(This is a program. It is written in computer language, so it looks like gibberish to us.)'])),
     'home/': {
       'kid/': {
-        'permission-slip.txt': 'JELLY SECURITY HQ: PERMISSION SLIP\n\nThe holder of this slip may test the pretend systems in this sandbox:\n  - every file and folder on this pretend computer\n  - every website ending in .test\n    (.test is a pretend ending kept for testing:\n     no real website can use it)\nlooking for security holes, and must report what they find to Jelly Security HQ.\n\nNot allowed: real websites, real accounts, real people.\n\n  Signed: Jelly Security HQ',
+        'permission-slip.txt': 'SECURITY JELLY HQ: PERMISSION SLIP\n\nThe holder of this slip may test the pretend systems in this sandbox:\n  - every file and folder on this pretend computer\n  - every website ending in .test\n    (.test is a pretend ending kept for testing:\n     no real website can use it)\nlooking for security holes, and must report what they find to Security Jelly HQ.\n\nNot allowed: real websites, real accounts, real people.\n\n  Signed: Security Jelly HQ',
         'diary.txt': 'Dear diary,\nToday I found out every file has a lock. Mine does not seem to have one. Uh oh.\nAlso: I still have not found out who ate my cookies.',
         'secret-recipe.txt': 'JELLY BEAN RECIPE (TOP SECRET)\n1. Sugar\n2. More sugar\n3. A wobble',
         'photos/': { 'beach.txt': '(a picture of the beach)' },
+        ...SEC_FILES.kid,
       },
       'sib/': { 'comic.txt': 'KAPOW! Captain Wobble saves the day.', 'plans.txt': 'Plan: read kid\'s diary. Find out about the cookies. Mwahaha.' },
+      'room/': SEC_FILES.room,
     },
     'tmp/': {},
   };
@@ -2713,7 +2747,9 @@ const MAN = {
   chmod: ['chmod - change mode (change the lock on a file)', 'chmod who+keys file   or   chmod who-keys file', 'Changes who has which keys. Who: u = owner (user), g = group, o = others (everyone else). Then + to give keys or - to take them away. Then the keys: r, w, x. Only the owner can do it.', 'chmod go-rw diary.txt'],
   su: ['su - switch user', 'su name', 'Become another user. On a real computer it asks for their password. exit goes back.', 'su sib'],
   whoami: ['whoami - who am I?', 'whoami', 'Prints the name of the account you are using right now.', 'whoami'],
-  sign: ['sign - sign a permission slip', 'sign file', 'A tiny program written by Jelly Security HQ. It adds your name to the end of the slip. Real computers do not have it: someone made it up, like anyone can.', 'sign permission-slip.txt'],
+  sign: ['sign - sign a permission slip', 'sign file', 'A tiny program written by Security Jelly HQ. It adds your name to the end of the slip. Real computers do not have it: someone made it up, like anyone can.', 'sign permission-slip.txt'],
+  fingerprint: ['fingerprint - make a password fingerprint', 'fingerprint word', 'Security Jelly HQ\'s pretend fingerprint machine. The same word always makes the same fingerprint, and there is no way back. Real computers have ones like sha256sum, with much longer fingerprints.', 'fingerprint jelly'],
+  bots: ['bots - HQ\'s practice bots', 'bots', 'Pretend bots that knock on the game server with the same passwords as last night\'s real ones, so you can test your fix. Made up by Security Jelly HQ.', 'bots'],
   ls: ['ls - list what is in a folder', 'ls [-a] [-l] [folder]', 'Shows the names inside a folder. -a shows hidden files too. -l shows the long, detailed version.', 'ls snacks'],
   cd: ['cd - change directory (walk to another folder)', 'cd [folder]', 'Moves you into a folder. cd .. goes up to the parent. cd on its own takes you home.', 'cd toys'],
   pwd: ['pwd - print working directory', 'pwd', 'Prints the full address of the folder you are standing in.', 'pwd'],
@@ -2784,7 +2820,7 @@ function firstPathTips(args, say) {
     if (a.startsWith('/') && !store.seen.root) { store.seen.root = true; save(); say('(A / at the very start means: begin at the top of the computer. A / between two names means: go inside.)', 'tip'); }
   }
 }
-// Jelly Shell's voice: Shelly explains paths that don't exist, and helps with typos and words from other computers.
+// Shell Jelly's voice: Shelly explains paths that don't exist, and helps with typos and words from other computers.
 SH.configure({
   manual: MAN,
   hooks: {
@@ -2927,7 +2963,7 @@ $('#sbReset').onclick = resetSandbox;
 // Ctrl+D anywhere in the sandbox panel belongs to the terminal, not the browser's bookmark dialog.
 addEventListener('keydown', (e) => { if (e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 'd' && !$('#p-lesson').hidden) { e.preventDefault(); if (e.target !== termIn) { termIn.focus({ preventScroll: true }); ctrlD(); } } });
 function welcome() {
-  print('<span class="tip">Welcome to the security sandbox! A pretend computer with two users, kid (you) and sib (your little sibling). Break things only here.</span>');
+  print('<span class="tip">Welcome to the security sandbox! A pretend computer with two people, kid (you) and sib (your little sibling), and a spare account called room. Break things only here.</span>');
   print('<span class="mute">Type a command and press Enter. Stuck? Type help.</span>');
 }
 
@@ -2986,7 +3022,7 @@ mapEl.addEventListener('click', (e) => {
 const isCmd = (e, c) => e.type === 'cmd' && e.cmd === c;
 const chose = (k) => (e) => e.type === 'choice' && e.k === k;
 // Each mission step says which hat you wear: black (think like the attacker) or white (fix it).
-// In the sandbox both are allowed: Jelly Security HQ signed your permission slip, so you are a red team, not a criminal.
+// In the sandbox both are allowed: Security Jelly HQ signed your permission slip, so you are a red team, not a criminal.
 const LESSONS = [
   { id: 'hats', demo: ["cat permission-slip.txt", "sign permission-slip.txt", "cat /bin/sign", "whoami"], teaches: ['hats', 'permission'], word: 'hats', name: 'Pick your hat', stands: 'Ethical hacking', color: '#ff4d6d', tool: 'term', seq: true, onlyHere: true,
     visual: `<table class="terms"><thead><tr><th>You will hear</th><th>Grown-ups now say</th></tr></thead><tbody>
@@ -2996,7 +3032,7 @@ const LESSONS = [
       <tr><td><b>red team</b> / <b>blue team</b></td><td>attackers who are <i>allowed</i>, and the defenders</td></tr></tbody></table>`,
     title: 'Same skills, different permission', why: 'In old cowboy films, the baddie wore a black hat and the hero wore a white one. Computer people borrowed the idea. A <b>black hat</b> breaks into things without permission. A <b>white hat</b> uses exactly the same skills, but only with the owner\'s permission, and tells them what they found so it gets fixed. The skills are the same. The <b>permission</b> is the difference.',
     mnem: 'Same skills. Different permission.',
-    points: ['In this guide you wear both hats. The black hat helps you think like an attacker. The white hat fixes the hole.', 'Jelly Security HQ has signed your permission slip for this pretend computer. That makes you a <b>red team</b>: attackers who are allowed.', 'Outside the sandbox, getting into anything without permission is against the law. In the UK it is the <b>Computer Misuse Act</b>. Most countries have a law like it.'],
+    points: ['In this guide you wear both hats. The black hat helps you think like an attacker. The white hat fixes the hole.', 'Security Jelly HQ has signed your permission slip for this pretend computer. That makes you a <b>red team</b>: attackers who are allowed.', 'Outside the sandbox, getting into anything without permission is against the law. In the UK it is the <b>Computer Misuse Act</b>. Most countries have a law like it.'],
     steps: [
       { t: 'Read your permission slip: <code>cat permission-slip.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('permission-slip.txt')) },
       { t: 'Sign it with the little program HQ made for you: <code>sign permission-slip.txt</code>', ok: (e) => isCmd(e, 'sign') && e.ok },
@@ -3005,9 +3041,9 @@ const LESSONS = [
   { id: 'keys', demo: ["ls -l", "su sib", "cat diary.txt", "exit", "chmod go-rw diary.txt", "ls -l", "su sib", "cat diary.txt"], teaches: ['least-privilege'], word: 'chmod', name: 'Keys you don\'t need', stands: 'Least privilege', color: '#9b5cff', tool: 'term', seq: true, onlyHere: true,
     visual: `<div class="permviz"><p class="tv-note">The lock on your diary, as <code>ls -l</code> shows it:</p><div class="lsl"><span class="pv t">-</span><span class="pv u">rw-</span><span class="pv g">rw-</span><span class="pv o">rw-</span><span class="pv n">kid</span><span class="pv n">kid</span><span class="pv n">diary.txt</span>
       <small>file</small><small>owner's keys</small><small>group's keys</small><small>everyone else's keys</small><small>owner</small><small>group</small><small>name</small></div><p class="tv-note"><b>r</b> read · <b>w</b> write · <b>x</b> run · <b>-</b> no key</p></div>`,
-    title: 'Only the keys you need', why: 'Remember the locks from Jelly Shell 2? Every file has three sets of keys: for its <b>owner</b> (you, kid), its <b>group</b> (kid: just you) and <b>everyone else</b>. Look at the lock on your diary, <code>diary.txt</code>. All three sets say <b>rw-</b>: read and write. So your sibling, who counts as everyone else, has keys too. Security engineers have a rule for this, called <b>least privilege</b>: give each person only the keys they really need. Nobody needs to read your diary except you.',
+    title: 'Only the keys you need', why: 'Remember the locks from Shell Jelly 2? Every file has three sets of keys: for its <b>owner</b> (you, kid), its <b>group</b> (kid: just you) and <b>everyone else</b>. Look at the lock on your diary, <code>diary.txt</code>. All three sets say <b>rw-</b>: read and write. So your sibling, who counts as everyone else, has keys too. Security engineers have a rule for this, called <b>least privilege</b>: give each person only the keys they really need. Nobody needs to read your diary except you.',
     mnem: 'Only the keys you need. No spare keys.',
-    points: ['From Jelly Shell 2: <code>ls -l</code> shows every file\'s lock, <code>su sib</code> lets you be your sibling for a bit, and <code>exit</code> brings you back.', 'Also from Jelly Shell 2: <code>chmod</code> changes a lock. <code>chmod go-rw diary.txt</code> means the <b>g</b>roup and <b>o</b>thers lose <b>r</b> and <b>w</b>.', 'Least privilege is the new idea: every key you hand out is a way in. Give out only the ones that are needed.'],
+    points: ['From Shell Jelly 2: <code>ls -l</code> shows every file\'s lock, <code>su sib</code> lets you be your sibling for a bit, and <code>exit</code> brings you back.', 'Also from Shell Jelly 2: <code>chmod</code> changes a lock. <code>chmod go-rw diary.txt</code> means the <b>g</b>roup and <b>o</b>thers lose <b>r</b> and <b>w</b>.', 'Least privilege is the new idea: every key you hand out is a way in. Give out only the ones that are needed.'],
     steps: [
       { hat: 'black', t: 'You are the attacker now. Look at the locks on the files: <code>ls -l</code>. Who has keys to the diary?', ok: (e) => isCmd(e, 'ls') && e.args.some((a) => /^-\w*l/.test(a)) },
       { hat: 'black', t: 'Become your little sibling: <code>su sib</code>', ok: (e) => isCmd(e, 'su') && e.ok && sh.user === 'sib' },
@@ -3015,6 +3051,76 @@ const LESSONS = [
       { hat: 'white', t: 'Swap hats. Go back to being you: <code>exit</code>', ok: (e) => isCmd(e, 'exit') && sh.user === 'kid' },
       { hat: 'white', t: 'Take the keys away from the group and everyone else: <code>chmod go-rw diary.txt</code>', ok: (e) => isCmd(e, 'chmod') && e.ok && !(modeOf(find('/home/kid/diary.txt')) & 0o077) },
       { hat: 'black', t: 'Black hat back on. Try the attack again: <code>su sib</code>, then <code>cat diary.txt</code>', ok: (e) => isCmd(e, 'cat') && sh.user === 'sib' && e.info.denied },
+    ] },
+  { id: 'guess', demo: ["cat leak/players.txt", "fingerprint jelly", "fingerprint Jelly", "head leak/common.txt", "grep b76b2dbb leak/common.txt", "fingerprint purplecactusbanjo", "grep 1c5d4876 leak/common.txt"], teaches: ['hashing', 'dictionary-attack'], word: 'guess', name: 'The guessing machine', stands: 'Strong passwords', color: '#3a5bff', tool: 'term', seq: true, onlyHere: true,
+    visual: `<div class="fpviz"><span class="pv n">pizza123</span><span class="fp-go">→</span><span class="fp-machine">fingerprint<br/>machine</span><span class="fp-go">→</span><span class="pv n fp">b76b2dbb</span><p class="tv-note">Easy one way. <b>No way back.</b></p></div>`,
+    title: 'Fingerprints and guessing machines', why: 'A pretend game site, Jelly Games, has been broken into, and its list of players has leaked. The good news: the site never kept anyone\'s password. It kept a <b>fingerprint</b> of each one, a jumble of letters made from the password. The same password always makes the same fingerprint, but you can\'t turn a fingerprint back into a password. Grown-ups call it a <b>hash</b>. So how do attackers get in? They don\'t turn it back. They <b>guess</b>.',
+    mnem: 'Three random words. A different password for every site.',
+    points: ['Security Jelly HQ made you a fingerprint machine called <code>fingerprint</code>. Real computers have ones like it, with much longer fingerprints.', 'Attackers fingerprint thousands of popular passwords in advance, then look for a match. That is a <b>dictionary attack</b>, and a short or popular password falls in seconds.', 'Three random words stuck together, like <b>purplecactusbanjo</b>, are long and on nobody\'s list. And give every site its own password, so one leak opens only one door.'],
+    steps: [
+      { hat: 'black', t: 'You are the attacker. Look at the leaked list: <code>cat leak/players.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('/leak/players.txt')) },
+      { hat: 'black', t: 'Try the fingerprint machine: <code>fingerprint jelly</code>', ok: (e) => isCmd(e, 'fingerprint') && e.args[0] === 'jelly' },
+      { hat: 'black', t: 'Change one letter and try again: <code>fingerprint Jelly</code>. Is the fingerprint a bit different, or totally different?', ok: (e) => isCmd(e, 'fingerprint') && e.args[0] === 'Jelly' },
+      { hat: 'black', t: 'Attackers keep a list of popular passwords, fingerprinted in advance. Peek at the top of it: <code>head leak/common.txt</code>', ok: (e) => isCmd(e, 'head') && e.ok && e.args.some((a) => a.endsWith('common.txt')) },
+      { hat: 'black', t: 'sib\'s fingerprint is <b>b76b2dbb</b>. Look for it in the list: <code>grep b76b2dbb leak/common.txt</code>', ok: (e) => isCmd(e, 'grep') && e.args.includes('b76b2dbb') && e.info.matches > 0 },
+      { hat: 'white', t: 'Swap hats. Make sib a strong new password from three random words, and fingerprint it. Like: <code>fingerprint purplecactusbanjo</code>', ok: (e) => isCmd(e, 'fingerprint') && e.info.strong },
+      { hat: 'black', t: 'Black hat back on. Look for the new fingerprint in the list: <code>grep</code>, then the fingerprint, then <code>leak/common.txt</code>', ok: (e) => isCmd(e, 'grep') && store.newFp && e.args.includes(store.newFp) && e.info.matches === 0 },
+    ] },
+  { id: 'knock', demo: ["head server/server.log", "grep -c FAILED server/server.log", "grep OK server/server.log", "cat server/settings.txt", "echo admin_password=purplecactusbanjo > server/settings.txt", "bots"], teaches: ['bots', 'secure-default'], word: 'bots', name: 'Knock knock, all night', stands: 'Secure by default', color: '#62c934', tool: 'term', seq: true, onlyHere: true,
+    visual: `<pre class="logviz">03:12:07  FAILED  user=root   password=123456
+03:12:09  FAILED  user=admin  password=password
+03:12:12  FAILED  user=pi     password=raspberry
+<b>05:41:07  OK      user=admin  password=admin</b></pre><p class="tv-note">One night on a little game server. Nobody was awake.</p>`,
+    title: 'The knockers never sleep', why: 'Your family runs a little game server: a computer on the internet where friends can play. Who knocks on its door at 3 in the morning? Not people. <b>Bots</b>: programs that try the same few passwords on every computer they can find, all day and all night. They aren\'t after you. They try everyone. A new computer on the internet gets its first knock within minutes. The server keeps a <b>log</b>, a diary of everything that happened, and the log tells the story.',
+    mnem: 'Bots never sleep. Change every default password.',
+    points: ['A <b>log</b> is a computer\'s diary. <code>grep</code> from Shell Jelly 2 finds the lines that matter: <code>-c</code> counts them.', 'A <b>default password</b> is the one a thing comes with, like <b>admin</b>. Every bot tries it first.', '<b>Secure by default</b> means safe straight out of the box, before anyone changes a setting. Since 2024, UK law bans new smart gadgets from all sharing one default password.'],
+    steps: [
+      { hat: 'black', t: 'Think like a bot. Read the start of last night\'s log: <code>head server/server.log</code>', ok: (e) => isCmd(e, 'head') && e.ok && e.args.some((a) => a.endsWith('server.log')) },
+      { hat: 'black', t: 'How many knocks failed in one night? <code>grep -c FAILED server/server.log</code>', ok: (e) => isCmd(e, 'grep') && e.args.some((a) => /^-\w*c/.test(a)) && e.args.includes('FAILED') },
+      { hat: 'black', t: 'Did any bot get in? <code>grep OK server/server.log</code>', ok: (e) => isCmd(e, 'grep') && e.args.includes('OK') && e.info.matches > 0 },
+      { hat: 'black', t: 'admin and admin! Look at the server\'s settings: <code>cat server/settings.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('/server/settings.txt')) },
+      { hat: 'white', t: 'Swap hats. Give the server a strong password of its own: <code>echo admin_password=purplecactusbanjo > server/settings.txt</code> (or your own three random words)', ok: (e) => isCmd(e, 'echo') && serverSafe() },
+      { hat: 'black', t: 'Black hat back on. Send last night\'s bots again with HQ\'s practice bots: <code>bots</code>', ok: (e) => isCmd(e, 'bots') && serverSafe() },
+    ] },
+  { id: 'room', demo: ["cat Downloads/free-coins", "chmod u+x Downloads/free-coins", "./Downloads/free-coins", "su room", "~/free-coins", "exit", "ls homework"], teaches: ['isolation'], word: 'room', name: 'A room of its own', stands: 'Isolation', color: '#ff8a2b', tool: 'term', seq: true, onlyHere: true,
+    visual: `<div class="roomviz"><div class="rv-room"><b>kid's room</b><span>homework</span><span>diary</span></div><div class="rv-room spare"><b>the spare room</b><span class="mute">nothing worth breaking</span><span class="rv-mod">free-coins</span></div></div><p class="tv-note">Run strangers' programs where they can't reach your things.</p>`,
+    title: 'Free coins! (Not really)', why: 'Someone in a game chat shares a program called <b>free-coins</b>. It promises 1000 coins. It also hides one extra line that deletes your homework. Programs like this are the most common way bad software gets onto children\'s computers: cheats, mods and "free" things. Today you are the one who wrote it, and then the one who runs it. Then you fix it the way security people do: run it in a <b>room of its own</b>, where it can\'t reach anything you care about.',
+    mnem: 'Read it first. Run strangers in the spare room.',
+    points: ['A program can do anything you can do. When you run it, it gets your keys.', '<b>Isolation</b>, also called <b>sandboxing</b>: run things you don\'t trust somewhere with no keys to your stuff. Here that\'s a spare account called <b>room</b>, which you can visit with <code>su room</code>. Phones and web browsers do this for every app.', 'If a download asks for <code>sudo</code>, the boss user\'s powers, that is a big red flag. Say no, and ask a grown-up.'],
+    steps: [
+      { hat: 'black', t: 'You wrote the "free coins" program. Look inside it: <code>cat Downloads/free-coins</code>. Which line is the trap?', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('/Downloads/free-coins')) },
+      { hat: 'black', t: 'Now be the player who doesn\'t read it. Downloads can\'t run until they get an x key: <code>chmod u+x Downloads/free-coins</code>', ok: (e) => isCmd(e, 'chmod') && e.ok && find('/home/kid/Downloads/free-coins') && modeOf(find('/home/kid/Downloads/free-coins')) & 0o100 },
+      { hat: 'black', t: 'Run it: <code>./Downloads/free-coins</code>. Did you get coins?', ok: (e) => e.type === 'cmd' && !!e.info.wiped },
+      { hat: 'white', t: 'Swap hats. Go into the spare room, where nothing is worth breaking: <code>su room</code>', ok: (e) => isCmd(e, 'su') && e.ok && sh.user === 'room' },
+      { hat: 'black', t: 'The room has its own copy of free-coins. Run it there: <code>~/free-coins</code>', ok: (e) => e.type === 'cmd' && e.info.ran === '/home/room/free-coins' && sh.user === 'room' },
+      { hat: 'white', t: 'Come back and check on your homework: <code>exit</code>, then <code>ls homework</code>', ok: (e) => isCmd(e, 'ls') && sh.user === 'kid' && e.ok && e.args.some((a) => /homework\/?$/.test(a)) },
+    ] },
+  { id: 'layers', demo: [{"choose": 0}, {"choose": 1}, {"choose": 1}, {"choose": 0}, {"choose": 0}, {"choose": 2}, {"choose": 0}, {"choose": 1}], teaches: ['defence-in-depth'], word: 'layers', name: 'Castle layers', stands: 'Defence in depth', color: '#9b5cff', tool: 'term', seq: true, onlyHere: true,
+    visual: `<div class="castle"><div class="cl">strong passwords<div class="cl">no default passwords<div class="cl">locks on files<div class="cl">a spare room<div class="cl-keep">your stuff</div></div></div></div></div></div><p class="tv-note">If one layer fails, the next one still holds.</p>`,
+    title: 'One wall is never enough', why: 'Castles didn\'t have one wall. They had a moat, then a wall, then guards, then a locked tower, so that one mistake didn\'t lose the whole castle. Security engineers build the same way. Every layer you met in this course is one ring of the castle: a strong password, no default passwords, locks on your files, and a spare room for strangers\' programs. The name for this is <b>defence in depth</b>. Now test your castle: something has gone wrong in each story. Which layer still holds?',
+    mnem: 'Lots of good walls beat one perfect wall.',
+    points: ['Nothing is perfect. Every layer will fail one day.', '<b>Defence in depth</b>: put several layers between an attacker and your things, so one failure isn\'t the end.', 'When something goes wrong, ask: which layer failed, and which layer saved me?'],
+    steps: [
+      { t: 'A bot guessed sib\'s password, <b>pizza123</b>, and got in as sib. Is your diary safe?', ok: chose(0), choices: [
+        { c: 'No, it\'s all over', say: 'Not if you built layers! Getting past one wall doesn\'t open every door. Pick again.' },
+        { c: 'Yes: sib has no keys to it', good: true, say: 'Exactly. The password layer failed, and the lock layer held. That\'s least privilege, from Keys you don\'t need.' },
+        { c: 'Yes, bots get bored', say: 'Bots never get bored. They\'re programs: they knock all night. Pick again.' },
+      ] },
+      { t: 'Oops! You ran a "free coins" program without reading it, but in the <b>spare room</b>. What did it get?', ok: chose(1), choices: [
+        { c: 'Nothing: the room can\'t reach my things', good: true, say: 'Right. Reading it first failed, and the spare room held.' },
+        { c: 'All my homework', say: 'Not from the spare room: it can only reach the room\'s own empty folders. Pick again.' },
+        { c: 'My password', say: 'The room doesn\'t have your password: it\'s a different account. Pick again.' },
+      ] },
+      { t: 'Jelly Games leaks its fingerprints again. Who is safe?', ok: chose(2), choices: [
+        { c: 'Nobody: fingerprints can be reversed', say: 'They can\'t: fingerprints only go one way. Attackers can only guess. Pick again.' },
+        { c: 'Only people who never play', say: 'Playing is fine! It\'s the password that matters. Pick again.' },
+        { c: 'Players with three-random-word passwords', good: true, say: 'Yes. Their passwords are on nobody\'s list. The site\'s wall fell, and the strong password held.' },
+      ] },
+      { t: 'You get to build one thing for your castle. Which is better?', ok: chose(3), choices: [
+        { c: 'One perfect wall', say: 'There\'s no such thing as a perfect wall. When it fails, there\'s nothing behind it. Pick again.' },
+        { c: 'Several good layers', good: true, say: '<b>Defence in depth!</b> When one layer fails, the next one still holds.' },
+        { c: 'A secret wall', say: 'Secrets leak. Hiding isn\'t locking. Pick again.' },
+      ] },
     ] },
   { id: 'grey', demo: [{"choose": 0}, {"choose": 2}, {"choose": 0}, {"choose": 2}, {"choose": 0}, {"choose": 2}, {"choose": 0}, {"choose": 2}], teaches: ['disclosure', 'grey-zone'], word: 'grey', name: 'The grey zone', stands: 'Doing the right thing', color: '#ffc61a', tool: 'term', seq: true, onlyHere: true,
     visual: `<div class="permviz"><div class="tz-eq">Found a way in <b>≠</b> allowed in</div><p class="tv-note">Stop. Don't peek. Tell the owner.</p></div>`,
@@ -3058,6 +3164,10 @@ const RECAP = {
   words: {
     hats: { does: 'Black hat breaks in without permission. White hat (ethical hacker) has permission and reports.', ex: 'sign permission-slip.txt', quiz: 'What is the one difference between a black hat and a white hat?' },
     keys: { does: 'Least privilege: only the keys you need. chmod changes the lock.', ex: 'chmod go-rw diary.txt', quiz: 'Lock your diary so only you can read it.' },
+    guess: { does: 'Sites keep a fingerprint (hash) of your password. Attackers guess with lists of popular ones: a dictionary attack.', ex: 'fingerprint purplecactusbanjo', quiz: 'Why is purplecactusbanjo safer than pizza123?' },
+    knock: { does: 'Bots knock on every computer all night. Change every default password: secure by default.', ex: 'grep -c FAILED server.log', quiz: 'What password does every bot try first?' },
+    room: { does: 'Isolation: run programs you don\'t trust where they can\'t reach your things.', ex: 'su room', quiz: 'A download asks for sudo. What do you do?' },
+    layers: { does: 'Defence in depth: several layers, so one failure isn\'t the end.', ex: 'password · default · locks · spare room', quiz: 'Your password leaked. Which layer still protects your diary?' },
     grey: { does: 'Found a way in? Stop, don\'t peek, tell the owner.', ex: 'coordinated vulnerability disclosure', quiz: 'You can see another pupil\'s marks by accident. What now?' },
   },
 };
@@ -3112,7 +3222,7 @@ function confetti(color) {
 }
 
 /* ---------------- the course map (src/curriculum.json) ---------------- */
-const COURSES = [{"id": "shell", "title": "Jelly Shell", "store": "jellyshell.v1", "needs": [], "step": 1, "href": "../jellyshell/", "away": false, "folder": "jellyshell", "blurb": "Boss your computer around with tiny words. Move around folders, read and copy files, and rescue the gerbil."}, {"id": "shell2", "title": "Jelly Shell 2", "store": "jellyshell2.v1", "needs": ["shell"], "step": 2, "href": "../jellyshell2/", "away": false, "folder": "jellyshell2", "blurb": "Who's in charge? Users, groups and file locks. Write your own commands, borrow the boss's power, and use pipes to find out who ate the cookies."}, {"id": "git", "title": "Jelly Git", "store": "jellygit.v1", "needs": ["shell2"], "step": 3, "href": "../jellygit/", "away": false, "folder": "jellygit", "blurb": "Never lose your code again. Save snapshots, undo mistakes and work with other people without stepping on their changes."}, {"id": "security1", "title": "Jelly Security 1", "store": "jellysecurity.v1", "needs": ["shell2"], "step": 3, "href": "../jellysecurity/", "away": false, "folder": "jellysecurity", "blurb": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. Three missions."}, {"id": "web", "title": "Jelly Web", "store": "jellyweb.v1", "needs": ["git"], "step": 4, "href": "../jellyweb/", "away": false, "folder": "jellyweb", "blurb": "Write your own web page, find out how it crosses the planet in under a second, then put it on the internet with GitHub Pages."}, {"id": "security2", "title": "Jelly Security 2", "store": null, "needs": ["web", "security1"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Attack and defend a pretend website: passwords, lookalike addresses, secret pages and who else can see your messages."}, {"id": "think1", "title": "Jelly Think 1", "store": null, "needs": ["web"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Meet Wobble, a jelly robot that does exactly what you say and nothing more. Give it orders in real JavaScript, hunt the bugs, and learn to think like a programmer."}, {"id": "server", "title": "Jelly Server", "store": null, "needs": ["think1"], "step": 6, "href": null, "away": false, "folder": null, "blurb": "Make your website answer back. Write a pretend server in real JavaScript: a guestbook that shows everyone's messages."}, {"id": "think2", "title": "Jelly Think 2", "store": null, "needs": ["think1"], "step": 6, "href": null, "away": false, "folder": null, "blurb": "What computers can't do, what takes forever, what goes wrong when two things happen at once, and what AI really is. Then: what you shouldn't build."}, {"id": "storage", "title": "Jelly Storage", "store": null, "needs": ["server"], "step": 7, "href": null, "away": false, "folder": null, "blurb": "Your guestbook forgets everything when the server restarts. Teach it to remember, with files and JSON."}, {"id": "sql", "title": "Jelly SQL", "store": null, "needs": ["storage"], "step": 8, "href": null, "away": false, "folder": null, "blurb": "Ask a database questions. Find every message from one person, count them, and join tables together."}], COURSE = COURSES.find((c) => c.store === KEY);
+const COURSES = [{"id": "shell", "title": "Shell Jelly", "store": "jellyshell.v1", "needs": [], "step": 1, "href": "../jellyshell/", "away": false, "folder": "jellyshell", "blurb": "Boss your computer around with tiny words. Move around folders, read and copy files, and rescue the gerbil."}, {"id": "shell2", "title": "Shell Jelly 2", "store": "jellyshell2.v1", "needs": ["shell"], "step": 2, "href": "../jellyshell2/", "away": false, "folder": "jellyshell2", "blurb": "Who's in charge? Users, groups and file locks. Write your own commands, borrow the boss's power, and use pipes to find out who ate the cookies."}, {"id": "git", "title": "Git Jelly", "store": "jellygit.v1", "needs": ["shell2"], "step": 3, "href": "../jellygit/", "away": false, "folder": "jellygit", "blurb": "Never lose your code again. Save snapshots, undo mistakes and work with other people without stepping on their changes."}, {"id": "security1", "title": "Security Jelly 1", "store": "jellysecurity.v1", "needs": ["shell2"], "step": 3, "href": "../jellysecurity/", "away": false, "folder": "jellysecurity", "blurb": "Same skills, different permission. Crack passwords, catch bots, trap a sneaky program and lock your files, all on a pretend computer. Seven missions."}, {"id": "web", "title": "Web Jelly", "store": "jellyweb.v1", "needs": ["git"], "step": 4, "href": "../jellyweb/", "away": false, "folder": "jellyweb", "blurb": "Write your own web page, find out how it crosses the planet in under a second, then put it on the internet with GitHub Pages."}, {"id": "security2", "title": "Security Jelly 2", "store": null, "needs": ["web", "security1"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Attack and defend a pretend website: passwords, lookalike addresses, secret pages and who else can see your messages."}, {"id": "think1", "title": "Think Jelly 1", "store": null, "needs": ["web"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Meet Wobble, a jelly robot that does exactly what you say and nothing more. Give it orders in real JavaScript, hunt the bugs, and learn to think like a programmer."}, {"id": "server", "title": "Server Jelly", "store": null, "needs": ["think1"], "step": 6, "href": null, "away": false, "folder": null, "blurb": "Make your website answer back. Write a pretend server in real JavaScript: a guestbook that shows everyone's messages."}, {"id": "think2", "title": "Think Jelly 2", "store": null, "needs": ["think1"], "step": 6, "href": null, "away": false, "folder": null, "blurb": "What computers can't do, what takes forever, what goes wrong when two things happen at once, and what AI really is. Then: what you shouldn't build."}, {"id": "storage", "title": "Storage Jelly", "store": null, "needs": ["server"], "step": 7, "href": null, "away": false, "folder": null, "blurb": "Your guestbook forgets everything when the server restarts. Teach it to remember, with files and JSON."}, {"id": "sql", "title": "SQL Jelly", "store": null, "needs": ["storage"], "step": 8, "href": null, "away": false, "folder": null, "blurb": "Ask a database questions. Find every message from one person, count them, and join tables together."}], COURSE = COURSES.find((c) => c.store === KEY);
 const course = (id) => COURSES.find((c) => c.id === id);
 const courseStore = () => { try { return JSON.parse(localStorage.getItem('jelly.courses')) || {}; } catch { return {}; } };
 const finishedCourse = (id, all = courseStore()) => !!all[id] && all[id].done >= all[id].total;
@@ -3125,7 +3235,7 @@ function nextCourses() {
   return COURSES.filter((c) => c !== COURSE && c.folder && !finishedCourse(c.id, all) && c.needs.every((n) => met.has(n) || finishedCourse(n, all))).slice(0, 2);
 }
 // "What's in it?": a card for any course on the map, with its summary and every word it teaches.
-const RECAPS = {"shell": {"line": "Every command makes this trip, down and back up, in less than a blink.", "words": [["echo hello", "Repeats what you say. Proves the shell is listening."], ["pwd", "Prints the address of the folder you are in."], ["ls -a", "Lists what is in a folder. -a shows hidden files."], ["cd toys", "Walks into a folder. cd .. climbs back up."], ["cd ~", "/ is the root, ~ is home, .. is the parent folder."], ["cat notes.txt", "Prints a file on the screen. Glues files together."], ["mkdir fort", "Makes a folder. touch makes an empty file."], ["cp pizza.txt pizza2.txt", "Copies a file: first where it IS, then where it GOES."], ["mv hamster.txt hammy.txt", "Moves or renames. Same job: change the label."], ["rm broccoli.txt", "Deletes forever. No undo! Add -r for folders."], ["Ctrl+C", "Tab finishes words, ↑ remembers, Ctrl+C stops, clear wipes."], ["man ls", "Opens the built-in manual for any command."], ["ls · cd · cat · mv", "Look, walk, read and move, all together."]]}, "shell2": {"line": "Every file has an owner, a group and a lock. The kernel checks your keys every single time.", "words": [["whoami", "Prints which account you are using. The prompt says it too: who@computer:where$"], ["echo hi > note.txt", "> sends a command's words into a file. >> adds to the end."], ["nano note.txt", "A little text editor in the terminal. Ctrl+O saves, Ctrl+X exits."], ["which ls", "Every command is a program file. which says where it lives."], ["./hello", "A script is a file of commands. ./ runs the one in this folder."], ["ls -l", "Shows every lock: owner, group and everyone else. r read, w write, x run."], ["chmod u+x hello", "Changes a lock. Who (u g o a), + or -, which keys."], ["echo $PATH", "The PATH is where the shell looks for programs. Put yours in ~/bin to use it anywhere."], ["chgrp family comics", "id shows your groups. A group shares the middle set of keys."], ["su sib", "Become another user, with their keys. exit comes back."], ["sudo whoami", "One command as root, the boss user. Only the sudo group may. Think first!"], ["grep cookie diary.txt", "Prints every line with a word in it. -i ignores capitals."], ["grep cookie kitchen.log | wc -l", "Pours one command's words into the next one."], ["chmod 600 note.txt", "r = 4, w = 2, x = 1. Add them for each set: 644, 755, 600."], ["su sib", "Build it, lock it, test it as someone else."]]}, "git": {"line": "Cats Always Chase Pigeons: Change, Add, Commit, Push. And git pull brings it all back down.", "words": [["git --version", "git is the camera. GitHub keeps the album safe."], ["git config --global user.name \"Sam\"", "Signs your photos with your name and email."], ["git init", "Turns a folder into a repository by adding .git."], ["git status", "Says what changed and what is on the stage."], ["git add .", "Puts files on the stage, ready for the photo."], ["git commit -m \"add lasers\"", "Takes a photo of the stage, with a message."], ["git log --oneline", "Shows the album: every photo, newest first."], ["git diff", "Spots the difference: + lines new, - lines gone."], ["git restore game.py", "The oops button: back to the saved version."], ["git remote add origin <address>", "Saves GitHub's address under the nickname origin."], ["git push", "Sends your photos up to GitHub."], ["git pull", "clone copies it all down. pull fetches new photos."], ["echo \"secrets.txt\" > .gitignore", ".gitignore keeps secrets and junk out of git."], ["git add . · git commit -m \"…\" · git push", "Change, add, commit, push: the daily loop."]]}, "security1": {"line": "Same skills, different permission. Attack only with permission, fix what you find, tell the owner.", "words": [["sign permission-slip.txt", "Black hat breaks in without permission. White hat (ethical hacker) has permission and reports."], ["chmod go-rw diary.txt", "Least privilege: only the keys you need. chmod changes the lock."], ["coordinated vulnerability disclosure", "Found a way in? Stop, don't peek, tell the owner."]]}, "web": {"line": "Every page you have ever seen made this trip, there and back, in less than a second.", "words": [["418 I'm a teapot", "200 yay, 301 over there, 404 not found, 500 server broke."], ["View source", "The text that every web page is made of."], ["<h1>Hi!</h1>", "A tag opens a box. The same tag with a slash is its lid."], ["<p>I like <b>cheese</b></p>", "Boxes go inside boxes. Last opened, first closed."], ["<hr/>", "A tag with nothing inside closes itself with />."], ["<ul><li>pizza</li></ul>", "A list box, with an <li></li> box for every item."], ["<a href=\"about.html\">About</a>", "A link. href says where it jumps to."], ["<img src=\"cat.png\" alt=\"A cat\"/>", "A picture. It stands alone: src says where, alt says what."], ["h1 { color: tomato; }", "Paints the page. Styles pour down like a waterfall."], ["https://jelly.fun/snacks/", "An address: how, which computer, which file."], ["curl https://jelly.fun", "Fetches a page and shows it as plain text."], ["curl -v https://jelly.fun", "The letter your browser sends: \"give me this, please\"."], ["nslookup jelly.fun", "The phonebook that turns names into numbers."], ["ping jelly.fun", "Sonar for computers: how long there and back?"], ["https://", "The padlock: letters in a locked box, not postcards."], ["git add . · commit · push", "Sends your site to GitHub Pages, live for everyone."], ["edit · git push", "Look, fix, check, publish. All of it together."]]}};
+const RECAPS = {"shell": {"line": "Every command makes this trip, down and back up, in less than a blink.", "words": [["echo hello", "Repeats what you say. Proves the shell is listening."], ["pwd", "Prints the address of the folder you are in."], ["ls -a", "Lists what is in a folder. -a shows hidden files."], ["cd toys", "Walks into a folder. cd .. climbs back up."], ["cd ~", "/ is the root, ~ is home, .. is the parent folder."], ["cat notes.txt", "Prints a file on the screen. Glues files together."], ["mkdir fort", "Makes a folder. touch makes an empty file."], ["cp pizza.txt pizza2.txt", "Copies a file: first where it IS, then where it GOES."], ["mv hamster.txt hammy.txt", "Moves or renames. Same job: change the label."], ["rm broccoli.txt", "Deletes forever. No undo! Add -r for folders."], ["Ctrl+C", "Tab finishes words, ↑ remembers, Ctrl+C stops, clear wipes."], ["man ls", "Opens the built-in manual for any command."], ["ls · cd · cat · mv", "Look, walk, read and move, all together."]]}, "shell2": {"line": "Every file has an owner, a group and a lock. The kernel checks your keys every single time.", "words": [["whoami", "Prints which account you are using. The prompt says it too: who@computer:where$"], ["echo hi > note.txt", "> sends a command's words into a file. >> adds to the end."], ["nano note.txt", "A little text editor in the terminal. Ctrl+O saves, Ctrl+X exits."], ["which ls", "Every command is a program file. which says where it lives."], ["./hello", "A script is a file of commands. ./ runs the one in this folder."], ["ls -l", "Shows every lock: owner, group and everyone else. r read, w write, x run."], ["chmod u+x hello", "Changes a lock. Who (u g o a), + or -, which keys."], ["echo $PATH", "The PATH is where the shell looks for programs. Put yours in ~/bin to use it anywhere."], ["chgrp family comics", "id shows your groups. A group shares the middle set of keys."], ["su sib", "Become another user, with their keys. exit comes back."], ["sudo whoami", "One command as root, the boss user. Only the sudo group may. Think first!"], ["grep cookie diary.txt", "Prints every line with a word in it. -i ignores capitals."], ["grep cookie kitchen.log | wc -l", "Pours one command's words into the next one."], ["chmod 600 note.txt", "r = 4, w = 2, x = 1. Add them for each set: 644, 755, 600."], ["su sib", "Build it, lock it, test it as someone else."]]}, "git": {"line": "Cats Always Chase Pigeons: Change, Add, Commit, Push. And git pull brings it all back down.", "words": [["git --version", "git is the camera. GitHub keeps the album safe."], ["git config --global user.name \"Sam\"", "Signs your photos with your name and email."], ["git init", "Turns a folder into a repository by adding .git."], ["git status", "Says what changed and what is on the stage."], ["git add .", "Puts files on the stage, ready for the photo."], ["git commit -m \"add lasers\"", "Takes a photo of the stage, with a message."], ["git log --oneline", "Shows the album: every photo, newest first."], ["git diff", "Spots the difference: + lines new, - lines gone."], ["git restore game.py", "The oops button: back to the saved version."], ["git remote add origin <address>", "Saves GitHub's address under the nickname origin."], ["git push", "Sends your photos up to GitHub."], ["git pull", "clone copies it all down. pull fetches new photos."], ["echo \"secrets.txt\" > .gitignore", ".gitignore keeps secrets and junk out of git."], ["git add . · git commit -m \"…\" · git push", "Change, add, commit, push: the daily loop."]]}, "security1": {"line": "Same skills, different permission. Attack only with permission, fix what you find, tell the owner.", "words": [["sign permission-slip.txt", "Black hat breaks in without permission. White hat (ethical hacker) has permission and reports."], ["chmod go-rw diary.txt", "Least privilege: only the keys you need. chmod changes the lock."], ["fingerprint purplecactusbanjo", "Sites keep a fingerprint (hash) of your password. Attackers guess with lists of popular ones: a dictionary attack."], ["grep -c FAILED server.log", "Bots knock on every computer all night. Change every default password: secure by default."], ["su room", "Isolation: run programs you don't trust where they can't reach your things."], ["password · default · locks · spare room", "Defence in depth: several layers, so one failure isn't the end."], ["coordinated vulnerability disclosure", "Found a way in? Stop, don't peek, tell the owner."]]}, "web": {"line": "Every page you have ever seen made this trip, there and back, in less than a second.", "words": [["418 I'm a teapot", "200 yay, 301 over there, 404 not found, 500 server broke."], ["View source", "The text that every web page is made of."], ["<h1>Hi!</h1>", "A tag opens a box. The same tag with a slash is its lid."], ["<p>I like <b>cheese</b></p>", "Boxes go inside boxes. Last opened, first closed."], ["<hr/>", "A tag with nothing inside closes itself with />."], ["<ul><li>pizza</li></ul>", "A list box, with an <li></li> box for every item."], ["<a href=\"about.html\">About</a>", "A link. href says where it jumps to."], ["<img src=\"cat.png\" alt=\"A cat\"/>", "A picture. It stands alone: src says where, alt says what."], ["h1 { color: tomato; }", "Paints the page. Styles pour down like a waterfall."], ["https://jelly.fun/snacks/", "An address: how, which computer, which file."], ["curl https://jelly.fun", "Fetches a page and shows it as plain text."], ["curl -v https://jelly.fun", "The letter your browser sends: \"give me this, please\"."], ["nslookup jelly.fun", "The phonebook that turns names into numbers."], ["ping jelly.fun", "Sonar for computers: how long there and back?"], ["https://", "The padlock: letters in a locked box, not postcards."], ["git add . · commit · push", "Sends your site to GitHub Pages, live for everyone."], ["edit · git push", "Look, fix, check, publish. All of it together."]]}};
 function courseCard(id) {
   const c = course(id), r = RECAPS[id], here = c === COURSE, all = courseStore();
   const status = here ? 'You are here' : finishedCourse(id, all) ? 'Finished ✓' : !c.folder ? 'Coming later' : c.needs.length ? `Comes after ${c.needs.map((n) => course(n).title).join(' and ')}` : 'The first course';
@@ -3319,7 +3429,7 @@ async function prFlush(ms = 3000) {
     if (typeof t.fn === 'function') t.fn(...t.a);
   }
 }
-// Jelly Web's browser, as a frame needs it (null in guides without one, or before the first page).
+// Web Jelly's browser, as a frame needs it (null in guides without one, or before the first page).
 const prBrowser = () => typeof BW === 'undefined' || !BW.url ? null : {
   url: BW.url, view: BW.view, lock: bwLock.className, lockHtml: bwLock.innerHTML, journey: bwJourney.innerHTML, pop: bwPop.hidden ? '' : bwPop.innerHTML,
   page: BW.view === 'page' ? bwFrame.srcdoc : BW.view === 'source' ? $('#bwSource').innerHTML : $('#bwBoxes').innerHTML,
@@ -3330,7 +3440,7 @@ async function prLoaded(before) {
   await new Promise((r) => { const done = () => { bwFrame.removeEventListener('load', done); r(); }; bwFrame.addEventListener('load', done); CLOCK.real.setTimeout.call(window, done, 1500); });
   await prFlush();
 }
-// Jelly Web has a terminal and an editor in one place: switch to the one the next action needs.
+// Web Jelly has a terminal and an editor in one place: switch to the one the next action needs.
 const prTool = (t) => { const tab = document.querySelector(`.wtab[data-tool=${t}]`); if (tab && WB.tool !== t) tab.click(); };
 
 // Run every lesson's demo once, silently, and record a frame for each thing worth a whole screen.
@@ -3341,7 +3451,7 @@ const prTool = (t) => { const tab = document.querySelector(`.wtab[data-tool=${t}
 //   { choose: n | 'good' | 'bad' }   pick a choice card      { wait: ms }  let time pass (here it already does: see prFlush)
 async function prCapture() {
   const frames = [{ k: 'intro' }], muted = sound.muted, ok = [];
-  // the overview (Jelly Shell, Git and Web): one frame per step of the 3D town, right after the intro
+  // the overview (Shell Jelly, Git and Web): one frame per step of the 3D town, right after the intro
   if (PR.townGo && PANELS.some((p) => p.id === 'whole')) TOWN_STEPS.forEach((_, n) => frames.push({ k: 'whole', n }));
   sound.muted = true; store.done = {}; store.steps = {};
   clockOn();
@@ -3436,7 +3546,7 @@ function prShow(f, animate) {
   if (PR.town) { PR.town.active = f.k === 'whole'; }
   if (f.k === 'whole') { if ($('#town').parentNode !== $('#prTown')) $('#prTown').append($('#town')); PR.town.resize(); PR.townGo(f.n); }
   if (f.k === 'jar') { store.done = Object.fromEntries(LESSONS.map((x) => [x.id, true])); paintProgress(); openJar(COURSE.id); }
-  if (f.k === 'title' || f.k === 'intro') prJelly(f.k === 'intro' ? COURSE.title.replace(/^Jelly /, '').toLowerCase() : L.word, L?.color);
+  if (f.k === 'title' || f.k === 'intro') prJelly(f.k === 'intro' ? COURSE.title.replace(' Jelly', '').toLowerCase() : L.word, L?.color);
   if (f.k === 'nano') $('.pr-nano-text').textContent = f.text;
   if (f.k === 'term') $('.pr-typed').textContent = f.after ?? f.cmd;
   if (f.k === 'browser') $('.pr-url').textContent = f.url;
@@ -3469,7 +3579,7 @@ async function prType(el, text, then, f) {
   PR.typing = null;
 }
 // The file tree after the step, with rows that are new or changed marked.
-// Jelly Git's map keeps its four zones, with its changed rows marked the same way.
+// Git Jelly's map keeps its four zones, with its changed rows marked the same way.
 function prDiff(before, after) {
   const parse = (h) => { const t = document.createElement('template'); t.innerHTML = h; return t.content; }, rows = (c) => [...c.querySelectorAll('.mrow,.grow')], key = (r) => r.dataset.path ?? r.dataset.k ?? r.textContent;
   const old = new Map(rows(parse(before)).map((r) => [key(r), r.outerHTML])), now = parse(after);
@@ -3825,25 +3935,72 @@ $('#recapBtn').onclick = () => go('recap');
 
 /* ---------------- security: users, locks and hats ---------------- */
 // The shell (locks, su, chmod) is jellysh, in src/shell/jellysh.js. This file gives it the two people on this
-// pretend computer, the made-up sign command, and Jelly Security's voice.
-// The same people and groups as Jelly Shell 2, which comes first: everyone has a group named after them, and family
+// pretend computer, the made-up sign command, and Security Jelly's voice.
+// The same people and groups as Shell Jelly 2, which comes first: everyone has a group named after them, and family
 // is a shared club. So a child sees the same owners and groups in ls -l as before.
-const SEC_USERS = { root: { uid: 0, groups: ['root'] }, kid: { uid: 1000, groups: ['kid', 'sudo', 'family'] }, sib: { uid: 1001, groups: ['sib', 'family'] } };
+// room is a spare account with nothing worth breaking, for running strangers' programs (A room of its own).
+const SEC_USERS = { root: { uid: 0, groups: ['root'] }, kid: { uid: 1000, groups: ['kid', 'sudo', 'family'] }, sib: { uid: 1001, groups: ['sib', 'family'] }, room: { uid: 1003, groups: ['room'] } };
 const own = SH.own, grp = SH.grp, modeOf = SH.modeOf, can = SH.can, triplet = SH.triplet, modeStr = SH.modeStr;
 // The lock in colour, so the three sets of keys stand apart (everyone-else keys glow when they let anyone in).
 const modeHTML = (n) => { const m = modeOf(n); return `<span class="perm">${n.type === 'dir' ? 'd' : '-'}<b class="pu">${triplet(m, 6)}</b><b class="pg">${triplet(m, 3)}</b><b class="po${m & 0o6 ? ' open' : ''}">${triplet(m, 0)}</b></span>`; };
 const inGroup = (n) => SEC_USERS[sh.user]?.groups.includes(grp(n));
-// Who owns what when the pretend computer starts, as in Jelly Shell 2. The diary is the hole: its lock gives
+/* the missions' props: a leaked list of fingerprints, the attackers' cracking list, a game server and its log, a "free coins" mod */
+// HQ's pretend fingerprint machine. Real ones (hash functions, like sha256sum) make much longer fingerprints.
+const fingerprintOf = (s) => { let h = 0x811c9dc5; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
+const COMMON = ['123456', 'password', '123456789', 'qwerty', '12345678', '111111', '1234567', 'iloveyou', 'abc123', 'password1', '123123', 'football', 'monkey', 'dragon', 'sunshine', 'princess', 'letmein', 'shadow', 'master', 'superman', 'batman', 'pokemon', 'minecraft', 'roblox', 'roblox123', 'fortnite', 'pizza', 'pizza123', 'jellybean', 'jelly123', 'chocolate', 'unicorn', 'starwars', 'hello123', 'welcome', 'admin', 'qwerty123', '000000', '654321', 'liverpool', 'chelsea', 'arsenal', 'cheese', 'banana', 'summer', 'flower', 'soccer', 'charlie', 'cookie', 'cookie123', 'pepper', 'daisy', 'lucky', 'hunter', 'ninja', 'purple', 'orange', 'abcd1234', 'trustno1', 'freedom', 'whatever', 'computer', 'internet', 'gaming', 'gamer123', 'noob123', 'hacker', 'secret', 'secret123', 'passw0rd', 'iloveyou1', 'zxcvbnm', 'asdfgh', 'raspberry', 'toor'];
+const COMMON_FP = new Set(COMMON.map(fingerprintOf));
+const strongPassword = (p) => p.length >= 12 && !COMMON.includes(p.toLowerCase()) && !COMMON_FP.has(fingerprintOf(p));
+const PLAYERS = [['ava', 'tigerlanternbiscuit'], ['max', 'football'], ['sib', 'pizza123'], ['zed', 'dragon']];
+// Last night on the game server: bots knocking every few seconds, and one getting in with the default password.
+function serverLog() {
+  const tries = [['root', '123456'], ['admin', 'password'], ['pi', 'raspberry'], ['root', 'root'], ['admin', '1234'], ['user', 'user'], ['test', 'test'], ['admin', '12345'], ['root', 'toor'], ['guest', 'guest'], ['root', 'password']];
+  const clock = (t) => [t / 3600, t / 60 % 60, t % 60].map((v) => String(Math.floor(v)).padStart(2, '0')).join(':');
+  const line = (t, u, p, bot) => `${clock(t)}  FAILED  user=${u.padEnd(6)} password=${p.padEnd(10)} from=bot-${bot}`;
+  let r = 7, t = 3 * 3600 + 12 * 60 + 7;
+  const rnd = () => (r = (r * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const lines = ['# server.log: who knocked on the jelly game server last night', line(t, 'root', '123456', 4471), line(t += 2, 'admin', 'password', 2210), line(t += 3, 'pi', 'raspberry', 7318)];
+  while (t < 5 * 3600 + 41 * 60) { const [u, p] = tries[Math.floor(rnd() * tries.length)]; t += 1 + Math.floor(rnd() * 12); lines.push(line(t, u, p, 1000 + Math.floor(rnd() * 9000))); }
+  return [...lines, '05:41:07  OK      user=admin  password=admin      from=bot-0932', '05:41:09  bot-0932 started using the server to send spam'].join('\n');
+}
+const FREE_COINS = '# FREE COINS for Jelly Games!!! 1000 coins, no catch\necho "Adding 1000 free coins..."\nrm -r ~/homework\necho "Done! Enjoy your coins :)"';
+// The files the missions add to the pretend computer (seeded with the rest in build.py).
+const SEC_FILES = {
+  kid: {
+    'leak/': {
+      'players.txt': 'LEAKED from Jelly Games (a pretend game site)\nname   password fingerprint\n' + PLAYERS.map(([n, p]) => `${n.padEnd(6)} ${fingerprintOf(p)}`).join('\n'),
+      'common.txt': '# The attackers\' cracking list: popular passwords, fingerprinted in advance.\n# fingerprint  password   (a real list has millions of lines)\n' + COMMON.map((p) => `${fingerprintOf(p)}  ${p}`).join('\n'),
+    },
+    'server/': { 'server.log': serverLog(), 'settings.txt': '# Jelly game server settings\nadmin_password=admin' },
+    'Downloads/': { 'free-coins': FREE_COINS },
+    'homework/': { 'essay.txt': 'My holiday, by kid. We went to the beach and a seagull stole my chips.', 'maths.txt': '7 x 8 = 56\n9 x 6 = 54\n12 x 12 = 144' },
+  },
+  room: { 'free-coins': FREE_COINS, 'readme.txt': 'This is the spare room. Nothing in here is worth breaking.' },
+};
+// Is the game server safe now? Its password must be strong (and no longer the default).
+function serverSafe() {
+  const p = find('/home/kid/server/settings.txt')?.content.match(/admin_password=(\S+)/)?.[1];
+  return !!p && strongPassword(p);
+}
+
+const setOwner = (n, owner, group) => { n.owner = owner; n.group = group; n.children?.forEach((c) => setOwner(c, owner, group)); };
+// Who owns what when the pretend computer starts, as in Shell Jelly 2. The diary is the hole: its lock gives
 // everyone else the keys too, so sib gets in as "everyone else".
 function secPerms() {
-  const set = (n, owner, group) => { n.owner = owner; n.group = group; n.children?.forEach((c) => set(c, owner, group)); };
-  set(sh.root, 'root', 'root');
+  setOwner(sh.root, 'root', 'root');
   find('/bin').children.forEach((c) => { c.mode = 0o755; });
-  set(find('/home/kid'), 'kid', 'kid'); set(find('/home/sib'), 'sib', 'sib');
+  setOwner(find('/home/kid'), 'kid', 'kid'); setOwner(find('/home/sib'), 'sib', 'sib'); setOwner(find('/home/room'), 'room', 'room');
   find('/home/kid/diary.txt').mode = 0o666;
   find('/home/sib/plans.txt').mode = 0o600;
+  // downloads can't run until someone gives them an x key; the spare room's copy is ready to run; homework is kid's alone
+  find('/home/kid/Downloads/free-coins').mode = 0o644; find('/home/room/free-coins').mode = 0o755;
+  find('/home/kid/homework').mode = 0o700; find('/home/kid/server/settings.txt').mode = 0o600;
   // sign is a made-up command, so its program is readable text: proof that anyone can write one.
-  find('/bin/sign').content = '# sign: a tiny program written by Jelly Security HQ.\n# It adds your name to the end of a file.\n# The shell runs these lines one by one.\necho "  Signed: kid, ethical hacker (white hat)" >> permission-slip.txt\necho "Signed! You may now test this pretend computer."';
+  find('/bin/sign').content = '# sign: a tiny program written by Security Jelly HQ.\n# It adds your name to the end of a file.\n# The shell runs these lines one by one.\necho "  Signed: kid, ethical hacker (white hat)" >> permission-slip.txt\necho "Signed! You may now test this pretend computer."';
+}
+// After free-coins wipes the homework, the sandbox puts a fresh copy back so the fix can be tried.
+function restoreHomework() {
+  const hw = seed().children.find((n) => n.name === 'home').children.find((n) => n.name === 'kid').children.find((n) => n.name === 'homework'), kid = find('/home/kid');
+  hw.parent = kid; kid.children.push(hw); setOwner(hw, 'kid', 'kid'); hw.mode = 0o700;
 }
 // Explain a new idea the first time it turns up, not every time.
 const once = (k) => !store.seen?.[k] && ((store.seen ??= {})[k] = true, save(), true);
@@ -3855,7 +4012,7 @@ SH.configure({
     modeHTML,
     before: (c) => {
       base.before?.(c);
-      if (c.cmd === 'ls' && c.flags.has('l') && once('perm')) c.say('(Remember the locks from Jelly Shell 2: d or -, then three sets of keys, for the owner, the group and everyone else. r = read, w = write, x = run, - = no key.)', 'tip');
+      if (c.cmd === 'ls' && c.flags.has('l') && once('perm')) c.say('(Remember the locks from Shell Jelly 2: d or -, then three sets of keys, for the owner, the group and everyone else. r = read, w = write, x = run, - = no key.)', 'tip');
     },
     denied: (c, { op, node, tip }) => {
       if (tip) return op === 'write' ? `You are ${sh.user}, and that set of keys has no w (write) key.` : tip;
@@ -3868,7 +4025,9 @@ SH.configure({
       'chmod.number': '(The number way is a shortcut that needs binary: each digit is three on/off switches, r = 4, w = 2, x = 1. The letter way says the same thing in words: chmod go-rw diary.txt)',
       'chmod.letters': 'Say who (u = owner, g = group, o = others), then + or -, then which keys (r, w, x). Like: chmod go-rw diary.txt',
       'su.root': 'root is the boss user of the whole computer, and being root is not part of this mission. Yes, root again! It is also the name of the very top folder, /. Same word, two meanings. Try: su sib',
-      'su.who': 'The users on this computer are kid and sib.',
+      'su.who': 'The users on this computer are kid and sib, plus a spare account called room.',
+      // a fingerprint that isn't on the list is the good outcome, not a typo
+      'grep.nothing': /"[0-9a-f]{8}"/.test(text) ? '(no lines contain it: that fingerprint is not on the list)' : undefined,
     })[key] ?? (base.tip ? base.tip(key, text) : text),
     after: (c) => {
       base.after?.(c);
@@ -3890,7 +4049,20 @@ SH.configure({
         c.say(`(su means switch user. You are now ${c.info.user}, so you only have ${c.info.user}'s keys. Look at the prompt: it says ${c.info.user}@jelly. Type exit to go back.)`, 'mute');
         c.say('(On a real computer, su asks for that person\'s password. The sandbox skips it so you can practise.)', 'tip');
       }
-      if (c.cmd === 'exit' && c.info.left) c.say('(exit leaves sib\'s shell, so you are back to being kid, with kid\'s keys. Look at the prompt.)', 'mute');
+      if (c.cmd === 'exit' && c.info.left) c.say(`(exit leaves ${c.info.left}'s shell, so you are back to being kid, with kid's keys. Look at the prompt.)`, 'mute');
+      if (c.cmd === 'su' && c.info.user === 'room' && taught('isolation')) c.note(shelly('Welcome to the spare room. <b>room</b> is an account with nothing worth breaking, and no keys to your homework. Look at the prompt: you are room now.'));
+      if (c.cmd === 'grep' && c.args.includes('b76b2dbb') && c.info.matches && taught('dictionary-attack')) c.note(shelly('Cracked! sib\'s password is <b>pizza123</b>. You never turned the fingerprint back: you found it on a list of popular passwords. That is a <b>dictionary attack</b>, and it works on any password that lots of people use.'));
+      if (c.cmd === 'grep' && store.newFp && c.args.includes(store.newFp) && !c.info.matches && taught('dictionary-attack')) c.note(shelly('No match! The attackers\' list only holds popular passwords, and yours isn\'t one. Three random words from a list of 7,000 words make about 300 billion mixes. The guessing machine would be at it for centuries.'));
+      if (c.cmd === 'grep' && c.args.includes('-c') && c.args.includes('FAILED') && taught('bots')) c.note(shelly('All those knocks in one night, while everyone was asleep. Every one of them is a bot trying a password from its list.'));
+      if (c.cmd === 'grep' && c.args.includes('OK') && c.info.matches && taught('bots')) c.note(shelly('At 05:41 a bot got in with user <b>admin</b> and password <b>admin</b>. Nobody guessed anything clever: <b>admin</b> was the password the server came with, its <b>default password</b>. Every bot tries it first.'));
+      // the "free coins" mod: as kid it wipes the homework; in the spare room it can't reach it
+      if (c.info.ran === '/home/kid/Downloads/free-coins' && sh.user === 'kid' && !find('/home/kid/homework')) {
+        c.info.wiped = true;
+        c.note(shelly('Coins? No. But your <b>homework</b> folder is gone! While it printed "Adding coins", line 3 ran <b>rm -r ~/homework</b>. The program got your keys the moment you ran it.'));
+        restoreHomework();
+        c.say('(The sandbox put your homework back so you can try the fix. A real computer couldn\'t, unless you had a backup.)', 'tip');
+      }
+      if (c.info.ran === '/home/room/free-coins' && sh.user === 'room' && taught('isolation')) c.note(shelly('Same program, same trap. But in room\'s account, <b>~</b> means <b>/home/room</b>, and there is no homework there. It tried to wreck an empty room. Your homework was never in reach.'));
     },
   },
 });
@@ -3899,9 +4071,39 @@ SH.define('sign', (c) => {
   if (!n || !n.name.startsWith('permission-slip')) return c.fail('sign: what should I sign?', 'Try: sign permission-slip.txt');
   if (!store.signed) { n.content += '\n  Signed: kid, ethical hacker (white hat)'; store.signed = true; save(); }
   c.say('Signed! You may now test this pretend computer. Only this one.', 'tip'); c.info.signed = true;
-  if (once('sign')) { c.note(shelly('Where did <b>sign</b> come from? Jelly Security HQ wrote it! A command is just a program, and programs live in <b>/bin</b>. Anyone can write a program and call it whatever they like. This one is only a few lines of text: peek inside with <b>cat /bin/sign</b>')); c.note(tryCmd('cat /bin/sign')); }
+  if (once('sign')) { c.note(shelly('Where did <b>sign</b> come from? Security Jelly HQ wrote it! A command is just a program, and programs live in <b>/bin</b>. Anyone can write a program and call it whatever they like. This one is only a few lines of text: peek inside with <b>cat /bin/sign</b>')); c.note(tryCmd('cat /bin/sign')); }
 });
-SH.define('help', (c) => { c.say('Security words: ' + ['ls -l', 'chmod', 'su', 'exit', 'whoami', 'id', 'sign'].join('  ')); c.say('Shell words: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'clear', 'man', 'history'].join('  ')); });
+// The guessing machine's fingerprint maker. It shows what the mission needs: same in, same out; one letter changed, all changed.
+SH.define('fingerprint', (c) => {
+  const w = c.rest[0];
+  if (!w) return c.fail('fingerprint: what should I fingerprint?', 'Try: fingerprint jelly');
+  const fp = fingerprintOf(w);
+  c.say(fp);
+  if (!taught('hashing')) return c.say('(That program is for a later mission: The guessing machine.)', 'tip');
+  const last = store.lastFp; store.lastFp = w; save();
+  if (last && last !== w && last.toLowerCase() === w.toLowerCase()) return c.note(shelly(`One capital letter, and the whole fingerprint changed! That's on purpose: a fingerprint gives away nothing about the password, so you can't work backwards from it.`));
+  if (store.steps.guess?.[4]) {
+    if (COMMON.includes(w.toLowerCase())) return c.note(shelly(`Careful: <b>${esc(w)}</b> is on the attackers' list of popular passwords. Try three random words stuck together, like purplecactusbanjo.`));
+    if (w.length < 12) return c.note(shelly(`That's only ${w.length} letters. Short passwords fall first. Try three random words stuck together, like purplecactusbanjo.`));
+    c.info.strong = true; store.newFp = fp; save();
+    return c.note(shelly(`${w.length} letters, and three random words are on nobody's list. Its fingerprint is <b>${fp}</b>. Now put the black hat on and check:`) + ' ' + tryCmd(`grep ${fp} leak/common.txt`));
+  }
+  c.note(shelly(`That jumble is the fingerprint of <b>${esc(w)}</b>. Run it again and you'll get exactly the same one, every time.`));
+});
+// HQ's practice bots: they knock the way last night's did, with the same lists of passwords.
+SH.define('bots', (c) => {
+  if (!taught('bots')) return c.say('(That program is for a later mission: Knock knock, all night.)', 'tip');
+  const p = find('/home/kid/server/settings.txt')?.content.match(/admin_password=(\S+)/)?.[1] ?? '';
+  const knocks = (find('/home/kid/server/server.log')?.content.match(/FAILED/g) ?? []).length;
+  c.say('HQ\'s practice bots are knocking, the way last night\'s did...');
+  [['4471', 'root', '123456'], ['2210', 'admin', 'password'], ['7318', 'pi', 'raspberry']].forEach(([b, u, w]) => c.say(`bot-${b}  ${u.padEnd(6)} / ${w.padEnd(10)} FAILED`));
+  if (p === 'admin') { c.say('bot-0932  admin  / admin      OK      got in!'); c.say('Got in: 1'); return c.note(shelly('The default password is still there, so the bots walked straight in again. Change it in <b>server/settings.txt</b>.')); }
+  if (!strongPassword(p)) { c.say(`bot-5120  admin  / ${p.padEnd(10)} OK      got in!`); c.say('Got in: 1'); return c.note(shelly(`<b>${esc(p)}</b> is short or popular, so it's on the bots' list too. Try three random words.`)); }
+  c.say('bot-0932  admin  / admin      FAILED   (last night this one got in)');
+  c.say(`...and ${knocks.toLocaleString('en-GB')} more knocks: all FAILED.`); c.say('Got in: 0');
+  c.note(shelly('Not one bot got in. They still knock all night, but now the door holds. Real gadgets should come like this out of the box, with no default password at all: that is <b>secure by default</b>.'));
+});
+SH.define('help', (c) => { c.say('Security words: ' + ['ls -l', 'chmod', 'su', 'exit', 'whoami', 'id', 'sign', 'fingerprint', 'bots'].join('  ')); c.say('Shell words: ' + ['pwd', 'ls', 'cd', 'cat', 'echo', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'grep', 'head', 'wc', 'clear', 'man', 'history'].join('  ')); });
 
 /* the hats: each mission step says which hat you are wearing */
 const HATS = {
@@ -3937,6 +4139,21 @@ resetFS(); welcome(); paintPrompt(); renderMap(); paintProgress();
 go(location.hash.slice(1) || store.panel || 'welcome');
 try { await Promise.race([document.fonts.load('64px "Titan One"'), sleep(2500)]); } catch {}
 fitNow();
+
+// The lesson's jelly letters, full screen, for squishing. The same canvas moves into the overlay and back, so the
+// letters carry on wobbling where they were.
+document.body.insertAdjacentHTML('beforeend', '<div class="jelly-full" id="jellyFull" hidden role="dialog" aria-label="Jelly letters, full screen"><button class="jelly-close" id="jellyClose" type="button" aria-label="Close (Esc)" title="Close (Esc)">✕</button><p class="jelly-full-tip">Grab, squish and fling the letters. Tap one to make it hop.</p></div>');
+$('.ljelly').insertAdjacentHTML('beforeend', '<button class="ljelly-grow" id="jellyGrow" type="button" aria-label="Make the jelly letters full screen" title="Full screen">⤢</button>');
+function jellyFull(open) {
+  if (open === !$('#jellyFull').hidden) return;
+  $('#jellyFull').hidden = !open;
+  if (open) { jellyFull.back = document.activeElement; $('#jellyFull').prepend($('#lessonJelly')); $('#jellyClose').focus(); sound.boing(420, .3, .08); }
+  else { $('.ljelly').prepend($('#lessonJelly')); jellyFull.back?.focus?.({ preventScroll: true }); }
+}
+$('#jellyGrow').onclick = () => jellyFull(true);
+$('#jellyClose').onclick = () => jellyFull(false);
+// While it's open, keys belong to it: Escape closes, and Enter can't carry on the lesson hidden behind it.
+addEventListener('keydown', (e) => { if ($('#jellyFull').hidden) return; e.stopImmediatePropagation(); if (e.key === 'Escape') { e.preventDefault(); jellyFull(false); } }, true);
 
 // 3D only starts on a big enough screen. The gate is pure CSS; this keeps phones from paying for WebGL they won't show.
 const roomy = () => !!PRESENT || (innerWidth >= 900 && innerHeight >= 560);

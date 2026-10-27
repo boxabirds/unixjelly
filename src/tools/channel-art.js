@@ -1,9 +1,9 @@
-/* ---------------- channel art studio (tools/brand.mjs adds this to the built Jelly Shell 2 page) ---------------- */
+/* ---------------- channel art studio (tools/brand.mjs adds this to the built Shell Jelly 2 page) ---------------- */
 // Draws "Unix Jelly" at each channel's size, live, with the guides' own jelly. ART (the sizes and the three variations)
 // is defined just above this by tools/brand.mjs. Save PNG exports the exact size; artRender() is the headless renderer's.
 {
   for (const el of document.body.children) el.style.display = 'none'; // the guide underneath would keep its own 3D running
-  document.title = 'Jelly Unix Channel Art';
+  document.title = 'Unix Jelly Channel Art';
   const css = document.createElement('style');
   css.textContent = `
     :root { --art-bg: #eef3fb; --art-fg: #24133b; --art-muted: #5d5470; --art-line: #cfd6e6; --art-chip: #ffffff; --art-on: #24133b; --art-on-fg: #ffffff; --art-go: #ff4d6d; }

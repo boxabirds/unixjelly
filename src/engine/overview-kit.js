@@ -354,7 +354,7 @@ function makeOverview(canvas, world) {
       const sph = new THREE.Spherical().setFromVector3(DIR.clone().multiplyScalar(cam.dist * view.zoom));
       sph.theta += view.yaw + (drag ? 0 : Math.sin(t * .35) * .03); sph.phi = clamp(sph.phi - view.pitch, .3, Math.PI / 2 + .25);
       camera.position.copy(cam.c).add(V().setFromSpherical(sph)); camera.lookAt(cam.c);
-      renderer.render(scene, camera);
+      if (window.JELLY_DRAW !== false) renderer.render(scene, camera); // off in tests that don't look at it (tests/lib.mjs)
     },
   };
   new ResizeObserver(resize).observe(canvas); resize();

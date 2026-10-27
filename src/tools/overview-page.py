@@ -1,6 +1,6 @@
 # A guide's Overview on a page of its own, for trying out changes without the rest of the guide.
 # Run from src/: python3 tools/overview-page.py [shell|git|web|backstage] [out.html]   (default: shell, build/overview-<guide>.html)
-# backstage is Jelly Shell's Backstage, which uses the same house as its Overview.
+# backstage is Shell Jelly's Backstage, which uses the same house as its Overview.
 import sys
 guide = sys.argv[1] if len(sys.argv) > 1 else 'shell'
 font = {'shell': 'titan.json', 'git': 'titan.json', 'web': 'titan-web.json', 'backstage': 'titan.json'}[guide]

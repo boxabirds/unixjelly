@@ -12,10 +12,10 @@ def region(start, end, new, keep_end=True):
     s = s[:i] + new + (s[j:] if keep_end else s[j + len(end):])
 
 # ---------- page shell ----------
-rep('<title>Jelly Shell</title>', '<title>Jelly Web</title>')
-rep('<div class="brand">Jelly <b>Shell</b></div>', '<div class="brand">Jelly <b>Web</b></div>')
-rep('aria-label="Jelly Shell navigation"', 'aria-label="Jelly Web navigation"')
-rep('<span class="more"> Letters in Titan One', f'<span class="more"> The third guide, after <a href="{SHELL_URL}" target="_blank" rel="noopener">Jelly Shell</a> and <a href="{GIT_URL}" target="_blank" rel="noopener">Jelly Git</a>. Letters in Titan One')
+rep('<title>Shell Jelly</title>', '<title>Web Jelly</title>')
+rep('<div class="brand"><b>Shell</b> Jelly</div>', '<div class="brand"><b>Web</b> Jelly</div>')
+rep('aria-label="Shell Jelly navigation"', 'aria-label="Web Jelly navigation"')
+rep('<span class="more"> Letters in Titan One', f'<span class="more"> The third guide, after <a href="{SHELL_URL}" target="_blank" rel="noopener">Shell Jelly</a> and <a href="{GIT_URL}" target="_blank" rel="noopener">Git Jelly</a>. Letters in Titan One')
 rep('<div class="eyebrow">A wobbly guide to the command line</div>', '<div class="eyebrow">A wobbly guide to the web</div>')
 rep('<h1>Boss your computer around with <em>tiny words</em>.</h1>', '<h1>Make a <em>web page</em>, then send it round the world.</h1>')
 rep('<p>These words were invented in 1971. They still work today on Macs, Linux, Raspberry Pis and most of the computers that run the internet. Learn them once, use them for life.</p>',

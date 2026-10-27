@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Jelly Unix: the command line, git, the web and security, for curious kids</title>
+<title>Unix Jelly: the command line, git, the web and security, for curious kids</title>
 <meta name="description" content="Free, interactive guides to the computer basics nobody teaches: the command line, permissions, git, how the web works and security. In your browser.">
-<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAwFBMVEX79/fI7f3B7//B6//B6v7A6/7A6f/A6P+/6P6/5v+/5va/5f+/5f6/5P++5/6+5P7L3Pa94Pu62/m31fTHyPy1y/bRtfmttPLMoP7Flf+qpfOsmPG+i/yjjPK+gf+rf/y2df+pdfyub/6jbfygbP+dcf+cb/+cbP+YfPCTbPeNesWnZ/2iaf+haf+hZ/+gaf+gaP+fZv+daf+daP+cZv6XZ/6XZf+NZu+hYv+aYv6TYv6IYeuXXP6DW+h6Us1JMnXpVW3vAAACK0lEQVR42m3Ti3KiMBQG4AwWtBsrBRUMJhRRboKoyDWAvP9b7cHblm7PjIxjvvkj5yTo/Xvhvga/vKPB8kSSpBl8+R1gSVQWi8XndDbBvwEsqjqhlBJtoUj4f4DFJTEtU9PgQZci/gnwaElXNqyZlm3bm3/iCcYKswi1LZuuCNHIlzIegg9B334iRK0VQVAk1YWPYYLoE9TtNYq0z26PthV77nEHeKwWFAAJidWDS+WrY/wdvM1rriGtgaKwU8OLufQDtJwnTVNVVVOlDc98dQDex/K+5jxPH58s82fDt5CFdVtn1y65tF3OeRAYgjwAU/gTbd1212vX5UUR+PO36fA15ZHetjUsd0UNpY/k4RZ4Igrruu3rem3btSANZ4ElZbFkm812u4UHdHqpDhKwpFLza2OvTAt6Ha7IyaTG7Bv4ENeh5TkwKhOtbDuME9sMH9NAt1HPtyXPvKgMLc0Mw7jMeVVu5FcCBJTnLMjSsq+4rJokyOPyHoFuZyWK88LPkuR8juNzmuZOwE/lRunn1QMISLjvZ15yPMUnAKnj13lUGn0EugVEeaGzHsSQcEkTjzF+LHf9wBCMwSh3Dfvju553PBziEwCXzYtHxC0haAIVgPsCDnsz2mNzB73Q1ZHCXHcH4HC6XAAoE1aw/lTd+wCtv4HdIeqBB2A8UmcSfrZaxg8QRYfjJfGctQL9v93R182aMNe5gwSAMXle4dd5EIzgAY6J6+ij5836C2g1YkHWaTbzAAAAAElFTkSuQmCC">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAwFBMVEX49vXE7f7C7P/B7P7B6v/A6f/A5/+/6P6/5v+/5f+/5P+/5fu+5/6+5f2+5P++5P7X2/a83/i43PW21vXIyPmvye6+s/jBpf29nP+4lP6hoOSkkOWvif+shv+ngP+kfP+iff+he/+hev+gev+nh/iiffmcgO2Lgcyief+fef+eeP+cd/2ddv2bdv+adP+Ydf6Xc/+Xcv6SdO+ScfWVbv2RbfyPbfWOafaKa+6JaPCEbNqHZux/ZNN7YtJ1V8xFNGbqxbWuAAACLUlEQVR42nXTaZuaMBAA4MglqReIHEEIKJeyAouKsATw//+rBlatbNs88IW8zGQyCRBHA9Ix/gJGswLPT+ci/A+AU3ambDYyN1/+E0BW1lA/dGkyh38DyKq+Y1uahixLk6fwJ4CMqiPHQoZh2djxFQ7+ALwcIh1hy6IpDD/czoQxWE3MiwQAsm0EAJBAqDLLcQS21sE92iBpI90jsAm2LHwHkF83PTB0MIA8O695+AYWjNLeJLA52Yaj00yXc/1c5gNwSlcWH9dTnJ7y4FScq0YZRRAFuSW3Mk/zLImv16Ik9bOMVxVRR/KuO7rdPbndqjaarEZgwagtqbp7R5+8qkirMotxmSvGbJqv7n7vboSQ1nwGeALIsxOzqUk/2TZNxPLjrYacoqlhEAT0DUPf9xV5+r5IOu+j4GIbtmUZCOuS5yNtIfwBv1gTG5cM67alIxtbhmcb+NENMLRa+XAykrkHxwA6xjjOctfxZf4F2O3BvTTX2HMs3cLYi69fKT5oQwgKlox6cmLSFnnqOaeDu0vyglx2OBj6BfrD6h/cImooOLo7b39M86KpE3ww2WUPYB8gqdS6/Ezj3X4/gDoqaYi+o0BcTswUl+aMguT4AmqdfocA/Sacy3r9Dfa7B5BN4qYmsxzWwCnqmpMfYLePk8+C/rCtwv5MDGVyE16cRWPA8cqMg8+tXkHhAVyXgoymECAnwPeLMx2BcCaKoyPX1/KVJZ7nOD24mc9rIf4GDuhcPQzKbckAAAAASUVORK5CYII=">
 <meta name="theme-color" content="#bfe6ff">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Jelly Unix">
-<meta property="og:title" content="Jelly Unix: the command line, git, the web and security, for curious kids">
+<meta property="og:site_name" content="Unix Jelly">
+<meta property="og:title" content="Unix Jelly: the command line, git, the web and security, for curious kids">
 <meta property="og:description" content="Free, interactive guides to the computer basics nobody teaches: the command line, permissions, git, how the web works and security. In your browser.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://unixjelly.com/">
@@ -19,8 +19,8 @@
 <meta property="og:image" content="https://unixjelly.com/icons/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Jelly Unix house: a computer cut open like a doll's house">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "Jelly Unix", "description": "Free, interactive guides to the computer basics nobody teaches: the command line, permissions, git, how the web works and security. In your browser.", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://unixjelly.com/jellyshell/", "item": {"@type": "Course", "name": "Jelly Shell", "description": "A free, interactive command line course for curious kids. Learn ls, cd, cat, mv and more in a safe pretend terminal in your browser. Nothing to install.", "provider": {"@type": "Organization", "name": "Jelly Unix", "sameAs": "https://github.com/boxabirds/unixjelly"}}}, {"@type": "ListItem", "position": 2, "url": "https://unixjelly.com/jellyshell2/", "item": {"@type": "Course", "name": "Jelly Shell 2", "description": "Free interactive course: users, file permissions, chmod, sudo, writing your own commands, grep and pipes, in a safe pretend terminal in your browser.", "provider": {"@type": "Organization", "name": "Jelly Unix", "sameAs": "https://github.com/boxabirds/unixjelly"}}}, {"@type": "ListItem", "position": 3, "url": "https://unixjelly.com/jellygit/", "item": {"@type": "Course", "name": "Jelly Git", "description": "Learn git the friendly way: save snapshots, undo mistakes, and back your code up to GitHub. Free, interactive, in a safe pretend terminal in your browser.", "provider": {"@type": "Organization", "name": "Jelly Unix", "sameAs": "https://github.com/boxabirds/unixjelly"}}}, {"@type": "ListItem", "position": 4, "url": "https://unixjelly.com/jellysecurity/", "item": {"@type": "Course", "name": "Jelly Security 1", "description": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.", "provider": {"@type": "Organization", "name": "Jelly Unix", "sameAs": "https://github.com/boxabirds/unixjelly"}}}, {"@type": "ListItem", "position": 5, "url": "https://unixjelly.com/jellyweb/", "item": {"@type": "Course", "name": "Jelly Web", "description": "Write your own web page in HTML and CSS, follow it across the internet (DNS, HTTP, HTTPS), then publish it free with GitHub Pages. Free and in your browser.", "provider": {"@type": "Organization", "name": "Jelly Unix", "sameAs": "https://github.com/boxabirds/unixjelly"}}}]}</script>
+<meta property="og:image:alt" content="The Unix Jelly house: a computer cut open like a doll's house">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "Unix Jelly", "description": "Free, interactive guides to the computer basics nobody teaches: the command line, permissions, git, how the web works and security. In your browser.", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://unixjelly.com/jellyshell/", "item": {"@type": "Course", "name": "Shell Jelly", "description": "A free, interactive command line course for curious kids. Learn ls, cd, cat, mv and more in a safe pretend terminal in your browser. Nothing to install.", "provider": {"@type": "Organization", "name": "Unix Jelly", "sameAs": "https://github.com/boxabirds/unixjelly"}}}, {"@type": "ListItem", "position": 2, "url": "https://unixjelly.com/jellyshell2/", "item": {"@type": "Course", "name": "Shell Jelly 2", "description": "Free interactive course: users, file permissions, chmod, sudo, writing your own commands, grep and pipes, in a safe pretend terminal in your browser.", "provider": {"@type": "Organization", "name": "Unix Jelly", "sameAs": "https://github.com/boxabirds/unixjelly"}}}, {"@type": "ListItem", "position": 3, "url": "https://unixjelly.com/jellygit/", "item": {"@type": "Course", "name": "Git Jelly", "description": "Learn git the friendly way: save snapshots, undo mistakes, and back your code up to GitHub. Free, interactive, in a safe pretend terminal in your browser.", "provider": {"@type": "Organization", "name": "Unix Jelly", "sameAs": "https://github.com/boxabirds/unixjelly"}}}, {"@type": "ListItem", "position": 4, "url": "https://unixjelly.com/jellysecurity/", "item": {"@type": "Course", "name": "Security Jelly 1", "description": "Same skills, different permission. Break into a pretend computer, fix the hole, then try again. A free, safe first step into cyber security.", "provider": {"@type": "Organization", "name": "Unix Jelly", "sameAs": "https://github.com/boxabirds/unixjelly"}}}, {"@type": "ListItem", "position": 5, "url": "https://unixjelly.com/jellyweb/", "item": {"@type": "Course", "name": "Web Jelly", "description": "Write your own web page in HTML and CSS, follow it across the internet (DNS, HTTP, HTTPS), then publish it free with GitHub Pages. Free and in your browser.", "provider": {"@type": "Organization", "name": "Unix Jelly", "sameAs": "https://github.com/boxabirds/unixjelly"}}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Lexend:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap">
@@ -96,7 +96,7 @@ body{position:relative}
 </style>
 </head>
 <body>
-<p class="version" title="Version and build fingerprint">v1.7.1 · 3e784a5</p>
+<p class="version" title="Version and build fingerprint">v1.8.0 · e3c7be7</p>
 <main>
   <header>
     <div class="eyebrow">Wobbly guides to the tools developers live in</div>
@@ -107,11 +107,11 @@ body{position:relative}
 <section class="fixes" aria-labelledby="fixesH">
     <h2 id="fixesH">Sound familiar?</h2>
     <ul class="fix-grid">
-      <li style="--bg:#d8f6e4"><p>A tutorial says “open a terminal”, and you freeze.</p><a href="jellyshell/">Jelly Shell →</a></li>
-      <li style="--bg:#ffe1d1"><p>It says Permission denied, and you have no idea why.</p><a href="jellyshell2/">Jelly Shell 2 →</a></li>
-      <li style="--bg:#eadcff"><p>A week of work is gone, and there is no way back.</p><a href="jellygit/">Jelly Git →</a></li>
-      <li style="--bg:#ffd9e1"><p>You want to learn hacking, the legal way.</p><a href="jellysecurity/">Jelly Security 1 →</a></li>
-      <li style="--bg:#fff0b3"><p>You want your own website, on the real internet.</p><a href="jellyweb/">Jelly Web →</a></li>
+      <li style="--bg:#d8f6e4"><p>A tutorial says “open a terminal”, and you freeze.</p><a href="jellyshell/">Shell Jelly →</a></li>
+      <li style="--bg:#ffe1d1"><p>It says Permission denied, and you have no idea why.</p><a href="jellyshell2/">Shell Jelly 2 →</a></li>
+      <li style="--bg:#eadcff"><p>A week of work is gone, and there is no way back.</p><a href="jellygit/">Git Jelly →</a></li>
+      <li style="--bg:#ffd9e1"><p>You want to learn hacking, the legal way.</p><a href="jellysecurity/">Security Jelly 1 →</a></li>
+      <li style="--bg:#fff0b3"><p>You want your own website, on the real internet.</p><a href="jellyweb/">Web Jelly →</a></li>
     </ul>
     <p class="why">Apps hide how computers really work. That's fine, until it isn't. These guides are one place for the basics nobody teaches you: the command line, files and permissions, saving your work with git, how the web works, and how attackers think. They come in order, and every idea is taught before it's used. Free and open source, and they run in your browser: no install, no account, and nothing on your real computer can break. Made for curious kids, about 9 to 14, and grown-ups who never got taught.</p>
   </section>
@@ -122,79 +122,79 @@ body{position:relative}
     <li><a class="card" href="jellyshell/" style="--bg:#d8f6e4">
       <span class="start">Start here</span>
       <div class="card-top"><span class="step">Step 1</span><span class="cmd">$ ls  cd  cat  mv</span></div>
-      <h2>Jelly Shell</h2>
+      <h2>Shell Jelly</h2>
       <p>Boss your computer around with tiny words. Move around folders, read and copy files, and rescue the gerbil.</p>
       <div class="foot"><span class="after">The first course</span><span class="chip" data-progress="shell" hidden></span><span class="btn">Start the shell</span></div>
     </a></li>
     <li><a class="card" href="jellyshell2/" style="--bg:#ffe1d1">
       
       <div class="card-top"><span class="step">Step 2</span><span class="cmd">$ whoami  chmod  sudo  |</span></div>
-      <h2>Jelly Shell 2</h2>
+      <h2>Shell Jelly 2</h2>
       <p>Who&#x27;s in charge? Users, groups and file locks. Write your own commands, borrow the boss&#x27;s power, and use pipes to find out who ate the cookies.</p>
-      <div class="foot"><span class="after">After Jelly Shell</span><span class="chip" data-progress="shell2" hidden></span><span class="btn">Then part 2</span></div>
+      <div class="foot"><span class="after">After Shell Jelly</span><span class="chip" data-progress="shell2" hidden></span><span class="btn">Then part 2</span></div>
     </a></li>
     <li><a class="card" href="jellygit/" style="--bg:#eadcff">
       
       <div class="card-top"><span class="step">Step 3 · either order</span><span class="cmd">$ git add  commit  push</span></div>
-      <h2>Jelly Git</h2>
+      <h2>Git Jelly</h2>
       <p>Never lose your code again. Save snapshots, undo mistakes and work with other people without stepping on their changes.</p>
-      <div class="foot"><span class="after">After Jelly Shell 2</span><span class="chip" data-progress="git" hidden></span><span class="btn">Try git</span></div>
+      <div class="foot"><span class="after">After Shell Jelly 2</span><span class="chip" data-progress="git" hidden></span><span class="btn">Try git</span></div>
     </a></li>
     <li><a class="card" href="jellysecurity/" style="--bg:#ffd9e1">
       
       <div class="card-top"><span class="step">Step 3 · either order</span><span class="cmd">black hat → white hat</span></div>
-      <h2>Jelly Security 1</h2>
-      <p>Same skills, different permission. Break into a pretend computer, fix the hole, then try again. Three missions.</p>
-      <div class="foot"><span class="after">After Jelly Shell 2</span><span class="chip" data-progress="security1" hidden></span><span class="btn">Try security</span></div>
+      <h2>Security Jelly 1</h2>
+      <p>Same skills, different permission. Crack passwords, catch bots, trap a sneaky program and lock your files, all on a pretend computer. Seven missions.</p>
+      <div class="foot"><span class="after">After Shell Jelly 2</span><span class="chip" data-progress="security1" hidden></span><span class="btn">Try security</span></div>
     </a></li>
     <li><a class="card" href="jellyweb/" style="--bg:#fff0b3">
       
       <div class="card-top"><span class="step">Step 4</span><span class="cmd">&lt;h1&gt;  curl  ping  push</span></div>
-      <h2>Jelly Web</h2>
+      <h2>Web Jelly</h2>
       <p>Write your own web page, find out how it crosses the planet in under a second, then put it on the internet with GitHub Pages.</p>
-      <div class="foot"><span class="after">After Jelly Git</span><span class="chip" data-progress="web" hidden></span><span class="btn">Then the web</span></div>
+      <div class="foot"><span class="after">After Git Jelly</span><span class="chip" data-progress="web" hidden></span><span class="btn">Then the web</span></div>
     </a></li>
     <li><div class="card later" style="--bg:#ffd9e1">
       <span class="start tag">Coming later</span>
       <div class="card-top"><span class="step">Step 5 · either order</span><span class="cmd">401  403  https</span></div>
-      <h2>Jelly Security 2</h2>
+      <h2>Security Jelly 2</h2>
       <p>Attack and defend a pretend website: passwords, lookalike addresses, secret pages and who else can see your messages.</p>
-      <div class="foot"><span class="after">After Jelly Web and Jelly Security 1</span></div>
+      <div class="foot"><span class="after">After Web Jelly and Security Jelly 1</span></div>
     </div></li>
     <li><div class="card later" style="--bg:#dcecff">
       <span class="start tag">Coming later</span>
       <div class="card-top"><span class="step">Step 5 · either order</span><span class="cmd">forward()  repeat  if</span></div>
-      <h2>Jelly Think 1</h2>
+      <h2>Think Jelly 1</h2>
       <p>Meet Wobble, a jelly robot that does exactly what you say and nothing more. Give it orders in real JavaScript, hunt the bugs, and learn to think like a programmer.</p>
-      <div class="foot"><span class="after">After Jelly Web</span></div>
+      <div class="foot"><span class="after">After Web Jelly</span></div>
     </div></li>
     <li><div class="card later" style="--bg:#e2f7d4">
       <span class="start tag">Coming later</span>
       <div class="card-top"><span class="step">Step 6 · either order</span><span class="cmd">app.get(&#x27;/&#x27;)</span></div>
-      <h2>Jelly Server</h2>
+      <h2>Server Jelly</h2>
       <p>Make your website answer back. Write a pretend server in real JavaScript: a guestbook that shows everyone&#x27;s messages.</p>
-      <div class="foot"><span class="after">After Jelly Think 1</span></div>
+      <div class="foot"><span class="after">After Think Jelly 1</span></div>
     </div></li>
     <li><div class="card later" style="--bg:#dcecff">
       <span class="start tag">Coming later</span>
       <div class="card-top"><span class="step">Step 6 · either order</span><span class="cmd">can&#x27;t  too slow  at once</span></div>
-      <h2>Jelly Think 2</h2>
+      <h2>Think Jelly 2</h2>
       <p>What computers can&#x27;t do, what takes forever, what goes wrong when two things happen at once, and what AI really is. Then: what you shouldn&#x27;t build.</p>
-      <div class="foot"><span class="after">After Jelly Think 1</span></div>
+      <div class="foot"><span class="after">After Think Jelly 1</span></div>
     </div></li>
     <li><div class="card later" style="--bg:#fff4d6">
       <span class="start tag">Coming later</span>
       <div class="card-top"><span class="step">Step 7</span><span class="cmd">{ }  [ ]  JSON</span></div>
-      <h2>Jelly Storage</h2>
+      <h2>Storage Jelly</h2>
       <p>Your guestbook forgets everything when the server restarts. Teach it to remember, with files and JSON.</p>
-      <div class="foot"><span class="after">After Jelly Server</span></div>
+      <div class="foot"><span class="after">After Server Jelly</span></div>
     </div></li>
     <li><div class="card later" style="--bg:#f3e3ff">
       <span class="start tag">Coming later</span>
       <div class="card-top"><span class="step">Step 8</span><span class="cmd">SELECT * FROM</span></div>
-      <h2>Jelly SQL</h2>
+      <h2>SQL Jelly</h2>
       <p>Ask a database questions. Find every message from one person, count them, and join tables together.</p>
-      <div class="foot"><span class="after">After Jelly Storage</span></div>
+      <div class="foot"><span class="after">After Storage Jelly</span></div>
     </div></li>
     </ol>
     <p class="why">New to the terminal? Follow the steps in order. Courses on the same step can be done in either order. Every course saves your progress in this browser, so you can stop and come back.</p>
@@ -204,7 +204,7 @@ body{position:relative}
     <h2 id="learnH" class="section-h">Every lesson solves a real problem</h2>
     <div class="learn-grid">
     <section class="learn-course" style="--bg:#d8f6e4" aria-labelledby="learn-shell">
-      <h3 id="learn-shell"><a href="jellyshell/">Jelly Shell</a></h3>
+      <h3 id="learn-shell"><a href="jellyshell/">Shell Jelly</a></h3>
       <p class="learn-tag">Learn the command line · 13 lessons</p>
       <ol>
         <li><code>echo</code><span>Is the terminal even listening to what I type?</span></li>
@@ -223,7 +223,7 @@ body{position:relative}
       </ol>
     </section>
     <section class="learn-course" style="--bg:#ffe1d1" aria-labelledby="learn-shell2">
-      <h3 id="learn-shell2"><a href="jellyshell2/">Jelly Shell 2</a></h3>
+      <h3 id="learn-shell2"><a href="jellyshell2/">Shell Jelly 2</a></h3>
       <p class="learn-tag">Users, permissions and pipes · 15 lessons</p>
       <ol>
         <li><code>whoami</code><span>Who am I on this computer, and who else uses it?</span></li>
@@ -244,7 +244,7 @@ body{position:relative}
       </ol>
     </section>
     <section class="learn-course" style="--bg:#eadcff" aria-labelledby="learn-git">
-      <h3 id="learn-git"><a href="jellygit/">Jelly Git</a></h3>
+      <h3 id="learn-git"><a href="jellygit/">Git Jelly</a></h3>
       <p class="learn-tag">Learn git and GitHub · 14 lessons</p>
       <ol>
         <li><code>git</code><span>I broke my code and can&#x27;t get the working version back.</span></li>
@@ -264,16 +264,20 @@ body{position:relative}
       </ol>
     </section>
     <section class="learn-course" style="--bg:#ffd9e1" aria-labelledby="learn-security1">
-      <h3 id="learn-security1"><a href="jellysecurity/">Jelly Security 1</a></h3>
-      <p class="learn-tag">Think like a hacker, safely · 3 lessons</p>
+      <h3 id="learn-security1"><a href="jellysecurity/">Security Jelly 1</a></h3>
+      <p class="learn-tag">Think like a hacker, safely · 7 lessons</p>
       <ol>
         <li><code>hats</code><span>What is the difference between hacking and breaking the law?</span></li>
         <li><code>chmod</code><span>Who can read my files, and how do I lock them properly?</span></li>
+        <li><code>guess</code><span>How do attackers crack passwords, and what makes one strong?</span></li>
+        <li><code>bots</code><span>Who is trying to log in to my computer at 3 in the morning?</span></li>
+        <li><code>room</code><span>Is that &quot;free coins&quot; download safe to run?</span></li>
+        <li><code>layers</code><span>One of my defences failed. Am I done for?</span></li>
         <li><code>grey</code><span>I found a way in by accident. What should I do?</span></li>
       </ol>
     </section>
     <section class="learn-course" style="--bg:#fff0b3" aria-labelledby="learn-web">
-      <h3 id="learn-web"><a href="jellyweb/">Jelly Web</a></h3>
+      <h3 id="learn-web"><a href="jellyweb/">Web Jelly</a></h3>
       <p class="learn-tag">How websites work, and make your own · 17 lessons</p>
       <ol>
         <li><code>html</code><span>What is a web page actually made of?</span></li>

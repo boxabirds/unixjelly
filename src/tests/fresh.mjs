@@ -3,7 +3,7 @@
 // under way keeps its sandbox when you come back to it.
 import { launch, guideUrl, verdict } from './lib.mjs';
 
-const b = await launch(), problems = [];
+const b = await launch({ draw: false }), problems = [];
 for (const [guide, first, cmd, next] of [['jellyshell', 'cd', 'cd toys', 'home'], ['jellyshell2', 'redirect', 'cd /tmp', 'nano']]) {
   const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
   p.on('pageerror', (e) => problems.push(`${guide}: page error: ${e.message}`));

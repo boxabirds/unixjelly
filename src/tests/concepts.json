@@ -1,26 +1,144 @@
 {
   "_about": "How tests/prereqs.mjs spots a concept on screen. Keys are concept ids from the lessons' `teaches` lists. 'selectors' match anything on the lesson screen. 'code' patterns are checked against commands shown in lesson text (code and kbd) and against the guide's own words in the terminal (Shelly, tips, notes), but not against real command output. 'words' patterns are checked against all lesson text and the guide's own terminal words.",
   "jellyshell2": {
-    "redirect": { "code": ["(^|\\s)>>?(\\s|$)"] },
-    "nano": { "code": ["\\bnano\\b"] },
-    "programs": { "code": ["\\bwhich\\b"] },
-    "scripts": { "code": ["(^|\\s)\\./[a-z]"], "selectors": [".mtag.run"] },
-    "locks": {
-      "selectors": [".lock-ico", ".term-body .perm"],
-      "code": ["\\b(rwx|rw-|r-x|r--|-w-|--x|-wx)\\b"],
-      "words": ["\\b[rwx] key\\b", "owner's (set|keys)", "group's (set|keys)", "everyone else's (set|keys)", "\\b(three|middle|last) sets? of keys\\b"]
+    "redirect": {
+      "code": [
+        "(^|\\s)>>?(\\s|$)"
+      ]
     },
-    "chmod": { "code": ["\\bchmod\\b"] },
-    "path": { "code": ["\\$PATH", "~/bin"] },
-    "groups": { "code": ["\\bchgrp\\b", "\\bgroups\\b"] },
-    "su": { "code": ["\\bsu\\s+\\w+"] },
-    "sudo": { "code": ["\\bsudo\\b"], "words": ["\\bsudo\\b"] },
-    "grep": { "code": ["\\bgrep\\b"] },
-    "pipe": { "code": ["\\s\\|\\s"] },
-    "binary": { "code": ["\\bchmod [0-7]{3}\\b"], "words": ["\\bbinary\\b"] }
+    "nano": {
+      "code": [
+        "\\bnano\\b"
+      ]
+    },
+    "programs": {
+      "code": [
+        "\\bwhich\\b"
+      ]
+    },
+    "scripts": {
+      "code": [
+        "(^|\\s)\\./[a-z]"
+      ],
+      "selectors": [
+        ".mtag.run"
+      ]
+    },
+    "locks": {
+      "selectors": [
+        ".lock-ico",
+        ".term-body .perm"
+      ],
+      "code": [
+        "\\b(rwx|rw-|r-x|r--|-w-|--x|-wx)\\b"
+      ],
+      "words": [
+        "\\b[rwx] key\\b",
+        "owner's (set|keys)",
+        "group's (set|keys)",
+        "everyone else's (set|keys)",
+        "\\b(three|middle|last) sets? of keys\\b"
+      ]
+    },
+    "chmod": {
+      "code": [
+        "\\bchmod\\b"
+      ]
+    },
+    "path": {
+      "code": [
+        "\\$PATH",
+        "~/bin"
+      ]
+    },
+    "groups": {
+      "code": [
+        "\\bchgrp\\b",
+        "\\bgroups\\b"
+      ]
+    },
+    "su": {
+      "code": [
+        "\\bsu\\s+\\w+"
+      ]
+    },
+    "sudo": {
+      "code": [
+        "\\bsudo\\b"
+      ],
+      "words": [
+        "\\bsudo\\b"
+      ]
+    },
+    "grep": {
+      "code": [
+        "\\bgrep\\b"
+      ]
+    },
+    "pipe": {
+      "code": [
+        "\\s\\|\\s"
+      ]
+    },
+    "binary": {
+      "code": [
+        "\\bchmod [0-7]{3}\\b"
+      ],
+      "words": [
+        "\\bbinary\\b"
+      ]
+    }
   },
   "jellysecurity": {
-    "least-privilege": { "words": ["least privilege"] },
-    "disclosure": { "words": ["\\bdisclosure\\b"] }
+    "least-privilege": {
+      "words": [
+        "least privilege"
+      ]
+    },
+    "disclosure": {
+      "words": [
+        "\\bdisclosure\\b"
+      ]
+    },
+    "hashing": {
+      "words": [
+        "\\bfingerprints?\\b",
+        "\\bhash(es|ed|ing)?\\b"
+      ],
+      "code": [
+        "\\bfingerprint\\b"
+      ]
+    },
+    "dictionary-attack": {
+      "words": [
+        "dictionary attack"
+      ]
+    },
+    "bots": {
+      "words": [
+        "\\bbots?\\b"
+      ],
+      "code": [
+        "\\bbots\\b"
+      ]
+    },
+    "secure-default": {
+      "words": [
+        "default passwords?",
+        "secure by default"
+      ]
+    },
+    "isolation": {
+      "words": [
+        "\\bisolation\\b",
+        "\\bsandboxing\\b",
+        "spare room"
+      ]
+    },
+    "defence-in-depth": {
+      "words": [
+        "defen[cs]e in depth"
+      ]
+    }
   }
 }

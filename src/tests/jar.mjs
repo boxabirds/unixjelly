@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import { launch, guideUrl, verdict } from './lib.mjs';
 
-const b = await launch(), p = await b.newPage({ viewport: { width: 1366, height: 768 } }), problems = [];
+const b = await launch(), p = await b.newPage({ viewport: { width: 1024, height: 640 } }), problems = [];
 p.on('pageerror', (e) => problems.push(`page error: ${e.message}`));
 const home = guideUrl('jellyshell').replace('jellyshell/index.html', 'index.html');
 
@@ -13,7 +13,7 @@ const home = guideUrl('jellyshell').replace('jellyshell/index.html', 'index.html
 await p.goto(home);
 await p.evaluate(() => {
   const all = {};
-  for (let i = 0; i < 6; i++) all[`git:l${i}`] = { at: i, course: 'Jelly Git', word: 'commit', name: 'Save a snapshot', colour: '#9b5cff', look: 'zebra', does: 'Saves a snapshot.', ex: 'git commit' };
+  for (let i = 0; i < 6; i++) all[`git:l${i}`] = { at: i, course: 'Git Jelly', word: 'commit', name: 'Save a snapshot', colour: '#9b5cff', look: 'zebra', does: 'Saves a snapshot.', ex: 'git commit' };
   localStorage.setItem('jelly.collection', JSON.stringify(all));
 });
 await p.goto(guideUrl('jellyshell2') + '#welcome'); await p.waitForTimeout(2500);
@@ -29,12 +29,12 @@ await p.waitForTimeout(1200); await p.evaluate(() => document.querySelector('#lN
 const earned = await p.evaluate(() => document.querySelector('.un-earned')?.textContent ?? '');
 if (!/You earned the (zebra|spotty|stripy|swirly|sprinkle|checked|two-tone|glitter|rainbow|galaxy|classic|golden) 101 jelly!/.test(earned)) problems.push(`card says "${earned}"`);
 const mine = await p.evaluate(() => JSON.parse(localStorage.getItem('jelly.collection'))['shell2:binary']);
-if (!mine?.look || !mine.does || mine.course !== 'Jelly Shell 2') problems.push(`collection entry for 101: ${JSON.stringify(mine)}`);
+if (!mine?.look || !mine.does || mine.course !== 'Shell Jelly 2') problems.push(`collection entry for 101: ${JSON.stringify(mine)}`);
 // Open this course's jar from the card.
 await p.evaluate(() => document.querySelector('#unJar').click()); await p.waitForTimeout(800);
 if (!await p.isVisible('#jarBox')) problems.push('See it in my jar did not open the jar');
 const title = await p.textContent('#jarTitle'), sum = await p.textContent('#jarSum');
-if (title !== 'Jelly Shell 2 jar' || sum !== `${ids.length} jellies`) problems.push(`jar says "${title}", "${sum}"`);
+if (title !== 'Shell Jelly 2 jar' || sum !== `${ids.length} jellies`) problems.push(`jar says "${title}", "${sum}"`);
 
 // Keys pressed while the jar is open stay in the jar.
 const before = await p.evaluate(() => location.hash);

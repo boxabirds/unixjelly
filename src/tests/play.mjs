@@ -16,12 +16,22 @@ export async function toLesson(p, id) {
   await p.evaluate((id) => { location.hash = id; }, id);
   await p.waitForFunction((id) => {
     const ids = [...document.querySelectorAll('.ni')].map((a) => a.dataset.id).filter((x) => !['welcome', 'whole', 'backstage'].includes(x));
-    // "Magic word 3 of 13", or "Mission 3 of 3" in Jelly Security
+    // "Magic word 3 of 13", or "Mission 3 of 3" in Security Jelly
     return new RegExp(`^(Magic word|Mission) ${ids.indexOf(id) + 1} `).test(document.querySelector('#lNum')?.textContent ?? '');
   }, id);
   await p.evaluate(() => document.querySelector('#unStay')?.click());
-  for (let k = 0; k < 3 && await p.evaluate(() => document.querySelector('#lcard').dataset.phase !== 'mission'); k++) { await p.evaluate(() => document.querySelector('#lNext').click()); await p.waitForTimeout(300); }
+  // on to the mission, one phase at a time, waiting for each to change rather than for a fixed pause
+  const phase = () => p.evaluate(() => document.querySelector('#lcard').dataset.phase);
+  for (let k = 0; k < 6; k++) {
+    const was = await phase(); if (was === 'mission') break;
+    await p.evaluate(() => document.querySelector('#lNext').click());
+    await p.waitForFunction((was) => document.querySelector('#lcard').dataset.phase !== was, was, { timeout: 10000 }).catch(() => {});
+  }
 }
+
+// Wait for a lesson to earn its jelly (its menu item turns done), rather than a fixed pause: a busy machine, or tests
+// running side by side, can take longer than usual. A lesson that never finishes is reported by the caller.
+export const done = (p, id) => p.waitForFunction((id) => document.querySelector(`.ni[data-id="${id}"]`)?.classList.contains('done'), id, { timeout: 20000 }).catch(() => {});
 
 // `after` runs after every action (for example a check that nothing untaught shows).
 export async function play(p, actions, after = async () => {}) {

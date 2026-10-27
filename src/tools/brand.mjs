@@ -4,7 +4,7 @@
 //                                           sizes, the three variations, Drop again, and Save PNG at the exact size
 //   node tools/brand.mjs render [out-dir]   also renders every picture into src/brand/ (or out-dir) with no browser
 //                                           window; without a GPU, about a minute a picture
-// The page is the built Jelly Shell 2 page (its font has capitals) with tools/channel-art.js added to its module.
+// The page is the built Shell Jelly 2 page (its font has capitals) with tools/channel-art.js added to its module.
 import fs from 'node:fs';
 import { launch } from '../tests/lib.mjs';
 
@@ -41,7 +41,7 @@ const SHOTS = [
 
 const page = fs.readFileSync(`${src}/build/jelly-shell2.html`, 'utf8'), at = page.lastIndexOf('</script>');
 const art = `\nconst ART = ${JSON.stringify({ variants: VARIANTS, shots: SHOTS })};\n${fs.readFileSync(`${src}/tools/channel-art.js`, 'utf8')}`;
-const html = (page.slice(0, at) + art + page.slice(at)).replace(/<title>[^<]*<\/title>/, '<title>Jelly Unix Channel Art</title>');
+const html = (page.slice(0, at) + art + page.slice(at)).replace(/<title>[^<]*<\/title>/, '<title>Unix Jelly Channel Art</title>');
 fs.writeFileSync(`${src}/build/channel-art.html`, html);
 console.log('wrote build/channel-art.html');
 if (process.argv[2] !== 'render') process.exit(0);

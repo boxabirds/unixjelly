@@ -1,6 +1,6 @@
 # The engine's shell becomes jellysh (src/shell/jellysh.js), a self-contained module.
 # This file swaps the old hand-written run() for the module, keeps the names the guides already use
-# (sh, find, pathOf, pretty, …) pointing at it, and plugs Jelly Shell's teaching voice in through hooks.
+# (sh, find, pathOf, pretty, …) pointing at it, and plugs Shell Jelly's teaching voice in through hooks.
 # Run by shelly-patch.py, after every other engine patch.
 
 region('/* ---------------- section 3: the pretend computer ---------------- */\n', 'let nid = 0;',
@@ -21,7 +21,7 @@ const find = SH.find, pathOf = SH.pathOf, pretty = SH.pretty, splitPath = SH.spl
 
 # run(): the old switch statement is gone. What stays here is only what is about this guide: its voice and its extras.
 i = s.index('function run(line) {'); j = s.index('\n}\n', i) + 3
-s = s[:i] + r"""// Jelly Shell's voice: Shelly explains paths that don't exist, and helps with typos and words from other computers.
+s = s[:i] + r"""// Shell Jelly's voice: Shelly explains paths that don't exist, and helps with typos and words from other computers.
 SH.configure({
   manual: MAN,
   hooks: {

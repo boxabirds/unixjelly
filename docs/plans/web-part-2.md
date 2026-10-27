@@ -1,23 +1,23 @@
-# After Jelly Web: the server, storage, then SQL
+# After Web Jelly: the server, storage, then SQL
 
 **Status: discussion.** Nothing here is built. Background research: `../research/web-part-2-databases-and-dynamic-pages.md`.
 
 ## The proposal
 
-Three courses after Jelly Web. Each one starts from a problem the last one left behind.
+Three courses after Web Jelly. Each one starts from a problem the last one left behind.
 
 ```
-Jelly Web  →  Jelly Server  →  Jelly Storage  →  Jelly SQL
+Web Jelly  →  Server Jelly  →  Storage Jelly  →  SQL Jelly
               pages made        keeping things     when questions
               to order          (JSON)             cross records
 ```
 
-1. **Jelly Server.** Two panels: **your browser** and **the server**, with every request and reply drawn as a letter going between them. A route answers `GET /guestbook` with HTML. htmx swaps part of the page. `curl` in the shell talks to the same server. The guestbook lives in the server's memory, so it ends with a problem: **restart the server and every message is gone.**
-2. **Jelly Storage.** Keep data after a restart. JSON first: values, lists, objects, nesting. Save to a file, load it back. A key-value store (get and put by key). Browser storage too: the jelly jar itself is JSON in your browser, and you can look at it. It ends with three problems:
+1. **Server Jelly.** Two panels: **your browser** and **the server**, with every request and reply drawn as a letter going between them. A route answers `GET /guestbook` with HTML. htmx swaps part of the page. `curl` in the shell talks to the same server. The guestbook lives in the server's memory, so it ends with a problem: **restart the server and every message is gone.**
+2. **Storage Jelly.** Keep data after a restart. JSON first: values, lists, objects, nesting. Save to a file, load it back. A key-value store (get and put by key). Browser storage too: the jelly jar itself is JSON in your browser, and you can look at it. It ends with three problems:
    - the same fact is copied into many records and goes out of date;
    - a question across records ("which owners have cats older than 5?") means writing a loop;
    - nothing stops a misspelt field (`nmae`) being saved.
-3. **Jelly SQL.** Tables with fixed columns, `SELECT … WHERE`, `ORDER BY`, joins, keys, indexes ("checked 100,000 rows" against "checked 1 row") and SQL injection, which pays off Security. It's framed as a tool for when questions cross records, not as "NoSQL is wrong". Plenty of systems are fine without it.
+3. **SQL Jelly.** Tables with fixed columns, `SELECT … WHERE`, `ORDER BY`, joins, keys, indexes ("checked 100,000 rows" against "checked 1 row") and SQL injection, which pays off Security. It's framed as a tool for when questions cross records, not as "NoSQL is wrong". Plenty of systems are fine without it.
 
 ## Your three points
 
@@ -31,7 +31,7 @@ Agreed, and it's the stronger teaching order: each course creates the need for t
 
 ### 3. JavaScript, htmx 4 and WebContainers
 
-**Don't write a JavaScript course.** Agreed: it's huge and good ones exist. Instead, let a course declare an **outside prerequisite**: "Jelly Server needs some JavaScript: variables, `if`, functions, lists and objects, for example from *JavaScript for Kids* or Scratch". The course's welcome screen says so. `curriculum.json` can carry these, like its other `needs`.
+**Don't write a JavaScript course.** Agreed: it's huge and good ones exist. Instead, let a course declare an **outside prerequisite**: "Server Jelly needs some JavaScript: variables, `if`, functions, lists and objects, for example from *JavaScript for Kids* or Scratch". The course's welcome screen says so. `curriculum.json` can carry these, like its other `needs`.
 
 Two cautions:
 
@@ -65,5 +65,5 @@ WebContainers could still be an optional final lesson in the repo copy: "now run
 ## Questions to settle
 
 1. **The three-course chain:** Server → Storage → SQL? **Agreed.**
-2. **The outside prerequisite:** may Jelly Server require some JavaScript from outside, declared on its welcome screen? If yes, in which style: `var` and `function` like *JavaScript for Kids*, or modern JavaScript with a bridge lesson?
+2. **The outside prerequisite:** may Server Jelly require some JavaScript from outside, declared on its welcome screen? If yes, in which style: `var` and `function` like *JavaScript for Kids*, or modern JavaScript with a bridge lesson?
 3. **The server runtime:** a pretend Express in a Web Worker, or WebContainers?

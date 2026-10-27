@@ -1,7 +1,7 @@
 const isCmd = (e, c) => e.type === 'cmd' && e.cmd === c;
 const kidFile = (name) => find(`/home/kid/${name}`);
 const lab = (parts, size = 1.1) => `<div class="lsl" style="--n:${parts.length};--s:${size}em;--v:${size * 1.5}vw">${parts.map(([t, c]) => `<span class="pv ${c}">${t}</span>`).join('')}${parts.map(([, , l]) => `<small>${l}</small>`).join('')}</div>`;
-// Every lesson only uses what Jelly Shell or an earlier lesson here has taught.
+// Every lesson only uses what Shell Jelly or an earlier lesson here has taught.
 // teaches: the concepts this lesson introduces. previews: ones it mentions on purpose before their own lesson.
 // Code that shows a concept checks taught(concept) first; tests/prereqs.mjs checks every screen. See docs/pedagogy.md.
 const LESSONS = [
@@ -43,7 +43,7 @@ const LESSONS = [
     ] },
   { id: 'which', teaches: ['programs'], word: 'which', name: 'Programs are files', stands: 'which = where is that program?', color: '#3a5bff', seq: true, onlyHere: true,
     visual: `<div class="treeviz"><div class="tz-eq">you type <code>ls</code></div><div class="tz-eq">the shell runs <code>/bin/ls</code></div><p class="tv-note">/bin is short for binaries: programs.</p></div>`,
-    title: 'Every command is a file', why: 'Remember Backstage in Jelly Shell? When you type <code>ls</code>, the shell looks in a folder called <code>/bin</code> and finds a file called <b>ls</b>. That file is the program. Every command you know is just a file in a folder. <code>which</code> tells you where.',
+    title: 'Every command is a file', why: 'Remember Backstage in Shell Jelly? When you type <code>ls</code>, the shell looks in a folder called <code>/bin</code> and finds a file called <b>ls</b>. That file is the program. Every command you know is just a file in a folder. <code>which</code> tells you where.',
     mnem: 'A command is a file. which says where.',
     points: ['<code>which ls</code> answers: /bin/ls.', 'The files in /bin are written in computer language, so they look like gibberish to us.', 'A few words, like <code>cd</code>, are not files at all. They are built into the shell itself.'],
     // what the presenter types (presenter mode), one action per beat
@@ -94,7 +94,7 @@ const LESSONS = [
     visual: `<div class="treeviz"><div class="tz-eq"><code>$PATH</code> = <code>/bin:/home/kid/bin</code></div><p class="tv-note">The shell looks in /bin first, then in your own bin. The : just separates them.</p></div>`,
     title: 'Your own command, from anywhere', why: 'How does the shell know to look in /bin? It has a list of folders to search, called the <b>PATH</b>. On this computer (and on lots of real ones, like Ubuntu), the list includes a <code>bin</code> folder in your home. Put a program in there, and you can run it from anywhere, just by its name. Like a real command. Because it is one!',
     mnem: 'Put it on the PATH, and it\'s a command.',
-    points: ['<code>echo $PATH</code> shows the list. The <b>$</b> means "the value of": PATH is a word the shell remembers.', 'You can name your program anything you like. Somebody made up <b>ls</b> once. Now you\'re doing it too.', 'That is exactly how the <b>sign</b> command in Jelly Security was made: someone wrote a script and put it on the PATH.'],
+    points: ['<code>echo $PATH</code> shows the list. The <b>$</b> means "the value of": PATH is a word the shell remembers.', 'You can name your program anything you like. Somebody made up <b>ls</b> once. Now you\'re doing it too.', 'That is exactly how the <b>sign</b> command in Security Jelly was made: someone wrote a script and put it on the PATH.'],
     // what the presenter types (presenter mode), one action per beat
     steps: [
       { t: 'See where the shell looks: <code>echo $PATH</code>', ok: (e) => isCmd(e, 'echo') && /\$PATH/.test(e.line ?? '') },
@@ -131,7 +131,7 @@ const LESSONS = [
     ] },
   { id: 'sudo', teaches: ['sudo', 'root-user'], word: 'sudo', name: 'The boss', stands: 'sudo = SUperuser DO', color: '#ff4d6d', seq: true, onlyHere: true,
     visual: `<div class="treeviz"><div class="tz-eq"><code>/</code> = the root <b>folder</b>: the very top</div><div class="tz-eq"><code>root</code> = the root <b>user</b>: the boss</div><p class="tv-note">Same word, two meanings. Sorry. Computer people love that word.</p></div>`,
-    title: 'Root has two meanings', why: 'In Jelly Shell, <b>root</b> meant <code>/</code>, the folder at the very top. Here comes its second meaning: <b>root</b> is also the name of the <b>boss user</b>. Locks don\'t stop root. Root can read, change or delete anything. That is too much power to use all the time, so grown-ups who look after a computer borrow it for one command at a time, with <code>sudo</code>.',
+    title: 'Root has two meanings', why: 'In Shell Jelly, <b>root</b> meant <code>/</code>, the folder at the very top. Here comes its second meaning: <b>root</b> is also the name of the <b>boss user</b>. Locks don\'t stop root. Root can read, change or delete anything. That is too much power to use all the time, so grown-ups who look after a computer borrow it for one command at a time, with <code>sudo</code>.',
     mnem: 'sudo: one command as the boss. Think first!',
     points: ['Only people in the <b>sudo</b> group may use sudo. Remember your <code>id</code>? You are in it. sib is not.', 'sudo asks for <b>your own</b> password, to prove it is really you.', 'Root can delete the whole computer, and nothing will say Permission denied. Never type sudo just because a website or a video said so.'],
     // what the presenter types (presenter mode), one action per beat

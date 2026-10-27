@@ -3,7 +3,7 @@
 // Concepts and how to spot them: tests/concepts.json. Lessons say what they teach with `teaches`.
 import { launch, guideUrl, leaks, verdict } from './lib.mjs';
 const guides = process.argv[2] ? [process.argv[2]] : ['jellyshell2', 'jellysecurity'];
-const b = await launch(), problems = [];
+const b = await launch({ draw: false }), problems = [];
 for (const guide of guides) {
   const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
   await p.goto(guideUrl(guide) + '#welcome', { waitUntil: 'load', timeout: 120000 }); await p.waitForTimeout(1500);

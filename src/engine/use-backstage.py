@@ -1,4 +1,4 @@
-# Every guide with a 3D Backstage (Jelly Shell, Git, Web): the guide's Backstage world (Backstage in its overview.js, the
+# Every guide with a 3D Backstage (Shell Jelly, Git, Web): the guide's Backstage world (Backstage in its overview.js, the
 # Overview's house filmed closer, with SCENES to play) replaces the engine's flip card. Exec'd by the guide's build.py
 # after use-overview.py, with these set:
 #   BS_HEAD   the panel's paragraph       BS_LABEL  the canvas's description, for screen readers

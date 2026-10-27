@@ -1,5 +1,5 @@
 import { launch, guideUrl, verdict } from './lib.mjs';
-const b = await launch();
+const b = await launch({ draw: false });
 // Usage: node tests/fit.mjs [guide-folder] [width-to-screenshot]
 const [shots] = [process.argv[3]], guides = process.argv[2] ? [process.argv[2]] : ['jellyshell', 'jellyshell2', 'jellygit', 'jellyweb', 'jellysecurity'], problems = [];
 for (const guide of guides) {

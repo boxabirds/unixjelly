@@ -1,4 +1,4 @@
-// Jelly Git's Overview: your computer is a house cut open like a doll's house. Your project folder on the ground
+// Git Jelly's Overview: your computer is a house cut open like a doll's house. Your project folder on the ground
 // floor, the stage above it, and the photo album (.git) at the top. A lift tower climbs past the roof into a
 // see-through cloud where GitHub keeps its copy, and a friend's house next door gets one too.
 // game.py travels as jelly letters; commits are photos. Backstage is the same house up close, with one show per git
@@ -147,7 +147,7 @@ function gitHouse(k, mode) {
       shot('folder'); caption('<b>Front.</b> You changed game.py: you added lasers! Now you type a git command.');
       file.position.copy(FILE_HOME); await pop(file, 1, .3);
       await type('git add game.py');
-      caption('<b>Enter!</b> The shell finds a program called <b>git</b> and starts it, just like ls in Jelly Shell. Its job: <b>add</b>. Which file: <b>game.py</b>.');
+      caption('<b>Enter!</b> The shell finds a program called <b>git</b> and starts it, just like ls in Shell Jelly. Its job: <b>add</b>. Which file: <b>game.py</b>.');
       bot.position.set(1.6, 0, 1.3); look(bot); await pop(bot, 1, .45); poke(bot.userData.body, .3);
       say('git here! Time to set the stage.', V(1.6, 2.75, 1.4)); await wait(1.5);
       say(null); caption('<b>git add</b> picks up game.py from your folder...');
