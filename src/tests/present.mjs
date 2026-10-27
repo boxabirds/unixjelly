@@ -2,7 +2,8 @@
 // needs are there and show full screen with nothing from the app around it, ← then → comes back to the same frame,
 // and presenting saves nothing. Jelly Shell is checked frame kind by frame kind; the other guides check their own
 // special frames (nano, GitHub's buttons and the git map, the editor and the browser, the choice cards).
-// On a phone, the gate's mobile slideshow: tap right and left, turning the phone, nothing saved.
+// On a phone, the gate's mobile slideshow: tap right and left, dragging a letter isn't a page turn, turning the phone,
+// nothing saved.
 // Screenshots go to tests/out/present-<guide>-<shape>-<kind>.png.
 // Run after ./build.sh: node tests/present.mjs [guide-folder]   (default: every guide)
 import { launch, guideUrl, verdict } from './lib.mjs';
@@ -73,9 +74,27 @@ for (const guide of Object.keys(GUIDES).filter((g) => !process.argv[2] || g === 
   await p.tap('#slides'); await ready(p);
   const key = await p.evaluate(() => document.documentElement.dataset.prKey), beat = () => p.evaluate((k) => +sessionStorage.getItem('jelly.presentBeat.' + k), key);
   if (!(await p.evaluate(() => document.documentElement.classList.contains('present-tall')))) say('upright phone did not get 9:16');
-  await p.touchscreen.tap(330, 420); await p.waitForTimeout(400); await p.touchscreen.tap(330, 420); await p.waitForTimeout(400);
+  // The opening frame's jelly letters can be dragged: touching one grabs it, and the drag is not a page turn. (A drag
+  // taken as a press while the title is still typing only finishes the typing, which shows below: the taps land one
+  // frame short.)
+  if (guide === 'jellyshell') {
+    const stage = 'document.querySelector("#prJelly").stage';
+    await p.waitForFunction(`${stage}?.bodies.every((b) => b.sleeping)`, null, { timeout: 120000, polling: 500 }).catch(() => say('the jelly letters never settled'));
+    // where the middle letter is on screen
+    const [x, y] = await p.evaluate(`(() => { const st = ${stage}, b = st.bodies[2], v = new st.camera.position.constructor(...b.center()).project(st.camera), r = st.canvas.getBoundingClientRect();
+      return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; })()`);
+    if (await p.evaluate(([x, y]) => document.elementFromPoint(x, y)?.id, [x, y]) !== 'prJelly') say('the jelly letters are covered');
+    const cdp = await ctx.newCDPSession(p), touch = (type, x, y) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x, y }] });
+    await touch('touchStart', x, y);
+    for (const d of [20, 40, 60, 80]) await touch('touchMove', x - d, y - d); // leftwards: as a swipe, it would go on
+    if (!(await p.evaluate(`!!${stage}.drag`))) say('touching a letter did not grab it');
+    await touch('touchEnd'); await p.waitForTimeout(400);
+    if (await beat() !== 0) say(`dragging a letter turned the page to frame ${await beat()}`);
+  }
+  // taps low down, on the floor, clear of the letters
+  await p.touchscreen.tap(330, 760); await p.waitForTimeout(400); await p.touchscreen.tap(330, 760); await p.waitForTimeout(400);
   if (await beat() !== 2) say(`two taps on the right went to frame ${await beat()}, not 2`);
-  await p.touchscreen.tap(40, 420); await p.waitForTimeout(400);
+  await p.touchscreen.tap(40, 760); await p.waitForTimeout(400);
   if (await beat() !== 1) say(`a tap on the left went to frame ${await beat()}, not 1`);
   await p.setViewportSize({ width: 844, height: 390 }); await p.waitForTimeout(400);
   if (!(await p.evaluate(() => document.documentElement.classList.contains('present-wide')))) say('turning the phone did not switch to 16:9');

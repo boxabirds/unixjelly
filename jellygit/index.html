@@ -93,8 +93,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pr-body{position:absolute;inset:var(--pad);display:flex;flex-direction:column;justify-content:center;gap:calc(2.4 * var(--u));z-index:1}
 .face-right.present-wide .pr-body{right:31vw}
 .face-right.present-tall .pr-body{bottom:30vh}
-#prJelly{position:absolute;inset:0;width:100%;height:100%}
+#prJelly{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab!important}
 #prJelly[hidden]{display:none}
+/* the title frames' jelly letters can be dragged (or tapped to hop), by mouse or finger: the words let the pointer through */
+.pr-stage[data-k=title] .pr-body,.pr-stage[data-k=intro] .pr-body{pointer-events:none}
 .pr-label{font-family:var(--mono);font-size:calc(2.4 * var(--u));letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
 .pr-h{font-family:var(--display);font-weight:400;font-size:calc(6 * var(--u));line-height:1.05;margin:0}
 .pr-big{font-size:calc((5 * var(--u)) * var(--s, 1));line-height:1.3;margin:0;max-width:30ch;text-wrap:pretty}
@@ -155,9 +157,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pr-bar{position:absolute;left:0;right:0;bottom:0;height:calc(.6 * var(--u));background:#24133b14;z-index:2}
 .pr-bar i{display:block;height:100%;width:0;background:var(--c, #ff4d6d);transition:width .3s}
 .pr-stage[data-k=term] .pr-bar,.pr-stage[data-k=nano] .pr-bar{background:#ffffff14}
-/* the mobile slideshow: the whole stage takes the taps (nothing inside it is interactive), plus a close button and a first hint */
+/* the mobile slideshow: the whole stage takes the taps (only the jelly letters are interactive), plus a close button and a first hint */
 .slides .pr-stage{touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.slides .pr-stage>*:not(.pr-close),.slides .jarbox{pointer-events:none}
+.slides .pr-stage>*:not(.pr-close):not(#prJelly),.slides .jarbox{pointer-events:none}
 .slides .pr-stage *{cursor:default!important}
 .slides .pr-body{top:calc(var(--pad) + 40px)} /* clear of the close button */
 .pr-close{position:absolute;z-index:3;top:calc(10px + env(safe-area-inset-top,0px));right:calc(10px + env(safe-area-inset-right,0px));width:40px;height:40px;border-radius:50%;border:3px solid var(--ink);background:#fff;color:var(--ink);font:700 18px/1 var(--body,inherit);box-shadow:0 3px 0 var(--ink)}
@@ -4284,6 +4286,7 @@ function prJelly(word, color) {
     PR.jelly = new JellyStage($('#prJelly'), { word, size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset: 0, frame: 1.1, lookY: .55 });
     // no grid floor on a presenter frame: an invisible one that only catches the letters' shadows
     PR.jelly.scene.children.find((o) => o.isMesh && o.geometry.type === 'PlaneGeometry').material = new THREE.ShadowMaterial({ opacity: .12 });
+    $('#prJelly').stage = PR.jelly; // tests find the letters here
   }
   PR.jelly.opts.colorOffset = Math.max(0, JELLY.indexOf(color)); PR.jelly.setWord(word);
 }
@@ -4349,7 +4352,7 @@ const slidesHinted = () => { try { return sessionStorage.getItem('jelly.slidesHi
 $('#slides').addEventListener('click', () => { try { sessionStorage.setItem('jelly.slides', '1'); } catch {} presentStart(slideShape(), true); });
 function slideControls() {
   let down = null;
-  addEventListener('pointerdown', (e) => { down = e.clientX; });
+  addEventListener('pointerdown', (e) => { down = PR.jelly?.drag ? null : e.clientX; }); // a grabbed letter: a drag, not a page turn
   addEventListener('pointerup', (e) => {
     if (down === null || e.target.closest('#prClose')) return;
     const dx = e.clientX - down; down = null;
