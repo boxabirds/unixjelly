@@ -33,7 +33,13 @@ main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1f
 .palette { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--soft); }
 .palette button, .tools button { font: 500 12.5px Lexend, sans-serif; border: var(--line) solid var(--ink); border-radius: 8px; padding: 3px 8px; background: var(--c, var(--lemon)); color: var(--ink); cursor: pointer; box-shadow: 1px 1px 0 var(--ink); }
 .palette button:active, .tools button:active { transform: translate(1px, 1px); box-shadow: none; }
-.palette button[disabled] { opacity: .35; cursor: not-allowed; }
+/* a "+" that can't add here: greyed, but still there to hover or click for help */
+.palette button.off { opacity: .45; box-shadow: none; }
+.help-pop { position: fixed; z-index: 12; max-width: 340px; background: #fff; border: var(--line) solid var(--ink); border-radius: 10px; box-shadow: var(--shadow); padding: 8px 10px; font-size: 13px; }
+.help-pop p { margin: 0 0 6px; }
+.help-pop .acts { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
+.help-pop button { font: 500 12.5px Lexend, sans-serif; border: var(--line) solid var(--ink); border-radius: 8px; padding: 3px 9px; background: var(--lime); cursor: pointer; text-align: left; }
+.help-pop button[data-help=into] { background: var(--lemon); }
 .tools { display: flex; flex-wrap: wrap; gap: 5px; padding: 6px 12px; align-items: center; border-bottom: 1px solid var(--soft); min-height: 40px; }
 .tools .lbl { font-weight: 600; margin-right: 4px; }
 .tools .sw { width: 20px; height: 20px; padding: 0; border-radius: 50%; background: var(--sw); }
@@ -66,6 +72,7 @@ main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1f
 .text .grip { color: var(--ink-soft); cursor: grab; }
 .text input { flex: 1; min-width: 60px; border: 0; font: 400 13.5px Lexend, sans-serif; color: var(--ink); background: transparent; padding: 3px 0; }
 .text input:focus { outline: none; }
+.ws-note { font-size: 11.5px; color: var(--ink-soft); white-space: nowrap; }
 /* tags revealed: every block shows its opening tag on top and its lid underneath */
 .tags .bh .name { display: none; }
 .tags .bh .tag, .tags .lid { display: block; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
@@ -88,14 +95,11 @@ body.carrying, body.carrying * { user-select: none; -webkit-user-select: none; c
 .ghost { position: fixed; pointer-events: none; z-index: 10; padding: 4px 10px; border: var(--line) solid var(--ink); border-radius: 8px; background: var(--c); font-weight: 500; font-size: 13px; box-shadow: var(--shadow); transform: rotate(-3deg); }
 
 /* the page */
-.page-view { flex: 1; padding: 14px 18px; overflow: auto; font-family: Georgia, 'Times New Roman', serif; font-size: 16px; }
-.page-view [data-id] { cursor: pointer; border-radius: 4px; transition: box-shadow .12s, background .12s; }
-.page-view .hover:not(.selected) { box-shadow: var(--hover); animation: hover-in .25s ease-out; }
-.page-view .selected { box-shadow: var(--chosen); background: rgba(255, 214, 77, .22); position: relative; z-index: 1; }
-.page-view .flash { animation: flash .7s ease-out; }
-.page-view h1 { font-size: 2em; margin: .3em 0; }
-.page-view p { margin: .6em 0; }
-.page-view li { margin: .2em 0; }
+/* the page is a real browser page in a frame, with the browser's own look: nothing here styles it */
+.page-frame { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.bw-tab { padding: 6px 10px 0; background: #ece6f5; border-bottom: 1px solid var(--soft); }
+.bw-tab span { display: inline-block; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: #fff; border: 1px solid var(--soft); border-bottom: 0; border-radius: 8px 8px 0 0; padding: 3px 12px; font-size: 12.5px; }
+.page-frame iframe { flex: 1; border: 0; width: 100%; background: #fff; }
 /* the HTML view: the real text of the page, which can be edited (and broken) */
 .html-edit { flex: 1; display: none; flex-direction: column; padding: 8px 12px 12px; gap: 8px; min-height: 0; }
 .panel.html .html-edit { display: flex; }
@@ -130,9 +134,7 @@ body.carrying, body.carrying * { user-select: none; -webkit-user-select: none; c
 .tabs .del { font-family: Lexend, sans-serif; background: #ffd0d8; }
 .back { font: 500 12px Lexend, sans-serif; border: var(--line) solid var(--ink); border-radius: 8px; padding: 1px 8px; background: var(--card); cursor: pointer; margin-left: 8px; vertical-align: 2px; }
 /* visiting: the page works like a website, with no selecting and no outlines */
-.page-view.visiting [data-id] { cursor: auto; }
-.page-view.visiting a { cursor: pointer; }
-.page-view.visiting .selected, .page-view.visiting .hover { box-shadow: none !important; background: none !important; animation: none; }
+
 /* the "+" buttons, in groups */
 .palette { flex-direction: column; gap: 4px; }
 .pgroup { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
@@ -149,13 +151,7 @@ body.carrying, body.carrying * { user-select: none; -webkit-user-select: none; c
 .tags .bh .thumb { display: none; }
 .blk.single > .bh { min-height: 32px; }
 /* the page: tables show their cells, and the card that says what a form would send */
-.page-view table { border-collapse: collapse; margin: .6em 0; }
-.page-view td, .page-view th { border: 1px solid #b9b0c8; padding: 4px 10px; }
-.page-view tr.selected { outline: 3px solid var(--gold); box-shadow: none; }
-.page-view img { max-width: 120px; vertical-align: middle; }
-.page-view form { border: 1px dashed #b9b0c8; padding: 4px 10px; margin: .6em 0; }
-.page-view input { font: inherit; padding: 2px 6px; }
-.page-view a { color: #1a55d9; }
+
 .panel.pagep { position: relative; }
 .send-card { position: absolute; left: 50%; top: 80px; transform: translateX(-50%); width: min(380px, 90%); background: #fff; border: var(--line) solid var(--ink); border-radius: 12px; box-shadow: 0 0 0 4px var(--gold), var(--shadow); padding: 12px 16px; z-index: 5; }
 .send-card h3 { font: 400 16px 'Titan One', sans-serif; margin: 0 0 6px; }
@@ -182,8 +178,9 @@ body.carrying, body.carrying * { user-select: none; -webkit-user-select: none; c
   </section>
   <section class="panel pagep" aria-label="The page">
     <h2><span>The page <button class="back" id="back" hidden>← Back</button></span><div class="views" id="modes" role="group" aria-label="Edit or visit the page"><button data-mode="edit" aria-pressed="true" title="Click anything on the page to find its block">Edit</button><button data-mode="visit" aria-pressed="false" title="Use the page like a real website: links take you to your other pages">Visit</button></div></h2>
-    <div class="page-view" id="pageView"></div>
+    <div class="page-frame"><div class="bw-tab" aria-label="The browser tab"><span id="pageTitle"></span></div><iframe id="pageFrame" sandbox="allow-same-origin allow-forms" title="The page"></iframe></div>
     <div class="send-card" id="sendCard" role="dialog" aria-label="What the website would receive" hidden></div>
+    <div class="help-pop" id="helpPop" role="dialog" aria-label="How to add this" hidden></div>
   </section>
 </main>
 <script>
@@ -238,7 +235,7 @@ const INDENT = '  ';
 const COLOURS = [['none', null], ['tomato', 'tomato'], ['hotpink', 'hotpink'], ['royalblue', 'royalblue'], ['seagreen', 'seagreen'], ['darkorange', 'darkorange'], ['purple', 'purple']];
 const FLASH_MS = 700, DRAG_START_PX = 6, EDGE = .3;
 // The pictures in this pretend website's folder. Any other name is a picture that isn't there, as on a real site.
-const svg = (body) => 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100">${body}</svg>`);
+const svg = (body) => 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="100" viewBox="0 0 120 100">${body}</svg>`);
 const PICS = {
   'jelly.svg': svg('<path d="M20 85 Q14 30 60 22 Q106 30 100 85 Z" fill="#62c934" stroke="#24133b" stroke-width="4"/><circle cx="46" cy="52" r="8" fill="#fff" stroke="#24133b" stroke-width="3"/><circle cx="74" cy="52" r="8" fill="#fff" stroke="#24133b" stroke-width="3"/><circle cx="47" cy="54" r="3.5" fill="#24133b"/><circle cx="75" cy="54" r="3.5" fill="#24133b"/><path d="M48 70 Q60 80 72 70" fill="none" stroke="#24133b" stroke-width="4" stroke-linecap="round"/>'),
   'gerbil.svg': svg('<ellipse cx="62" cy="62" rx="40" ry="28" fill="#d99a5b" stroke="#24133b" stroke-width="4"/><circle cx="34" cy="40" r="12" fill="#f2c08f" stroke="#24133b" stroke-width="4"/><circle cx="30" cy="58" r="4" fill="#24133b"/><circle cx="18" cy="64" r="3" fill="#ff4d6d"/><path d="M100 70 Q116 60 112 40" fill="none" stroke="#24133b" stroke-width="4" stroke-linecap="round"/>'),
@@ -260,7 +257,8 @@ const FRESH = {
   cell: () => node('cell', [words('cell')]),
   row: () => node('row', [FRESH.cell(), FRESH.cell()]),
   table: () => node('table', [node('row', [node('cell', [words('Jelly')]), node('cell', [words('Colour')])]), node('row', [node('cell', [words('lime')]), node('cell', [words('green')])])]),
-  link: () => node('link', [words('a link')], { attrs: { href: 'https://jelly.fun' } }),
+  // a new link goes to another of your pages, if there is one; addresses of real websites wait for Web module 2
+  link: () => node('link', [words('a link')], { attrs: { href: site.find((p, i) => i !== current)?.name ?? '' } }),
   picture: () => node('picture', [], { attrs: { src: 'jelly.svg', alt: 'a green jelly' } }),
   textbox: () => node('textbox', [], { attrs: { name: 'answer' } }),
   button: () => node('button', [words('Send')]),
@@ -274,7 +272,7 @@ let root = node('page', [
 let selected = root.kids[1].id, view = 'blocks', broken = false, flashId = null, codeEls = [];
 // The website: its pages, which one is open, and (when visiting) the pages visited before, for Back.
 // A page keeps its HTML text only while it has a mistake in it; otherwise the text is written fresh from its blocks.
-const site = [{ name: 'index.html', root, code: null, broken: false }];
+const site = [{ name: 'index.html', title: 'My jelly page', root, code: null, broken: false }];
 let current = 0, mode = 'edit', visited = [], renaming = false, deleteArmed = null;
 const FRONT = 'index.html', ARM_MS = 3000;
 
@@ -311,25 +309,69 @@ function place(n, target, where) {
 }
 
 // ---------- adding ----------
-// A new block goes inside the selected block if it fits there, otherwise after the nearest block it can follow.
-function add(kind) {
-  if (broken) return;
-  const fresh = FRESH[kind]();
-  // a new row gets as many cells as the table's other rows
-  let placed = false;
-  for (let cur = find(selected)?.n ?? root; cur && !placed; cur = find(cur.id).parent) {
+// Where a new block of this kind would go: inside the selected block if it fits there, otherwise next to the nearest
+// block around it that it can follow. null: nowhere from here.
+function where(kind, from = find(selected)?.n ?? root) {
+  const linkOk = (c) => !(kind === 'link' && (c.kind === 'link' || insideLink(c)));
+  for (let cur = from; cur; cur = find(cur.id).parent) {
     const p = find(cur.id).parent;
-    if (canHold(cur, kind) && !(kind === 'link' && (cur.kind === 'link' || insideLink(cur)))) { cur.kids.push(fresh); placed = true; }
-    else if (p && canHold(p, kind) && !(kind === 'link' && (p.kind === 'link' || insideLink(p)))) { p.kids.splice(p.kids.indexOf(cur) + 1, 0, fresh); placed = true; }
-    else if (!p) { say(`${WHY_NOT[kind]} Click where it should go first.`); return; }
+    if (canHold(cur, kind) && linkOk(cur)) return { parent: cur, index: cur.kids.length };
+    if (p && canHold(p, kind) && linkOk(p)) return { parent: p, index: p.kids.indexOf(cur) + 1 };
   }
-  const { parent } = find(fresh.id);
-  if (kind === 'row') { const cols = Math.max(...parent.kids.map((r) => r.kids.length)); while (fresh.kids.length < cols) fresh.kids.push(FRESH.cell()); }
+  return null;
+}
+function insert(fresh, spot, pick = fresh) {
+  spot.parent.kids.splice(spot.index, 0, fresh);
+  const parent = spot.parent;
+  // a new row gets as many cells as the table's other rows
+  if (fresh.kind === 'row') { const cols = Math.max(...parent.kids.map((r) => r.kids.length)); while (fresh.kids.length < cols) fresh.kids.push(FRESH.cell()); }
   // words added straight after other words need a space between them, as they would when typing
   const before = parent.kids[parent.kids.indexOf(fresh) - 1], first = fresh.kind === 'text' ? fresh : fresh.kids[0];
   if (['text', 'bold', 'italic', 'link'].includes(fresh.kind) && before && first?.kind === 'text' && !/\s$/.test(lastWords(before))) first.text = ' ' + first.text;
-  selected = fresh.id; flashId = fresh.id; say(''); render(); reveal();
+  selected = pick.id; flashId = fresh.id; say(''); closeHelp(); render(); reveal();
 }
+function add(kind) {
+  if (broken) return;
+  const spot = where(kind);
+  if (spot) insert(FRESH[kind](), spot); else openHelp(kind, true);
+}
+// When a block can't go anywhere from here, the boxes it needs, from the outside in. Each kind's usual home:
+const HOME = { text: 'para', bold: 'para', italic: 'para', link: 'para', item: 'list', row: 'table', cell: 'row', textbox: 'form', button: 'form' };
+function chainFor(kind) {
+  const chain = [kind];
+  for (let k = kind; !where(k);) { k = HOME[k]; if (!k || chain.includes(k)) return null; chain.unshift(k); }
+  return chain;
+}
+// the new block, wrapped in the boxes it needs: a table with a row with a cell in it
+function build(chain) {
+  const leaf = FRESH[chain.at(-1)]();
+  let top = leaf;
+  for (const k of chain.slice(0, -1).reverse()) top = node(k, [top]);
+  return { top, leaf };
+}
+// Boxes already on the page that could take it, nearest to the selected block first.
+function homesFor(kind) {
+  const all = inOrder(root), here = Math.max(0, all.findIndex((n) => n.id === selected));
+  return all.map((n, i) => ({ n, d: Math.abs(i - here) })).filter(({ n }) => canHold(n, kind) && !(kind === 'link' && (n.kind === 'link' || insideLink(n)))).sort((a, b) => a.d - b.d).map(({ n }) => n);
+}
+const lower = (k) => k === 'text' ? 'some words' : `${/^[aeiou]/i.test(KINDS[k].name) ? 'an' : 'a'} ${KINDS[k].name.toLowerCase()}`;
+const preview = (n) => { const t = allWords(n); return t ? ` "${t.length > 24 ? t.slice(0, 23) + '…' : t}"` : ''; };
+const allWords = (n) => n.kind === 'text' ? n.text : n.kids.map(allWords).join(' ').replace(/\s+/g, ' ').trim();
+// The help panel for a "+" button that can't add here: the rule in plain words, and buttons that do the sensible thing.
+let helpFor = null, helpPinned = false, helpTimer = null;
+const HELP_OPEN_MS = 200, HELP_CLOSE_MS = 250;
+function openHelp(kind, pin = false) {
+  const btn = document.querySelector(`[data-add="${kind}"]`), pop = document.getElementById('helpPop'), chain = chainFor(kind), home = homesFor(kind)[0];
+  if (!btn) return;
+  clearTimeout(helpTimer); helpFor = kind; helpPinned = pin || helpPinned;
+  // the rules from the block asked for, outwards: a cell goes in a row; a row goes in a table
+  const rules = chain?.length > 1 ? chain.slice(1).reverse().map((k) => WHY_NOT[k]) : [WHY_NOT[kind]];
+  const asNew = chain && (chain.length === 2 ? `Add ${lower(chain[0])} with ${lower(chain[1])} in it` : `Add ${lower(chain[0])} with ${chain.slice(1).map(lower).join(' and ')} in it`);
+  pop.innerHTML = `<p>${rules.map(esc).join(' ')}</p><div class="acts">${asNew ? `<button data-help="new">${esc(asNew)}</button>` : ''}${home ? `<button data-help="into" data-into="${home.id}">${esc(`Put it in the ${KINDS[home.kind].name.toLowerCase()}${preview(home)}`)}</button>` : ''}</div>`;
+  const r = btn.getBoundingClientRect();
+  pop.hidden = false; pop.style.left = Math.min(r.left, innerWidth - pop.offsetWidth - 8) + 'px'; pop.style.top = r.bottom + 6 + 'px';
+}
+function closeHelp() { clearTimeout(helpTimer); helpFor = null; helpPinned = false; document.getElementById('helpPop').hidden = true; }
 const lastWords = (n) => n.kind === 'text' ? n.text : n.kids.length ? lastWords(n.kids.at(-1)) : ' ';
 function remove() {
   if (broken) return;
@@ -363,6 +405,9 @@ function nameOf(n) {
 }
 
 // ---------- the HTML view: blocks to text, and text back to blocks ----------
+// The whole page: the doctype (this is a modern web page), the head (about the page: its title, on the browser tab), and
+// the body (what you see).
+const toDoc = () => `<!DOCTYPE html>\n<html>\n<head>\n${INDENT}<title>${esc(site[current].title ?? '')}</title>\n</head>\n${toHtml(root)}\n</html>`;
 function toHtml(n, depth = 0) {
   if (n.kind === 'text') return esc(n.text);
   if (KINDS[n.kind].single) return openTag(n);
@@ -383,7 +428,7 @@ function fromDom(el) {
       else n.kids.push(fromDom(c));
     } else if (c.nodeType === Node.TEXT_NODE) {
       // spaces count only between words; spaces next to a block, or at the very start or end, the browser ignores
-      const t = c.textContent.replace(/\s+/g, ' '), wordy = (x) => x && (x.nodeType === Node.TEXT_NODE || WORDY_TAGS.includes(x.tagName?.toLowerCase()));
+      const t = c.textContent, wordy = (x) => x && (x.nodeType === Node.TEXT_NODE || WORDY_TAGS.includes(x.tagName?.toLowerCase()));
       const keep = !INLINE.has(kind) ? t.trim() : t.trim() || (wordy(c.previousSibling) && wordy(c.nextSibling)) ? t : '';
       if (keep) n.kids.push(words(keep));
     }
@@ -428,8 +473,9 @@ function check(src) {
   return { errs, els };
 }
 function fromHtml() {
-  const src = code.value, r = check(src);
-  root = fromDom(new DOMParser().parseFromString(src, 'text/html').body);
+  const src = code.value, r = check(src), doc = new DOMParser().parseFromString(src, 'text/html');
+  root = fromDom(doc.body); site[current].title = doc.title;
+  if (!/^\s*<!DOCTYPE html>/i.test(src)) r.errs.unshift({ at: 0, text: 'A page starts with <!DOCTYPE html>: it tells the browser this is a modern web page.' });
   const walk = (n) => { if (['page', 'list', 'table', 'row', 'form'].includes(n.kind)) for (const k of n.kids) if (k.kind === 'text') r.errs.push({ at: Math.max(0, src.indexOf(k.text.trim())), text: n.kind === 'list' ? 'Words in a list go inside <li> … </li>.' : ['table', 'row'].includes(n.kind) ? 'Words in a table go inside a cell: <td> … </td>.' : 'Words straight on the page need a box, like <p> … </p>.' }); n.kids.forEach(walk); };
   walk(root);
   broken = r.errs.length > 0; codeEls = r.els; selected = root.id; mistakes = r.errs;
@@ -474,7 +520,7 @@ function blockAt(pos) {
 }
 function blockHtml(n) {
   const k = KINDS[n.kind], sel = n.id === selected ? ' selected' : '', fl = n.id === flashId ? ' flash' : '';
-  if (n.kind === 'text') return `<div class="text${sel}${fl}" data-id="${n.id}"><input value="${esc(n.text)}" aria-label="Words" data-id="${n.id}"${broken ? ' readonly' : ''}></div>`;
+  if (n.kind === 'text') return `<div class="text${sel}${fl}" data-id="${n.id}"><input value="${esc(n.text)}" aria-label="Words" data-id="${n.id}"${broken ? ' readonly' : ''}>${/\s\s|[\n\t]/.test(n.text) ? '<span class="ws-note">The page shows these spaces as one.</span>' : ''}</div>`;
   const colour = n.style ? ` · <span style="color:${n.style}">${n.style}</span>` : '';
   const thumb = n.kind === 'picture' ? `<img class="thumb" src="${PICS[n.attrs.src] ?? ''}" alt="">` : '';
   return `<div class="blk ${n.kind}${k.single ? ' single' : ''}${sel}${fl}" style="--c:${k.c}" data-id="${n.id}" tabindex="0" role="treeitem" aria-label="${esc(k.name)}">
@@ -490,7 +536,7 @@ function pageHtml(n) {
   if (k.single) return `<${tag} data-id="${n.id}" style="${st}" class="${cls}"${extra}>`;
   return `<${tag} data-id="${n.id}" style="${st}" class="${cls}"${extra}>${n.kids.map(pageHtml).join('')}</${tag}>`;
 }
-function renderPage() { pageView.innerHTML = pageHtml(root); }
+function renderPage() { if (!pageView) return; pageView.body.innerHTML = pageHtml(root); document.getElementById('pageTitle').textContent = site[current].title || '(no title)'; }
 function renderTree() {
   const keep = tree.scrollTop;
   tree.querySelectorAll('.blk, .text').forEach((e) => e.remove());
@@ -503,17 +549,17 @@ function savePage() { const pg = site[current]; pg.root = root; pg.broken = brok
 function openPage(i) {
   savePage(); clearMarks(); current = i; renaming = false;
   const pg = site[i]; root = pg.root; broken = pg.broken; selected = root.id; codeEls = []; mistakes = [];
-  code.value = pg.code ?? toHtml(root);
+  code.value = pg.code ?? toDoc();
   if (view === 'html' || broken) fromHtml();
   render(); renderSite();
   if (view === 'html') { clearTimeout(markTimer); drawMarks(); }
-  pageView.scrollTop = 0;
+  pageView.scrollingElement.scrollTop = 0;
 }
 // A page name a browser can find: small letters, numbers and dashes, ending in .html.
 const tidyName = (raw) => { const base = raw.trim().toLowerCase().replace(/\.html?$/, '').replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''); return base ? base + '.html' : ''; };
 function newPage() {
   let k = 2; while (site.some((p) => p.name === `page-${k}.html`)) k++;
-  site.push({ name: `page-${k}.html`, root: node('page', [node('heading', [words('A new page')]), node('para', [words('Write something here.')])]), code: null, broken: false });
+  site.push({ name: `page-${k}.html`, title: 'A new page', root: node('page', [node('heading', [words('A new page')]), node('para', [words('Write something here.')])]), code: null, broken: false });
   openPage(site.length - 1); renaming = true; renderSite();
 }
 function renameTo(raw, field) {
@@ -528,7 +574,7 @@ function deletePage() {
   if (current === 0) return;
   if (deleteArmed !== current) { deleteArmed = current; renderSite(); setTimeout(() => { deleteArmed = null; renderSite(); }, ARM_MS); return; }
   deleteArmed = null; clearMarks(); site.splice(current, 1); visited = visited.filter((v) => v !== current).map((v) => v > current ? v - 1 : v); current = 0;
-  const pg = site[0]; root = pg.root; broken = pg.broken; selected = root.id; code.value = pg.code ?? toHtml(root);
+  const pg = site[0]; root = pg.root; broken = pg.broken; selected = root.id; code.value = pg.code ?? toDoc();
   if (view === 'html' || broken) fromHtml();
   render(); renderSite();
 }
@@ -569,8 +615,8 @@ const ATTR_FIELDS = {
 function renderTools() {
   const n = find(selected)?.n ?? root, pal = document.getElementById('palette'), tools = document.getElementById('tools');
   const groups = [...new Set(Object.values(KINDS).map((k) => k.group).filter(Boolean))];
-  pal.innerHTML = groups.map((g) => `<div class="pgroup"><span>${g}</span>${Object.entries(KINDS).filter(([, k]) => k.group === g).map(([id, k]) => `<button data-add="${id}" style="--c:color-mix(in srgb, ${k.c} 45%, white)">+ ${k.name}</button>`).join('')}</div>`).join('');
-  if (n === root) { tools.innerHTML = '<span class="lbl">Click a block to move it, colour it or change it.</span>'; return; }
+  pal.innerHTML = groups.map((g) => `<div class="pgroup"><span>${g}</span>${Object.entries(KINDS).filter(([, k]) => k.group === g).map(([id, k]) => `<button data-add="${id}"${where(id) ? '' : ' class="off" aria-disabled="true"'} style="--c:color-mix(in srgb, ${k.c} 45%, white)">+ ${k.name}</button>`).join('')}</div>`).join('');
+  if (n === root) { tools.innerHTML = `<label class="field">The page's title, on the browser tab: <input data-title value="${esc(site[current].title ?? '')}" spellcheck="false" autocomplete="off"></label><span class="lbl">Click a block to move it, colour it or change it.</span>`; return; }
   // colour is for words, so blocks with no words in them (a picture, a text box) don't offer it
   const colourable = !['text', 'other'].includes(n.kind) && !KINDS[n.kind].single;
   const pics = n.kind === 'picture' ? `<span class="lbl">Which picture:</span>${Object.keys(PICS).map((p) => `<button class="pic" data-pic="${p}" aria-pressed="${n.attrs.src === p}" title="${p}"><img src="${PICS[p]}" alt="${p}"></button>`).join('')}` : '';
@@ -584,12 +630,23 @@ function renderTools() {
 }
 
 // ---------- selecting and linking the two panels ----------
-const tree = document.getElementById('tree'), pageView = document.getElementById('pageView'), code = document.getElementById('htmlText');
+const tree = document.getElementById('tree'), frame = document.getElementById('pageFrame'), code = document.getElementById('htmlText');
+// Inside the frame: only the marks for the selected and hovered blocks. They draw round things without moving anything,
+// so the page looks exactly as it would in any browser, and its HTML can be copied anywhere.
+const FRAME_MARKS = `html:not(.visiting) [data-id] { cursor: pointer; }
+.selected { box-shadow: 0 0 0 2px #24133b, 0 0 0 4px #ffb800, 0 0 18px 6px rgba(255, 184, 0, .6); background-color: rgba(255, 214, 77, .22); }
+tr.selected { box-shadow: none; outline: 3px solid #ffb800; }
+.hover:not(.selected) { box-shadow: 0 0 0 1.5px rgba(36, 19, 59, .5); animation: hover-in .25s ease-out; }
+@keyframes hover-in { from { box-shadow: 0 0 0 1.5px rgba(36, 19, 59, 0); } }
+html.visiting .selected, html.visiting .hover { box-shadow: none !important; background-color: transparent !important; outline: none !important; animation: none !important; }`;
+let pageView = null;
+// every block's marks, in the blocks panel and in the page
+const everywhere = (sel) => [...document.querySelectorAll(sel), ...(pageView?.querySelectorAll(sel) ?? [])];
 function select(id) { selected = id; render(); reveal(); }
 // out of sight: scroll it to the middle, so its glow isn't cut off at the edge. Already in sight: leave it be.
 function bringIntoView(el) {
   if (!el) return;
-  const box = el.closest('.tree, .page-view'), r = el.getBoundingClientRect(), c = box.getBoundingClientRect();
+  const win = el.ownerDocument.defaultView, r = el.getBoundingClientRect(), c = win === window ? el.closest('.tree').getBoundingClientRect() : { top: 0, bottom: win.innerHeight, height: win.innerHeight };
   if (r.top < c.top || r.bottom > c.bottom) el.scrollIntoView({ block: r.height < c.height ? 'center' : 'start', behavior: 'smooth' });
 }
 function reveal() {
@@ -608,40 +665,64 @@ let hoverId = null, hoverTimer = null;
 function hover(id) {
   if (id === hoverId) return;
   hoverId = id; clearTimeout(hoverTimer);
-  for (const el of document.querySelectorAll('.hover')) el.classList.remove('hover');
+  for (const el of everywhere('.hover')) el.classList.remove('hover');
   if (id == null) return;
-  hoverTimer = setTimeout(() => { for (const el of document.querySelectorAll(`[data-id="${id}"]`)) if (!el.matches('.tree input')) el.classList.add('hover'); }, HOVER_DELAY_MS);
+  hoverTimer = setTimeout(() => { for (const el of everywhere(`[data-id="${id}"]`)) if (!el.matches('.tree input')) el.classList.add('hover'); }, HOVER_DELAY_MS);
 }
-function markSelected() { for (const el of document.querySelectorAll('.selected')) el.classList.remove('selected'); for (const el of document.querySelectorAll(`[data-id="${selected}"]`)) if (!el.matches('.tree input')) el.classList.add('selected'); }
-pageView.addEventListener('click', (e) => {
+function markSelected() { for (const el of everywhere('.selected')) el.classList.remove('selected'); for (const el of everywhere(`[data-id="${selected}"]`)) if (!el.matches('.tree input')) el.classList.add('selected'); }
+const onPageClick = (e) => {
   const a = e.target.closest('a');
   if (a) e.preventDefault();
   if (mode === 'visit') { if (a) visit(a.getAttribute('href')); return; }
   // a click anywhere on a button or text box (even on the button's words) is using it, so it counts as that block
-  const el = e.target.closest('#pageView input, #pageView button') ?? e.target.closest('[data-id]'); if (!el) return;
+  const el = e.target.closest('input, button') ?? e.target.closest('[data-id]'); if (!el) return;
   if (view === 'html') { let n = find(+el.dataset.id)?.n; if (n?.kind === 'text') n = find(n.id).parent; const c = n && codeFor(n.id); selected = n?.id ?? selected; markSelected(); if (c) showCode(c); return; }
   // a text box or button on the page is being used: select its block without redrawing the page under the child's finger
   if (el.matches('input, button')) { selected = +el.dataset.id; renderTree(); renderTools(); markSelected(); bringIntoView(tree.querySelector(`[data-id="${selected}"]`)); return; }
   select(+el.dataset.id);
-});
+};
 // Send: nothing is sent anywhere, because no website is listening. The card shows what a website would receive.
-pageView.addEventListener('submit', (e) => {
+const onPageSubmit = (e) => {
   e.preventDefault();
   const sent = [...new FormData(e.target)].map(([k, v]) => `<li><code>${esc(k)}</code> = <b>${esc(v || '(empty)')}</b></li>`).join('');
   const unnamed = [...e.target.querySelectorAll('input')].filter((i) => !i.getAttribute('name')).length;
   const card = document.getElementById('sendCard');
   card.innerHTML = `<h3>What the website would receive</h3>${sent ? `<ul>${sent}</ul>` : '<p>Nothing! Every text box needs a name, or its answer isn\'t sent.</p>'}${sent && unnamed ? `<p>${unnamed === 1 ? 'One text box has' : `${unnamed} text boxes have`} no name, so ${unnamed === 1 ? 'its answer wasn\'t' : 'their answers weren\'t'} sent.</p>` : ''}<p class="later">Nothing was really sent: no website is listening yet. A later course makes a real website answer.</p><button type="button" id="sendClose">OK</button>`;
   card.hidden = false; document.getElementById('sendClose').focus();
-});
+};
 document.getElementById('sendCard').addEventListener('click', (e) => { if (e.target.id === 'sendClose') e.currentTarget.hidden = true; });
-pageView.addEventListener('mouseover', (e) => { if (mode === 'edit') hover(+e.target.closest('[data-id]')?.dataset.id || null); });
-pageView.addEventListener('mouseleave', () => hover(null));
+const onPageOver = (e) => { if (mode === 'edit') hover(+e.target.closest?.('[data-id]')?.dataset.id || null); };
+frame.addEventListener('mouseleave', () => hover(null));
 tree.addEventListener('mouseover', (e) => hover(+e.target.closest('[data-id]')?.dataset.id || null));
 tree.addEventListener('mouseleave', () => hover(null));
 // typing words: change the model and redraw the page only, so the box being typed in keeps its place
-tree.addEventListener('input', (e) => { if (e.target.matches('input[data-id]')) { find(+e.target.dataset.id).n.text = e.target.value; renderPage(); } });
+tree.addEventListener('input', (e) => {
+  if (!e.target.matches('input[data-id]')) return;
+  const n = find(+e.target.dataset.id).n, box = e.target.parentElement; n.text = e.target.value; renderPage();
+  const runs = /\s\s|[\n\t]/.test(n.text), note = box.querySelector('.ws-note');
+  if (runs && !note) box.insertAdjacentHTML('beforeend', '<span class="ws-note">The page shows these spaces as one.</span>'); else if (!runs) note?.remove();
+});
 tree.addEventListener('focusin', (e) => { if (e.target.matches('input[data-id]')) { selected = +e.target.dataset.id; renderTools(); markSelected(); } });
-document.getElementById('palette').addEventListener('click', (e) => { const b = e.target.closest('[data-add]'); if (b) add(b.dataset.add); });
+const palette = document.getElementById('palette'), helpPop = document.getElementById('helpPop');
+palette.addEventListener('click', (e) => { const b = e.target.closest('[data-add]'); if (b) add(b.dataset.add); });
+palette.addEventListener('pointerover', (e) => {
+  const b = e.target.closest('[data-add]');
+  if (!b?.classList.contains('off')) { if (!helpPinned && helpFor) { clearTimeout(helpTimer); helpTimer = setTimeout(closeHelp, HELP_CLOSE_MS); } return; }
+  if (helpFor === b.dataset.add) { clearTimeout(helpTimer); return; }
+  if (helpPinned) return;
+  clearTimeout(helpTimer); helpTimer = setTimeout(() => openHelp(b.dataset.add), HELP_OPEN_MS);
+});
+palette.addEventListener('pointerleave', () => { if (!helpPinned) { clearTimeout(helpTimer); helpTimer = setTimeout(closeHelp, HELP_CLOSE_MS); } });
+helpPop.addEventListener('pointerenter', () => clearTimeout(helpTimer));
+helpPop.addEventListener('pointerleave', () => { if (!helpPinned) helpTimer = setTimeout(closeHelp, HELP_CLOSE_MS); });
+helpPop.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-help]'); if (!b || !helpFor) return;
+  const kind = helpFor;
+  if (b.dataset.help === 'new') { const chain = chainFor(kind), { top, leaf } = build(chain); insert(top, where(chain[0]), leaf); }
+  else { const into = find(+b.dataset.into).n, fresh = FRESH[kind](); insert(fresh, { parent: into, index: into.kids.length }); }
+});
+document.addEventListener('pointerdown', (e) => { if (helpFor && !e.target.closest('#helpPop, [data-add]')) closeHelp(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && helpFor) closeHelp(); });
 const tools = document.getElementById('tools');
 tools.addEventListener('click', (e) => {
   const b = e.target.closest('button'); if (!b) return;
@@ -652,6 +733,7 @@ tools.addEventListener('click', (e) => {
 });
 // a link's address, a picture's words, a text box's name: the page and the block's label change as the child types
 tools.addEventListener('input', (e) => {
+  if (e.target.matches('[data-title]')) { site[current].title = e.target.value; renderPage(); return; }
   const f = e.target.closest('[data-attr]'); if (!f || broken) return;
   const n = find(selected)?.n; if (!n) return;
   n.attrs[f.dataset.attr] = f.value; renderTree(); renderPage();
@@ -666,7 +748,7 @@ tree.addEventListener('keydown', (e) => {
 document.querySelector('.views').addEventListener('click', (e) => {
   const b = e.target.closest('[data-view]'); if (!b || b.dataset.view === view) return;
   // into HTML: the text is written fresh from the blocks, unless it has a mistake, which stays for the child to fix
-  if (b.dataset.view === 'html' && !broken) { code.value = toHtml(root); fromHtml(); }
+  if (b.dataset.view === 'html' && !broken) { code.value = toDoc(); fromHtml(); }
   view = b.dataset.view; say(''); render();
   if (view === 'html') { clearTimeout(markTimer); drawMarks(); } else reveal();
 });
@@ -758,10 +840,18 @@ document.getElementById('modes').addEventListener('click', (e) => {
   const b = e.target.closest('[data-mode]'); if (!b) return;
   mode = b.dataset.mode; visited = [];
   for (const m of document.querySelectorAll('[data-mode]')) m.setAttribute('aria-pressed', m.dataset.mode === mode);
-  pageView.classList.toggle('visiting', mode === 'visit'); hover(null); renderSite();
+  pageView.documentElement.classList.toggle('visiting', mode === 'visit'); hover(null); renderSite();
 });
 document.getElementById('back').addEventListener('click', () => { if (visited.length) { const i = visited.pop(); openPage(i); } });
-render(); renderSite();
+// Start once the frame's empty page is ready: a real document with a doctype, so the browser uses its standard rules.
+frame.addEventListener('load', () => {
+  pageView = frame.contentDocument;
+  const marks = pageView.createElement('style'); marks.textContent = FRAME_MARKS; pageView.head.append(marks);
+  pageView.addEventListener('click', onPageClick); pageView.addEventListener('submit', onPageSubmit); pageView.addEventListener('mouseover', onPageOver);
+  pageView.addEventListener('pointerdown', (e) => { if (helpFor) closeHelp(); });
+  render(); renderSite();
+}, { once: true });
+frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body></body></html>';
 </script>
 </body>
 </html>
