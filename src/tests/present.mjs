@@ -13,7 +13,8 @@ const GUIDES = {
   jellyshell: { shapes: ['wide', 'tall'], shots: ALL, need: ['intro', 'whole', 'title', 'story', 'point', 'task', 'term', 'files', 'jar'] },
   jellyshell2: { shapes: ['wide'], shots: ['term', 'nano', 'files'], need: ['term', 'nano', 'files'] },
   jellygit: { shapes: ['wide'], shots: ['click', 'files'], need: ['whole', 'term', 'click', 'files'] },
-  jellyweb: { shapes: ['wide', 'tall'], shots: ['edit', 'browser', 'click'], need: ['whole', 'term', 'edit', 'browser', 'click'] },
+  // Web Jelly 1 has no terminal: its missions play with "Do it for me", each step a picture of the editor and the page
+  jellyweb: { shapes: ['wide', 'tall'], shots: ['story', 'task', 'web'], need: ['title', 'story', 'visual', 'point', 'task', 'web', 'jar'] },
   jellysecurity: { shapes: ['wide'], shots: ['choice', 'task'], need: ['term', 'choice'] },
 };
 const ready = (p) => p.waitForFunction(() => document.documentElement.dataset.prFrames, null, { timeout: 300000 });
@@ -27,7 +28,7 @@ for (const shape of G.shapes) {
   await p.goto(guideUrl(guide).replace('index.html', `index.html?present=${shape}`)); await ready(p);
   const info = await p.evaluate(() => ({ frames: document.documentElement.dataset.prFrames.split(' '), ok: +document.documentElement.dataset.prOk, demos: +document.documentElement.dataset.prDemos, key: document.documentElement.dataset.prKey }));
   const missions = info.demos;
-  if (!missions || info.ok !== missions) say(`${info.ok} of ${missions} demos finished their mission`);
+  if (G.demos !== false && (!missions || info.ok !== missions)) say(`${info.ok} of ${missions} demos finished their mission`);
   for (const k of G.need) if (!info.frames.includes(k)) say(`no ${k} frame`);
   if (await p.isVisible('.app')) say('the app shows behind the frames');
   if (info.frames.includes('earned')) say('a "you earned" frame: not for videos');
@@ -40,7 +41,8 @@ for (const shape of G.shapes) {
     await open(i);
     const k = await p.evaluate(() => document.querySelector('#prStage').dataset.k);
     if (k !== kind) say(`frame ${i} shows ${k}, not ${kind}`);
-    if (!['jar', 'intro', 'title'].includes(kind) && !(await p.textContent('#prBody')).trim()) say(`the ${kind} frame is empty`);
+    // a frame has words, or (Web Jelly 1's editor) a picture of the guide
+    if (!['jar', 'intro', 'title'].includes(kind) && !(await p.textContent('#prBody')).trim() && !(await p.evaluate(() => document.querySelector('#prBody iframe')?.srcdoc.length > 0))) say(`the ${kind} frame is empty`);
     await p.screenshot({ path: `present-${guide}-${shape}-${kind}.png` });
   }
 
@@ -53,8 +55,8 @@ for (const shape of G.shapes) {
     await p.keyboard.press('Tab'); if (!(await fades(false))) say('Tab did not bring the Overview card back');
   }
 
-  // ← then → comes back to the same terminal frame, typing finished.
-  await open(info.frames.indexOf('term'));
+  // ← then → comes back to the same frame: the terminal, typing finished, where there is one
+  await open(info.frames.indexOf(G.need.includes('term') ? 'term' : 'story'));
   const before = await p.innerHTML('#prBody');
   await p.keyboard.press('ArrowLeft'); await p.waitForTimeout(600); await p.keyboard.press('ArrowRight'); await p.waitForTimeout(4000);
   if (await p.innerHTML('#prBody') !== before) say('← then → did not come back to the same frame');

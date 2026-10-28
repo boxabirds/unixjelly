@@ -4,7 +4,7 @@
 import { spawn } from 'node:child_process';
 import os from 'node:os';
 const here = new URL('.', import.meta.url).pathname;
-const together = ['fit', 'prereqs', 'security', 'shell2', 'web', 'git', 'shell', 'fresh', 'letters', 'reshuffle', 'curriculum', 'jellysh'];
+const together = ['fit', 'prereqs', 'security', 'shell2', 'web', 'help', 'git', 'shell', 'fresh', 'letters', 'reshuffle', 'curriculum', 'jellysh'];
 const alone = ['overview', 'jar', 'present'];
 const jobs = Math.max(1, +process.env.JOBS || Math.floor(os.cpus().length / 2));
 

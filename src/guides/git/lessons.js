@@ -85,7 +85,7 @@ const LESSONS = [
     mnem: 'origin is the nickname for your GitHub copy.',
     points: ['On github.com: press <b>New</b>, name it, press <b>Create repository</b>. Here, use the button in the git map.', `<code>git remote add origin ${GH_URL}</code> saves the address with the nickname origin.`, '<code>git remote -v</code> shows the address so you can check it.'],
     steps: [
-      { t: 'Make the repository: press <b>Create repository</b> in the git map.', ok: (e) => e.type === 'gh-create' },
+      { t: 'Make the repository: press <b>Create repository</b> in the git map.', hint: 'In the git map, in the GitHub box at the bottom, press <b>Create repository “my-game”</b>.', show: () => { const b = document.querySelector('[data-gh="create"]'); if (b) glowEl(b); }, doIt: () => ghCreate(), ok: (e) => e.type === 'gh-create' },
       { t: `Tell git the address: <code>git remote add origin ${GH_URL}</code>`, ok: (e) => isGit(e, 'remote') && e.info.remoteAdd },
       { t: 'Check it: <code>git remote -v</code>', ok: (e) => isGit(e, 'remote') && e.info.remoteList },
     ] },
@@ -95,7 +95,7 @@ const LESSONS = [
     points: ['First time: <code>git push -u origin main</code>. Every time after: <code>git push</code>.', 'GitHub asks you to sign in. Use the browser window or a <b>token</b>, never your normal password. GitHub stopped accepting passwords for git in 2021.', 'Only committed photos get pushed. Changes you have not committed stay on your computer.'],
     steps: [
       { t: 'First push: <code>git push -u origin main</code>', ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 },
-      { t: 'Change something, add it, commit it, then just <code>git push</code>', ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 && e.info.push.n >= 2 },
+      { t: 'Change something, add it, commit it, then just <code>git push</code>', hint: 'Change a file, like <code>echo "more levels" >> game.py</code>. Then <code>git add game.py</code>, <code>git commit -m</code> with a message, and <code>git push</code>.', show: () => glowEl($('#term')), doIt: () => { typeCmd('echo "more levels" >> game.py'); typeCmd('git add game.py'); typeCmd('git commit -m "more levels"'); typeCmd('git push'); }, ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 && e.info.push.n >= 2 },
     ] },
   { id: 'pull', word: 'pull', name: 'Bring it down', stands: 'PULL and CLONE', color: '#62c934', need: 4,
     title: 'Your code, on any computer', why: '<code>git clone</code> copies the whole album from GitHub onto another computer. <code>git pull</code> brings down any new photos. Your code lives safely in the cloud and follows you anywhere.',
@@ -103,7 +103,7 @@ const LESSONS = [
     points: [`Pretend you are on a new laptop: <code>cd ~</code>, then <code>git clone ${GH_URL} my-game-copy</code>`, 'When the code changes on GitHub, <code>git pull</code> fetches it.', 'Pull before you start work. Push when you finish.'],
     steps: [
       { t: `Copy the album to "another computer": <code>cd ~</code>, then <code>git clone ${GH_URL} my-game-copy</code>`, ok: (e) => isGit(e, 'clone') },
-      { t: 'Someone changes your code on GitHub: press <b>Edit README on GitHub</b> in the git map.', ok: (e) => e.type === 'gh-edit' },
+      { t: 'Someone changes your code on GitHub: press <b>Edit README on GitHub</b> in the git map.', hint: 'In the git map, in the GitHub box at the bottom, press <b>Edit README on GitHub</b>.', show: () => { const b = document.querySelector('[data-gh="edit"]'); if (b) glowEl(b); }, doIt: () => ghEdit(), ok: (e) => e.type === 'gh-edit' },
       { t: 'Go back into a copy (<code>cd ~/my-game</code>) and fetch it: <code>git pull</code>', ok: (e) => isGit(e, 'pull') && e.info.pull?.count > 0 },
     ] },
   { id: 'ignore', word: '.gitignore', name: 'Keep secrets out', stands: 'the bouncer list', color: '#ff4d6d', need: 2,
@@ -121,9 +121,9 @@ const LESSONS = [
     mnem: 'Change. Add. Commit. Push.',
     points: ['Change: <code>echo "print(\'Level 2!\')" >> game.py</code>', 'Add, then commit with a good message, then push.', 'Watch your change travel through all four boxes of the git map.'],
     steps: [
-      { t: '<b>C</b>hange a file in my-game.', ok: (e) => e.type === 'cmd' && e.info.wrote?.inRepo },
-      { t: '<b>A</b>dd it to the stage.', ok: (e) => isGit(e, 'add') && e.info.added?.length },
-      { t: '<b>C</b>ommit it with a good message.', ok: (e) => isGit(e, 'commit') },
-      { t: '<b>P</b>ush it to GitHub.', ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 },
+      { t: '<b>C</b>hange a file in my-game.', hint: 'Add a line to a file, like: <code>echo "level 3" >> game.py</code>', show: () => glowEl($('#term')), doIt: () => { if (!/my-game/.test(pathOf(sh.cwd))) typeCmd('cd ~/my-game'); typeCmd('echo "level 3" >> game.py'); }, ok: (e) => e.type === 'cmd' && e.info.wrote?.inRepo },
+      { t: '<b>A</b>dd it to the stage.', hint: '<code>git add</code>, then the name of the file you changed.', show: () => glowEl($('#term')), doIt: () => typeCmd('git add game.py'), ok: (e) => isGit(e, 'add') && e.info.added?.length },
+      { t: '<b>C</b>ommit it with a good message.', hint: '<code>git commit -m</code>, then a message in quotes that says what changed.', show: () => glowEl($('#term')), doIt: () => typeCmd('git commit -m "Add level 3"'), ok: (e) => isGit(e, 'commit') },
+      { t: '<b>P</b>ush it to GitHub.', hint: 'Your branch already knows where GitHub is, so just <code>git push</code>.', show: () => glowEl($('#term')), doIt: () => typeCmd('git push'), ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 },
     ] },
 ];

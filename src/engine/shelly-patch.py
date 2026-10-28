@@ -146,11 +146,11 @@ region("  { id: 'paths', word: '~ / ..', name: 'Addresses',", "  { id: 'cat', wo
     mnem: 'Look at the tree. Plan the path. cd there.',
     points: ['<code>cd ..</code> climbs up one folder.', '<code>~/</code> starts at home. <code>/</code> at the start starts at the very top.', 'Lost? <code>pwd</code> tells you where you are.'],
     steps: [
-      {{ t: 'The first jelly is hiding in your <b>toys</b>. Walk in there!', ok: (e) => isCmd(e, 'cd') && e.cwd === '/home/kid/toys' }},
-      {{ t: 'The next one is in a <b>box</b>, inside toys. You are in toys already, so it is one step in.', ok: (e) => isCmd(e, 'cd') && e.cwd === '/home/kid/toys/box' }},
-      {{ t: 'One is somewhere <b>dark</b>, in <code>/tmp</code>. Start at the very top with <code>/</code>.', ok: (e) => isCmd(e, 'cd') && e.cwd === '/tmp/dark' }},
-      {{ t: 'One is with the hamster in <b>pets</b>, at home. Use <code>~</code> to get there in one jump.', ok: (e) => isCmd(e, 'cd') && e.cwd === '/home/kid/pets' }},
-      {{ t: 'The last one is in the <b>snacks</b>. Can you get there in one command, all by yourself?', ok: (e) => isCmd(e, 'cd') && e.cwd === '/home/kid/snacks' }},
+      {{ t: 'The first jelly is hiding in your <b>toys</b>. Walk in there!', hint: 'Your toys are a folder in your home. Walk in with <code>cd</code> and the folder\\'s name. The glowing jelly on the file tree shows where.', show: () => {{ const j = document.querySelector('.jelly-spot'); if (j) glowEl(j); glowEl($('#term')); }}, doIt: () => typeCmd('cd /home/kid/toys'), ok: (e) => isCmd(e, 'cd') && e.cwd === '/home/kid/toys' }},
+      {{ t: 'The next one is in a <b>box</b>, inside toys. You are in toys already, so it is one step in.', hint: 'The box is a folder inside toys. One <code>cd</code>, and the folder\\'s name. The glowing jelly on the file tree shows where.', show: () => {{ const j = document.querySelector('.jelly-spot'); if (j) glowEl(j); glowEl($('#term')); }}, doIt: () => typeCmd('cd /home/kid/toys/box'), ok: (e) => isCmd(e, 'cd') && e.cwd === '/home/kid/toys/box' }},
+      {{ t: 'One is somewhere <b>dark</b>, in <code>/tmp</code>. Start at the very top with <code>/</code>.', hint: 'Start the path at the very top: <code>cd /tmp/</code>, then the dark folder\\'s name. The glowing jelly on the file tree shows where.', show: () => {{ const j = document.querySelector('.jelly-spot'); if (j) glowEl(j); glowEl($('#term')); }}, doIt: () => typeCmd('cd /tmp/dark'), ok: (e) => isCmd(e, 'cd') && e.cwd === '/tmp/dark' }},
+      {{ t: 'One is with the hamster in <b>pets</b>, at home. Use <code>~</code> to get there in one jump.', hint: '<code>~</code> means your home. Pets are in your home: <code>cd ~/</code>, then the folder\\'s name. The glowing jelly on the file tree shows where.', show: () => {{ const j = document.querySelector('.jelly-spot'); if (j) glowEl(j); glowEl($('#term')); }}, doIt: () => typeCmd('cd /home/kid/pets'), ok: (e) => isCmd(e, 'cd') && e.cwd === '/home/kid/pets' }},
+      {{ t: 'The last one is in the <b>snacks</b>. Can you get there in one command, all by yourself?', hint: 'Snacks are in your home, next to pets and toys. <code>~/</code> gets you home in one jump. The glowing jelly on the file tree shows where.', show: () => {{ const j = document.querySelector('.jelly-spot'); if (j) glowEl(j); glowEl($('#term')); }}, doIt: () => typeCmd('cd /home/kid/snacks'), ok: (e) => isCmd(e, 'cd') && e.cwd === '/home/kid/snacks' }},
     ] }},
 """)
 rep("    paths: { does: '/ is the root, ~ is home, .. is the parent folder.', ex: 'cd ~', quiz: 'Get home from anywhere, fast.' },",
@@ -253,8 +253,10 @@ function complete(id) {""")
 exec(open('engine/use-jellysh.py').read())
 # The course map: which course comes before which (curriculum.json).
 exec(open('engine/courses-patch.py').read())
+exec(open('engine/terms-patch.py').read())
 # The jelly jar: every lesson's jelly, collected across courses.
 exec(open('engine/jar-patch.py').read())
+exec(open('engine/help-patch.py').read())
 # Shell Jelly's demo scripts, for presenter mode.
 exec(open('engine/demos-shell.py').read())
 # Presenter mode, for recording videos.

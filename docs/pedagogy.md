@@ -184,7 +184,7 @@ A child may come to a course weeks after the one before it, or skip ahead. So a 
 - an example;
 - a link to the lesson and course that taught it.
 
-The bubble's words come from one shared list of terms, so every guide explains a term the same way. Terms taught earlier in the *same* course don't need the underline. (Status: not built yet. The Web Jelly rewrite builds it first.)
+The bubble's words come from one shared list of terms, so every guide explains a term the same way. Terms taught earlier in the *same* course don't need the underline. The list is `src/terms.json`. In lesson text, write `<span class="known">program</span>`; the bubble is built into every guide (`src/engine/terms-patch.py`). So far only Web Jelly 1 marks its words.
 
 ### 17. Say exactly where to do it
 

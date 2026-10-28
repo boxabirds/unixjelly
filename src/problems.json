@@ -49,6 +49,32 @@
   "quest": "The loop programmers do every day: change, add, commit, push."
  },
  "web": {
+  "page": "What is a web page actually made of?",
+  "bold": "How do I make one word stand out?",
+  "move": "How do I move things around on my page?",
+  "list": "How do I make a list with dots?",
+  "colour": "How do I colour the words on my page?",
+  "table": "How do I line things up in rows?",
+  "picture": "How do I put a picture on my page, and why did it break?",
+  "link": "How do I join my pages together into a website?",
+  "form": "How do I make a page that asks questions?",
+  "tags": "What are those <angle brackets> in web pages?",
+  "wow": "What else can a web page do?",
+  "html": "How do I write a web page myself, in HTML?",
+  "lids": "Why did my whole page go huge?",
+  "space": "Why won't my extra spaces show up?",
+  "quest": "Can I make my own game out of web pages?"
+ },
+ "security1": {
+  "hats": "What is the difference between hacking and breaking the law?",
+  "keys": "Who can read my files, and how do I lock them properly?",
+  "guess": "How do attackers crack passwords, and what makes one strong?",
+  "knock": "Who is trying to log in to my computer at 3 in the morning?",
+  "room": "Is that \"free coins\" download safe to run?",
+  "layers": "One of my defences failed. Am I done for?",
+  "grey": "I found a way in by accident. What should I do?"
+ },
+ "web2": {
   "html": "What is a web page actually made of?",
   "tags": "How do I make a heading?",
   "p": "How do I put things inside other things, like bold words in a paragraph?",
@@ -66,14 +92,5 @@
   "https": "What does the padlock mean, and who can read my messages?",
   "push": "How do I put my own website on the internet, for free?",
   "quest": "Fix a broken website: a runaway heading, a missing picture and a dead link."
- },
- "security1": {
-  "hats": "What is the difference between hacking and breaking the law?",
-  "keys": "Who can read my files, and how do I lock them properly?",
-  "guess": "How do attackers crack passwords, and what makes one strong?",
-  "knock": "Who is trying to log in to my computer at 3 in the morning?",
-  "room": "Is that \"free coins\" download safe to run?",
-  "layers": "One of my defences failed. Am I done for?",
-  "grey": "I found a way in by accident. What should I do?"
  }
 }

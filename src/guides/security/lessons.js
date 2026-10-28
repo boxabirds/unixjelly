@@ -43,7 +43,7 @@ const LESSONS = [
       { hat: 'black', t: 'Attackers keep a list of popular passwords, fingerprinted in advance. Peek at the top of it: <code>head leak/common.txt</code>', ok: (e) => isCmd(e, 'head') && e.ok && e.args.some((a) => a.endsWith('common.txt')) },
       { hat: 'black', t: 'sib\'s fingerprint is <b>b76b2dbb</b>. Look for it in the list: <code>grep b76b2dbb leak/common.txt</code>', ok: (e) => isCmd(e, 'grep') && e.args.includes('b76b2dbb') && e.info.matches > 0 },
       { hat: 'white', t: 'Swap hats. Make sib a strong new password from three random words, and fingerprint it. Like: <code>fingerprint purplecactusbanjo</code>', ok: (e) => isCmd(e, 'fingerprint') && e.info.strong },
-      { hat: 'black', t: 'Black hat back on. Look for the new fingerprint in the list: <code>grep</code>, then the fingerprint, then <code>leak/common.txt</code>', ok: (e) => isCmd(e, 'grep') && store.newFp && e.args.includes(store.newFp) && e.info.matches === 0 },
+      { hat: 'black', t: 'Black hat back on. Look for the new fingerprint in the list: <code>grep</code>, then the fingerprint, then <code>leak/common.txt</code>', hint: 'Type <code>grep</code>, a space, the new fingerprint, a space, then <code>leak/common.txt</code>.', show: () => glowEl($('#term')), doIt: () => typeCmd(`grep ${store.newFp} leak/common.txt`), ok: (e) => isCmd(e, 'grep') && store.newFp && e.args.includes(store.newFp) && e.info.matches === 0 },
     ] },
   { id: 'knock', teaches: ['bots', 'secure-default'], word: 'bots', name: 'Knock knock, all night', stands: 'Secure by default', color: '#62c934', tool: 'term', seq: true, onlyHere: true,
     visual: `<pre class="logviz">03:12:07  FAILED  user=root   password=123456

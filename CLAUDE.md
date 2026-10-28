@@ -40,6 +40,7 @@ What to do with the assessment:
 | `src/tests/concepts.json` | How to spot each concept on screen: CSS selectors, patterns in commands shown, patterns in words. When you add a concept, add how to spot it here. |
 | `src/tests/prereqs.mjs` | Opens every lesson cold, as a child jumping ahead would, and checks each phase. |
 | The play-through tests (`shell2.mjs`, `security.mjs`) | Check the screen after every command. |
+| `src/tests/help.mjs` | Plays every step of every module with "Do it for me". Each step needs a hint (the "?") and a `doIt` that makes its own check pass. A terminal step that names its commands in `<code>` gets both by default (`engine/help-patch.py`); any other step needs its own. |
 
 Real command output is not checked. When a child types `ls -l` early, the real computer answers, and Shelly's tip explains it. Everything the guide itself says is checked.
 

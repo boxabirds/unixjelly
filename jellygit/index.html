@@ -84,7 +84,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pr-town[hidden]{display:none}
 .pr-town canvas{width:100%;height:100%;display:block}
 .pr-stage[data-k=whole] .pr-body{justify-content:flex-end}
-.pr-stage[data-k=browser]{background:#d4eeff}
+.pr-stage[data-k=browser],.pr-stage[data-k=web]{background:#d4eeff}
+.pr-web{flex:1;min-height:0;width:100%;background:#fff;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));box-shadow:0 calc(1 * var(--u)) 0 var(--ink)}
 .present-tall .pr-stage[data-k=whole] .pr-body{justify-content:flex-start}
 .pr-town-card{background:#fffffff0;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2.4 * var(--u));box-shadow:0 var(--u) 0 var(--ink);padding:calc(2.4 * var(--u)) calc(3 * var(--u));display:grid;gap:var(--u);max-width:min(100%, calc(62 * var(--u)))}
 .pr-town-card .pr-h{font-size:calc(3.6 * var(--u))}
@@ -190,7 +191,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .jar-file{display:flex;gap:8px;flex-wrap:wrap}
 .pill-ink{font:inherit;font-weight:700;font-size:.85rem;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:3px 12px;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
 .pill-ink:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
-.shelf{position:absolute;inset:0;overflow:auto;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:18px 14px;padding:16px;background:linear-gradient(135deg,#fff3e6,#f3e8ff 50%,#e6f6ff)}
+.shelf{position:absolute;inset:0;overflow:auto;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:18px 14px;padding:16px;background:linear-gradient(135deg,#fff3e6,#f3e8ff 50%,#e6f6ff)}
 .shelf[hidden]{display:none}
 .shelf-jar{width:clamp(118px,15vw,150px);display:grid;justify-items:center;gap:2px;font:inherit;color:var(--ink);background:none;border:0;cursor:pointer;padding:4px 4px 10px;border-bottom:8px solid var(--lemon);border-radius:0 0 6px 6px;transition:transform .15s}
 .shelf-jar:hover:not(:disabled){transform:translateY(-4px) rotate(-1.5deg)}
@@ -592,6 +593,30 @@ button.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .tz-eq{font-size:1.2em;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:.3em .8em}
 .tz-eq code{font-weight:700}
 html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+/* a word from an earlier course, and its bubble */
+.known{text-decoration:underline dotted 2px;text-underline-offset:.22em;cursor:help;border-radius:4px}
+.known:hover,.known:focus-visible,.known[aria-expanded=true]{background:#ffe58a80;outline:0}
+.kn-pop{position:fixed;z-index:70;width:min(320px,calc(100vw - 32px));background:var(--card);color:var(--ink);border:3px solid var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--ink);padding:10px 14px 12px;display:grid;gap:6px;font-size:.95rem;line-height:1.4;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;pointer-events:none}
+.kn-pop.on{opacity:1;transform:none;pointer-events:auto}
+.kn-pop b{font-family:var(--display);font-weight:400;font-size:1.15rem}
+.kn-pop p{margin:0}
+.kn-pop .kn-ex{font-family:var(--mono);font-size:.85rem;background:#fffbea;border-radius:8px;padding:4px 8px;overflow-wrap:anywhere}
+.kn-pop a{color:var(--blue);font-weight:700;font-size:.88rem}
+/* help with a step: a "?" for a hint, and "Do it for me" */
+.task-help{margin-left:auto;display:flex;gap:.5em;align-items:center}
+.hint-btn{width:1.9em;height:1.9em;border-radius:50%;border:3px solid var(--ink);background:var(--lemon);font-family:var(--display);font-size:.95em;line-height:1;padding:0;cursor:help;box-shadow:0 3px 0 var(--ink)}
+.hint-btn:hover,.hint-btn[aria-expanded=true]{background:#ffe58a}
+.doit-btn{border:2px solid var(--ink-soft);border-radius:999px;background:#fff;color:var(--ink-soft);font-family:var(--body);font-weight:700;font-size:.62em;padding:.25em .8em;cursor:pointer}
+.doit-btn:hover{color:var(--ink);border-color:var(--ink)}
+.doit-pop{position:fixed;inset:0;z-index:66;display:grid;place-items:center;background:#24133b80;padding:16px}
+.doit-card{background:var(--card);color:var(--ink);border:4px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);width:min(440px,100%);padding:20px 22px;display:grid;gap:12px;text-align:center}
+.doit-card h3{font-family:var(--display);font-weight:400;font-size:1.6rem;margin:0}
+.doit-card p{margin:0;color:var(--ink-soft)}
+.doit-card .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.bean.helped{background:none!important;border-style:dashed}
+/* a hint pointing at something: it pulses gold three times */
+.hint-glow{animation:hint-glow .8s ease-in-out 3}
+@keyframes hint-glow{50%{box-shadow:0 0 0 4px #ffb800,0 0 26px 10px rgba(255,184,0,.7)}}
 /* terminal colours git uses: green for staged / added, a warm yellow for photo IDs */
 .term-body .ok{color:#7dff9b}
 .term-body .hash{color:#ffd36b}
@@ -727,7 +752,7 @@ html,input,textarea,button{font-variant-ligatures:none;font-feature-settings:"li
         <div class="lhead" data-fit>
           <div class="num" id="lNum"></div>
           <h3 id="lTitle"></h3>
-          <div class="task" aria-live="polite"><div class="task-top"><span id="lTaskN"></span><span class="pips" id="lPips"></span></div><div class="task-t" id="lTask"></div></div>
+          <div class="task" aria-live="polite"><div class="task-top"><span id="lTaskN"></span><span class="pips" id="lPips"></span><span class="task-help"><button class="hint-btn" id="lHint" aria-label="Give me a hint" hidden>?</button><button class="doit-btn" id="lDoIt" hidden>Do it for me</button></span></div><div class="task-t" id="lTask"></div></div>
         </div>
         <div class="lbody">
         <div class="lstory" data-fit><p class="why" id="lWhy"></p><div class="lvisual" id="lVisual"></div></div>
@@ -1437,6 +1462,9 @@ class JellyStage {
       cv.setPointerCapture(e.pointerId); sound.boing(520, .18, .08);
     });
     cv.addEventListener('pointermove', (e) => {
+      // a jelly carried out of its panel is let go there, so it can never stay stuck to the mouse
+      const r = cv.getBoundingClientRect();
+      if (this.drag && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) { end(e); return; }
       setPtr(e); this.ray.setFromCamera(this.ptr, this.camera);
       const p = new THREE.Vector3();
       if (this.drag && this.ray.ray.intersectPlane(this.plane, p)) { p.y = Math.max(p.y, -.002); this.drag.b.grab.target.copy(p); }
@@ -1447,7 +1475,7 @@ class JellyStage {
       const tap = Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6 && performance.now() - d.t < 350;
       if (tap) { d.b.hop(1.1); sound.boing(380, .4); this.onTap?.(d.b); } else sound.boing(260, .45, .14);
     };
-    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end); cv.addEventListener('lostpointercapture', end);
   }
   // Jellies bump into each other, every jelly in every guide: letters and the jar's jelly babies alike.
   // Each jelly is a body-centred lattice of points: its cage corners plus the centre of every cage cell. Its biggest hole
@@ -1839,9 +1867,9 @@ class JarStage extends JellyStage {
   fill(items) {
     for (const b of this.bodies) { this.scene.remove(b.mesh); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); b.mesh.material.dispose(); }
     this.bodies = [];
-    // jellies 2.05 times the letters' size; past 6 they shrink a
-    // little more, so a full jar still has room to shake
-    const big = 2.05, grow = big * Math.min(1, Math.cbrt(6 / Math.max(6, items.length)));
+    // Every jelly is the size it would be in the fullest jar: the most jellies any course gives (MOST_JELLIES), with
+    // room to shake. So jellies are the same size in every jar, however few it holds.
+    const big = 1.8, grow = big * Math.cbrt(6 / Math.max(6, MOST_JELLIES, items.length));
     items.forEach((it, i) => {
       // 3 cage cells across, not the letters' 6.5: a jar holds many more jellies than a word has letters
       const b = new JellyBody(this, BEAN, it.colour, 0, this.opts.size * grow, 3);
@@ -3742,6 +3770,12 @@ function ghEdit() {
   scrollDown(); renderMap(); sound.ding(); check({ type: 'gh-edit' });
 }
 
+// A mission that works on the project starts inside it, whatever the last exercise ended with.
+function intoProject() {
+  const d = find('/home/kid/my-game'); if (!d || within(sh.cwd, d)) return;
+  sh.cwd = d; sh.vars.PWD = pathOf(d); paintPrompt(); renderMap();
+  print('<span class="tip">(You\'re back in your project, my-game.)</span>'); scrollDown();
+}
 /* lessons can start from a ready-made sandbox, so jumping ahead never leaves a kid stuck */
 const LEVELS = ['a fresh computer', 'my-game is a repository', 'my-game has its first photo', 'GitHub is connected', 'the photos are already on GitHub'];
 function stateLevel() {
@@ -3900,7 +3934,7 @@ const LESSONS = [
     mnem: 'origin is the nickname for your GitHub copy.',
     points: ['On github.com: press <b>New</b>, name it, press <b>Create repository</b>. Here, use the button in the git map.', `<code>git remote add origin ${GH_URL}</code> saves the address with the nickname origin.`, '<code>git remote -v</code> shows the address so you can check it.'],
     steps: [
-      { t: 'Make the repository: press <b>Create repository</b> in the git map.', ok: (e) => e.type === 'gh-create' },
+      { t: 'Make the repository: press <b>Create repository</b> in the git map.', hint: 'In the git map, in the GitHub box at the bottom, press <b>Create repository “my-game”</b>.', show: () => { const b = document.querySelector('[data-gh="create"]'); if (b) glowEl(b); }, doIt: () => ghCreate(), ok: (e) => e.type === 'gh-create' },
       { t: `Tell git the address: <code>git remote add origin ${GH_URL}</code>`, ok: (e) => isGit(e, 'remote') && e.info.remoteAdd },
       { t: 'Check it: <code>git remote -v</code>', ok: (e) => isGit(e, 'remote') && e.info.remoteList },
     ] },
@@ -3910,7 +3944,7 @@ const LESSONS = [
     points: ['First time: <code>git push -u origin main</code>. Every time after: <code>git push</code>.', 'GitHub asks you to sign in. Use the browser window or a <b>token</b>, never your normal password. GitHub stopped accepting passwords for git in 2021.', 'Only committed photos get pushed. Changes you have not committed stay on your computer.'],
     steps: [
       { t: 'First push: <code>git push -u origin main</code>', ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 },
-      { t: 'Change something, add it, commit it, then just <code>git push</code>', ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 && e.info.push.n >= 2 },
+      { t: 'Change something, add it, commit it, then just <code>git push</code>', hint: 'Change a file, like <code>echo "more levels" >> game.py</code>. Then <code>git add game.py</code>, <code>git commit -m</code> with a message, and <code>git push</code>.', show: () => glowEl($('#term')), doIt: () => { typeCmd('echo "more levels" >> game.py'); typeCmd('git add game.py'); typeCmd('git commit -m "more levels"'); typeCmd('git push'); }, ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 && e.info.push.n >= 2 },
     ] },
   { id: 'pull', demo: ["cd ~", "git clone https://github.com/kid/my-game.git my-game-copy", {"click": "[data-gh=edit]"}, "cd ~/my-game", "git status", "git pull"], word: 'pull', name: 'Bring it down', stands: 'PULL and CLONE', color: '#62c934', need: 4,
     title: 'Your code, on any computer', why: '<code>git clone</code> copies the whole album from GitHub onto another computer. <code>git pull</code> brings down any new photos. Your code lives safely in the cloud and follows you anywhere.',
@@ -3918,7 +3952,7 @@ const LESSONS = [
     points: [`Pretend you are on a new laptop: <code>cd ~</code>, then <code>git clone ${GH_URL} my-game-copy</code>`, 'When the code changes on GitHub, <code>git pull</code> fetches it.', 'Pull before you start work. Push when you finish.'],
     steps: [
       { t: `Copy the album to "another computer": <code>cd ~</code>, then <code>git clone ${GH_URL} my-game-copy</code>`, ok: (e) => isGit(e, 'clone') },
-      { t: 'Someone changes your code on GitHub: press <b>Edit README on GitHub</b> in the git map.', ok: (e) => e.type === 'gh-edit' },
+      { t: 'Someone changes your code on GitHub: press <b>Edit README on GitHub</b> in the git map.', hint: 'In the git map, in the GitHub box at the bottom, press <b>Edit README on GitHub</b>.', show: () => { const b = document.querySelector('[data-gh="edit"]'); if (b) glowEl(b); }, doIt: () => ghEdit(), ok: (e) => e.type === 'gh-edit' },
       { t: 'Go back into a copy (<code>cd ~/my-game</code>) and fetch it: <code>git pull</code>', ok: (e) => isGit(e, 'pull') && e.info.pull?.count > 0 },
     ] },
   { id: 'ignore', demo: ["echo \"password=jellybean\" > secrets.txt", "git status", "echo \"secrets.txt\" > .gitignore", "git status", "git add secrets.txt"], word: '.gitignore', name: 'Keep secrets out', stands: 'the bouncer list', color: '#ff4d6d', need: 2,
@@ -3936,10 +3970,10 @@ const LESSONS = [
     mnem: 'Change. Add. Commit. Push.',
     points: ['Change: <code>echo "print(\'Level 2!\')" >> game.py</code>', 'Add, then commit with a good message, then push.', 'Watch your change travel through all four boxes of the git map.'],
     steps: [
-      { t: '<b>C</b>hange a file in my-game.', ok: (e) => e.type === 'cmd' && e.info.wrote?.inRepo },
-      { t: '<b>A</b>dd it to the stage.', ok: (e) => isGit(e, 'add') && e.info.added?.length },
-      { t: '<b>C</b>ommit it with a good message.', ok: (e) => isGit(e, 'commit') },
-      { t: '<b>P</b>ush it to GitHub.', ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 },
+      { t: '<b>C</b>hange a file in my-game.', hint: 'Add a line to a file, like: <code>echo "level 3" >> game.py</code>', show: () => glowEl($('#term')), doIt: () => { if (!/my-game/.test(pathOf(sh.cwd))) typeCmd('cd ~/my-game'); typeCmd('echo "level 3" >> game.py'); }, ok: (e) => e.type === 'cmd' && e.info.wrote?.inRepo },
+      { t: '<b>A</b>dd it to the stage.', hint: '<code>git add</code>, then the name of the file you changed.', show: () => glowEl($('#term')), doIt: () => typeCmd('git add game.py'), ok: (e) => isGit(e, 'add') && e.info.added?.length },
+      { t: '<b>C</b>ommit it with a good message.', hint: '<code>git commit -m</code>, then a message in quotes that says what changed.', show: () => glowEl($('#term')), doIt: () => typeCmd('git commit -m "Add level 3"'), ok: (e) => isGit(e, 'commit') },
+      { t: '<b>P</b>ush it to GitHub.', hint: 'Your branch already knows where GitHub is, so just <code>git push</code>.', show: () => glowEl($('#term')), doIt: () => typeCmd('git push'), ok: (e) => isGit(e, 'push') && e.info.push?.count > 0 },
     ] },
 ];
 const ALL = [{ id: 'whole', name: 'Overview', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];
@@ -3987,7 +4021,7 @@ function complete(id) {
   const item = ALL.find((a) => a.id === id);
   const reviewing = PANELS[panelIdx]?.lesson?.id === id && $('#lcard').dataset.phase === 'mission';
   if (reviewing) G.review = id; // look at what happened first, then press the button to collect
-  else if (!sectionDone(id)) toast(`Jelly collected: ${item.word ? item.word : item.name}!`);
+  else if (!sectionDone(id)) toast(jellyless(id) ? `Exercise done: ${item.word ? item.word : item.name}. No jelly this time.` : `Jelly collected: ${item.word ? item.word : item.name}!`);
   sound.ding(); confetti(item.color);
   if (LESSONS[cur]?.id === id) { paintSteps(); lessonStage?.hopAll(1.2); }
   if (G.review === id) setTimeout(() => $('#lNext').focus({ preventScroll: true }), REDUCED ? 0 : 1200);
@@ -3998,14 +4032,14 @@ function check(ev) {
     if (L.onlyHere && !(PANELS[panelIdx]?.lesson === L)) continue;
     const st = store.steps[L.id] ??= L.steps.map(() => false);
     let changed = false;
-    L.steps.forEach((s, i) => { if (!st[i] && (!L.seq || st.slice(0, i).every(Boolean)) && s.ok(ev)) { st[i] = true; changed = true; } });
+    L.steps.forEach((s, i) => { if (!st[i] && (!L.seq || st.slice(0, i).every(Boolean)) && (ev.type === 'done for me' ? ev.lesson === L.id && ev.step === i : s.ok(ev))) { st[i] = true; changed = true; } });
     if (changed) { save(); if (L === LESSONS[cur]) paintSteps(true); if (st.every(Boolean)) complete(L.id); else if (L === LESSONS[cur]) sound.ding(); }
   }
 }
 function paintProgress() {
-  const n = ALL.filter((a) => store.done[a.id]).length;
-  $('#jarCount').textContent = `${n} / ${ALL.length} jellies`; paintCourses(n, ALL.length); collect(); $('#handleCount').textContent = `${n} / ${ALL.length}`;
-  $('#beans').innerHTML = ALL.map((a) => `<span class="bean${store.done[a.id] ? ' on' : ''}" title="${esc(a.name)}" style="${store.done[a.id] ? `background:${a.color}` : ''}"></span>`).join('');
+  const n = ALL.filter((a) => store.done[a.id]).length, jellies = ALL.filter((a) => store.done[a.id] && !jellyless(a.id)).length;
+  $('#jarCount').textContent = `${jellies} / ${ALL.length} jellies`; paintCourses(n, ALL.length); collect(); $('#handleCount').textContent = `${n} / ${ALL.length}`;
+  $('#beans').innerHTML = ALL.map((a) => `<span class="bean${store.done[a.id] ? ' on' : ''}${jellyless(a.id) ? ' helped' : ''}" title="${esc(a.name)}${jellyless(a.id) ? ' (done with help: no jelly)' : ''}" style="${store.done[a.id] ? `background:${a.color}` : ''}"></span>`).join('');
   const rec = PANELS.find((p) => p.id !== 'welcome' && !store.done[p.id])?.id;
   document.querySelectorAll('.ni').forEach((t) => { t.classList.toggle('done', !!store.done[t.dataset.id]); t.classList.toggle('up-next', t.dataset.id === rec); });
 }
@@ -4022,7 +4056,7 @@ function confetti(color) {
 }
 
 /* ---------------- the course map (src/curriculum.json) ---------------- */
-const COURSES = [{"id": "shell", "title": "Shell Jelly", "store": "jellyshell.v1", "needs": [], "step": 1, "href": "../jellyshell/", "away": false, "folder": "jellyshell", "blurb": "Boss your computer around with tiny words. Move around folders, read and copy files, and rescue the gerbil."}, {"id": "shell2", "title": "Shell Jelly 2", "store": "jellyshell2.v1", "needs": ["shell"], "step": 2, "href": "../jellyshell2/", "away": false, "folder": "jellyshell2", "blurb": "Who's in charge? Users, groups and file locks. Write your own commands, borrow the boss's power, and use pipes to find out who ate the cookies."}, {"id": "git", "title": "Git Jelly", "store": "jellygit.v1", "needs": ["shell2"], "step": 3, "href": "../jellygit/", "away": false, "folder": "jellygit", "blurb": "Never lose your code again. Save snapshots, undo mistakes and work with other people without stepping on their changes."}, {"id": "security1", "title": "Security Jelly 1", "store": "jellysecurity.v1", "needs": ["shell2"], "step": 3, "href": "../jellysecurity/", "away": false, "folder": "jellysecurity", "blurb": "Same skills, different permission. Crack passwords, catch bots, trap a sneaky program and lock your files, all on a pretend computer. Seven missions."}, {"id": "web", "title": "Web Jelly", "store": "jellyweb.v1", "needs": ["git"], "step": 4, "href": "../jellyweb/", "away": false, "folder": "jellyweb", "blurb": "Write your own web page, find out how it crosses the planet in under a second, then put it on the internet with GitHub Pages."}, {"id": "security2", "title": "Security Jelly 2", "store": null, "needs": ["web", "security1"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Attack and defend a pretend website: passwords, lookalike addresses, secret pages and who else can see your messages."}, {"id": "think1", "title": "Think Jelly 1", "store": null, "needs": ["web"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Meet Wobble, a jelly robot that does exactly what you say and nothing more. Give it orders in real JavaScript, hunt the bugs, and learn to think like a programmer."}, {"id": "server", "title": "Server Jelly", "store": null, "needs": ["think1"], "step": 6, "href": null, "away": false, "folder": null, "blurb": "Make your website answer back. Write a pretend server in real JavaScript: a guestbook that shows everyone's messages."}, {"id": "think2", "title": "Think Jelly 2", "store": null, "needs": ["think1"], "step": 6, "href": null, "away": false, "folder": null, "blurb": "What computers can't do, what takes forever, what goes wrong when two things happen at once, and what AI really is. Then: what you shouldn't build."}, {"id": "storage", "title": "Storage Jelly", "store": null, "needs": ["server"], "step": 7, "href": null, "away": false, "folder": null, "blurb": "Your guestbook forgets everything when the server restarts. Teach it to remember, with files and JSON."}, {"id": "sql", "title": "SQL Jelly", "store": null, "needs": ["storage"], "step": 8, "href": null, "away": false, "folder": null, "blurb": "Ask a database questions. Find every message from one person, count them, and join tables together."}], COURSE = COURSES.find((c) => c.store === KEY);
+const COURSES = [{"id": "shell", "title": "Shell Jelly", "store": "jellyshell.v1", "needs": [], "step": 1, "href": "../jellyshell/", "away": false, "folder": "jellyshell", "blurb": "Boss your computer around with tiny words. Move around folders, read and copy files, and rescue the gerbil."}, {"id": "shell2", "title": "Shell Jelly 2", "store": "jellyshell2.v1", "needs": ["shell"], "step": 2, "href": "../jellyshell2/", "away": false, "folder": "jellyshell2", "blurb": "Who's in charge? Users, groups and file locks. Write your own commands, borrow the boss's power, and use pipes to find out who ate the cookies."}, {"id": "git", "title": "Git Jelly", "store": "jellygit.v1", "needs": ["shell2"], "step": 3, "href": "../jellygit/", "away": false, "folder": "jellygit", "blurb": "Never lose your code again. Save snapshots, undo mistakes and work with other people without stepping on their changes."}, {"id": "security1", "title": "Security Jelly 1", "store": "jellysecurity.v1", "needs": ["shell2"], "step": 3, "href": "../jellysecurity/", "away": false, "folder": "jellysecurity", "blurb": "Same skills, different permission. Crack passwords, catch bots, trap a sneaky program and lock your files, all on a pretend computer. Seven missions."}, {"id": "web", "title": "Web Jelly 1", "store": "jellyweb.v2", "needs": ["shell"], "step": 2, "href": "../jellyweb/", "away": false, "folder": "jellyweb", "blurb": "Every web page is made of blocks. Build pages, move the blocks around, find the tags underneath, then write real HTML and make an adventure game."}, {"id": "web2", "title": "Web Jelly 2", "store": null, "needs": ["web", "git"], "step": 4, "href": null, "away": false, "folder": null, "blurb": "How a page gets from a website to your screen: addresses, the phonebook, the padlock. Then put your own website on the real internet."}, {"id": "security2", "title": "Security Jelly 2", "store": null, "needs": ["web2", "security1"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Attack and defend a pretend website: passwords, lookalike addresses, secret pages and who else can see your messages."}, {"id": "think1", "title": "Think Jelly 1", "store": null, "needs": ["web"], "step": 3, "href": null, "away": false, "folder": null, "blurb": "Meet Wobble, a jelly robot that does exactly what you say and nothing more. Give it orders in real JavaScript, hunt the bugs, and learn to think like a programmer."}, {"id": "server", "title": "Server Jelly", "store": null, "needs": ["think1"], "step": 4, "href": null, "away": false, "folder": null, "blurb": "Make your website answer back. Write a pretend server in real JavaScript: a guestbook that shows everyone's messages."}, {"id": "think2", "title": "Think Jelly 2", "store": null, "needs": ["think1"], "step": 4, "href": null, "away": false, "folder": null, "blurb": "What computers can't do, what takes forever, what goes wrong when two things happen at once, and what AI really is. Then: what you shouldn't build."}, {"id": "storage", "title": "Storage Jelly", "store": null, "needs": ["server"], "step": 5, "href": null, "away": false, "folder": null, "blurb": "Your guestbook forgets everything when the server restarts. Teach it to remember, with files and JSON."}, {"id": "sql", "title": "SQL Jelly", "store": null, "needs": ["storage"], "step": 6, "href": null, "away": false, "folder": null, "blurb": "Ask a database questions. Find every message from one person, count them, and join tables together."}], COURSE = COURSES.find((c) => c.store === KEY);
 const course = (id) => COURSES.find((c) => c.id === id);
 const courseStore = () => { try { return JSON.parse(localStorage.getItem('jelly.courses')) || {}; } catch { return {}; } };
 const finishedCourse = (id, all = courseStore()) => !!all[id] && all[id].done >= all[id].total;
@@ -4035,7 +4069,7 @@ function nextCourses() {
   return COURSES.filter((c) => c !== COURSE && c.folder && !finishedCourse(c.id, all) && c.needs.every((n) => met.has(n) || finishedCourse(n, all))).slice(0, 2);
 }
 // "What's in it?": a card for any course on the map, with its summary and every word it teaches.
-const RECAPS = {"shell": {"line": "Every command makes this trip, down and back up, in less than a blink.", "words": [["echo hello", "Repeats what you say. Proves the shell is listening."], ["pwd", "Prints the address of the folder you are in."], ["ls -a", "Lists what is in a folder. -a shows hidden files."], ["cd toys", "Walks into a folder. cd .. climbs back up."], ["cd ~", "/ is the root, ~ is home, .. is the parent folder."], ["cat notes.txt", "Prints a file on the screen. Glues files together."], ["mkdir fort", "Makes a folder. touch makes an empty file."], ["cp pizza.txt pizza2.txt", "Copies a file: first where it IS, then where it GOES."], ["mv hamster.txt hammy.txt", "Moves or renames. Same job: change the label."], ["rm broccoli.txt", "Deletes forever. No undo! Add -r for folders."], ["Ctrl+C", "Tab finishes words, ↑ remembers, Ctrl+C stops, clear wipes."], ["man ls", "Opens the built-in manual for any command."], ["ls · cd · cat · mv", "Look, walk, read and move, all together."]]}, "shell2": {"line": "Every file has an owner, a group and a lock. The kernel checks your keys every single time.", "words": [["whoami", "Prints which account you are using. The prompt says it too: who@computer:where$"], ["echo hi > note.txt", "> sends a command's words into a file. >> adds to the end."], ["nano note.txt", "A little text editor in the terminal. Ctrl+O saves, Ctrl+X exits."], ["which ls", "Every command is a program file. which says where it lives."], ["./hello", "A script is a file of commands. ./ runs the one in this folder."], ["ls -l", "Shows every lock: owner, group and everyone else. r read, w write, x run."], ["chmod u+x hello", "Changes a lock. Who (u g o a), + or -, which keys."], ["echo $PATH", "The PATH is where the shell looks for programs. Put yours in ~/bin to use it anywhere."], ["chgrp family comics", "id shows your groups. A group shares the middle set of keys."], ["su sib", "Become another user, with their keys. exit comes back."], ["sudo whoami", "One command as root, the boss user. Only the sudo group may. Think first!"], ["grep cookie diary.txt", "Prints every line with a word in it. -i ignores capitals."], ["grep cookie kitchen.log | wc -l", "Pours one command's words into the next one."], ["chmod 600 note.txt", "r = 4, w = 2, x = 1. Add them for each set: 644, 755, 600."], ["su sib", "Build it, lock it, test it as someone else."]]}, "git": {"line": "Cats Always Chase Pigeons: Change, Add, Commit, Push. And git pull brings it all back down.", "words": [["git --version", "git is the camera. GitHub keeps the album safe."], ["git config --global user.name \"Sam\"", "Signs your photos with your name and email."], ["git init", "Turns a folder into a repository by adding .git."], ["git status", "Says what changed and what is on the stage."], ["git add .", "Puts files on the stage, ready for the photo."], ["git commit -m \"add lasers\"", "Takes a photo of the stage, with a message."], ["git log --oneline", "Shows the album: every photo, newest first."], ["git diff", "Spots the difference: + lines new, - lines gone."], ["git restore game.py", "The oops button: back to the saved version."], ["git remote add origin <address>", "Saves GitHub's address under the nickname origin."], ["git push", "Sends your photos up to GitHub."], ["git pull", "clone copies it all down. pull fetches new photos."], ["echo \"secrets.txt\" > .gitignore", ".gitignore keeps secrets and junk out of git."], ["git add . · git commit -m \"…\" · git push", "Change, add, commit, push: the daily loop."]]}, "security1": {"line": "Same skills, different permission. Attack only with permission, fix what you find, tell the owner.", "words": [["sign permission-slip.txt", "Black hat breaks in without permission. White hat (ethical hacker) has permission and reports."], ["chmod go-rw diary.txt", "Least privilege: only the keys you need. chmod changes the lock."], ["fingerprint purplecactusbanjo", "Sites keep a fingerprint (hash) of your password. Attackers guess with lists of popular ones: a dictionary attack."], ["grep -c FAILED server.log", "Bots knock on every computer all night. Change every default password: secure by default."], ["su room", "Isolation: run programs you don't trust where they can't reach your things."], ["password · default · locks · spare room", "Defence in depth: several layers, so one failure isn't the end."], ["coordinated vulnerability disclosure", "Found a way in? Stop, don't peek, tell the owner."]]}, "web": {"line": "Every page you have ever seen made this trip, there and back, in less than a second.", "words": [["418 I'm a teapot", "200 yay, 301 over there, 404 not found, 500 server broke."], ["View source", "The text that every web page is made of."], ["<h1>Hi!</h1>", "A tag opens a box. The same tag with a slash is its lid."], ["<p>I like <b>cheese</b></p>", "Boxes go inside boxes. Last opened, first closed."], ["<hr/>", "A tag with nothing inside closes itself with />."], ["<ul><li>pizza</li></ul>", "A list box, with an <li></li> box for every item."], ["<a href=\"about.html\">About</a>", "A link. href says where it jumps to."], ["<img src=\"cat.png\" alt=\"A cat\"/>", "A picture. It stands alone: src says where, alt says what."], ["h1 { color: tomato; }", "Paints the page. Styles pour down like a waterfall."], ["https://jelly.fun/snacks/", "An address: how, which computer, which file."], ["curl https://jelly.fun", "Fetches a page and shows it as plain text."], ["curl -v https://jelly.fun", "The letter your browser sends: \"give me this, please\"."], ["nslookup jelly.fun", "The phonebook that turns names into numbers."], ["ping jelly.fun", "Sonar for computers: how long there and back?"], ["https://", "The padlock: letters in a locked box, not postcards."], ["git add . · commit · push", "Sends your site to GitHub Pages, live for everyone."], ["edit · git push", "Look, fix, check, publish. All of it together."]]}};
+const RECAPS = {"shell": {"line": "Every command makes this trip, down and back up, in less than a blink.", "words": [["echo hello", "Repeats what you say. Proves the shell is listening."], ["pwd", "Prints the address of the folder you are in."], ["ls -a", "Lists what is in a folder. -a shows hidden files."], ["cd toys", "Walks into a folder. cd .. climbs back up."], ["cd ~", "/ is the root, ~ is home, .. is the parent folder."], ["cat notes.txt", "Prints a file on the screen. Glues files together."], ["mkdir fort", "Makes a folder. touch makes an empty file."], ["cp pizza.txt pizza2.txt", "Copies a file: first where it IS, then where it GOES."], ["mv hamster.txt hammy.txt", "Moves or renames. Same job: change the label."], ["rm broccoli.txt", "Deletes forever. No undo! Add -r for folders."], ["Ctrl+C", "Tab finishes words, ↑ remembers, Ctrl+C stops, clear wipes."], ["man ls", "Opens the built-in manual for any command."], ["ls · cd · cat · mv", "Look, walk, read and move, all together."]]}, "shell2": {"line": "Every file has an owner, a group and a lock. The kernel checks your keys every single time.", "words": [["whoami", "Prints which account you are using. The prompt says it too: who@computer:where$"], ["echo hi > note.txt", "> sends a command's words into a file. >> adds to the end."], ["nano note.txt", "A little text editor in the terminal. Ctrl+O saves, Ctrl+X exits."], ["which ls", "Every command is a program file. which says where it lives."], ["./hello", "A script is a file of commands. ./ runs the one in this folder."], ["ls -l", "Shows every lock: owner, group and everyone else. r read, w write, x run."], ["chmod u+x hello", "Changes a lock. Who (u g o a), + or -, which keys."], ["echo $PATH", "The PATH is where the shell looks for programs. Put yours in ~/bin to use it anywhere."], ["chgrp family comics", "id shows your groups. A group shares the middle set of keys."], ["su sib", "Become another user, with their keys. exit comes back."], ["sudo whoami", "One command as root, the boss user. Only the sudo group may. Think first!"], ["grep cookie diary.txt", "Prints every line with a word in it. -i ignores capitals."], ["grep cookie kitchen.log | wc -l", "Pours one command's words into the next one."], ["chmod 600 note.txt", "r = 4, w = 2, x = 1. Add them for each set: 644, 755, 600."], ["su sib", "Build it, lock it, test it as someone else."]]}, "git": {"line": "Cats Always Chase Pigeons: Change, Add, Commit, Push. And git pull brings it all back down.", "words": [["git --version", "git is the camera. GitHub keeps the album safe."], ["git config --global user.name \"Sam\"", "Signs your photos with your name and email."], ["git init", "Turns a folder into a repository by adding .git."], ["git status", "Says what changed and what is on the stage."], ["git add .", "Puts files on the stage, ready for the photo."], ["git commit -m \"add lasers\"", "Takes a photo of the stage, with a message."], ["git log --oneline", "Shows the album: every photo, newest first."], ["git diff", "Spots the difference: + lines new, - lines gone."], ["git restore game.py", "The oops button: back to the saved version."], ["git remote add origin <address>", "Saves GitHub's address under the nickname origin."], ["git push", "Sends your photos up to GitHub."], ["git pull", "clone copies it all down. pull fetches new photos."], ["echo \"secrets.txt\" > .gitignore", ".gitignore keeps secrets and junk out of git."], ["git add . · git commit -m \"…\" · git push", "Change, add, commit, push: the daily loop."]]}, "security1": {"line": "Same skills, different permission. Attack only with permission, fix what you find, tell the owner.", "words": [["sign permission-slip.txt", "Black hat breaks in without permission. White hat (ethical hacker) has permission and reports."], ["chmod go-rw diary.txt", "Least privilege: only the keys you need. chmod changes the lock."], ["fingerprint purplecactusbanjo", "Sites keep a fingerprint (hash) of your password. Attackers guess with lists of popular ones: a dictionary attack."], ["grep -c FAILED server.log", "Bots knock on every computer all night. Change every default password: secure by default."], ["su room", "Isolation: run programs you don't trust where they can't reach your things."], ["password · default · locks · spare room", "Defence in depth: several layers, so one failure isn't the end."], ["coordinated vulnerability disclosure", "Found a way in? Stop, don't peek, tell the owner."]]}, "web": {"line": "Every web page is boxes inside boxes, written as tags. The browser reads them and shows the page.", "words": [["Heading, Paragraph", "A web page is made of blocks: a heading is a title, a paragraph is a few sentences."], ["<p>I like <b>lime</b></p>", "Blocks go inside blocks. Bold and italic go inside words, like a paragraph."], ["↑ ↓ ← →", "Drag any block to move it, and everything inside it. Red tells you why it can't go there."], ["<ul><li>lime</li></ul>", "A list holds list items, one per thing."], ["style=\"color: tomato\"", "A colour pours down into the blocks inside. A block's own colour wins."], ["<table><tr><td>lime</td></tr></table>", "A table holds rows; a row holds cells."], ["<img src=\"gerbil.svg\" alt=\"Gerald\"/>", "A picture finds its file by name. Alt words say what it shows."], ["<a href=\"cave.html\">Go in</a>", "A website is pages joined by links. index.html is the page people see first."], ["<input name=\"jelly\"/>", "A form asks questions. Each answer is sent with its text box's name."], ["<p> … </p>", "Every block is an opening tag and a closing tag, its lid. A picture is one tag on its own."], ["draw · 3D · sound", "The whole web is pages. Pages can draw, show 3D and play sound."], ["<!DOCTYPE html>", "HTML is the language of web pages: doctype, head (with the title), body."], ["<h1>no lid…", "The browser never refuses broken HTML: it guesses."], ["My     jelly", "Any run of spaces and new lines shows as one space."], ["index.html → cave.html", "A website of pages, pictures and links: your own adventure."]]}};
 function courseCard(id) {
   const c = course(id), r = RECAPS[id], here = c === COURSE, all = courseStore();
   const status = here ? 'You are here' : finishedCourse(id, all) ? 'Finished ✓' : !c.folder ? 'Coming later' : c.needs.length ? `Comes after ${c.needs.map((n) => course(n).title).join(' and ')}` : 'The first course';
@@ -4067,6 +4101,69 @@ $('#startBtn').insertAdjacentHTML('beforebegin', `<p class="needs">${COURSE.need
   ? `Comes after ${COURSE.needs.map((n) => courseLink(course(n)) + (finishedCourse(n) ? ' ✓' : '')).join(' and ')}. The course map in the menu shows the order.`
   : 'The very first course. You don\'t need any other course before this one.'}</p>`);
 
+/* ---------------- words from earlier courses (src/terms.json) ---------------- */
+const TERMS = {"program": {"says": "A program is a list of instructions the computer follows. Each command you type runs a program.", "ex": "ls and cat are programs. So is your web browser.", "course": "shell", "lesson": "backstage", "name": "Backstage"}, "file": {"says": "A file holds one thing on a computer, like some writing or a picture. Files live in folders.", "ex": "secret-diary.txt", "course": "shell", "lesson": "ls", "name": "Look around"}, "file name": {"says": "The name a file is saved under. Every letter counts, and capitals matter.", "ex": "secret-diary.txt is not Secret-Diary.txt", "course": "shell", "lesson": "ls", "name": "Look around"}};
+// One bubble for every small explanation: a word from an earlier course, the mission's hint. BUBBLES says, for each kind
+// of thing that has one, what it says (html) and anything else to do when it opens (onOpen), like making something glow.
+const BUBBLES = [];
+const bubble = (() => {
+  const OPEN_MS = 200, CLOSE_MS = 250, GAP = 8, EDGE = 16; // hover waits a moment, so the bubble doesn't flicker
+  const pop = document.createElement('div'); pop.className = 'kn-pop'; pop.id = 'knPop'; pop.setAttribute('role', 'tooltip');
+  document.body.append(pop);
+  let word = null, pinned = false, timer;
+  const kindOf = (el) => el && BUBBLES.find((b) => el.matches(b.sel));
+  const owner = (t) => { for (const b of BUBBLES) { const el = t.closest?.(b.sel); if (el) return el; } return null; };
+  function place() {
+    const r = word.getBoundingClientRect(), h = pop.offsetHeight, w = pop.offsetWidth;
+    const below = r.bottom + GAP + h <= innerHeight - EDGE;
+    pop.style.top = `${below ? r.bottom + GAP : Math.max(EDGE, r.top - GAP - h)}px`;
+    pop.style.left = `${Math.min(Math.max(EDGE, r.left + r.width / 2 - w / 2), innerWidth - EDGE - w)}px`;
+  }
+  function open(el, pin) {
+    const k = kindOf(el), html = k?.html(el); if (!html) return;
+    clearTimeout(timer);
+    if (word && word !== el) word.setAttribute('aria-expanded', 'false');
+    word = el; pinned = pin; el.setAttribute('aria-expanded', 'true');
+    pop.innerHTML = html; place(); pop.classList.add('on'); k.onOpen?.(el);
+  }
+  function close() { clearTimeout(timer); pop.classList.remove('on'); word?.setAttribute('aria-expanded', 'false'); word = null; pinned = false; }
+  const later = (f, ms) => { clearTimeout(timer); timer = setTimeout(f, ms); };
+  addEventListener('pointerover', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const el = owner(e.target);
+    if (el) { if (el !== word) later(() => open(el, false), OPEN_MS); else clearTimeout(timer); }
+    else if (e.target.closest?.('.kn-pop')) clearTimeout(timer);
+    else if (word && !pinned) later(close, CLOSE_MS);
+    else if (!word) clearTimeout(timer);
+  });
+  addEventListener('click', (e) => {
+    const el = owner(e.target);
+    if (el) { e.preventDefault(); if (el === word && pinned) close(); else open(el, true); }
+    else if (word && !e.target.closest('.kn-pop')) close();
+  });
+  addEventListener('focusin', (e) => { const el = owner(e.target); if (el && el !== word && e.target.matches(':focus-visible')) open(el, false); });
+  addEventListener('keydown', (e) => {
+    if (!word) return;
+    const el = owner(e.target);
+    if (e.key === 'Escape') { e.stopImmediatePropagation(); close(); }
+    else if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopImmediatePropagation(); open(el, true); }
+  }, true);
+  addEventListener('scroll', () => word && close(), true);
+  addEventListener('resize', () => word && close());
+  return { open, close };
+})();
+// Words from earlier courses: the bubble says what the word means, with an example and the lesson that taught it.
+BUBBLES.push({ sel: '.known', html: (el) => {
+  const t = TERMS[(el.dataset.term || el.textContent).trim().toLowerCase()]; if (!t) return '';
+  const c = course(t.course), link = c?.href && c !== COURSE
+    ? `<a href="${c.href}#${t.lesson}" target="_blank" rel="noopener">Learnt in ${esc(c.title)}: ${esc(t.name)} →</a>` : '';
+  return `<b>${esc(el.textContent.trim())}</b><p>${esc(t.says)}</p><div class="kn-ex">${esc(t.ex)}</div>${link}`;
+} });
+// every marked word can be reached with Tab, and says it has a bubble
+new MutationObserver(() => document.querySelectorAll('.known:not([tabindex])').forEach((el) => {
+  el.tabIndex = 0; el.setAttribute('role', 'button'); el.setAttribute('aria-expanded', 'false'); el.setAttribute('aria-describedby', 'knPop');
+})).observe(document.body, { childList: true, subtree: true });
+
 /* ---------------- the jelly jar: collecting ---------------- */
 // Each lesson's jelly has a look. The last lesson of a course gives the golden one. The others take turns through
 // the patterns, starting at a different place in each course, so jellies from different courses look different.
@@ -4075,6 +4172,10 @@ const look = (id) => {
   const i = ALL.findIndex((a) => a.id === id), plain = Object.keys(LOOK_NAMES).filter((k) => k !== 'golden');
   return i === ALL.length - 1 ? 'golden' : plain[(i + COURSES.indexOf(COURSE) * 4) % plain.length];
 };
+// The most jellies one course gives: a lesson each, plus the overview and backstage where a course has them.
+// tests/jar.mjs checks that no course gives more, and that a jar this full still holds them all.
+const MOST_JELLIES = 17;
+const jellyless = (id) => !!store.nojelly?.[id];
 let presentJars = {};
 const jarStore = () => { if (PRESENT) return presentJars; try { return JSON.parse(localStorage.getItem('jelly.collection')) || {}; } catch { return {}; } };
 // Keep this course's finished lessons in the shared collection, with what each one taught, for the jar's labels.
@@ -4082,7 +4183,7 @@ function collect() {
   const all = jarStore(), words = (typeof RECAP !== 'undefined' && RECAP.words) || {};
   for (const a of ALL) {
     const key = `${COURSE.id}:${a.id}`;
-    if (!store.done[a.id]) { delete all[key]; continue; }
+    if (!store.done[a.id] || jellyless(a.id)) { delete all[key]; continue; }
     all[key] ??= { at: Date.now() };
     Object.assign(all[key], { course: COURSE.title, word: a.word ?? '', name: a.name, colour: a.color, look: look(a.id), does: words[a.id]?.does ?? '', ex: words[a.id]?.ex ?? '' });
   }
@@ -4136,7 +4237,14 @@ function showJar(c) {
   if (jar && keys !== jarKeys) { jarKeys = keys; jar.cap.material.color.set(lidColour(c)); jar.cap.material.attenuationColor.set(lidColour(c)); jar.fill(items); }
   requestAnimationFrame(() => jar?.resize());
 }
-function closeJar() { $('#jarBox').hidden = true; primaryButton()?.focus({ preventScroll: true }); }
+// The jar has closed by itself while testers played with the jellies. Every press, release and click in the jar window
+// is logged as [jar], and so is what closed it, so a tester can paste the console from the browser's developer tools.
+const jarSeen = (e) => `${e.type} on ${e.target.id ? '#' + e.target.id : e.target.className || e.target.tagName} at ${Math.round(e.clientX)},${Math.round(e.clientY)} (${e.pointerType || 'mouse'}, button ${e.button}${jar?.drag ? ', carrying a jelly' : ''})`;
+for (const t of ['pointerdown', 'pointerup', 'pointercancel', 'click']) $('#jarBox').addEventListener(t, (e) => console.info('[jar]', jarSeen(e)), true);
+function closeJar(why = 'something else', e) {
+  console.info('[jar] closed by', why, e ? '· ' + jarSeen(e) : ''); console.trace('[jar] the code that closed it');
+  $('#jarBox').hidden = true; primaryButton()?.focus({ preventScroll: true });
+}
 function showJelly(it) {
   const pop = $('#jarPop');
   pop.innerHTML = `<button class="jar-x" aria-label="Close">×</button>${bean(it.colour, 'pop-bean', it.look)}<div><div class="pop-name">The ${esc(LOOK_NAMES[it.look] ?? it.look)} jelly</div>
@@ -4147,8 +4255,8 @@ function showJelly(it) {
 $('#jarOpen').onclick = () => openJar(); $('#beans').onclick = () => openJar();
 $('#jarShelf').addEventListener('click', (e) => { const b = e.target.closest('.shelf-jar'); if (b && !b.disabled) showJar(course(b.dataset.course)); });
 $('#jarBack').onclick = showShelf;
-$('#jarClose').onclick = closeJar; $('#jarShake').onclick = () => jar?.shake();
-$('#jarBox').addEventListener('click', (e) => { if (e.target === $('#jarBox')) closeJar(); });
+$('#jarClose').onclick = (e) => closeJar('the Close button', e); $('#jarShake').onclick = () => jar?.shake();
+$('#jarBox').addEventListener('click', (e) => { if (e.target === $('#jarBox')) closeJar('a click on the dimmed area around the jar', e); });
 
 /* ---------------- saving and loading jellies ---------------- */
 // Progress lives only in this browser. A save file keeps it safe, carries it to another computer, and carries it
@@ -4204,6 +4312,57 @@ $('#jarFile').onchange = async (e) => {
 };
 { const n = readKey('jelly.welcomeBack'); if (n) { try { localStorage.removeItem('jelly.welcomeBack'); } catch {} setTimeout(() => toast(`Welcome back! ${n} jellies are on your shelf.`), 900); } }
 
+/* ---------------- help with a step: a hint, and "Do it for me" ---------------- */
+const curStep = () => {
+  const L = LESSONS[cur]; if (!L || $('#lcard').dataset.phase !== 'mission') return null;
+  const st = store.steps[L.id] ?? [], k = L.steps.findIndex((s, i) => !st[i]);
+  return k < 0 ? null : { L, k, s: L.steps[k] };
+};
+// A terminal step names its commands in <code> (docs/new-lesson.md). Unless the step says otherwise, its hint says where
+// to type them, and "Do it for me" types each one and presses Enter. Only real commands count: a <code> can be a file
+// name instead. A step whose <code>s aren't all commands needs its own hint.
+function stepCommands(s) {
+  if ($('#term').hidden) return null;
+  const lines = [...s.t.matchAll(/<code>(.*?)<\/code>/g)].map(([, c]) => { const d = document.createElement('textarea'); d.innerHTML = c.replace(/<[^>]+>/g, ''); return d.value.trim(); });
+  const isCmd = (line) => { const w = line.split(/\s+/)[0]; return w && (SH.has(w) || SH.locate(w) || w.startsWith('./')); };
+  return lines.length && lines.every(isCmd) ? lines : null;
+}
+const glowEl = (el) => { el.classList.remove('hint-glow'); void el.offsetWidth; el.classList.add('hint-glow'); };
+const typeCmd = (line) => { termIn.value = line; submit(); };
+function helpFor(s) {
+  // a choice (Security Jelly's dilemmas): the right answer is marked good
+  if (s.choices && !s.hint) return {
+    hint: 'Read every answer. Pick the one a white hat would choose: it keeps people safe, and tells someone who can fix it.',
+    show: () => { const c = document.querySelector('#lTask .choices'); if (c) glowEl(c); },
+    doIt: () => document.querySelector(`#lTask .choice[data-j="${s.choices.findIndex((c) => c.good)}"]`)?.click(),
+  };
+  const lines = stepCommands(s), say = lines?.map((l) => `<code>${esc(l)}</code>`).join(', then ');
+  return {
+    hint: s.hint ?? (lines && `Click in the terminal, type ${say}, and press <kbd>Enter</kbd> after ${lines.length > 1 ? 'each one' : 'it'}.`),
+    show: s.show ?? (lines && (() => glowEl($('#term')))),
+    doIt: s.doIt ?? (lines && (() => lines.forEach(typeCmd))),
+  };
+}
+function paintHelp() { const c = curStep(), h = c && helpFor(c.s); $('#lHint').hidden = !h?.hint; $('#lDoIt').hidden = !h?.doIt; }
+BUBBLES.push({ sel: '#lHint', html: () => { const c = curStep(), h = c && helpFor(c.s); return h?.hint ? `<b>Hint</b><p>${h.hint}</p>` : ''; }, onOpen: () => { const c = curStep(); c && helpFor(c.s).show?.(); } });
+document.body.insertAdjacentHTML('beforeend', `<div class="doit-pop" id="doitPop" role="dialog" aria-modal="true" aria-labelledby="doitTitle" hidden><div class="doit-card">
+  <h3 id="doitTitle">I can, but you don't get a jelly!</h3><p>If I do this step for you, this exercise won't give you its jelly.</p>
+  <div class="btns"><button class="btn alt" id="doitYes">No jelly for me</button><button class="btn go" id="doitNo">Let me earn my jelly</button></div></div></div>`);
+// Done for the child: the step really happens (doIt), then it is ticked, even if what doIt did doesn't satisfy its check.
+const DONE_MS = 700;
+function doForMe() {
+  const c = curStep(), doIt = c && helpFor(c.s).doIt; if (!doIt) return;
+  store.nojelly = { ...store.nojelly, [c.L.id]: true }; save();
+  doIt();
+  setTimeout(() => { if (!(store.steps[c.L.id] ?? [])[c.k]) check({ type: 'done for me', lesson: c.L.id, step: c.k }); }, DONE_MS);
+}
+const closeDoIt = () => { $('#doitPop').hidden = true; $('#lDoIt').focus({ preventScroll: true }); };
+$('#lDoIt').onclick = () => { if (jellyless(LESSONS[cur].id)) doForMe(); else { $('#doitPop').hidden = false; $('#doitNo').focus(); } };
+$('#doitYes').onclick = () => { closeDoIt(); doForMe(); };
+$('#doitNo').onclick = closeDoIt;
+$('#doitPop').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeDoIt(); });
+addEventListener('keydown', (e) => { if (!$('#doitPop').hidden) { e.stopImmediatePropagation(); if (e.key === 'Escape') closeDoIt(); } }, true);
+
 /* ---------------- presenter mode: recording the frames ---------------- */
 // A pretend clock while recording: things that wait (a browser's trip, ping's replies, a choice card's answer) happen
 // at once and in order, so recording a whole course takes seconds, not minutes. The real timers come back afterwards.
@@ -4217,6 +4376,7 @@ function clockOn() {
 }
 function clockOff() { Object.assign(window, CLOCK.real); CLOCK.timers.clear(); }
 // Let promises settle, then run every timer due in the next few pretend seconds, earliest first.
+const PR_STEP_MS = 500, prReal = (ms) => new Promise((r) => CLOCK.real.setTimeout.call(window, r, ms));
 async function prFlush(ms = 3000) {
   const end = CLOCK.now + ms;
   for (let n = 0; n < 3000; n++) {
@@ -4253,22 +4413,33 @@ async function prCapture() {
   const frames = [{ k: 'intro' }], muted = sound.muted, ok = [];
   // the overview (Shell Jelly, Git and Web): one frame per step of the 3D town, right after the intro
   if (PR.townGo && PANELS.some((p) => p.id === 'whole')) TOWN_STEPS.forEach((_, n) => frames.push({ k: 'whole', n }));
+  if (typeof prReady !== 'undefined') await prReady; // a guide with more to load first (Web Jelly 1's editor)
   sound.muted = true; store.done = {}; store.steps = {};
   clockOn();
   for (const [li, L] of LESSONS.entries()) {
     frames.push({ k: 'title', li }, { k: 'story', li });
     if (L.visual) frames.push({ k: 'visual', li });
     L.points.forEach((_, n) => frames.push({ k: 'point', li, n }));
-    if (!L.demo?.length) continue;
+    // no script, but every step can be done for the child (Web Jelly 1): play the steps' "Do it for me", and show a
+    // picture of the guide after each one (prSnapshot)
+    const demo = L.demo?.length ? L.demo : typeof prSnapshot === 'function' && L.steps.every((s) => s.doIt) ? L.steps.map((_, n) => ({ step: n })) : null;
+    if (!demo) continue;
     // guides whose lessons build on each other (Git, Web) carry on from the lesson before, like a child would
     go(L.id); if (FRESH_SANDBOX || li === 0) resetSandbox(); setPhase('mission'); renderMap(); await prFlush();
     let shown = -1;
-    for (const a of L.demo) {
+    for (const a of demo) {
       const st = store.steps[L.id] ?? [], i = L.steps.findIndex((x, k) => !st[k]);
       if (i >= 0 && i !== shown) { frames.push({ k: 'task', li, n: i }); shown = i; }
       const mapHtml = () => $('#map')?.innerHTML ?? '', map0 = mapHtml(), web0 = prBrowser(), page0 = typeof bwFrame === 'undefined' ? '' : bwFrame.srcdoc, prompt = promptText(), lines = termOut.children.length;
       const out = (skip = 1) => [...termOut.children].slice(lines + skip).map((e) => e.outerHTML).join('');
       let term = null, visited = false;
+      if (a.step != null) {
+        // a step another step already did needs no doing; the editor reports some changes a moment later, in real time
+        if ((store.steps[L.id] ?? [])[a.step]) continue;
+        L.steps[a.step].doIt(); await prFlush(); await prReal(PR_STEP_MS); await prFlush();
+        const f = prSnapshot(li); if (f) frames.push(f);
+        continue;
+      }
       if (typeof a === 'object') {
         if (a.click) { const el = $(a.click); frames.push({ k: 'click', li, label: a.label ?? el.getAttribute('aria-label') ?? el.textContent.trim() }); el.click(); }
         else if (a.edit) { prTool('edit'); const before = edText.value; edText.value = before.replace(a.edit[0], a.edit[1]); edText.dispatchEvent(new Event('input')); frames.push({ k: 'edit', li, file: ED.path, before, after: edText.value }); }
@@ -4303,7 +4474,7 @@ async function prCapture() {
   frames.push({ k: 'jar' });
   sound.muted = muted;
   document.documentElement.dataset.prOk = ok.length; // how many demos really finished their mission, for tests
-  document.documentElement.dataset.prDemos = LESSONS.filter((L) => L.demo?.length).length;
+  document.documentElement.dataset.prDemos = LESSONS.filter((L) => L.demo?.length || (typeof prSnapshot === 'function' && L.steps.every((s) => s.doIt))).length;
   return frames;
 }
 
@@ -4321,7 +4492,7 @@ function presentGo(i) {
 function prShow(f, animate) {
   const L = LESSONS[f.li], stage = $('#prStage'), body = $('#prBody');
   stage.dataset.k = f.k; stage.style.setProperty('--c', L?.color ?? '#ff4d6d');
-  if (!$('#jarBox').hidden) closeJar();
+  if (!$('#jarBox').hidden) closeJar('presenter mode moving on');
   $('#prJelly').hidden = f.k !== 'title' && f.k !== 'intro';
   $('#prTown').hidden = f.k !== 'whole';
   const label = (t) => `<div class="pr-label">${t}</div>`;
@@ -4329,10 +4500,11 @@ function prShow(f, animate) {
     whole: () => `<div class="pr-town-card">${label(`Overview · ${f.n + 1} of ${TOWN_STEPS.length}`)}<div class="pr-h">${esc(TOWN_STEPS[f.n].who)}</div><p class="pr-big">${esc(TOWN_STEPS[f.n].text.replace(/ Press Next[^.]*\./, ''))}</p></div>`,
     intro: () => `<div class="pr-intro">${label(esc(COURSE.title))}<h1>${$('#p-welcome h1').innerHTML}</h1></div>`,
     title: () => `<div class="pr-title">${label(`Magic word ${f.li + 1} of ${LESSONS.length}`)}<div class="pr-name">${esc(L.name)}</div><div class="pr-stands">${esc(L.stands)}</div></div>`,
-    story: () => `${label(esc(L.word))}<h2 class="pr-h">${esc(L.title)}</h2><p class="pr-big">${L.why}</p>`,
+    story: () => `${label(esc(L.word))}<h2 class="pr-h">${esc(L.storyTitle ?? L.title)}</h2><p class="pr-big">${L.why}</p>`,
     visual: () => `<div class="pr-visual">${L.visual}</div>`,
     point: () => `${label(`Remember it · ${f.n + 1} of ${L.points.length}`)}<p class="pr-big">${L.points[f.n]}</p>`,
     task: () => `${label(`Mission · step ${f.n + 1} of ${L.steps.length}`)}${L.steps[f.n].hat ? `<b class="hat-chip ${L.steps[f.n].hat} pr-hat">${L.steps[f.n].hat} hat</b>` : ''}<p class="pr-big">${L.steps[f.n].t}</p>`,
+    web: () => `<iframe class="pr-web" sandbox title="The block editor and the page" srcdoc="${esc(f.html)}"></iframe>`,
     click: () => `${label(f.link ? 'Click the link' : 'Click')}<div class="pr-click"><span class="${f.link ? 'pr-link' : 'pr-btn'}">${esc(f.label)}</span></div>`,
     edit: () => `${label(`Change ${esc(f.file.split('/').pop())}`)}<pre class="pr-code">${prChange(f.before, f.after)}</pre>`,
     browser: () => `<div class="pr-browser"><div class="pr-bw-top"><span class="${esc(f.lock)}">${f.lockHtml}</span><span class="pr-url"></span></div><div class="bw-journey pr-journey">${f.journey}</div><div class="pr-page">${f.view === 'page' ? `<iframe sandbox="" title="The web page" srcdoc="${esc(f.page)}"></iframe>` : f.view === 'source' ? `<pre class="bw-source">${f.page}</pre>` : `<div class="bw-boxes">${f.page}</div>`}${f.pop ? `<div class="bw-pop pr-pop">${f.pop}</div>` : ''}</div></div>`,
@@ -4532,7 +4704,7 @@ function primaryButton() {
   return b && !b.hidden && !b.disabled && b.offsetParent ? b : null;
 }
 addEventListener('keydown', (e) => {
-  if (!$('#jarBox').hidden) { if (e.key === 'Escape') closeJar(); return; }
+  if (!$('#jarBox').hidden) { if (e.key === 'Escape') closeJar('the Esc key', e); return; }
   if (e.key === 'Escape') $('.app').classList.remove('peek');
   if (e.key !== 'Enter' || e.repeat || e.isComposing || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
   if (e.target.closest?.('input,textarea,select,button,a,[contenteditable]') && e.target.offsetParent) return; // a hidden box has lost its turn
@@ -4591,6 +4763,7 @@ function setPhase(p) {
   const L = LESSONS[cur]; store.phase[L.id] = p; save();
   if (p === 'mission' && FRESH_SANDBOX && sandboxFor !== L.id && !(store.steps[L.id] ?? []).some(Boolean)) resetSandbox();
   if (p === 'mission') sandboxFor = L.id;
+  if (p === 'mission' && L.need >= 1) intoProject();
   $('#lcard').dataset.phase = p; paintSteps(); sound.blip();
   requestAnimationFrame(() => { fitAll($('#p-lesson')); if (p === 'mission') termIn.focus({ preventScroll: true }); else $('#lNext').focus({ preventScroll: true }); });
 }
@@ -4599,7 +4772,7 @@ function paintSteps(celebrate = false) {
   $('#lPips').innerHTML = L.steps.map((s, k) => `<span class="pip${st[k] ? ' ok' : ''}${k === i ? ' cur' : ''}">${st[k] ? '✓' : k + 1}</span>`).join('');
   const show = () => {
     $('#lTaskN').textContent = i < 0 ? 'Mission complete!' : `Step ${i + 1} of ${L.steps.length}`;
-    $('#lTask').innerHTML = i < 0 ? (G.review === L.id ? `You did every step! Take a look at what happened. When you're ready, press <b>Collect your jelly</b>.` : `You did every step. The <b>${esc(L.word)}</b> jelly is yours!`) : L.steps[i].t;
+    $('#lTask').innerHTML = i < 0 ? (jellyless(L.id) ? (G.review === L.id ? `Every step is done, some with help. Take a look at what happened. When you're ready, press <b>Finish the exercise</b>.` : 'Every step is done, some with help. No jelly this time.') : G.review === L.id ? `You did every step! Take a look at what happened. When you're ready, press <b>Collect your jelly</b>.` : `You did every step. The <b>${esc(L.word)}</b> jelly is yours!`) : L.steps[i].t;
     if (i >= 0 && p === 'mission') onTask(L, L.steps[i]);
     if (PANELS[panelIdx]?.lesson) fitAll($('#p-lesson'));
   };
@@ -4615,9 +4788,9 @@ function paintSteps(celebrate = false) {
   const done = !!store.done[L.id], last = cur === LESSONS.length - 1, nx = $('#lNext');
   const collect = p === 'mission' && G.review === L.id;
   nx.hidden = p === 'mission' && (!done || last) && !collect;
-  nx.innerHTML = (collect ? 'Collect your jelly' : p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next word') + ENTER;
+  nx.innerHTML = (collect ? (jellyless(L.id) ? 'Finish the exercise' : 'Collect your jelly') : p === 'meet' ? 'Next' : p === 'brain' ? 'Start the mission' : 'Next word') + ENTER;
   nx.classList.toggle('pulse', p === 'mission');
-  $('#lBack').hidden = p === 'meet'; paintRestart();
+  $('#lBack').hidden = p === 'meet'; paintRestart(); paintHelp();
   document.querySelectorAll('#lPhases li').forEach((li) => li.classList.toggle('on', li.dataset.p === p));
 }
 function showLesson(i) {
@@ -4648,7 +4821,7 @@ $('#lRestart').onclick = () => {
 
 $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; $('#resetBtn').hidden = true; };
 $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; $('#resetBtn').hidden = false; };
-$('#resetYes').onclick = () => { store.done = {}; store.steps = {}; store.phase = {}; save(); paintProgress(); paintSteps(); $('#resetNo').onclick(); go(PANELS[panelIdx].id); toast('This course\'s jellies are out of the jar. Fresh start!'); };
+$('#resetYes').onclick = () => { store.done = {}; store.steps = {}; store.phase = {}; store.nojelly = {}; save(); paintProgress(); paintSteps(); $('#resetNo').onclick(); go(PANELS[panelIdx].id); toast('This course\'s jellies are out of the jar. Fresh start!'); };
 $('#startBtn').onclick = () => go('whole');
 $('#bsNext').onclick = () => go(nextUp().id);
 
@@ -4684,7 +4857,7 @@ function sectionDone(id) {
   const item = ALL.find((a) => a.id === id), n = nextUp();
   G.card = true;
   upnext.innerHTML = `<div class="un-card">${bean(item.color, 'un-bean', look(id))}
-    <div class="un-earned">You earned the ${LOOK_NAMES[look(id)]} <b style="color:${item.color}">${esc(item.word ?? item.name)}</b> jelly!</div><button class="un-jar" id="unJar">See it in my jar</button>
+    ${jellyless(id) ? `<div class="un-earned">Exercise done! No jelly this time.</div><button class="un-jar" id="unJar" hidden></button>` : `<div class="un-earned">You earned the ${LOOK_NAMES[look(id)]} <b style="color:${item.color}">${esc(item.word ?? item.name)}</b> jelly!</div><button class="un-jar" id="unJar">See it in my jar</button>`}
     ${n.id !== 'recap' ? `<div class="un-label">Next up</div><div class="un-word" style="color:${n.color}">${esc(n.lesson ? n.tag : n.label)}</div>${n.lesson ? `<div class="un-name">${esc(n.label)}</div>` : ''}
     <div class="un-btns"><button class="btn go un-go" id="unGo">Go to ${esc(n.lesson ? n.tag : n.label)} →${ENTER}</button><button class="btn alt" id="unStay">Stay and play</button></div>`
     : `<div class="un-word" style="color:var(--berry)">${esc(RECAP.wizard)}</div><div class="un-name">${esc(RECAP.wizardText)}</div>${nextCourseCard()}
@@ -4694,7 +4867,7 @@ function sectionDone(id) {
   $('#unStay').onclick = () => { G.card = false; renderGuide(); primaryButton()?.focus({ preventScroll: true }); };
   $('#unJar').onclick = () => { G.card = false; renderGuide(); openJar(COURSE.id); };
   upnext.querySelector('.un-card').animate([{ transform: 'scale(.4) rotate(-6deg)', opacity: 0 }, { transform: 'scale(1.06) rotate(1deg)', opacity: 1 }, { transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.3,1.4,.5,1)' });
-  flyToJar(upnext.querySelector('.un-bean'), item.color);
+  if (!jellyless(id)) flyToJar(upnext.querySelector('.un-bean'), item.color);
   $('#unGo').focus({ preventScroll: true });
   return true;
 }

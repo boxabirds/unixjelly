@@ -37,8 +37,8 @@ const LESSONS = [
     // what the presenter types (presenter mode), one action per beat
     steps: [
       { t: 'Open your note: <code>nano note.txt</code>', ok: (e) => isCmd(e, 'nano') && e.info.nano?.path === '/home/kid/note.txt' },
-      { t: 'Change some words: swap cheese for something you like more. Then save: <kbd>Ctrl</kbd>+<kbd>O</kbd>', ok: (e) => e.type === 'nano' && e.saved === '/home/kid/note.txt' && e.changed },
-      { t: 'Leave nano: <kbd>Ctrl</kbd>+<kbd>X</kbd>', ok: (e) => e.type === 'nano' && e.exit },
+      { t: 'Change some words: swap cheese for something you like more. Then save: <kbd>Ctrl</kbd>+<kbd>O</kbd>', hint: 'In the nano box, change the word cheese to something you like. Then hold <kbd>Ctrl</kbd> and press <kbd>O</kbd> to save.', show: () => glowEl($('#nano')), doIt: () => { nanoText.value = /cheese/i.test(nanoText.value) ? nanoText.value.replace(/cheese/i, 'pizza') : nanoText.value + '\nand pizza'; nanoMark(); nanoSave(); }, ok: (e) => e.type === 'nano' && e.saved === '/home/kid/note.txt' && e.changed },
+      { t: 'Leave nano: <kbd>Ctrl</kbd>+<kbd>X</kbd>', hint: 'Hold <kbd>Ctrl</kbd> and press <kbd>X</kbd>. If nano asks about saving, press <kbd>Y</kbd>.', show: () => glowEl($('#nano')), doIt: () => { if (!NANO.open) return; if (nanoText.value === NANO.saved) nanoClose(); else nanoAnswer('yes'); }, ok: (e) => e.type === 'nano' && e.exit },
       { t: 'Check your change: <code>cat note.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.includes('/home/kid/note.txt') },
     ] },
   { id: 'which', teaches: ['programs'], word: 'which', name: 'Programs are files', stands: 'which = where is that program?', color: '#3a5bff', seq: true, onlyHere: true,
@@ -60,9 +60,9 @@ const LESSONS = [
     points: ['A program\'s lines are commands. Its one line here is <code>echo Hello from my program!</code>, so running it will say hello.', 'The shell only looks for programs in special folders like /bin. For a program in the folder you are in, say where it is: <code>./hello</code>.', 'Programs can be called anything. Someone just picked the names <b>ls</b> and <b>cat</b>!'],
     // what the presenter types (presenter mode), one action per beat
     steps: [
-      { t: 'Write a program: <code>nano hello</code>. Type <code>echo Hello from my program!</code>, then save (<kbd>Ctrl</kbd>+<kbd>O</kbd>) and exit (<kbd>Ctrl</kbd>+<kbd>X</kbd>).', ok: (e) => (e.type === 'nano' && e.exit || e.info?.wrote?.name === 'hello') && /^\s*echo\s/.test(kidFile('hello')?.content ?? '') },
+      { t: 'Write a program: <code>nano hello</code>. Type <code>echo Hello from my program!</code>, then save (<kbd>Ctrl</kbd>+<kbd>O</kbd>) and exit (<kbd>Ctrl</kbd>+<kbd>X</kbd>).', hint: 'Type <code>nano hello</code> and press <kbd>Enter</kbd>. In the nano box, type <code>echo Hello from my program!</code>. Then <kbd>Ctrl</kbd>+<kbd>O</kbd> saves and <kbd>Ctrl</kbd>+<kbd>X</kbd> leaves.', show: () => glowEl($('#term')), doIt: () => { typeCmd('nano hello'); setTimeout(() => { if (!NANO.open) return; nanoText.value = 'echo Hello from my program!'; nanoMark(); nanoSave(); nanoClose(); }, 0); }, ok: (e) => (e.type === 'nano' && e.exit || e.info?.wrote?.name === 'hello') && /^\s*echo\s/.test(kidFile('hello')?.content ?? '') },
       { t: 'Read it: <code>cat hello</code>. It is just a command, in a file.', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('/hello')) },
-      { t: 'Run it by its name: <code>hello</code>', ok: (e) => e.cmd === 'hello' && !e.ok },
+      { t: 'Run it by its name: <code>hello</code>', hint: 'Type <code>hello</code> and press <kbd>Enter</kbd>. The shell won\'t find it, and that\'s what this step is about.', show: () => glowEl($('#term')), doIt: () => typeCmd('hello'), ok: (e) => e.cmd === 'hello' && !e.ok },
       { t: 'The shell didn\'t look here. Say where it is: <code>./hello</code>', ok: (e) => e.cmd === './hello' && e.info.denied },
     ] },
   { id: 'lsl', teaches: ['locks'], word: 'ls -l', name: 'Read the locks', stands: 'ls -l = the long list', color: '#ff4d6d', seq: true, onlyHere: true,
@@ -183,9 +183,9 @@ const LESSONS = [
     // what the presenter types (presenter mode), one action per beat
     steps: [
       { t: 'Build it: <code>mkdir clubhouse</code>', ok: (e) => kidFile('clubhouse')?.type === 'dir' },
-      { t: 'Give it to the family group.', ok: (e) => grp(kidFile('clubhouse') ?? {}) === 'family' },
-      { t: 'Keep everyone else out: take away all the others\' keys.', ok: (e) => kidFile('clubhouse') && !(modeOf(kidFile('clubhouse')) & 0o007) },
-      { t: 'Make a program called <code>knock</code> in the clubhouse that prints the family\'s secret knock, like <code>knock knock knock</code>. (It only prints, like your hello program.) Then let only <b>you</b> run it.', ok: (e) => (kidFile('clubhouse')?.children ?? []).some((c) => c.type === 'file' && (modeOf(c) & 0o111) === 0o100) },
-      { t: 'Test it like a security pro: <code>su sib</code>, then try to run the knock program. It should say Permission denied!', ok: (e) => sh.user === 'sib' && e.info.denied && /clubhouse/.test(e.line ?? '') },
+      { t: 'Give it to the family group.', hint: 'A folder\'s group changes with <code>chgrp</code>: the group\'s name first, then the folder.', show: () => glowEl($('#term')), doIt: () => typeCmd('chgrp family clubhouse'), ok: (e) => grp(kidFile('clubhouse') ?? {}) === 'family' },
+      { t: 'Keep everyone else out: take away all the others\' keys.', hint: 'Use <code>chmod</code> on the clubhouse. <code>o</code> is the others, and <code>-</code> takes keys away: <code>r</code>, <code>w</code> and <code>x</code>.', show: () => glowEl($('#term')), doIt: () => typeCmd('chmod o-rwx clubhouse'), ok: (e) => kidFile('clubhouse') && !(modeOf(kidFile('clubhouse')) & 0o007) },
+      { t: 'Make a program called <code>knock</code> in the clubhouse that prints the family\'s secret knock, like <code>knock knock knock</code>. (It only prints, like your hello program.) Then let only <b>you</b> run it.', hint: 'Write it like your hello program, in <code>clubhouse/knock</code>: one line, <code>echo knock knock knock</code>. Then give the x key to you only: <code>chmod u+x</code>.', show: () => glowEl($('#term')), doIt: () => { typeCmd('echo "echo knock knock knock" > clubhouse/knock'); typeCmd('chmod u+x clubhouse/knock'); }, ok: (e) => (kidFile('clubhouse')?.children ?? []).some((c) => c.type === 'file' && (modeOf(c) & 0o111) === 0o100) },
+      { t: 'Test it like a security pro: <code>su sib</code>, then try to run the knock program. It should say Permission denied!', hint: 'Type <code>su sib</code>. Then, as sib, run <code>./clubhouse/knock</code>.', show: () => glowEl($('#term')), doIt: () => { if (sh.user !== 'sib') typeCmd('su sib'); typeCmd('./clubhouse/knock'); }, ok: (e) => sh.user === 'sib' && e.info.denied && /clubhouse/.test(e.line ?? '') },
     ] },
 ];

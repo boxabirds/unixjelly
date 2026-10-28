@@ -1,0 +1,6 @@
+{
+ "_about": "Terms taught in one course and used in a later one. In lesson text, write <span class=\"known\" data-term=\"program\">program</span> (data-term can be left out when the words are the term itself). The word gets a dotted underline; hovering or tapping it opens a bubble with 'says' (one plain-English sentence, using only words the course that taught it had taught), 'ex' (an example) and a link to the lesson that taught it. 'course' is an id in curriculum.json; 'lesson' is a lesson or panel id in that course; 'name' is how that lesson is labelled there. Every guide reads this one list, so a term is always explained the same way (docs/pedagogy.md, rule 16).",
+ "program": {"says": "A program is a list of instructions the computer follows. Each command you type runs a program.", "ex": "ls and cat are programs. So is your web browser.", "course": "shell", "lesson": "backstage", "name": "Backstage"},
+ "file": {"says": "A file holds one thing on a computer, like some writing or a picture. Files live in folders.", "ex": "secret-diary.txt", "course": "shell", "lesson": "ls", "name": "Look around"},
+ "file name": {"says": "The name a file is saved under. Every letter counts, and capitals matter.", "ex": "secret-diary.txt is not Secret-Diary.txt", "course": "shell", "lesson": "ls", "name": "Look around"}
+}

@@ -13,16 +13,19 @@ export const guideUrl = (folder) => 'file://' + path.join(repo, folder, 'index.h
 // forces software everywhere, for identical pixels on every machine.
 // draw: false is for tests that only check text, layout or physics: the 3D still runs, but isn't painted, which is
 // most of the cost without a GPU. JELLY_DRAW=1 paints it anyway, to look at those tests' screenshots.
+const SITE = JSON.parse(fs.readFileSync(path.join(here, '../curriculum.json'), 'utf8')).site;
 export async function launch({ draw = true } = {}) {
   const b = await chromium.launch({
     ...(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : { channel: 'chrome' }),
     headless: false, args: ['--headless=new', '--ignore-gpu-blocklist', '--enable-unsafe-swiftshader', '--hide-scrollbars', ...(process.env.JELLY_GL === 'swiftshader' ? ['--use-gl=angle', '--use-angle=swiftshader'] : [])],
   });
-  if (draw || process.env.JELLY_DRAW) return b;
-  const off = () => { window.JELLY_DRAW = false; };
+  // The guides link to the live site (its icon, for example). Tests don't depend on the site being reachable: those
+  // requests get an empty answer. (3D still loads from its CDN.)
+  const offline = (t) => t.route((url) => url.href.startsWith(SITE), (r) => r.fulfill({ status: 204, body: '' }));
+  const draws = draw || process.env.JELLY_DRAW, off = () => { window.JELLY_DRAW = false; };
   const page = b.newPage.bind(b), context = b.newContext.bind(b);
-  b.newPage = async (o) => { const p = await page(o); await p.addInitScript(off); return p; };
-  b.newContext = async (o) => { const c = await context(o); await c.addInitScript(off); return c; };
+  b.newPage = async (o) => { const p = await page(o); await offline(p); if (!draws) await p.addInitScript(off); return p; };
+  b.newContext = async (o) => { const c = await context(o); await offline(c); if (!draws) await c.addInitScript(off); return c; };
   return b;
 }
 // Every lesson in the guide's menu that has not earned its jelly yet.

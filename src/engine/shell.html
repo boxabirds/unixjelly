@@ -1134,6 +1134,9 @@ class JellyStage {
       cv.setPointerCapture(e.pointerId); sound.boing(520, .18, .08);
     });
     cv.addEventListener('pointermove', (e) => {
+      // a jelly carried out of its panel is let go there, so it can never stay stuck to the mouse
+      const r = cv.getBoundingClientRect();
+      if (this.drag && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) { end(e); return; }
       setPtr(e); this.ray.setFromCamera(this.ptr, this.camera);
       const p = new THREE.Vector3();
       if (this.drag && this.ray.ray.intersectPlane(this.plane, p)) { p.y = Math.max(p.y, -.002); this.drag.b.grab.target.copy(p); }
@@ -1144,7 +1147,7 @@ class JellyStage {
       const tap = Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6 && performance.now() - d.t < 350;
       if (tap) { d.b.hop(1.1); sound.boing(380, .4); } else sound.boing(260, .45, .14);
     };
-    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end); cv.addEventListener('lostpointercapture', end);
   }
   // Jellies bump into each other, every jelly in every guide: letters and the jar's jelly babies alike.
   // Each jelly is a body-centred lattice of points: its cage corners plus the centre of every cage cell. Its biggest hole
@@ -2051,7 +2054,7 @@ const LESSONS = [
     steps: [
       { t: 'Type <code>echo hello</code> and press <kbd>Enter</kbd>.', ok: (e) => isCmd(e, 'echo') && /hello/i.test(e.args.join(' ')) },
       { t: 'Make the shell say your name, like <code>echo Sam</code>.', ok: (e) => isCmd(e, 'echo') && e.args.length && !/^hello$/i.test(e.args.join(' ')) },
-      { t: 'Shout it in capitals: <code>ECHO hi</code>. What happens?', ok: (e) => e.type === 'cmd' && e.cmd === 'ECHO' },
+      { t: 'Shout it in capitals: <code>ECHO hi</code>. What happens?', hint: 'Click in the terminal, type <code>ECHO hi</code> in capital letters, and press <kbd>Enter</kbd>.', show: () => glowEl($('#term')), doIt: () => typeCmd('ECHO hi'), ok: (e) => e.type === 'cmd' && e.cmd === 'ECHO' },
     ] },
   { id: 'pwd', word: 'pwd', name: 'Where am I?', stands: 'Print Working Directory', color: '#ff8a2b',
     title: 'Where am I standing?', why: 'Why "print"? Long ago, the screen was a noisy typewriter that printed everything on paper. Every letter took ages, so commands got tiny names. The word print stuck around.',
@@ -2135,9 +2138,9 @@ const LESSONS = [
     mnem: 'Tab finishes. ↑ remembers. Ctrl+C rescues. clear wipes.',
     points: ['<kbd>Tab</kbd> completes file and folder names. If nothing happens, press it twice to see the choices.', '<kbd>↑</kbd> and <kbd>↓</kbd> scroll through what you typed before.', '<kbd>Ctrl</kbd>+<kbd>C</kbd> stops whatever is running. <kbd>Ctrl</kbd>+<kbd>D</kbd> means "I am done typing".', '<code>clear</code> wipes the screen. Your files are fine.'],
     steps: [
-      { t: 'Type <code>cat secr</code> then press <kbd>Tab</kbd>.', ok: (e) => e.type === 'tab' },
-      { t: 'Press <kbd>↑</kbd> to bring back an old command.', ok: (e) => e.type === 'up' },
-      { t: 'Type <code>cat</code> alone and press Enter. Get out with <kbd>Ctrl</kbd>+<kbd>C</kbd> or <kbd>Ctrl</kbd>+<kbd>D</kbd>.', ok: (e) => e.type === 'ctrlc' || e.type === 'ctrld' },
+      { t: 'Type <code>cat secr</code> then press <kbd>Tab</kbd>.', hint: 'Type <code>cat secr</code> in the terminal, then press the <kbd>Tab</kbd> key, on the left of your keyboard. The rest of the name appears.', show: () => glowEl($('#term')), doIt: () => { termIn.value = 'cat secr'; completeTab(); }, ok: (e) => e.type === 'tab' },
+      { t: 'Press <kbd>↑</kbd> to bring back an old command.', hint: 'Click in the terminal and press the <kbd>↑</kbd> arrow key, at the bottom right of your keyboard.', show: () => glowEl($('#term')), doIt: () => { if (!sh.hist.length) typeCmd('pwd'); recall(-1); }, ok: (e) => e.type === 'up' },
+      { t: 'Type <code>cat</code> alone and press Enter. Get out with <kbd>Ctrl</kbd>+<kbd>C</kbd> or <kbd>Ctrl</kbd>+<kbd>D</kbd>.', hint: 'Type <code>cat</code> and press <kbd>Enter</kbd>. Then hold <kbd>Ctrl</kbd> and press <kbd>C</kbd>.', show: () => glowEl($('#term')), doIt: () => { typeCmd('cat'); ctrlC(); }, ok: (e) => e.type === 'ctrlc' || e.type === 'ctrld' },
       { t: 'Wipe the screen: <code>clear</code>', ok: (e) => isCmd(e, 'clear') },
     ] },
   { id: 'man', word: 'man', name: 'Ask the wizard', stands: 'MANual', color: '#3a5bff',
@@ -2154,8 +2157,8 @@ const LESSONS = [
     points: ['Start at home. There is a note waiting for you.', 'Tab is your friend in long paths like <code>/tmp/dark/cave</code>.', 'Remember: mv first takes where it IS, then where it GOES.'],
     steps: [
       { t: 'Read the note at home: <code>cat note-from-gerbil.txt</code>', ok: (e) => isCmd(e, 'cat') && e.info.hits?.some((h) => h.endsWith('note-from-gerbil.txt')) },
-      { t: 'Walk all the way into the cave.', ok: (e) => isCmd(e, 'cd') && e.cwd === '/tmp/dark/cave' },
-      { t: 'Bring Gerald home to <code>~/pets</code> with <code>mv</code>.', ok: (e) => isCmd(e, 'mv') && !!find('/home/kid/pets/gerbil.txt') },
+      { t: 'Walk all the way into the cave.', hint: 'The cave is inside the dark folder, in <code>/tmp</code>. Its path starts at the very top: <code>/tmp/…</code>.', show: () => glowEl($('#term')), doIt: () => typeCmd('cd /tmp/dark/cave'), ok: (e) => isCmd(e, 'cd') && e.cwd === '/tmp/dark/cave' },
+      { t: 'Bring Gerald home to <code>~/pets</code> with <code>mv</code>.', hint: 'Type <code>mv</code>, then where Gerald is now, then where he should go: <code>~/pets</code>.', show: () => glowEl($('#term')), doIt: () => { const g = SH.allNodes().find((n) => n.name === 'gerbil.txt'); if (g) typeCmd(`mv ${pathOf(g)} ~/pets/`); }, ok: (e) => isCmd(e, 'mv') && !!find('/home/kid/pets/gerbil.txt') },
     ] },
 ];
 const ALL = [{ id: 'whole', name: 'Overview', color: '#ffc61a' }, { id: 'backstage', name: 'Backstage', color: '#9b5cff' }, ...LESSONS];

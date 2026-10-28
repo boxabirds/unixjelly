@@ -9,16 +9,23 @@ import { launch, guideUrl, verdict, overlap, distortion } from './lib.mjs';
 
 const b = await launch(), p = await b.newPage({ viewport: { width: 1024, height: 640 } }), problems = [];
 p.on('pageerror', (e) => problems.push(`page error: ${e.message}`));
+// Jellies are sized for the fullest jar a course can give (MOST_JELLIES in engine/jar-patch.py). No course may give more.
+const MOST = +fs.readFileSync(new URL('../engine/jar-patch.py', import.meta.url), 'utf8').match(/const MOST_JELLIES = (\d+);/)[1];
+for (const g of ['jellyshell', 'jellyshell2', 'jellygit', 'jellyweb', 'jellysecurity']) {
+  await p.goto(guideUrl(g)); const n = +(await p.textContent('#jarCount')).match(/\/ (\d+)/)[1];
+  if (n > MOST) problems.push(`${g} gives ${n} jellies, more than the jar is sized for (MOST_JELLIES = ${MOST})`);
+}
+await p.evaluate(() => localStorage.clear()); // opening the guides recorded their progress; the checks below start empty
 const home = guideUrl('jellyshell').replace('jellyshell/index.html', 'index.html');
 
 // Another course's jellies are already in the jar, and every Shell 2 lesson but the optional binary one is done.
 await p.goto(home);
-await p.evaluate(() => {
+await p.evaluate((MOST) => {
   const all = {};
-  for (let i = 0; i < 16; i++) all[`web:l${i}`] = { at: i, course: 'Web Jelly', word: 'html', name: 'A web page', colour: '#ff5c8a', look: 'dots', does: 'Makes a page.', ex: 'cat index.html' };
+  for (let i = 0; i < MOST; i++) all[`web:l${i}`] = { at: i, course: 'Web Jelly', word: 'html', name: 'A web page', colour: '#ff5c8a', look: 'dots', does: 'Makes a page.', ex: 'cat index.html' };
   for (let i = 0; i < 6; i++) all[`git:l${i}`] = { at: i, course: 'Git Jelly', word: 'commit', name: 'Save a snapshot', colour: '#9b5cff', look: 'zebra', does: 'Saves a snapshot.', ex: 'git commit' };
   localStorage.setItem('jelly.collection', JSON.stringify(all));
-});
+}, MOST);
 await p.goto(guideUrl('jellyshell2') + '#welcome'); await p.waitForTimeout(2500);
 const ids = await p.evaluate(() => [...document.querySelectorAll('.ni')].map((a) => a.dataset.id).filter((i) => i !== 'welcome'));
 await p.goto(home);
@@ -94,15 +101,15 @@ await p.waitForTimeout(500); await asleep(); await inside('in Git\'s jar');
 for (let k = 1; k <= 3; k++) { await p.click('#jarShake'); await p.waitForTimeout(500); await asleep(); await inside(`in Git's jar after shake ${k}`); await bent(`in Git's jar after shake ${k}`); }
 await p.screenshot({ path: 'jar-git.png' });
 await p.click('#jarBack'); await p.waitForTimeout(400);
-// Web's jar: 16 jellies all fit: once settled, none sticks out of the top of the glass (measured: 93% of its height)
+// Web's jar: the most jellies a course gives (MOST) all fit: once settled, none sticks out of the top of the glass (measured: 93% of its height)
 const FULL = 1;
 const fill = () => p.evaluate(() => { const j = document.querySelector('#jarCanvas').stage; return Math.max(...j.bodies.map((b) => b.hi[1])) / j.H; });
 await p.evaluate(() => document.querySelector('.shelf-jar[data-course=web]').click());
-await p.waitForTimeout(500); await asleep(); await inside('in a jar of 16');
-const filled = await fill(); console.log(`16 jellies fill the jar to ${(filled * 100).toFixed(0)}% of its height`);
-if (filled > FULL) problems.push(`16 jellies don't fit: they reach ${(filled * 100).toFixed(0)}% of the jar's height`);
-for (let k = 1; k <= 2; k++) { await p.click('#jarShake'); await p.waitForTimeout(500); await asleep(); await inside(`in a jar of 16 after shake ${k}`); await bent(`in a jar of 16 after shake ${k}`); }
-await p.screenshot({ path: 'jar-16.png' });
+await p.waitForTimeout(500); await asleep(); await inside(`in a jar of ${MOST}`);
+const filled = await fill(); console.log(`${MOST} jellies fill the jar to ${(filled * 100).toFixed(0)}% of its height`);
+if (filled > FULL) problems.push(`${MOST} jellies don't fit: they reach ${(filled * 100).toFixed(0)}% of the jar's height`);
+for (let k = 1; k <= 2; k++) { await p.click('#jarShake'); await p.waitForTimeout(500); await asleep(); await inside(`in a jar of ${MOST} after shake ${k}`); await bent(`in a jar of ${MOST} after shake ${k}`); }
+await p.screenshot({ path: 'jar-full.png' });
 await p.click('#jarBack'); await p.waitForTimeout(400);
 const shelf = await p.evaluate(() => Object.fromEntries([...document.querySelectorAll('.shelf-jar')].map((j) => [j.dataset.course, [j.querySelector('small').textContent, j.disabled]])));
 if (shelf.git?.[0] !== '6 jellies') problems.push(`Git's jar says ${JSON.stringify(shelf.git)}`);
@@ -124,7 +131,7 @@ await p.setInputFiles('#jarFile', { name: 'notes.json', mimeType: 'application/j
 if (!/isn't a jelly save/.test(await p.textContent('#toast'))) problems.push('a file that isn\'t a jelly save was not refused');
 await Promise.all([p.waitForEvent('load'), p.setInputFiles('#jarFile', 'my-jellies.json')]); await p.waitForTimeout(2500);
 const back = await p.textContent('#jarOpen'), ticks = await p.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('jellyshell2.v1')).done).length);
-if (back !== `My jelly jars (${6 + 16 + ids.length})` || ticks !== ids.length) problems.push(`after loading: "${back}", ${ticks} lessons ticked`);
+if (back !== `My jelly jars (${6 + MOST + ids.length})` || ticks !== ids.length) problems.push(`after loading: "${back}", ${ticks} lessons ticked`);
 if (!/Welcome back/.test(await p.textContent('#toast'))) problems.push('no welcome back after loading');
 
 await p.evaluate(() => document.querySelector('#jarOpen').click()); await p.waitForTimeout(300);

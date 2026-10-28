@@ -357,6 +357,12 @@ function ghEdit() {
   scrollDown(); renderMap(); sound.ding(); check({ type: 'gh-edit' });
 }
 
+// A mission that works on the project starts inside it, whatever the last exercise ended with.
+function intoProject() {
+  const d = find('/home/kid/my-game'); if (!d || within(sh.cwd, d)) return;
+  sh.cwd = d; sh.vars.PWD = pathOf(d); paintPrompt(); renderMap();
+  print('<span class="tip">(You\'re back in your project, my-game.)</span>'); scrollDown();
+}
 /* lessons can start from a ready-made sandbox, so jumping ahead never leaves a kid stuck */
 const LEVELS = ['a fresh computer', 'my-game is a repository', 'my-game has its first photo', 'GitHub is connected', 'the photos are already on GitHub'];
 function stateLevel() {

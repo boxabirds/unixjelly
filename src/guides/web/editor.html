@@ -14,7 +14,7 @@
   --chosen: 0 0 0 2px var(--ink), 0 0 0 4px var(--gold), 0 0 18px 6px rgba(255, 184, 0, .6);
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--sky); color: var(--ink); font: 14.5px/1.45 Lexend, system-ui, sans-serif; font-variant-ligatures: none; }
+body { margin: 0; height: 100vh; display: flex; flex-direction: column; background: var(--sky); color: var(--ink); font: 14.5px/1.45 Lexend, system-ui, sans-serif; font-variant-ligatures: none; }
 code, .mono { font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; }
 header { display: flex; align-items: center; gap: 16px; padding: 12px 16px; flex-wrap: wrap; }
 header h1 { font: 400 22px 'Titan One', sans-serif; margin: 0; }
@@ -23,8 +23,8 @@ header p { margin: 0; color: var(--ink-soft); flex: 1; min-width: 220px; }
 .views button { font: 500 12.5px Lexend, sans-serif; border: 0; border-left: 1px solid var(--soft); background: var(--card); color: var(--ink); padding: 3px 10px; cursor: pointer; }
 .views button:first-child { border-left: 0; }
 .views button[aria-pressed=true] { background: var(--lilac); font-weight: 600; }
-main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); gap: 12px; padding: 0 16px 16px; height: calc(100vh - 92px); min-height: 400px; }
-@media (max-width: 760px) { main { grid-template-columns: 1fr; height: auto; } .panel { height: 75vh; } }
+main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); gap: 12px; padding: 0 16px 16px; flex: 1; min-height: 0; }
+@media (max-width: 760px) { main { grid-template-columns: 1fr; flex: none; } .panel { height: 75vh; } }
 .panel { background: var(--card); border: var(--line) solid var(--ink); border-radius: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
 .panel > h2 { font: 400 16px 'Titan One', sans-serif; margin: 0; padding: 8px 12px; border-bottom: var(--line) solid var(--ink); display: flex; justify-content: space-between; align-items: center; }
 .panel > h2 small { font: 400 12px Lexend, sans-serif; color: var(--ink-soft); }
@@ -148,6 +148,20 @@ body.carrying, body.carrying * { user-select: none; -webkit-user-select: none; c
 .tools .field input { flex: 1; min-width: 80px; font: 500 12.5px 'JetBrains Mono', monospace; border: 1px solid var(--soft); border-radius: 6px; padding: 3px 6px; }
 .tools .field input:focus { outline: 2px solid var(--grape); outline-offset: -1px; }
 .bh .thumb { width: 26px; height: 22px; }
+/* a hint pointing at something: it pulses gold three times */
+.hint-glow { animation: hint-glow .8s ease-in-out 3; position: relative; z-index: 2; }
+@keyframes hint-glow { 50% { box-shadow: 0 0 0 3px #ffb800, 0 0 22px 8px rgba(255, 184, 0, .75); } }
+/* the block's HTML name, small, after its own name */
+.bh .hname { margin-left: 6px; font: 500 11px 'JetBrains Mono', monospace; color: var(--ink-soft); }
+.bin { display: none; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--ink-soft); cursor: pointer; flex: none; }
+.bin svg { width: 16px; height: 16px; }
+.bin:hover { background: #ffd0d8; color: #b0102e; }
+.blk.selected > .bh > .bin, .text.selected > .bin { display: grid; }
+.attr-btn { display: none; border: 1px solid color-mix(in srgb, var(--c) 55%, var(--ink)); border-radius: 999px; background: #fff; color: var(--ink); font: 500 12px Lexend, sans-serif; padding: 1px 9px; cursor: pointer; flex: none; }
+.attr-btn:hover, .attr-btn[aria-pressed=true] { background: color-mix(in srgb, var(--c) 25%, white); }
+.blk.selected > .bh > .attr-btn { display: inline-block; }
+.attr-edit { display: flex; align-items: center; gap: 6px; margin: 0 8px 6px; font: 500 12.5px Lexend, sans-serif; color: var(--ink-soft); }
+.attr-edit input { flex: 1; min-width: 80px; border: 1px solid var(--ink-soft); border-radius: 6px; padding: 3px 7px; font: 400 13.5px Lexend, sans-serif; color: var(--ink); background: #fff; }
 .tags .bh .thumb { display: none; }
 .blk.single > .bh { min-height: 32px; }
 /* the page: tables show their cells, and the card that says what a form would send */
@@ -158,6 +172,12 @@ body.carrying, body.carrying * { user-select: none; -webkit-user-select: none; c
 .send-card ul { margin: 6px 0; padding-left: 20px; }
 .send-card .later { color: var(--ink-soft); font-size: 13px; }
 .send-card button { font: 600 13px Lexend, sans-serif; border: var(--line) solid var(--ink); border-radius: 8px; padding: 3px 14px; background: var(--lime); cursor: pointer; }
+/* inside a lesson: the lesson says what to do, so the editor's own heading goes; tools not taught yet are hidden */
+body.guided { background: transparent; }
+body.guided header { display: none; }
+body.guided main { padding: 0; }
+body.guided .site { padding: 0 0 8px; }
+.gate-off { display: none !important; }
 </style>
 </head>
 <body>
@@ -168,7 +188,7 @@ body.carrying, body.carrying * { user-select: none; -webkit-user-select: none; c
 <nav class="site" aria-label="Your website's pages"><span class="lbl">Your website:</span><div class="tabs" id="tabs"></div></nav>
 <main>
   <section class="panel" id="left" aria-label="Blocks">
-    <h2>Your page, as <div class="views" role="group" aria-label="Show the page as"><button data-view="blocks" aria-pressed="true">Blocks</button><button data-view="tags" aria-pressed="false">Tags</button><button data-view="html" aria-pressed="false">HTML</button></div></h2>
+    <h2><span id="leftTitle">Your page, as</span> <div class="views" role="group" aria-label="Show the page as"><button data-view="blocks" aria-pressed="true">Blocks</button><button data-view="tags" aria-pressed="false">Tags</button><button data-view="html" aria-pressed="false">HTML</button></div></h2>
     <div class="palette" id="palette"></div>
     <div class="tools" id="tools"></div>
     <div class="msg" id="msg" aria-live="polite"></div>
@@ -233,7 +253,9 @@ const INLINE = new Set(['heading', 'para', 'item', 'cell', 'bold', 'italic', 'li
 const ATTRS = ['href', 'src', 'alt', 'name'];
 const INDENT = '  ';
 const COLOURS = [['none', null], ['tomato', 'tomato'], ['hotpink', 'hotpink'], ['royalblue', 'royalblue'], ['seagreen', 'seagreen'], ['darkorange', 'darkorange'], ['purple', 'purple']];
-const FLASH_MS = 700, DRAG_START_PX = 6, EDGE = .3;
+const GLOW_MS = 2400, FLASH_MS = 700, DRAG_START_PX = 6, EDGE = .3;
+// carrying a block near the top or bottom of the blocks scrolls them, faster the nearer the edge
+const SCROLL_ZONE_PX = 48, SCROLL_MAX_PX = 16;
 // The pictures in this pretend website's folder. Any other name is a picture that isn't there, as on a real site.
 const svg = (body) => 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="100" viewBox="0 0 120 100">${body}</svg>`);
 const PICS = {
@@ -301,11 +323,11 @@ function placeOk(n, target, where) {
 }
 function place(n, target, where) {
   const r = placeOk(n, target, where);
-  if (!r.ok) { say(r.why); return false; }
+  if (!r.ok) { say(r.why); emit('refused', { kind: n.kind, why: r.why }); return false; }
   detach(n);
   if (where === 'inside') target.kids.push(n);
   else { const sib = r.parent.kids, i = sib.indexOf(target); sib.splice(where === 'before' ? i : i + 1, 0, n); }
-  flashId = n.id; say(''); render(); return true;
+  flashId = n.id; say(''); render(); reveal(); emit('move', { kind: n.kind }); return true;
 }
 
 // ---------- adding ----------
@@ -328,7 +350,11 @@ function insert(fresh, spot, pick = fresh) {
   // words added straight after other words need a space between them, as they would when typing
   const before = parent.kids[parent.kids.indexOf(fresh) - 1], first = fresh.kind === 'text' ? fresh : fresh.kids[0];
   if (['text', 'bold', 'italic', 'link'].includes(fresh.kind) && before && first?.kind === 'text' && !/\s$/.test(lastWords(before))) first.text = ' ' + first.text;
-  selected = pick.id; flashId = fresh.id; say(''); closeHelp(); render(); reveal();
+  selected = pick.id; flashId = fresh.id; say(''); closeHelp(); render(); reveal(); emit('add', { kind: pick.kind });
+  // the new block's words are ready to type over, so a new paragraph is one press and some typing
+  const words = (n) => n.kind === 'text' ? n : n.kids.map(words).find(Boolean);
+  const w = words(pick), field = w && tree.querySelector(`input[data-id="${w.id}"]`);
+  if (field && !field.readOnly) { field.focus({ preventScroll: true }); field.select(); }
 }
 function add(kind) {
   if (broken) return;
@@ -361,7 +387,7 @@ const allWords = (n) => n.kind === 'text' ? n.text : n.kids.map(allWords).join('
 let helpFor = null, helpPinned = false, helpTimer = null;
 const HELP_OPEN_MS = 200, HELP_CLOSE_MS = 250;
 function openHelp(kind, pin = false) {
-  const btn = document.querySelector(`[data-add="${kind}"]`), pop = document.getElementById('helpPop'), chain = chainFor(kind), home = homesFor(kind)[0];
+  const btn = document.querySelector(`[data-add="${kind}"]`), pop = document.getElementById('helpPop'), built = chainFor(kind), chain = built?.every(allowed) ? built : null, home = homesFor(kind)[0];
   if (!btn) return;
   clearTimeout(helpTimer); helpFor = kind; helpPinned = pin || helpPinned;
   // the rules from the block asked for, outwards: a cell goes in a row; a row goes in a table
@@ -377,7 +403,7 @@ function remove() {
   if (broken) return;
   const n = find(selected)?.n;
   if (!n || n === root) return;
-  const parent = detach(n); selected = parent.id; render();
+  const parent = detach(n); selected = parent.id; render(); emit('remove', { kind: n.kind });
 }
 // Keyboard and touch moves: up and down among its neighbours, out of its box, or into the box above.
 function nudge(dir) {
@@ -390,7 +416,7 @@ function nudge(dir) {
   else if (dir === 'in' && i > 0) place(n, sib[i - 1], 'inside');
   else say({ up: 'It\'s already at the top of its box.', down: 'It\'s already at the bottom of its box.', out: 'It\'s already straight on the page.', in: 'There is no block above it to go inside.' }[dir]);
 }
-function setColour(c) { if (broken) return; const n = find(selected)?.n; if (!n || n.kind === 'text' || n === root) return; n.style = c; render(); }
+function setColour(c) { if (broken) return; const n = find(selected)?.n; if (!n || n.kind === 'text' || n === root) return; n.style = c; render(); emit('colour', { kind: n.kind, colour: c }); }
 
 // ---------- drawing ----------
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -483,6 +509,7 @@ function fromHtml() {
   // the page changes at once; the notes about mistakes wait until typing stops, so they don't nag mid-word
   document.getElementById('marks').classList.remove('show'); document.getElementById('check').classList.remove('show');
   clearTimeout(markTimer); markTimer = setTimeout(drawMarks, MARK_DELAY_MS);
+  emitSoon('html');
 }
 let mistakes = [], markTimer = null;
 const MARK_DELAY_MS = 500, MARK_GAP = 2, BUBBLE_GAP = 14, BUBBLE_PAD = 40, BUBBLE_TEXT_SCALE = .95;
@@ -518,13 +545,21 @@ function blockAt(pos) {
   let best = -1; codeEls.forEach((e, i) => { if (e.start <= pos && pos < e.end) best = i; });
   return best < 0 ? null : all[best];
 }
+// the rubbish bin: deletes the block it sits on, and everything inside it
+function attrField(n) {
+  const f = editAttr?.id === n.id && (ATTR_FIELDS[n.kind] ?? []).find(([a]) => a === editAttr.a); if (!f) return '';
+  const [a, , label, eg] = f;
+  return `<label class="attr-edit">${label}: <input data-attr="${a}" value="${esc(n.attrs[a] ?? '')}" placeholder="${eg}" spellcheck="false" autocomplete="off"${broken ? ' readonly' : ''}${a === 'href' ? ' list="pageNames"' : ''}></label>`
+    + (a === 'href' ? `<datalist id="pageNames">${site.map((p) => `<option value="${esc(p.name)}">`).join('')}</datalist>` : '');
+}
+const BIN = '<button class="bin" data-remove tabindex="-1" title="Delete this block" aria-label="Delete this block"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4M6.6 6.5v5M9.4 6.5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
 function blockHtml(n) {
   const k = KINDS[n.kind], sel = n.id === selected ? ' selected' : '', fl = n.id === flashId ? ' flash' : '';
-  if (n.kind === 'text') return `<div class="text${sel}${fl}" data-id="${n.id}"><input value="${esc(n.text)}" aria-label="Words" data-id="${n.id}"${broken ? ' readonly' : ''}>${/\s\s|[\n\t]/.test(n.text) ? '<span class="ws-note">The page shows these spaces as one.</span>' : ''}</div>`;
+  if (n.kind === 'text') return `<div class="text${sel}${fl}" data-id="${n.id}"><input value="${esc(n.text)}" aria-label="Words" data-id="${n.id}"${broken ? ' readonly' : ''}>${/\s\s|[\n\t]/.test(n.text) ? '<span class="ws-note">The page shows these spaces as one.</span>' : ''}${BIN}</div>`;
   const colour = n.style ? ` · <span style="color:${n.style}">${n.style}</span>` : '';
   const thumb = n.kind === 'picture' ? `<img class="thumb" src="${PICS[n.attrs.src] ?? ''}" alt="">` : '';
   return `<div class="blk ${n.kind}${k.single ? ' single' : ''}${sel}${fl}" style="--c:${k.c}" data-id="${n.id}" tabindex="0" role="treeitem" aria-label="${esc(k.name)}">
-    <div class="bh">${thumb}<span class="name">${nameOf(n)}${colour}</span><span class="tag">${esc(openTag(n))}</span></div>
+    <div class="bh">${thumb}<span class="name">${nameOf(n)}${colour}${n === root ? '' : `<span class="hname">${tagOf(n)}</span>`}</span><span class="tag">${esc(openTag(n))}</span>${(ATTR_FIELDS[n.kind] ?? []).map(([a, short]) => `<button class="attr-btn" data-edit="${a}" tabindex="-1" aria-pressed="${editAttr?.id === n.id && editAttr.a === a}">${short} <span aria-hidden="true">✎</span></button>`).join('')}${n === root ? '' : BIN}</div>${attrField(n)}
     ${k.single ? '' : `<div class="kids">${n.kids.map(blockHtml).join('')}</div><div class="lid">${esc(`</${tagOf(n)}>`)}</div>`}
   </div>`;
 }
@@ -560,14 +595,14 @@ const tidyName = (raw) => { const base = raw.trim().toLowerCase().replace(/\.htm
 function newPage() {
   let k = 2; while (site.some((p) => p.name === `page-${k}.html`)) k++;
   site.push({ name: `page-${k}.html`, title: 'A new page', root: node('page', [node('heading', [words('A new page')]), node('para', [words('Write something here.')])]), code: null, broken: false });
-  openPage(site.length - 1); renaming = true; renderSite();
+  openPage(site.length - 1); renaming = true; renderSite(); emit('pages');
 }
 function renameTo(raw, field) {
   const name = tidyName(raw), pg = site[current];
   if (!name) return tabNote(field, 'A page name needs at least one letter or number.');
   if (site.some((p, i) => i !== current && p.name === name)) return tabNote(field, `There's already a page called ${name}.`);
   // links that pointed at the old name aren't changed, just as on a real website: Visit shows which ones broke
-  pg.name = name; renaming = false; renderSite(); renderTools();
+  pg.name = name; renaming = false; renderSite(); renderTools(); emit('pages');
 }
 function tabNote(field, text) { const r = field.getBoundingClientRect(); dropNote(r.left, r.bottom - 6, text); field.focus(); }
 function deletePage() {
@@ -576,7 +611,7 @@ function deletePage() {
   deleteArmed = null; clearMarks(); site.splice(current, 1); visited = visited.filter((v) => v !== current).map((v) => v > current ? v - 1 : v); current = 0;
   const pg = site[0]; root = pg.root; broken = pg.broken; selected = root.id; code.value = pg.code ?? toDoc();
   if (view === 'html' || broken) fromHtml();
-  render(); renderSite();
+  render(); renderSite(); emit('pages');
 }
 function renderSite() {
   document.getElementById('tabs').innerHTML = site.map((p, i) => {
@@ -590,10 +625,10 @@ function renderSite() {
 // Visiting: a link to one of your pages opens it; anything else gets a plain explanation instead.
 function visit(href) {
   const name = (href ?? '').trim().replace(/^\.\//, '').split('#')[0];
-  if (/^[a-z]+:|^\/\//i.test(name)) return visitCard('A link to another website', `This link goes to <code>${esc(href)}</code>, a website out on the internet. In here, links only go to the pages of your own website.`);
+  if (/^[a-z]+:|^\/\//i.test(name)) return emit('visit', { href, outside: true }), visitCard('A link to another website', `This link goes to <code>${esc(href)}</code>, a website out on the internet. In here, links only go to the pages of your own website.`);
   const i = site.findIndex((p) => p.name === name);
-  if (i < 0) return visitCard('No page with that name', `Your website has no page called <code>${esc(href || '(nothing)')}</code>. Check the name in the link: every letter counts.`);
-  visited.push(current); openPage(i);
+  if (i < 0) return emit('visit', { href, missing: true }), visitCard('No page with that name', `Your website has no page called <code>${esc(href || '(nothing)')}</code>. Check the name in the link: every letter counts.`);
+  visited.push(current); openPage(i); emit('visit', { href, name: site[i].name });
 }
 function visitCard(title, text) {
   const card = document.getElementById('sendCard');
@@ -607,26 +642,26 @@ function render() {
   setTimeout(() => { flashId = null; }, FLASH_MS);
 }
 // The "+" buttons in groups, then what can be done to the selected block: move it, colour it, and its own settings.
+// A block's settings: a button on the selected block (its short name), which opens a field (its long name) under the block's name.
 const ATTR_FIELDS = {
-  link: [['href', 'Goes to', 'another-page.html']],
-  picture: [['alt', 'Words for people who can\'t see it', 'a green jelly']],
-  textbox: [['name', 'Its name, sent with the answer', 'name']],
+  link: [['href', 'Goes to', 'Goes to', 'another-page.html']],
+  picture: [['src', 'File name', 'File name', 'gerbil.svg'], ['alt', 'Alt words', 'Words for people who can\'t see it', 'a green jelly']],
+  textbox: [['name', 'Name', 'Its name, sent with the answer', 'name']],
 };
+let editAttr = null; // { id, a }: the setting being typed in, if any
 function renderTools() {
   const n = find(selected)?.n ?? root, pal = document.getElementById('palette'), tools = document.getElementById('tools');
-  const groups = [...new Set(Object.values(KINDS).map((k) => k.group).filter(Boolean))];
-  pal.innerHTML = groups.map((g) => `<div class="pgroup"><span>${g}</span>${Object.entries(KINDS).filter(([, k]) => k.group === g).map(([id, k]) => `<button data-add="${id}"${where(id) ? '' : ' class="off" aria-disabled="true"'} style="--c:color-mix(in srgb, ${k.c} 45%, white)">+ ${k.name}</button>`).join('')}</div>`).join('');
-  if (n === root) { tools.innerHTML = `<label class="field">The page's title, on the browser tab: <input data-title value="${esc(site[current].title ?? '')}" spellcheck="false" autocomplete="off"></label><span class="lbl">Click a block to move it, colour it or change it.</span>`; return; }
+  const groups = [...new Set(Object.entries(KINDS).filter(([id, k]) => k.group && allowed(id)).map(([, k]) => k.group))];
+  pal.innerHTML = groups.map((g) => `<div class="pgroup"><span>${g}</span>${Object.entries(KINDS).filter(([id, k]) => k.group === g && allowed(id)).map(([id, k]) => `<button data-add="${id}"${where(id) ? '' : ' class="off" aria-disabled="true"'} style="--c:color-mix(in srgb, ${k.c} 45%, white)">+ ${k.name}</button>`).join('')}</div>`).join('');
+  if (n === root) { tools.innerHTML = `${allowedTool('title') ? `<label class="field">The page's title, on the browser tab: <input data-title value="${esc(site[current].title ?? '')}" spellcheck="false" autocomplete="off"></label>` : ''}<span class="lbl">Click a block to ${[allowedTool('moving') && 'move it', allowedTool('colours') && 'colour it', 'change it'].filter(Boolean).join(', ').replace(/, ([^,]*)$/, ' or $1')}.</span>`; return; }
   // colour is for words, so blocks with no words in them (a picture, a text box) don't offer it
-  const colourable = !['text', 'other'].includes(n.kind) && !KINDS[n.kind].single;
+  const colourable = !['text', 'other'].includes(n.kind) && !KINDS[n.kind].single && allowedTool('colours');
   const pics = n.kind === 'picture' ? `<span class="lbl">Which picture:</span>${Object.keys(PICS).map((p) => `<button class="pic" data-pic="${p}" aria-pressed="${n.attrs.src === p}" title="${p}"><img src="${PICS[p]}" alt="${p}"></button>`).join('')}` : '';
-  const fields = (ATTR_FIELDS[n.kind] ?? []).map(([a, label, eg]) => `<label class="field">${label}: <input data-attr="${a}" value="${esc(n.attrs[a] ?? '')}" placeholder="${eg}" spellcheck="false" autocomplete="off"${a === 'href' ? ' list="pageNames"' : ''}></label>`).join('')
-    + (n.kind === 'link' ? `<datalist id="pageNames">${site.map((p) => `<option value="${esc(p.name)}">`).join('')}</datalist>` : '');
   tools.innerHTML = `<span class="lbl">${esc(KINDS[n.kind].name)}:</span>
-    <button data-nudge="up" title="Move up" aria-label="Move up">↑</button><button data-nudge="down" title="Move down" aria-label="Move down">↓</button>
-    <button data-nudge="out" title="Out of its box" aria-label="Out of its box">← out</button><button data-nudge="in" title="Into the block above" aria-label="Into the block above">in →</button>
+    ${allowedTool('moving') ? `<button data-nudge="up" title="Move up" aria-label="Move up">↑</button><button data-nudge="down" title="Move down" aria-label="Move down">↓</button>
+    <button data-nudge="out" title="Out of its box" aria-label="Out of its box">← out</button><button data-nudge="in" title="Into the block above" aria-label="Into the block above">in →</button>` : ''}
     ${colourable ? COLOURS.map(([label, c]) => `<button class="sw" data-colour="${c ?? ''}" style="--sw:${c ?? 'repeating-linear-gradient(45deg,#fff 0 4px,#ddd 4px 8px)'}" aria-pressed="${n.style === c}" title="${label}" aria-label="Colour ${label}"></button>`).join('') : ''}
-    <button data-remove style="--c:#ffd0d8">Delete</button>${pics ? `<div class="trow">${pics}</div>` : ''}${fields ? `<div class="trow">${fields}</div>` : ''}`;
+    ${pics ? `<div class="trow">${pics}</div>` : ''}`;
 }
 
 // ---------- selecting and linking the two panels ----------
@@ -636,13 +671,105 @@ const tree = document.getElementById('tree'), frame = document.getElementById('p
 const FRAME_MARKS = `html:not(.visiting) [data-id] { cursor: pointer; }
 .selected { box-shadow: 0 0 0 2px #24133b, 0 0 0 4px #ffb800, 0 0 18px 6px rgba(255, 184, 0, .6); background-color: rgba(255, 214, 77, .22); }
 tr.selected { box-shadow: none; outline: 3px solid #ffb800; }
+.hint-glow { animation: hint-glow .8s ease-in-out 3; }
+@keyframes hint-glow { 50% { box-shadow: 0 0 0 3px #ffb800, 0 0 22px 8px rgba(255, 184, 0, .75); } }
 .hover:not(.selected) { box-shadow: 0 0 0 1.5px rgba(36, 19, 59, .5); animation: hover-in .25s ease-out; }
 @keyframes hover-in { from { box-shadow: 0 0 0 1.5px rgba(36, 19, 59, 0); } }
 html.visiting .selected, html.visiting .hover { box-shadow: none !important; background-color: transparent !important; outline: none !important; animation: none !important; }`;
 let pageView = null;
+// When the editor is part of a lesson, the guide decides what it shows (BE.gate) and hears about every change (BE.on).
+// Without a gate, everything is shown: the editor still works on its own.
+let gateOpts = null;
+const allowed = (k) => !gateOpts?.kinds || gateOpts.kinds.includes(k);
+const allowedTool = (t) => !gateOpts || !!gateOpts[t];
+const emit = (what, extra = {}) => { try { window.BE?.on?.({ type: 'blocks', what, ...extra }); } catch (err) { console.error(err); } };
+const EMIT_TYPING_MS = 300;
+let typingTimer = null;
+const emitSoon = (what) => { clearTimeout(typingTimer); typingTimer = setTimeout(() => emit(what), EMIT_TYPING_MS); };
+function applyGate() {
+  document.body.classList.toggle('guided', !!gateOpts);
+  for (const b of document.querySelectorAll('[data-view]')) b.classList.toggle('gate-off', !!gateOpts?.views && !gateOpts.views.includes(b.dataset.view));
+  if (gateOpts?.views && !gateOpts.views.includes(view)) view = 'blocks';
+  document.querySelector('.views').classList.toggle('gate-off', !!gateOpts?.views && gateOpts.views.length < 2);
+  document.getElementById('leftTitle').textContent = gateOpts?.views && gateOpts.views.length < 2 ? 'Your page\'s blocks' : 'Your page, as';
+  for (const el of [document.querySelector('nav.site'), document.getElementById('modes')]) el.classList.toggle('gate-off', !allowedTool('pages'));
+  if (!allowedTool('pages') && mode !== 'edit') { mode = 'edit'; pageView?.documentElement.classList.remove('visiting'); }
+}
+window.BE = {
+  on: null,
+  gate(g) { gateOpts = g; applyGate(); render(); renderSite(); },
+  // the website, as plain data the guide can save; and back again
+  dump() { savePage(); return JSON.parse(JSON.stringify({ site: site.map(({ name, title, root, code, broken }) => ({ name, title, root, code, broken })) })); },
+  load(data) {
+    if (!data?.site?.length) return;
+    const ids = []; const walk = (n) => { ids.push(n.id); n.kids.forEach(walk); };
+    data.site.forEach((p) => walk(p.root)); nextId = Math.max(nextId, ...ids) + 1;
+    site.splice(0, site.length, ...data.site); current = 0; visited = []; clearMarks();
+    const pg = site[0]; root = pg.root; broken = pg.broken; selected = root.id; code.value = pg.code ?? toDoc();
+    if (view === 'html' || broken) fromHtml();
+    render(); renderSite();
+  },
+  get state() { return { site, current, view, mode, broken, mistakes, root, page: pageView, selected: find(selected)?.n ?? null }; },
+  // a still picture of the editor and its page, for presenter mode: no scripts, what's typed written into the HTML
+  snapshot() {
+    savePage();
+    const d = document.documentElement.cloneNode(true);
+    d.querySelectorAll('script').forEach((x) => x.remove());
+    d.querySelector('#htmlText').textContent = code.value;
+    d.querySelectorAll('input').forEach((x, i) => x.setAttribute('value', document.querySelectorAll('input')[i]?.value ?? ''));
+    d.querySelector('#pageFrame')?.setAttribute('srcdoc', '<!doctype html>' + pageView.documentElement.outerHTML);
+    return '<!doctype html>' + d.outerHTML;
+  },
+  // The guide's hints: make the thing to use glow for a moment, in the editor and on the page.
+  glow(sel) {
+    for (const d of [document, pageView]) for (const el of d?.querySelectorAll(sel) ?? []) {
+      el.classList.remove('hint-glow'); void el.offsetWidth; el.classList.add('hint-glow');
+      setTimeout(() => el.classList.remove('hint-glow'), GLOW_MS);
+    }
+    const inTree = document.querySelector(`.tree :is(${sel})`); if (inTree) bringIntoView(inTree);
+  },
+  // "Do it for me": the same things the child would do, so they see it happen. Blocks are found by kind, first first.
+  do: {
+    select(kind, nth = 0) { const n = inOrder(root).filter((x) => x.kind === kind)[nth]; if (n) select(n.id); return !!n; },
+    pick(test) { const n = inOrder(root).find(test); if (n) select(n.id); return !!n; },
+    // the box the selected block is in
+    up() { const f = find(selected); if (f?.parent && f.parent !== root) select(f.parent.id); },
+    add(kind) { add(kind); },
+    words(text) {
+      const n = find(selected)?.n, t = n?.kind === 'text' ? n : n && [n, ...inOrder(n)].flatMap((x) => x.kids).find((x) => x.kind === 'text');
+      if (!t || broken) return; t.text = text; render(); emit('words');
+    },
+    nudge(dir) { nudge(dir); },
+    // a drop the editor refuses: the reason shows on the block it was dropped on, as it does for the child
+    refuse(kind, intoKind) {
+      const n = inOrder(root).find((x) => x.kind === kind), t = inOrder(root).find((x) => x.kind === intoKind); if (!n || !t) return;
+      const r = placeOk(n, t, 'inside'); if (r.ok) return;
+      const at = tree.querySelector(`[data-id="${t.id}"]`).getBoundingClientRect(); dropNote(at.left + 24, at.top + 12, r.why);
+      emit('refused', { kind, why: r.why });
+    },
+    colour(c) { setColour(c); },
+    // a setting of the selected block, or of the nearest box around it that has that setting (a new link's words are
+    // selected, ready to type, so the link itself is one box out)
+    attr(a, v) {
+      let id = selected; while (id != null && !(ATTR_FIELDS[find(id)?.n.kind] ?? []).some(([x]) => x === a)) id = find(id)?.parent?.id;
+      const n = id != null && find(id).n; if (!n || broken) return; n.attrs[a] = v; render(); emit('attr');
+    },
+    page(name) { newPage(); renameTo(name, document.getElementById('pageName')); },
+    open(name) { const i = site.findIndex((p) => p.name === name); if (i >= 0) { openPage(i); emit('open', { name }); } },
+    mode(m) { document.querySelector(`[data-mode="${m}"]`)?.click(); },
+    visit(href) { visit(href); },
+    back() { document.getElementById('back').click(); },
+    // fill in the page's form, text box by text box, and press its button
+    send(values) { const f = pageView.querySelector('form'); if (!f) return; [...f.querySelectorAll('input')].forEach((i, k) => { i.value = values[k] ?? ''; }); f.requestSubmit(); },
+    closeSent() { document.getElementById('sendCard').hidden = true; },
+    view(v) { document.querySelector(`[data-view="${v}"]`)?.click(); },
+    // change the HTML text, as typing would
+    code(change) { code.value = change(code.value); fromHtml(); },
+  },
+};
 // every block's marks, in the blocks panel and in the page
 const everywhere = (sel) => [...document.querySelectorAll(sel), ...(pageView?.querySelectorAll(sel) ?? [])];
-function select(id) { selected = id; render(); reveal(); }
+function select(id) { if (editAttr && editAttr.id !== id) editAttr = null; selected = id; render(); reveal(); emit('select', { kind: find(id)?.n.kind, in: find(id)?.parent?.kind }); }
 // out of sight: scroll it to the middle, so its glow isn't cut off at the edge. Already in sight: leave it be.
 function bringIntoView(el) {
   if (!el) return;
@@ -689,6 +816,7 @@ const onPageSubmit = (e) => {
   const card = document.getElementById('sendCard');
   card.innerHTML = `<h3>What the website would receive</h3>${sent ? `<ul>${sent}</ul>` : '<p>Nothing! Every text box needs a name, or its answer isn\'t sent.</p>'}${sent && unnamed ? `<p>${unnamed === 1 ? 'One text box has' : `${unnamed} text boxes have`} no name, so ${unnamed === 1 ? 'its answer wasn\'t' : 'their answers weren\'t'} sent.</p>` : ''}<p class="later">Nothing was really sent: no website is listening yet. A later course makes a real website answer.</p><button type="button" id="sendClose">OK</button>`;
   card.hidden = false; document.getElementById('sendClose').focus();
+  emit('send', { fields: [...new FormData(e.target)].map(([k]) => k), unnamed });
 };
 document.getElementById('sendCard').addEventListener('click', (e) => { if (e.target.id === 'sendClose') e.currentTarget.hidden = true; });
 const onPageOver = (e) => { if (mode === 'edit') hover(+e.target.closest?.('[data-id]')?.dataset.id || null); };
@@ -698,11 +826,12 @@ tree.addEventListener('mouseleave', () => hover(null));
 // typing words: change the model and redraw the page only, so the box being typed in keeps its place
 tree.addEventListener('input', (e) => {
   if (!e.target.matches('input[data-id]')) return;
-  const n = find(+e.target.dataset.id).n, box = e.target.parentElement; n.text = e.target.value; renderPage();
+  const n = find(+e.target.dataset.id).n, box = e.target.parentElement; n.text = e.target.value; renderPage(); emitSoon('words');
   const runs = /\s\s|[\n\t]/.test(n.text), note = box.querySelector('.ws-note');
   if (runs && !note) box.insertAdjacentHTML('beforeend', '<span class="ws-note">The page shows these spaces as one.</span>'); else if (!runs) note?.remove();
 });
-tree.addEventListener('focusin', (e) => { if (e.target.matches('input[data-id]')) { selected = +e.target.dataset.id; renderTools(); markSelected(); } });
+// clicking into a block's words picks that block's words, like clicking them on the page does
+tree.addEventListener('focusin', (e) => { if (e.target.matches('input[data-id]')) { selected = +e.target.dataset.id; renderTools(); markSelected(); emit('select', { kind: 'text', in: find(selected)?.parent?.kind }); } });
 const palette = document.getElementById('palette'), helpPop = document.getElementById('helpPop');
 palette.addEventListener('click', (e) => { const b = e.target.closest('[data-add]'); if (b) add(b.dataset.add); });
 palette.addEventListener('pointerover', (e) => {
@@ -718,7 +847,7 @@ helpPop.addEventListener('pointerleave', () => { if (!helpPinned) helpTimer = se
 helpPop.addEventListener('click', (e) => {
   const b = e.target.closest('[data-help]'); if (!b || !helpFor) return;
   const kind = helpFor;
-  if (b.dataset.help === 'new') { const chain = chainFor(kind), { top, leaf } = build(chain); insert(top, where(chain[0]), leaf); }
+  if (b.dataset.help === 'new') { const chain = chainFor(kind); if (!chain?.every(allowed)) return; const { top, leaf } = build(chain); insert(top, where(chain[0]), leaf); }
   else { const into = find(+b.dataset.into).n, fresh = FRESH[kind](); insert(fresh, { parent: into, index: into.kids.length }); }
 });
 document.addEventListener('pointerdown', (e) => { if (helpFor && !e.target.closest('#helpPop, [data-add]')) closeHelp(); });
@@ -727,21 +856,28 @@ const tools = document.getElementById('tools');
 tools.addEventListener('click', (e) => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.nudge) nudge(b.dataset.nudge);
-  else if (b.dataset.pic) { find(selected).n.attrs.src = b.dataset.pic; render(); }
+  else if (b.dataset.pic) { find(selected).n.attrs.src = b.dataset.pic; render(); emit('attr'); }
   else if ('colour' in b.dataset) setColour(b.dataset.colour || null);
   else if ('remove' in b.dataset) remove();
 });
 // a link's address, a picture's words, a text box's name: the page and the block's label change as the child types
 tools.addEventListener('input', (e) => {
-  if (e.target.matches('[data-title]')) { site[current].title = e.target.value; renderPage(); return; }
-  const f = e.target.closest('[data-attr]'); if (!f || broken) return;
-  const n = find(selected)?.n; if (!n) return;
-  n.attrs[f.dataset.attr] = f.value; renderTree(); renderPage();
+  if (e.target.matches('[data-title]')) { site[current].title = e.target.value; renderPage(); emitSoon('title'); return; }
 });
+tree.addEventListener('input', (e) => {
+  const f = e.target.closest('[data-attr]'); if (!f || broken) return;
+  const n = find(editAttr?.id)?.n; if (!n) return;
+  n.attrs[f.dataset.attr] = f.value; renderPage(); emitSoon('attr');
+  const name = tree.querySelector(`.blk[data-id="${n.id}"] > .bh .name`); if (name) name.innerHTML = nameOf(n);
+});
+// Enter or Escape closes the field; so does clicking somewhere else
+const closeAttr = () => { if (!editAttr) return; editAttr = null; renderTree(); };
+tree.addEventListener('keydown', (e) => { if (e.target.matches('[data-attr]') && (e.key === 'Enter' || e.key === 'Escape')) { e.preventDefault(); closeAttr(); tree.querySelector(`[data-id="${selected}"]`)?.focus({ preventScroll: true }); } }, true);
+document.addEventListener('pointerdown', (e) => { if (editAttr && !e.target.closest('.attr-edit, .attr-btn')) closeAttr(); }, true);
 tree.addEventListener('keydown', (e) => {
   if (e.target.matches('input')) return;
   const map = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'out', ArrowRight: 'in' };
-  if (map[e.key] && e.altKey) { e.preventDefault(); nudge(map[e.key]); document.querySelector(`.tree [data-id="${selected}"]`)?.focus(); }
+  if (map[e.key] && e.altKey && allowedTool('moving')) { e.preventDefault(); nudge(map[e.key]); document.querySelector(`.tree [data-id="${selected}"]`)?.focus(); }
   else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); remove(); }
   else if (e.key === 'Enter' || e.key === ' ') { const el = e.target.closest('[data-id]'); if (el) { e.preventDefault(); select(+el.dataset.id); document.querySelector(`.tree [data-id="${selected}"]`)?.focus(); } }
 });
@@ -751,6 +887,7 @@ document.querySelector('.views').addEventListener('click', (e) => {
   if (b.dataset.view === 'html' && !broken) { code.value = toDoc(); fromHtml(); }
   view = b.dataset.view; say(''); render();
   if (view === 'html') { clearTimeout(markTimer); drawMarks(); } else reveal();
+  emit('view', { view });
 });
 code.addEventListener('input', fromHtml);
 code.addEventListener('scroll', () => { if (document.getElementById('marks').classList.contains('show')) drawMarks(); });
@@ -763,8 +900,16 @@ let drag = null;
 const line = document.getElementById('dropLine'), box = document.getElementById('dropBox');
 // Any part of a block picks it up. In a Words box, dragging inside the box selects text as usual; dragging out of it
 // picks up the block.
+// the bin deletes its block: it doesn't pick the block up or select it first
+tree.addEventListener('click', (e) => {
+  const bin = e.target.closest('.bin'); if (bin) { selected = +bin.closest('[data-id]').dataset.id; remove(); return; }
+  const btn = e.target.closest('.attr-btn'); if (!btn || broken) return;
+  const id = +btn.closest('[data-id]').dataset.id, a = btn.dataset.edit;
+  editAttr = editAttr?.id === id && editAttr.a === a ? null : { id, a }; selected = id; renderTree(); renderTools(); markSelected();
+  const f = tree.querySelector('.attr-edit input'); if (f) { f.focus({ preventScroll: true }); f.select(); bringIntoView(f); }
+});
 tree.addEventListener('pointerdown', (e) => {
-  if (e.button > 0 || broken) return;
+  if (e.button > 0 || broken || e.target.closest('.bin, .attr-btn, .attr-edit')) return;
   const input = e.target.matches('input') ? e.target : null, el = (input ?? e.target).closest('.blk, .text'); if (!el) return;
   const id = +el.dataset.id; if (id === root.id) { if (!input) select(id); return; }
   if (!input) e.preventDefault();
@@ -773,7 +918,7 @@ tree.addEventListener('pointerdown', (e) => {
 window.addEventListener('pointermove', (e) => {
   if (!drag) return;
   if (!drag.on) {
-    if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < DRAG_START_PX) return;
+    if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < DRAG_START_PX || !allowedTool('moving')) return;
     if (drag.input) {
       const r = drag.input.getBoundingClientRect();
       if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) return;
@@ -784,13 +929,27 @@ window.addEventListener('pointermove', (e) => {
     g.className = 'ghost'; g.style.setProperty('--c', `color-mix(in srgb, ${KINDS[n.kind].c} 45%, white)`);
     g.innerHTML = `<div>${esc(view === 'tags' && n.kind !== 'text' ? openTag(n) : n.kind === 'text' ? `"${n.text}"` : KINDS[n.kind].name)}</div><div class="why"></div>`;
     document.body.append(g); drag.ghost = g; drag.el.classList.add('dragging');
+    requestAnimationFrame(autoScroll);
   }
+  drag.px = e.clientX; drag.py = e.clientY;
   drag.ghost.style.left = e.clientX + 12 + 'px'; drag.ghost.style.top = e.clientY + 8 + 'px';
-  drag.target = aim(e.clientX, e.clientY);
+  aimAt(e.clientX, e.clientY);
+});
+function aimAt(x, y) {
+  // above or below the blocks, aim at the nearest block inside the edge, which is where the scrolling brings the child
+  const r = tree.getBoundingClientRect(), IN = 2;
+  drag.target = aim(x, Math.min(Math.max(y, r.top + IN), r.bottom - IN));
   // why it can't go here, right under the block being dragged
   drag.ghost.classList.toggle('bad', !!drag.target && !drag.target.ok);
   drag.ghost.querySelector('.why').textContent = drag.target && !drag.target.ok ? drag.target.why : '';
-});
+}
+function autoScroll() {
+  if (!drag?.on) return;
+  const r = tree.getBoundingClientRect(), y = drag.py;
+  const over = y < r.top + SCROLL_ZONE_PX ? y - (r.top + SCROLL_ZONE_PX) : y > r.bottom - SCROLL_ZONE_PX ? y - (r.bottom - SCROLL_ZONE_PX) : 0;
+  if (over) { const before = tree.scrollTop; tree.scrollTop += Math.max(-1, Math.min(1, over / SCROLL_ZONE_PX)) * SCROLL_MAX_PX; if (tree.scrollTop !== before) aimAt(drag.px, drag.py); }
+  requestAnimationFrame(autoScroll);
+}
 const NOTE_MS = 2600;
 function dropNote(x, y, why) {
   const el = document.createElement('div'); el.className = 'drop-note'; el.innerHTML = `<b>✗</b> ${esc(why)}`;
@@ -804,12 +963,13 @@ window.addEventListener('pointerup', (e) => {
   if (!d.on) { if (!d.input) select(d.id); return; }
   d.ghost.remove(); d.el.classList.remove('dragging');
   if (d.target?.ok) { selected = d.id; place(find(d.id).n, d.target.n, d.target.where); }
-  else { if (d.target) dropNote(e.clientX, e.clientY, d.target.why); render(); }
+  else { if (d.target) { dropNote(e.clientX, e.clientY, d.target.why); emit('refused', { kind: find(d.id).n.kind, why: d.target.why }); } render(); bringIntoView(tree.querySelector(`[data-id="${d.id}"]`)); }
 });
 // Where would the block land? Near the top or bottom edge of a block: before or after it. In its middle: inside it.
 function aim(x, y) {
   line.style.display = box.style.display = 'none';
-  const el = document.elementFromPoint(x, y)?.closest('.tree [data-id]'); if (!el) return null;
+  // the empty space under the last block is the end of the page
+  const at = document.elementFromPoint(x, y), el = at?.closest('.tree [data-id]') ?? (at?.closest('.tree') && tree.querySelector(`.blk[data-id="${root.id}"]`)); if (!el) return null;
   const target = find(+el.dataset.id).n, n = find(drag.id).n;
   if (contains(n, target)) return null;
   const r = el.getBoundingClientRect(), t = tree.getBoundingClientRect(), f = (y - r.top) / r.height;
@@ -825,7 +985,7 @@ function aim(x, y) {
 }
 document.getElementById('tabs').addEventListener('click', (e) => {
   const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.page) { visited = []; openPage(+b.dataset.page); }
+  if (b.dataset.page) { visited = []; openPage(+b.dataset.page); emit('open', { name: site[current].name }); }
   else if ('new' in b.dataset) newPage();
   else if ('rename' in b.dataset) { renaming = true; renderSite(); }
   else if ('delete' in b.dataset) deletePage();
@@ -840,16 +1000,17 @@ document.getElementById('modes').addEventListener('click', (e) => {
   const b = e.target.closest('[data-mode]'); if (!b) return;
   mode = b.dataset.mode; visited = [];
   for (const m of document.querySelectorAll('[data-mode]')) m.setAttribute('aria-pressed', m.dataset.mode === mode);
-  pageView.documentElement.classList.toggle('visiting', mode === 'visit'); hover(null); renderSite();
+  pageView.documentElement.classList.toggle('visiting', mode === 'visit'); hover(null); renderSite(); emit('mode', { mode });
 });
-document.getElementById('back').addEventListener('click', () => { if (visited.length) { const i = visited.pop(); openPage(i); } });
+document.getElementById('back').addEventListener('click', () => { if (visited.length) { const i = visited.pop(); openPage(i); emit('back', { name: site[i].name }); } });
 // Start once the frame's empty page is ready: a real document with a doctype, so the browser uses its standard rules.
 frame.addEventListener('load', () => {
   pageView = frame.contentDocument;
   const marks = pageView.createElement('style'); marks.textContent = FRAME_MARKS; pageView.head.append(marks);
   pageView.addEventListener('click', onPageClick); pageView.addEventListener('submit', onPageSubmit); pageView.addEventListener('mouseover', onPageOver);
   pageView.addEventListener('pointerdown', (e) => { if (helpFor) closeHelp(); });
-  render(); renderSite();
+  applyGate(); render(); renderSite();
+  window.BE.ready = true; window.BE.onready?.();
 }, { once: true });
 frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body></body></html>';
 </script>

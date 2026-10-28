@@ -42,6 +42,7 @@ Owner's brief, mapped: blocks first (1–5); moving blocks around the hierarchy 
 | web page | One page of words, pictures and links that you look at in a browser | 1 |
 | browser | The program you use to look at web pages, like Chrome, Safari or Edge | 1 |
 | block | One piece of a page: a heading, a paragraph, some words | 1 |
+| HTML, a block's HTML name | Web pages are written in a language called HTML. Each block has an HTML name, shown small after its own name: `h1` for a heading, `p` for a paragraph | 1 (the short definition), then each block's lesson names its own: `b` `i` 2, `ul` `li` 4, `table` `tr` `td` 6, `img` 7, `a` 8, `form` `input` `button` 9 |
 | heading | A title for a part of the page, in big letters | 1 |
 | paragraph | A few sentences about one thing | 1 |
 | inside (hierarchy) | A block can hold other blocks, like boxes inside boxes | 2 |
@@ -56,7 +57,7 @@ Owner's brief, mapped: blocks first (1–5); moving blocks around the hierarchy 
 | attribute | Extra information inside an opening tag: `href="cave.html"`, written as name = "value" | 10 |
 | `style="color: tomato"` | The colour from lesson 5, written as an attribute | 10 |
 | 2D drawing, 3D, sound and video, camera and microphone | What web pages can do: draw, show 3D worlds, play sound and video, and (only if you say yes) use a camera or microphone | 11 |
-| HTML | HyperText Markup Language: the language web pages are written in. **Markup** means notes about how to show the words; **hypertext** means text with links | 12 |
+| HyperText Markup Language | What the letters of HTML stand for. **Markup** means notes about how to show the words; **hypertext** means text with links | 12 |
 | `<!DOCTYPE html>`, `<html>`, `<head>`, `<title>`, `<body>` | The outside of every page. The doctype says "this is a modern web page". The head holds facts about the page, like its title, shown on the browser tab. The body holds what you see | 12 |
 | the browser's guess | When the HTML has a mistake, the browser still shows something: its best guess | 13 |
 | spaces and new lines | The browser shows any run of spaces and new lines as one space, so HTML can be laid out neatly | 14 |
@@ -77,6 +78,7 @@ The editor shows only what has been taught. These rules are part of the design:
 | What | Shown from |
 |---|---|
 | The Blocks view | lesson 1 |
+| Each block's HTML name, small after its name (not on the page block: `body` is lesson 12's) | from the lesson that teaches the block |
 | The Tags view | lesson 10 (`taught('tags')`) |
 | The HTML view, and the page's title | lesson 12 (`taught('html')`) |
 | Each "+" button, the colour dots, moving | the lesson that teaches it (section 1) |
@@ -96,13 +98,13 @@ Each lesson lists its jelly word, the story (the picture and the gist of the wor
 
 ### 1. What's in a web page? (`page`)
 - **Story.** Picture: a web page pulled apart into its blocks, a heading on top and paragraphs underneath, each block a soft coloured box. "Every web page you've ever seen, even the giant ones, is made of blocks. A browser is the program that shows them to you. Let's take one apart."
-- **Remember.** A page is made of blocks. · A heading is a title in big letters; a paragraph is a few sentences about one thing. · Click anything on the page to find its block.
+- **Remember.** A page is made of blocks. · A heading is a title in big letters; a paragraph is a few sentences about one thing. · Click anything on the page to find its block. · Web pages are written in a language called HTML. In HTML, a heading is `h1` and a paragraph is `p`; each block shows its HTML name, small.
 - **Mission.** (1) Click the heading on the page; its block lights up. (2) Change the heading's words to your name. (3) Add a paragraph about your favourite jelly.
 - **Checks.** The heading's words differ from the starting words; there are at least two paragraphs with words in them.
 
 ### 2. Boxes inside boxes (`<b>`)
 - **Story.** Picture: a paragraph box with a smaller bold box inside it. "Blocks can go inside other blocks, like a toy in a box in a bigger box. To make one word stand out, put it in a bold block inside the paragraph."
-- **Remember.** A block can hold other blocks. · Bold makes words thicker; italic makes them slant. · The block you put them in decides where they go on the page.
+- **Remember.** A block can hold other blocks. · Bold makes words thicker; italic makes them slant. · The block you put them in decides where they go on the page. · In HTML, bold is `b` and italic is `i`.
 - **Mission.** (1) Make one word in your paragraph bold. (2) Make another word italic. (3) Put an italic block inside the bold one: bold and slanted at once.
 - **Checks.** The page has a `b` inside a `p`, an `i` inside a `p`, and an `i` inside a `b`.
 
@@ -115,7 +117,7 @@ Each lesson lists its jelly word, the story (the picture and the gist of the wor
 
 ### 4. Lists (`<ul>`)
 - **Story.** Picture: a shopping list next to the same list as blocks. "A list block holds list items, one per thing. List items only go in a list, so if you ask for one anywhere else, the editor offers to make the list too."
-- **Remember.** A list holds list items. · A list item holds words, bold, italic and more. · Each item gets a dot on the page.
+- **Remember.** A list holds list items. · A list item holds words, bold, italic and more. · Each item gets a dot on the page. · In HTML, a list is `ul` and a list item is `li`.
 - **Mission.** (1) Make a list of three jelly flavours. (2) Move the last one to the top. (3) Add a list item while the heading is selected, and use the help to put it in your list.
 - **Checks.** A `ul` with at least three `li`; the first item's words changed position; a fourth item exists.
 
@@ -128,31 +130,31 @@ Each lesson lists its jelly word, the story (the picture and the gist of the wor
 
 ### 6. Tables (`<table>`)
 - **Story.** Picture: a grid with a row lit up, then a cell. "A table is a grid. It holds rows, which go across, and each row holds cells. A browser draws no lines round the cells unless you ask, so a table can also just line things up."
-- **Remember.** A table holds rows; a row holds cells. · Every row should have the same number of cells. · Ask for a cell anywhere, and the editor offers to build the row and the table.
+- **Remember.** A table holds rows; a row holds cells. · Every row should have the same number of cells. · Ask for a cell anywhere, and the editor offers to build the row and the table. · In HTML, a table is `table`, a row is `tr` and a cell is `td`.
 - **Mission.** (1) Make a table of jellies and their colours, three rows long. (2) Add a row at the top with the words "Jelly" and "Colour", and make them bold.
 - **Checks.** A table with at least three rows of two cells; a row containing bold words.
 
 ### 7. Pictures (`<img/>`)
 - **Story.** Picture: a picture block pointing at a picture file by name. "A picture block shows a picture file. It finds the file by its name, so one wrong letter and the picture breaks. Alt words say what the picture shows, for people who can't see it: screen readers read them out loud."
-- **Remember.** A picture finds its file by its file name. · Every picture needs alt words. · A picture has nothing inside it.
+- **Remember.** A picture finds its file by its file name. · Every picture needs alt words. · A picture has nothing inside it. · In HTML, a picture is `img`, short for image.
 - **Mission.** (1) Add the gerbil picture. (2) Write alt words for it. (3) Give it a wrong file name (in the picture's settings), see it break and the alt words appear, then fix it.
 - **Checks.** A picture with a known file and alt words; a broken picture appeared; all pictures work again.
 - **The picture's settings** have the three picture buttons and a file name box, so a child can make (and fix) a typo.
 
 ### 8. Links make a website (`<a>`)
 - **Story.** Picture: three pages joined by arrows. "A website is a group of pages. Each page is a file whose name ends in `.html`. The page people see first is called `index.html`. Links join the pages: click one and you go to another page. Billions of pages joined by links look like a giant spider web, which is why it's called the World Wide Web."
-- **Remember.** A link says which page it goes to. · Visit uses the pages like a real website; Edit is for changing them. · Change a page's name, and links to the old name break.
+- **Remember.** A link says which page it goes to. · Visit uses the pages like a real website; Edit is for changing them. · Change a page's name, and links to the old name break. · In HTML, a link is `a`.
 - **Mission.** (1) Make a new page called `jellies.html`. (2) On `index.html`, add a link to it. (3) Press Visit and follow your link, then press Back. (4) Make a link to a page that doesn't exist, visit it, and read what happens.
 - **Checks.** A page named `jellies.html`; a link with that name on `index.html`; a visit to it, then back; a visit to a missing page.
 
 ### 9. Forms (`<form>`)
 - **Story.** Picture: a form with two text boxes, each with a name tag, and a button. "A form asks questions. You type answers in text boxes, and the button sends them. Each answer is sent with its text box's name, so the website knows which answer is which."
-- **Remember.** A form holds text boxes and a button. · Every text box needs a name, or its answer isn't sent. · Here, nothing is really sent; a later course makes a website answer.
+- **Remember.** A form holds text boxes and a button. · Every text box needs a name, or its answer isn't sent. · Here, nothing is really sent; a later course makes a website answer. · In HTML, a text box is `input`; a form and a button keep their names: `form`, `button`.
 - **Mission.** (1) Make a form that asks for a name and a favourite jelly. (2) Fill it in and press the button: see what would be sent. (3) Remove a text box's name and send again.
 - **Checks.** A form with two named text boxes; a send showing both names; a send where one wasn't sent.
 
 ### 10. Every block is a tag (`< >`)
-- **Story.** Picture: the paragraph block from lesson 2, turning into `<p>` on top and `</p>` underneath. "Underneath, every block is written as a tag. The opening tag opens the box. The closing tag, with a slash, is its lid. A block with nothing inside, like a picture, is one tag that closes itself, with the slash at the end."
+- **Story.** Picture: the paragraph block from lesson 2, turning into `<p>` on top and `</p>` underneath. "You already know every block's HTML name. Underneath, every block is written as a tag: its name in angle brackets. The opening tag opens the box. The closing tag, with a slash, is its lid. A block with nothing inside, like a picture, is one tag that closes itself, with the slash at the end."
 - **Remember.** `<p>` opens a box; `</p>` is its lid. · Close the inside box first: `<p><b>hi</b></p>`. · A picture or text box is one tag: `<img/>`, `<input/>`.
 - **Points also cover attributes:** extra information inside the opening tag, like `href="jellies.html"` or `style="color: tomato"`.
 - **Mission.** (1) Switch to Tags. Find the opening and closing tags of your list. (2) Find a single tag on your page. (3) Move a bold block in the Tags view and watch its tags move with it. (4) Find the attribute that says where a link goes.
@@ -197,3 +199,4 @@ Each lesson lists its jelly word, the story (the picture and the gist of the wor
 - **D3. Links out in lesson 11.** Chosen and checked by the owner. Until then, lesson 11 has its live examples and no links out.
 - **D4. Lesson 11's examples** are built into the guide (drawing, 3D jelly, sound). The lesson doesn't send children to other sites.
 - **D5. Length.** 15 lessons.
+- **D6. HTML names from the start.** Every block shows its HTML name, small, from the lesson that teaches it, so the editor never hides what the HTML is. Lesson 1 says what HTML is; lesson 10 adds the brackets and lids; lesson 12 the whole page.

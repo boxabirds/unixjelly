@@ -24,12 +24,17 @@
       "blurb": "Same skills, different permission. Crack passwords, catch bots, trap a sneaky program and lock your files, all on a pretend computer. Seven missions."
     },
     {
-      "id": "web", "pain": "You want your own website, on the real internet.", "lessons": "guides/web/lessons.js", "tagline": "how websites work, and make your own", "about": "Write your own web page in HTML and CSS, follow it across the internet (DNS, HTTP, HTTPS), then publish it free with GitHub Pages. Free and in your browser.", "recap": "guides/web/recap.js", "title": "Web Jelly", "folder": "jellyweb", "store": "jellyweb.v1", "needs": ["git"],
-      "cmd": "<h1>  curl  ping  push", "colour": "#fff0b3", "button": "Then the web",
-      "blurb": "Write your own web page, find out how it crosses the planet in under a second, then put it on the internet with GitHub Pages."
+      "id": "web", "pain": "You want to make your own web pages.", "lessons": "guides/web/lessons.js", "tagline": "build web pages from blocks, then write HTML", "about": "Build web pages from blocks, move them around, find the tags underneath, then write real HTML. Finish with your own adventure game. Free, in your browser.", "recap": "guides/web/recap.js", "title": "Web Jelly 1", "folder": "jellyweb", "store": "jellyweb.v2", "needs": ["shell"],
+      "cmd": "<h1>  <p>  <ul>  <a>", "colour": "#fff0b3", "button": "Build a page",
+      "blurb": "Every web page is made of blocks. Build pages, move the blocks around, find the tags underneath, then write real HTML and make an adventure game."
     },
     {
-      "id": "security2", "title": "Security Jelly 2", "folder": null, "store": null, "needs": ["web", "security1"],
+      "id": "web2", "title": "Web Jelly 2", "folder": null, "store": null, "needs": ["web", "git"],
+      "cmd": "https://  curl  push", "colour": "#fff0b3",
+      "blurb": "How a page gets from a website to your screen: addresses, the phonebook, the padlock. Then put your own website on the real internet."
+    },
+    {
+      "id": "security2", "title": "Security Jelly 2", "folder": null, "store": null, "needs": ["web2", "security1"],
       "cmd": "401  403  https", "colour": "#ffd9e1",
       "blurb": "Attack and defend a pretend website: passwords, lookalike addresses, secret pages and who else can see your messages."
     },

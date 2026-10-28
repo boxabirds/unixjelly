@@ -48,6 +48,7 @@ function clockOn() {
 }
 function clockOff() { Object.assign(window, CLOCK.real); CLOCK.timers.clear(); }
 // Let promises settle, then run every timer due in the next few pretend seconds, earliest first.
+const PR_STEP_MS = 500, prReal = (ms) => new Promise((r) => CLOCK.real.setTimeout.call(window, r, ms));
 async function prFlush(ms = 3000) {
   const end = CLOCK.now + ms;
   for (let n = 0; n < 3000; n++) {
@@ -84,22 +85,33 @@ async function prCapture() {
   const frames = [{ k: 'intro' }], muted = sound.muted, ok = [];
   // the overview (Shell Jelly, Git and Web): one frame per step of the 3D town, right after the intro
   if (PR.townGo && PANELS.some((p) => p.id === 'whole')) TOWN_STEPS.forEach((_, n) => frames.push({ k: 'whole', n }));
+  if (typeof prReady !== 'undefined') await prReady; // a guide with more to load first (Web Jelly 1's editor)
   sound.muted = true; store.done = {}; store.steps = {};
   clockOn();
   for (const [li, L] of LESSONS.entries()) {
     frames.push({ k: 'title', li }, { k: 'story', li });
     if (L.visual) frames.push({ k: 'visual', li });
     L.points.forEach((_, n) => frames.push({ k: 'point', li, n }));
-    if (!L.demo?.length) continue;
+    // no script, but every step can be done for the child (Web Jelly 1): play the steps' "Do it for me", and show a
+    // picture of the guide after each one (prSnapshot)
+    const demo = L.demo?.length ? L.demo : typeof prSnapshot === 'function' && L.steps.every((s) => s.doIt) ? L.steps.map((_, n) => ({ step: n })) : null;
+    if (!demo) continue;
     // guides whose lessons build on each other (Git, Web) carry on from the lesson before, like a child would
     go(L.id); if (FRESH_SANDBOX || li === 0) resetSandbox(); setPhase('mission'); renderMap(); await prFlush();
     let shown = -1;
-    for (const a of L.demo) {
+    for (const a of demo) {
       const st = store.steps[L.id] ?? [], i = L.steps.findIndex((x, k) => !st[k]);
       if (i >= 0 && i !== shown) { frames.push({ k: 'task', li, n: i }); shown = i; }
       const mapHtml = () => $('#map')?.innerHTML ?? '', map0 = mapHtml(), web0 = prBrowser(), page0 = typeof bwFrame === 'undefined' ? '' : bwFrame.srcdoc, prompt = promptText(), lines = termOut.children.length;
       const out = (skip = 1) => [...termOut.children].slice(lines + skip).map((e) => e.outerHTML).join('');
       let term = null, visited = false;
+      if (a.step != null) {
+        // a step another step already did needs no doing; the editor reports some changes a moment later, in real time
+        if ((store.steps[L.id] ?? [])[a.step]) continue;
+        L.steps[a.step].doIt(); await prFlush(); await prReal(PR_STEP_MS); await prFlush();
+        const f = prSnapshot(li); if (f) frames.push(f);
+        continue;
+      }
       if (typeof a === 'object') {
         if (a.click) { const el = $(a.click); frames.push({ k: 'click', li, label: a.label ?? el.getAttribute('aria-label') ?? el.textContent.trim() }); el.click(); }
         else if (a.edit) { prTool('edit'); const before = edText.value; edText.value = before.replace(a.edit[0], a.edit[1]); edText.dispatchEvent(new Event('input')); frames.push({ k: 'edit', li, file: ED.path, before, after: edText.value }); }
@@ -134,7 +146,7 @@ async function prCapture() {
   frames.push({ k: 'jar' });
   sound.muted = muted;
   document.documentElement.dataset.prOk = ok.length; // how many demos really finished their mission, for tests
-  document.documentElement.dataset.prDemos = LESSONS.filter((L) => L.demo?.length).length;
+  document.documentElement.dataset.prDemos = LESSONS.filter((L) => L.demo?.length || (typeof prSnapshot === 'function' && L.steps.every((s) => s.doIt))).length;
   return frames;
 }
 
@@ -152,7 +164,7 @@ function presentGo(i) {
 function prShow(f, animate) {
   const L = LESSONS[f.li], stage = $('#prStage'), body = $('#prBody');
   stage.dataset.k = f.k; stage.style.setProperty('--c', L?.color ?? '#ff4d6d');
-  if (!$('#jarBox').hidden) closeJar();
+  if (!$('#jarBox').hidden) closeJar('presenter mode moving on');
   $('#prJelly').hidden = f.k !== 'title' && f.k !== 'intro';
   $('#prTown').hidden = f.k !== 'whole';
   const label = (t) => `<div class="pr-label">${t}</div>`;
@@ -160,10 +172,11 @@ function prShow(f, animate) {
     whole: () => `<div class="pr-town-card">${label(`Overview · ${f.n + 1} of ${TOWN_STEPS.length}`)}<div class="pr-h">${esc(TOWN_STEPS[f.n].who)}</div><p class="pr-big">${esc(TOWN_STEPS[f.n].text.replace(/ Press Next[^.]*\./, ''))}</p></div>`,
     intro: () => `<div class="pr-intro">${label(esc(COURSE.title))}<h1>${$('#p-welcome h1').innerHTML}</h1></div>`,
     title: () => `<div class="pr-title">${label(`Magic word ${f.li + 1} of ${LESSONS.length}`)}<div class="pr-name">${esc(L.name)}</div><div class="pr-stands">${esc(L.stands)}</div></div>`,
-    story: () => `${label(esc(L.word))}<h2 class="pr-h">${esc(L.title)}</h2><p class="pr-big">${L.why}</p>`,
+    story: () => `${label(esc(L.word))}<h2 class="pr-h">${esc(L.storyTitle ?? L.title)}</h2><p class="pr-big">${L.why}</p>`,
     visual: () => `<div class="pr-visual">${L.visual}</div>`,
     point: () => `${label(`Remember it · ${f.n + 1} of ${L.points.length}`)}<p class="pr-big">${L.points[f.n]}</p>`,
     task: () => `${label(`Mission · step ${f.n + 1} of ${L.steps.length}`)}${L.steps[f.n].hat ? `<b class="hat-chip ${L.steps[f.n].hat} pr-hat">${L.steps[f.n].hat} hat</b>` : ''}<p class="pr-big">${L.steps[f.n].t}</p>`,
+    web: () => `<iframe class="pr-web" sandbox title="The block editor and the page" srcdoc="${esc(f.html)}"></iframe>`,
     click: () => `${label(f.link ? 'Click the link' : 'Click')}<div class="pr-click"><span class="${f.link ? 'pr-link' : 'pr-btn'}">${esc(f.label)}</span></div>`,
     edit: () => `${label(`Change ${esc(f.file.split('/').pop())}`)}<pre class="pr-code">${prChange(f.before, f.after)}</pre>`,
     browser: () => `<div class="pr-browser"><div class="pr-bw-top"><span class="${esc(f.lock)}">${f.lockHtml}</span><span class="pr-url"></span></div><div class="bw-journey pr-journey">${f.journey}</div><div class="pr-page">${f.view === 'page' ? `<iframe sandbox="" title="The web page" srcdoc="${esc(f.page)}"></iframe>` : f.view === 'source' ? `<pre class="bw-source">${f.page}</pre>` : `<div class="bw-boxes">${f.page}</div>`}${f.pop ? `<div class="bw-pop pr-pop">${f.pop}</div>` : ''}</div></div>`,
@@ -341,7 +354,8 @@ rep('.side-foot{display:grid;gap:8px}', '''.side-foot{display:grid;gap:8px}
 .pr-town[hidden]{display:none}
 .pr-town canvas{width:100%;height:100%;display:block}
 .pr-stage[data-k=whole] .pr-body{justify-content:flex-end}
-.pr-stage[data-k=browser]{background:#d4eeff}
+.pr-stage[data-k=browser],.pr-stage[data-k=web]{background:#d4eeff}
+.pr-web{flex:1;min-height:0;width:100%;background:#fff;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));box-shadow:0 calc(1 * var(--u)) 0 var(--ink)}
 .present-tall .pr-stage[data-k=whole] .pr-body{justify-content:flex-start}
 .pr-town-card{background:#fffffff0;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2.4 * var(--u));box-shadow:0 var(--u) 0 var(--ink);padding:calc(2.4 * var(--u)) calc(3 * var(--u));display:grid;gap:var(--u);max-width:min(100%, calc(62 * var(--u)))}
 .pr-town-card .pr-h{font-size:calc(3.6 * var(--u))}

@@ -33,7 +33,10 @@ Lessons live in `src/guides/<guide>/lessons.js`. Shell Jelly's lessons are in `s
   points: ['…', '…', '…'],          // "Remember it": three short points
   steps: [                          // the mission, two to five steps
     { t: 'Find the cookies in your diary: <code>grep cookie diary.txt</code>',
-      ok: (e) => isCmd(e, 'grep') && e.info.matches > 0 && e.args.includes('diary.txt') },
+      ok: (e) => isCmd(e, 'grep') && e.info.matches > 0 && e.args.includes('diary.txt'),
+      hint: 'Type <code>grep</code>, the word to find, then the file.', // optional: the "?" bubble next to the step
+      show: () => { … },                 // optional: make the thing to use glow while the hint is open
+      doIt: () => { … } },               // optional: "Do it for me". The lesson then gives no jelly (engine/help-patch.py)
   ],
   setup: () => { … },               // optional: put back files this lesson needs (step 6)
 },
@@ -44,6 +47,7 @@ Writing tips:
 - **Picture.** Show the real thing from this lesson: the real file name, the real `ls -l` line. If the story says "look at the picture", the picture must show exactly that.
 - **Points.** Each one is a usable fact, often with a `<code>` example. Three is the right number.
 - **Steps.** Each step is one action, with the exact command in `<code>`. Later steps can ask the child to work something out ("Give it to the family group."). Only do that once the command has been practised.
+- **Hint and Do it for me.** A hint says where to look and what to do, using only words already taught. `doIt` does the step the way the child would, so they see it happen, and it must make the step's own `ok` pass: the guide only forces the tick as a fallback.
 - **Words.** UK spelling, short sentences, one new idea per paragraph. Explain a term the first time it appears.
 
 ## 3. Check steps by results, not by typing

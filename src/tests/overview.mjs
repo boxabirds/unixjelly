@@ -1,10 +1,10 @@
-// The Overview in every guide that has one (Shell Jelly, Git, Web): every step plays to its end without errors, the
+// The Overview in every module that has one (Shell Jelly, Git): every step plays to its end without errors, the
 // last one earns the Overview's jelly, and going back lands on the step before, ready to play forward again.
 // Screenshots of every step go to tests/out/overview-<guide>-<n>.png. Run one guide: node tests/overview.mjs jellygit
 import { launch, guideUrl, verdict } from './lib.mjs';
 
 const b = await launch(), problems = [];
-for (const [guide, key] of [['jellyshell', 'jellyshell.v1'], ['jellygit', 'jellygit.v1'], ['jellyweb', 'jellyweb.v1']].filter(([g]) => !process.argv[2] || g === process.argv[2])) {
+for (const [guide, key] of [['jellyshell', 'jellyshell.v1'], ['jellygit', 'jellygit.v1']].filter(([g]) => !process.argv[2] || g === process.argv[2])) {
 const p = await b.newPage({ viewport: { width: 1024, height: 640 } });
 const say = (m) => problems.push(`${guide}: ${m}`);
 p.on('pageerror', (e) => say(`page error: ${e.message}`));

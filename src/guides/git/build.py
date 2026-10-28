@@ -75,5 +75,8 @@ rep("word: 'ls cd cat', size: .07, bg: '#d4eeff', floor: '#bfe3ff', colorOffset:
 region('/* recap data */', '/* end recap data */\n', open(V + 'recap.js').read(), keep_end=False)
 # Git's lessons build on each other (the project and its history; jumping ahead builds the state a lesson needs), so its sandbox carries on between lessons.
 rep("const FRESH_SANDBOX = true;", "const FRESH_SANDBOX = false;")
+# ...but every mission from status on starts inside the project: an exercise can end elsewhere (status ends with cd ..),
+# and the next one's steps assume my-game
+rep("  if (p === 'mission') sandboxFor = L.id;", "  if (p === 'mission') sandboxFor = L.id;\n  if (p === 'mission' && L.need >= 1) intoProject();")
 open('build/jelly-git.src.html', 'w').write(s)
 print('ok')

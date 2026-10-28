@@ -239,9 +239,9 @@ class JarStage extends JellyStage {
   fill(items) {
     for (const b of this.bodies) { this.scene.remove(b.mesh); b.eyes.forEach((e) => this.scene.remove(e.ball, e.pupil)); b.geo.dispose(); b.mesh.material.dispose(); }
     this.bodies = [];
-    // jellies 2.05 times the letters' size; past 6 they shrink a
-    // little more, so a full jar still has room to shake
-    const big = 2.05, grow = big * Math.min(1, Math.cbrt(6 / Math.max(6, items.length)));
+    // Every jelly is the size it would be in the fullest jar: the most jellies any course gives (MOST_JELLIES), with
+    // room to shake. So jellies are the same size in every jar, however few it holds.
+    const big = 1.8, grow = big * Math.cbrt(6 / Math.max(6, MOST_JELLIES, items.length));
     items.forEach((it, i) => {
       // 3 cage cells across, not the letters' 6.5: a jar holds many more jellies than a word has letters
       const b = new JellyBody(this, BEAN, it.colour, 0, this.opts.size * grow, 3);
@@ -288,6 +288,9 @@ const look = (id) => {
   const i = ALL.findIndex((a) => a.id === id), plain = Object.keys(LOOK_NAMES).filter((k) => k !== 'golden');
   return i === ALL.length - 1 ? 'golden' : plain[(i + COURSES.indexOf(COURSE) * 4) % plain.length];
 };
+// The most jellies one course gives: a lesson each, plus the overview and backstage where a course has them.
+// tests/jar.mjs checks that no course gives more, and that a jar this full still holds them all.
+const MOST_JELLIES = 17;
 const jarStore = () => { try { return JSON.parse(localStorage.getItem('jelly.collection')) || {}; } catch { return {}; } };
 // Keep this course's finished lessons in the shared collection, with what each one taught, for the jar's labels.
 function collect() {
@@ -348,7 +351,7 @@ const bean = (color, cls = '', lk = 'classic') => { const id = 'bn' + beanN++, a
 ''', keep_end=False)
 
 # The jar window: opened from the side menu. The 3D jar is made the first time it opens.
-rep("  if (e.key === 'Escape') $('.app').classList.remove('peek');", "  if (!$('#jarBox').hidden) { if (e.key === 'Escape') closeJar(); return; }\n  if (e.key === 'Escape') $('.app').classList.remove('peek');")
+rep("  if (e.key === 'Escape') $('.app').classList.remove('peek');", "  if (!$('#jarBox').hidden) { if (e.key === 'Escape') closeJar('the Esc key', e); return; }\n  if (e.key === 'Escape') $('.app').classList.remove('peek');")
 rep("  const fwd = e.key === 'PageDown'", "  if (!$('#jarBox').hidden) return;\n  const fwd = e.key === 'PageDown'")
 rep('/* ---------------- panels + navigation ---------------- */', r'''/* ---------------- the jelly jar: the window ---------------- */
 // Opens on a shelf with one jar per course, in course order. Tap a jar to open it in 3D.
@@ -396,7 +399,14 @@ function showJar(c) {
   if (jar && keys !== jarKeys) { jarKeys = keys; jar.cap.material.color.set(lidColour(c)); jar.cap.material.attenuationColor.set(lidColour(c)); jar.fill(items); }
   requestAnimationFrame(() => jar?.resize());
 }
-function closeJar() { $('#jarBox').hidden = true; primaryButton()?.focus({ preventScroll: true }); }
+// The jar has closed by itself while testers played with the jellies. Every press, release and click in the jar window
+// is logged as [jar], and so is what closed it, so a tester can paste the console from the browser's developer tools.
+const jarSeen = (e) => `${e.type} on ${e.target.id ? '#' + e.target.id : e.target.className || e.target.tagName} at ${Math.round(e.clientX)},${Math.round(e.clientY)} (${e.pointerType || 'mouse'}, button ${e.button}${jar?.drag ? ', carrying a jelly' : ''})`;
+for (const t of ['pointerdown', 'pointerup', 'pointercancel', 'click']) $('#jarBox').addEventListener(t, (e) => console.info('[jar]', jarSeen(e)), true);
+function closeJar(why = 'something else', e) {
+  console.info('[jar] closed by', why, e ? '· ' + jarSeen(e) : ''); console.trace('[jar] the code that closed it');
+  $('#jarBox').hidden = true; primaryButton()?.focus({ preventScroll: true });
+}
 function showJelly(it) {
   const pop = $('#jarPop');
   pop.innerHTML = `<button class="jar-x" aria-label="Close">×</button>${bean(it.colour, 'pop-bean', it.look)}<div><div class="pop-name">The ${esc(LOOK_NAMES[it.look] ?? it.look)} jelly</div>
@@ -407,8 +417,8 @@ function showJelly(it) {
 $('#jarOpen').onclick = () => openJar(); $('#beans').onclick = () => openJar();
 $('#jarShelf').addEventListener('click', (e) => { const b = e.target.closest('.shelf-jar'); if (b && !b.disabled) showJar(course(b.dataset.course)); });
 $('#jarBack').onclick = showShelf;
-$('#jarClose').onclick = closeJar; $('#jarShake').onclick = () => jar?.shake();
-$('#jarBox').addEventListener('click', (e) => { if (e.target === $('#jarBox')) closeJar(); });
+$('#jarClose').onclick = (e) => closeJar('the Close button', e); $('#jarShake').onclick = () => jar?.shake();
+$('#jarBox').addEventListener('click', (e) => { if (e.target === $('#jarBox')) closeJar('a click on the dimmed area around the jar', e); });
 
 /* ---------------- saving and loading jellies ---------------- */
 // Progress lives only in this browser. A save file keeps it safe, carries it to another computer, and carries it
@@ -487,7 +497,7 @@ rep('.side-foot{display:grid;gap:8px}', '''.side-foot{display:grid;gap:8px}
 .jar-file{display:flex;gap:8px;flex-wrap:wrap}
 .pill-ink{font:inherit;font-weight:700;font-size:.85rem;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:3px 12px;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
 .pill-ink:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
-.shelf{position:absolute;inset:0;overflow:auto;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:18px 14px;padding:16px;background:linear-gradient(135deg,#fff3e6,#f3e8ff 50%,#e6f6ff)}
+.shelf{position:absolute;inset:0;overflow:auto;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:18px 14px;padding:16px;background:linear-gradient(135deg,#fff3e6,#f3e8ff 50%,#e6f6ff)}
 .shelf[hidden]{display:none}
 .shelf-jar{width:clamp(118px,15vw,150px);display:grid;justify-items:center;gap:2px;font:inherit;color:var(--ink);background:none;border:0;cursor:pointer;padding:4px 4px 10px;border-bottom:8px solid var(--lemon);border-radius:0 0 6px 6px;transition:transform .15s}
 .shelf-jar:hover:not(:disabled){transform:translateY(-4px) rotate(-1.5deg)}
