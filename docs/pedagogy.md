@@ -2,6 +2,22 @@
 
 These guides are for children of about 9 to 14 who have never used a command line. Most of the rules below come from watching real children use them. Several came from an 11-year-old tester getting stuck.
 
+## The rules on one screen
+
+Every lesson, tip, message and picture must keep all of these. They are explained in full below.
+
+1. **Never use anything before it is taught.** Commands, options, symbols, terms, names and pictures. (Rule 1)
+2. **Define every term in plain English first.** Before a technical word is used, say what it means in everyday words, with an example. "HTTP" is not explained by "HyperText Transfer Protocol". (Rule 15)
+3. **Terms from earlier courses get a dotted underline.** Tapping it shows a bubble: what it means in plain English, an example, and a link to the course that taught it. (Rule 16)
+4. **Say exactly where to do it.** Every step names the place: the address bar, the terminal, the editor, the web page on the right. Point to it. "Click the warning" is not enough when the screen says "Not secure". (Rule 17)
+5. **Show only the tool the step needs.** No terminal unless the step uses it. A child seeing a terminal will type into it. (Rule 18)
+6. **Show how things work, don't just tell.** A process with steps, like loading a web page, gets a picture that moves through the steps. Two lines of text is not a lesson. (Rule 19)
+7. **Teach what children will meet.** Spend the time on what they will see every day. Leave rare and old cases (old http-only sites) to a sentence at most. (Rule 20)
+8. **One thing at a time.** Story, remember it, mission. One idea per paragraph. (Rule 4)
+9. **Do it, don't just read it.** Every concept ends with the child doing it. (Rule 5)
+10. **Explain the name.** Every command and abbreviation says where its name comes from. (Rule 9)
+11. **Be real, and kind.** Real commands and real errors, short sentences, UK English, never sarcastic or scary. (Rules 7 and 11)
+
 ## The order of the guides
 
 The order lives in `src/curriculum.json`; this is what it says today.
@@ -145,7 +161,53 @@ Nothing replaces watching a real child. Treat every moment of confusion as a bug
 | A lesson's step failed for no reason the child could see | The sandbox carried over from the last lesson, so a command meant for home ran in the folder where the last lesson ended | Every lesson's mission starts on a fresh sandbox, unless it is already under way; `tests/fresh.mjs` checks it |
 | Security's computer wasn't Shell 2's | Security put everyone at home in one `family` group, so `ls -l` showed different owners and groups from the course before | Security now uses Shell 2's people and groups exactly, and its keys lesson recaps Shell 2's locks instead of teaching them again |
 | "The whole game" meant nothing to the tester | It's a teacher's phrase for the big picture, not a child's | Renamed **Overview** everywhere |
+| Web Jelly (owner's review): "it talks right away about the term http without defining it" | HTTP was named by its letters and "a set of manners", never shown working; the padlock lesson assumed it | Rules 15 and 19: plain-English definitions first, and a moving picture for processes. Web Jelly is being rewritten |
+| Web Jelly: "On jelly.fun", "click the warning", "visit an old site": where? | Steps didn't say which tool or which part of the screen; the screen said "Not secure", not "warning" | Rule 17: every step names its place in the words on screen, and the place is highlighted |
+| Web Jelly: not sure whether to type in the terminal | The terminal was showing during browser-only steps | Rule 18: only the tool the step needs is shown |
+| Web Jelly: "curl wasn't taught", "URLs are missing" | Each lesson leaned on earlier ones with no way back to them, and Web Jelly never declared `teaches`, so the tests couldn't check it | Rule 16's dotted underlines, and `teaches` for every Web lesson |
+| Web Jelly: "this whole focus on http legacy" | Two of the padlock lesson's three steps were about old http-only sites | Rule 20: teach what children meet |
 | Backstage: the kernel's answer was "a thin transparent rectangle" | The data from the disk was a tiny blank sheet that flew off and vanished | It's a card showing what comes back (the names for `ls`, the diary's lines for `cat`), and the program carries it back to the screen |
+
+### 15. Define every term in plain English first
+
+Rule 1 says when a term may appear. This rule says how it is introduced. The first time a lesson uses a technical word, it says what the word means in everyday language, then gives an example the child can picture. Only then does it use the word.
+
+- Expanding an abbreviation is not a definition. "HTTP: HyperText Transfer Protocol" tells a child nothing. "HTTP is the set of rules a browser and a website use to ask for a page and send it back" does.
+- A definition comes before the word is needed in a mission step, not in a later lesson.
+- Every new term is listed in the lesson's `teaches`, and gets a plain-English entry in the shared term list for rule 16.
+
+### 16. Terms from earlier courses get a dotted underline
+
+A child may come to a course weeks after the one before it, or skip ahead. So a term taught in an earlier course (terminal, path, repository, `git push`) is shown with a dotted underline. Tapping or hovering it opens a small bubble with:
+
+- what it means, in one plain-English sentence;
+- an example;
+- a link to the lesson and course that taught it.
+
+The bubble's words come from one shared list of terms, so every guide explains a term the same way. Terms taught earlier in the *same* course don't need the underline. (Status: not built yet. The Web Jelly rewrite builds it first.)
+
+### 17. Say exactly where to do it
+
+A step that says "visit an old site" or "click the warning" leaves a child guessing where. Every step names its place in the words a child can see on screen:
+
+- "In the **address bar** at the top of the browser, type …"
+- "In the **terminal**, type …"
+- "Click **Not secure**, to the left of the address."
+- "**jelly.fun**, the web page on the right, …"
+
+The place the step means is also highlighted on screen, with an arrow or a glow, while the step is active.
+
+### 18. Show only the tool the step needs
+
+A visible terminal is an invitation to type. If a step is done in the browser, and the terminal is showing, a child doesn't know which one to use. Tools a lesson doesn't use are hidden. A tool the lesson uses later is shown only when its step arrives.
+
+### 19. Show how things work, don't just tell
+
+When a concept is a process (a page being requested and sent back, a name being looked up, a commit being pushed), the story phase shows the process as a picture that moves through its steps, one step at a time, with the child pressing on. A few sentences of text don't teach a process: the child can't see what problem it solves or how it works.
+
+### 20. Teach what children will meet
+
+Time in a lesson is precious. Spend it on what children see every day (the padlock, a 404, an address) and keep rare or old cases (a site with no https, being sent from http to https) to one sentence, if they're needed at all.
 
 ## Prerequisite map
 

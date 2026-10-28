@@ -3,7 +3,7 @@
 Five interactive guides that teach children (about 9 to 14) the command line, git, the web and security. The source is in `src/`, and the guide folders at the top of the repo are built from it. Never edit a guide folder by hand: change `src/` and run `./src/build.sh`.
 
 Read these before changing anything a learner sees:
-- `docs/pedagogy.md`: the teaching rules, and the prerequisite map of which guide teaches what.
+- `docs/pedagogy.md`: the teaching rules, and the prerequisite map of which guide teaches what. Its first section, "The rules on one screen", is the checklist every change must pass. The two most broken: define every term in plain English before using it, and give terms from earlier courses a dotted underline with a pop-up explanation.
 - `docs/design.md`
 - `docs/new-lesson.md`
 
