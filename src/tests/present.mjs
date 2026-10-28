@@ -13,8 +13,8 @@ const GUIDES = {
   jellyshell: { shapes: ['wide', 'tall'], shots: ALL, need: ['intro', 'whole', 'title', 'story', 'point', 'task', 'term', 'files', 'jar'] },
   jellyshell2: { shapes: ['wide'], shots: ['term', 'nano', 'files'], need: ['term', 'nano', 'files'] },
   jellygit: { shapes: ['wide'], shots: ['click', 'files'], need: ['whole', 'term', 'click', 'files'] },
-  // Web Jelly 1 has no terminal: its missions play with "Do it for me", each step a picture of the editor and the page
-  jellyweb: { shapes: ['wide', 'tall'], shots: ['story', 'task', 'web'], need: ['title', 'story', 'visual', 'point', 'task', 'web', 'jar'] },
+  // Web Jelly 1 has no terminal: each mission step plays live in the editor, with the step as its caption
+  jellyweb: { shapes: ['wide', 'tall'], shots: ['story', 'live'], need: ['title', 'story', 'visual', 'point', 'live', 'jar'] },
   jellysecurity: { shapes: ['wide'], shots: ['choice', 'task'], need: ['term', 'choice'] },
 };
 const ready = (p) => p.waitForFunction(() => document.documentElement.dataset.prFrames, null, { timeout: 300000 });
@@ -41,8 +41,7 @@ for (const shape of G.shapes) {
     await open(i);
     const k = await p.evaluate(() => document.querySelector('#prStage').dataset.k);
     if (k !== kind) say(`frame ${i} shows ${k}, not ${kind}`);
-    // a frame has words, or (Web Jelly 1's editor) a picture of the guide
-    if (!['jar', 'intro', 'title'].includes(kind) && !(await p.textContent('#prBody')).trim() && !(await p.evaluate(() => document.querySelector('#prBody iframe')?.srcdoc.length > 0))) say(`the ${kind} frame is empty`);
+    if (!['jar', 'intro', 'title'].includes(kind) && !(await p.textContent('#prBody')).trim()) say(`the ${kind} frame is empty`);
     await p.screenshot({ path: `present-${guide}-${shape}-${kind}.png` });
   }
 

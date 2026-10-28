@@ -84,8 +84,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pr-town[hidden]{display:none}
 .pr-town canvas{width:100%;height:100%;display:block}
 .pr-stage[data-k=whole] .pr-body{justify-content:flex-end}
-.pr-stage[data-k=browser],.pr-stage[data-k=web]{background:#d4eeff}
-.pr-web{flex:1;min-height:0;width:100%;background:#fff;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));box-shadow:0 calc(1 * var(--u)) 0 var(--ink)}
 .present-tall .pr-stage[data-k=whole] .pr-body{justify-content:flex-start}
 .pr-town-card{background:#fffffff0;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2.4 * var(--u));box-shadow:0 var(--u) 0 var(--ink);padding:calc(2.4 * var(--u)) calc(3 * var(--u));display:grid;gap:var(--u);max-width:min(100%, calc(62 * var(--u)))}
 .pr-town-card .pr-h{font-size:calc(3.6 * var(--u))}
@@ -126,23 +124,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pr-files .mrow .lock-ico{width:1.9em;height:1.25em}
 .pr-hat{align-self:flex-start;font-size:calc(2.6 * var(--u))}
 .pr-click{display:flex;align-items:center;gap:calc(2 * var(--u))}
-.pr-btn,.pr-link{font-size:calc(5 * var(--u));line-height:1.2;max-width:100%}
+.pr-btn{font-size:calc(5 * var(--u));line-height:1.2;max-width:100%}
 .pr-btn{font-family:var(--display);background:var(--lemon);border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));padding:.35em .8em;box-shadow:0 calc(1 * var(--u)) 0 var(--ink)}
-.pr-link{color:#1a3fd6;text-decoration:underline;text-decoration-thickness:.08em;font-family:Verdana,sans-serif}
-.pr-stage .pr-code{margin:0;font-family:var(--mono);font-size:calc(3.1 * var(--u) * var(--s, 1));line-height:1.45;white-space:pre-wrap;background:#fff;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));padding:.7em 1em;box-shadow:0 calc(1 * var(--u)) 0 var(--ink)}
-.pr-code ins{text-decoration:none;background:#fff3b8;outline:calc(.25 * var(--u)) solid #ffc61a;border-radius:.15em}
-.pr-code del{background:#ffe1e7;color:#b0002a}
-.pr-browser{display:flex;flex-direction:column;background:#fff;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));box-shadow:0 calc(1 * var(--u)) 0 var(--ink);overflow:hidden;flex:1;min-height:0}
-.pr-bw-top{display:flex;align-items:center;gap:calc(1.4 * var(--u));padding:calc(1.2 * var(--u)) calc(1.6 * var(--u));background:#eef0f6;border-bottom:calc(.3 * var(--u)) solid #24133b22}
-.pr-bw-top .bw-lock{height:auto;font-size:calc(2 * var(--u));padding:.2em .7em}
-.pr-url{flex:1;font-family:var(--mono);font-size:calc(3.2 * var(--u));background:#fff;border:calc(.3 * var(--u)) solid var(--ink);border-radius:999px;padding:.15em .8em;min-height:1.5em}
-.pr-journey{zoom:1.8;min-height:0}
-.present-tall .pr-journey{zoom:1.2}
-.pr-page{position:relative;flex:1;min-height:0;display:flex}
-.pr-page iframe{border:0;width:100%;flex:1;zoom:1.6}
-.present-tall .pr-page iframe{zoom:1.2}
-.pr-page .bw-source,.pr-page .bw-boxes{flex:1;margin:0;overflow:hidden;font-size:calc(2.4 * var(--u));padding:calc(1.6 * var(--u))}
-.pr-page .pr-pop{position:absolute;inset:auto calc(2 * var(--u)) calc(2 * var(--u)) auto;max-width:70%;font-size:calc(2.4 * var(--u))}
 .pr-q{font-size:calc(4 * var(--u));line-height:1.3;margin:0;max-width:34ch}
 .pr-q .addr{font-family:var(--mono)}
 .pr-choices{display:grid;gap:calc(1.2 * var(--u))}
@@ -4020,6 +4003,7 @@ function clockOn() {
 }
 function clockOff() { Object.assign(window, CLOCK.real); CLOCK.timers.clear(); }
 // Let promises settle, then run every timer due in the next few pretend seconds, earliest first.
+const livePlays = (L) => typeof PR_LIVE !== 'undefined' && PR_LIVE.can(L) && L.steps.every((s) => s.doIt);
 const PR_STEP_MS = 500, prReal = (ms) => new Promise((r) => CLOCK.real.setTimeout.call(window, r, ms));
 async function prFlush(ms = 3000) {
   const end = CLOCK.now + ms;
@@ -4033,29 +4017,14 @@ async function prFlush(ms = 3000) {
     if (typeof t.fn === 'function') t.fn(...t.a);
   }
 }
-// Web Jelly's browser, as a frame needs it (null in guides without one, or before the first page).
-const prBrowser = () => typeof BW === 'undefined' || !BW.url ? null : {
-  url: BW.url, view: BW.view, lock: bwLock.className, lockHtml: bwLock.innerHTML, journey: bwJourney.innerHTML, pop: bwPop.hidden ? '' : bwPop.innerHTML,
-  page: BW.view === 'page' ? bwFrame.srcdoc : BW.view === 'source' ? $('#bwSource').innerHTML : $('#bwBoxes').innerHTML,
-};
-// A page in the browser loads for real (it's a frame), so wait for it before the next step uses it.
-async function prLoaded(before) {
-  if (typeof bwFrame === 'undefined' || BW.view !== 'page' || bwFrame.srcdoc === before) return;
-  await new Promise((r) => { const done = () => { bwFrame.removeEventListener('load', done); r(); }; bwFrame.addEventListener('load', done); CLOCK.real.setTimeout.call(window, done, 1500); });
-  await prFlush();
-}
-// Web Jelly has a terminal and an editor in one place: switch to the one the next action needs.
-const prTool = (t) => { const tab = document.querySelector(`.wtab[data-tool=${t}]`); if (tab && WB.tool !== t) tab.click(); };
-
 // Run every lesson's demo once, silently, and record a frame for each thing worth a whole screen.
 // A demo is a list of actions. A string is typed in the terminal ('@tab:', '@up', '@enter', '@ctrlc' press a key;
 // '@type:' and '@key:' work nano). An object does something else:
-//   { click: selector }   press a button (GitHub's, the browser's)    { edit: [from, to] }  change the open file
-//   { visit: address }    type an address in the browser bar          { link: text }        click a link in the page
+//   { click: selector }   press a button (GitHub's)
 //   { choose: n | 'good' | 'bad' }   pick a choice card      { wait: ms }  let time pass (here it already does: see prFlush)
 async function prCapture() {
   const frames = [{ k: 'intro' }], muted = sound.muted, ok = [];
-  // the overview (Shell Jelly, Git and Web): one frame per step of the 3D town, right after the intro
+  // the overview (Shell Jelly and Git): one frame per step of the 3D town, right after the intro
   if (PR.townGo && PANELS.some((p) => p.id === 'whole')) TOWN_STEPS.forEach((_, n) => frames.push({ k: 'whole', n }));
   if (typeof prReady !== 'undefined') await prReady; // a guide with more to load first (Web Jelly 1's editor)
   sound.muted = true; store.done = {}; store.steps = {};
@@ -4064,31 +4033,29 @@ async function prCapture() {
     frames.push({ k: 'title', li }, { k: 'story', li });
     if (L.visual) frames.push({ k: 'visual', li });
     L.points.forEach((_, n) => frames.push({ k: 'point', li, n }));
-    // no script, but every step can be done for the child (Web Jelly 1): play the steps' "Do it for me", and show a
-    // picture of the guide after each one (prSnapshot)
-    const demo = L.demo?.length ? L.demo : typeof prSnapshot === 'function' && L.steps.every((s) => s.doIt) ? L.steps.map((_, n) => ({ step: n })) : null;
+    // no script, but every step can be done for the child (Web Jelly 1): each step is a 'live' frame, played by the
+    // module's PR_LIVE in front of the viewer, from the guide as it was just before
+    const demo = L.demo?.length ? L.demo : livePlays(L) ? L.steps.map((_, n) => ({ step: n })) : null;
     if (!demo) continue;
-    // guides whose lessons build on each other (Git, Web) carry on from the lesson before, like a child would
+    // modules whose exercises build on each other (Git, Web Jelly 1) carry on from the lesson before, like a child would
     go(L.id); if (FRESH_SANDBOX || li === 0) resetSandbox(); setPhase('mission'); renderMap(); await prFlush();
     let shown = -1;
     for (const a of demo) {
       const st = store.steps[L.id] ?? [], i = L.steps.findIndex((x, k) => !st[k]);
-      if (i >= 0 && i !== shown) { frames.push({ k: 'task', li, n: i }); shown = i; }
-      const mapHtml = () => $('#map')?.innerHTML ?? '', map0 = mapHtml(), web0 = prBrowser(), page0 = typeof bwFrame === 'undefined' ? '' : bwFrame.srcdoc, prompt = promptText(), lines = termOut.children.length;
+      if (i >= 0 && i !== shown && a.step == null) { frames.push({ k: 'task', li, n: i }); shown = i; } // a live step has its own caption
+      const mapHtml = () => $('#map')?.innerHTML ?? '', map0 = mapHtml(), prompt = promptText(), lines = termOut.children.length;
       const out = (skip = 1) => [...termOut.children].slice(lines + skip).map((e) => e.outerHTML).join('');
-      let term = null, visited = false;
+      let term = null;
       if (a.step != null) {
         // a step another step already did needs no doing; the editor reports some changes a moment later, in real time
         if ((store.steps[L.id] ?? [])[a.step]) continue;
+        const before = PR_LIVE.snap();
         L.steps[a.step].doIt(); await prFlush(); await prReal(PR_STEP_MS); await prFlush();
-        const f = prSnapshot(li); if (f) frames.push(f);
+        frames.push({ k: 'live', li, n: a.step, before, after: PR_LIVE.snap() });
         continue;
       }
       if (typeof a === 'object') {
         if (a.click) { const el = $(a.click); frames.push({ k: 'click', li, label: a.label ?? el.getAttribute('aria-label') ?? el.textContent.trim() }); el.click(); }
-        else if (a.edit) { prTool('edit'); const before = edText.value; edText.value = before.replace(a.edit[0], a.edit[1]); edText.dispatchEvent(new Event('input')); frames.push({ k: 'edit', li, file: ED.path, before, after: edText.value }); }
-        else if (a.visit) { bwUrl.value = a.visit; navigate(a.visit, 'bar'); visited = true; }
-        else if (a.link) { const l = [...bwFrame.contentDocument.querySelectorAll('a')].find((x) => x.textContent.includes(a.link)); frames.push({ k: 'click', li, label: l.textContent, link: true }); l.click(); }
         else if ('choose' in a) { const c = L.steps[i].choices, n = a.choose === 'good' ? c.findIndex((x) => x.good) : a.choose === 'bad' ? c.findIndex((x) => !x.good) : a.choose; frames.push({ k: 'choice', li, n: i, pick: n }); document.querySelectorAll('.choice')[n].click(); }
       } else if (a.startsWith('@type:')) { nanoText.value = a.slice(6).replace(/\\n/g, '\n'); nanoText.dispatchEvent(new Event('input')); frames.push({ k: 'nano', li, file: $('#nanoName').textContent, text: nanoText.value, typed: true }); }
       else if (a.startsWith('@key:')) {
@@ -4097,19 +4064,16 @@ async function prCapture() {
         frames.push({ k: 'nano', li, ...before, key: ctrl ? `Ctrl+${k.slice(8).toUpperCase()}` : k.toUpperCase(), msg: $('#nanoMsg').textContent });
       } else if (/^@(tab:|up$|enter$|ctrlc$)/.test(a)) {
         // a special key in the terminal: Tab completes, ↑ brings back the last command, Enter runs what is typed, Ctrl+C stops
-        prTool('term');
         const typed = a.startsWith('@tab:') ? a.slice(5) : a === '@up' ? '' : termIn.value, key = { '@up': '↑', '@enter': 'Enter', '@ctrlc': 'Ctrl+C' }[a] ?? 'Tab';
         termIn.value = typed;
         if (key === 'Tab') completeTab(); else if (key === '↑') recall(-1); else if (key === 'Enter') submit(); else ctrlC();
         term = { k: 'term', li, prompt, cmd: typed, key, after: key === 'Tab' || key === '↑' ? termIn.value : null, skip: key === 'Enter' ? 1 : 0 };
-      } else { prTool('term'); termIn.value = a; submit(); term = { k: 'term', li, prompt, cmd: a, skip: 1 }; }
-      await prFlush(); await prLoaded(page0);
+      } else { termIn.value = a; submit(); term = { k: 'term', li, prompt, cmd: a, skip: 1 }; }
+      await prFlush();
       if (term && typeof NANO !== 'undefined' && NANO.open && !a.startsWith('@')) frames.push({ ...term, out: '' }, { k: 'nano', li, file: $('#nanoName').textContent, text: nanoText.value });
       else if (term) frames.push({ ...term, out: out(term.skip) });
-      if (typeof BW === 'undefined') renderMap(); // Web's renderMap reloads the page; everywhere else it just redraws the tree
+      renderMap();
       if (mapHtml() !== map0) frames.push({ k: 'files', li, before: map0, after: mapHtml() });
-      const web = prBrowser();
-      if (web && (visited || JSON.stringify(web) !== JSON.stringify(web0))) frames.push({ k: 'browser', li, ...web, typed: visited });
     }
     if (G.review === L.id) ok.push(L.id);
     G.review = null; store.done[L.id] = true; paintProgress();
@@ -4118,7 +4082,7 @@ async function prCapture() {
   frames.push({ k: 'jar' });
   sound.muted = muted;
   document.documentElement.dataset.prOk = ok.length; // how many demos really finished their mission, for tests
-  document.documentElement.dataset.prDemos = LESSONS.filter((L) => L.demo?.length || (typeof prSnapshot === 'function' && L.steps.every((s) => s.doIt))).length;
+  document.documentElement.dataset.prDemos = LESSONS.filter((L) => L.demo?.length || livePlays(L)).length;
   return frames;
 }
 
@@ -4148,10 +4112,8 @@ function prShow(f, animate) {
     visual: () => `<div class="pr-visual">${L.visual}</div>`,
     point: () => `${label(`Remember it · ${f.n + 1} of ${L.points.length}`)}<p class="pr-big">${L.points[f.n]}</p>`,
     task: () => `${label(`Mission · step ${f.n + 1} of ${L.steps.length}`)}${L.steps[f.n].hat ? `<b class="hat-chip ${L.steps[f.n].hat} pr-hat">${L.steps[f.n].hat} hat</b>` : ''}<p class="pr-big">${L.steps[f.n].t}</p>`,
-    web: () => `<iframe class="pr-web" sandbox title="The block editor and the page" srcdoc="${esc(f.html)}"></iframe>`,
-    click: () => `${label(f.link ? 'Click the link' : 'Click')}<div class="pr-click"><span class="${f.link ? 'pr-link' : 'pr-btn'}">${esc(f.label)}</span></div>`,
-    edit: () => `${label(`Change ${esc(f.file.split('/').pop())}`)}<pre class="pr-code">${prChange(f.before, f.after)}</pre>`,
-    browser: () => `<div class="pr-browser"><div class="pr-bw-top"><span class="${esc(f.lock)}">${f.lockHtml}</span><span class="pr-url"></span></div><div class="bw-journey pr-journey">${f.journey}</div><div class="pr-page">${f.view === 'page' ? `<iframe sandbox="" title="The web page" srcdoc="${esc(f.page)}"></iframe>` : f.view === 'source' ? `<pre class="bw-source">${f.page}</pre>` : `<div class="bw-boxes">${f.page}</div>`}${f.pop ? `<div class="bw-pop pr-pop">${f.pop}</div>` : ''}</div></div>`,
+    live: () => `${label(`Mission · step ${f.n + 1} of ${L.steps.length}`)}<p class="pr-big">${L.steps[f.n].t}</p>`,
+    click: () => `${label('Click')}<div class="pr-click"><span class="pr-btn">${esc(f.label)}</span></div>`,
     choice: () => { const st = L.steps[f.n], c = st.choices[f.pick]; return `${label(`Mission · step ${f.n + 1} of ${L.steps.length}`)}<p class="pr-q">${st.t}</p><div class="pr-choices">${st.choices.map((x, k) => `<div class="pr-choice${k === f.pick ? (x.good ? ' good' : ' bad') : ''}">${x.c}</div>`).join('')}</div><p class="pr-say">${c.say}</p>`; },
     term: () => `<div class="pr-term term-body"><div class="ln"><span class="p">${esc(f.prompt)}</span> <span class="pr-typed"></span><span class="pr-caret"></span></div><div class="pr-out">${f.out}</div></div>${f.key ? `<div class="pr-key pr-termkey">${esc(f.key)}</div>` : ''}`,
     nano: () => `<div class="pr-nano"><div class="nano-top"><span>GNU nano</span><b>${esc(f.file)}</b><span></span></div><pre class="pr-nano-text"></pre><div class="nano-msg">${esc(f.msg ?? '')}</div>${f.key ? `<div class="pr-key">${esc(f.key)}</div>` : ''}</div>`,
@@ -4165,16 +4127,14 @@ function prShow(f, animate) {
   if (f.k === 'title' || f.k === 'intro') prJelly(f.k === 'intro' ? COURSE.title.replace(' Jelly', '').toLowerCase() : L.word, L?.color);
   if (f.k === 'nano') $('.pr-nano-text').textContent = f.text;
   if (f.k === 'term') $('.pr-typed').textContent = f.after ?? f.cmd;
-  if (f.k === 'browser') $('.pr-url').textContent = f.url;
   prFit(body);
+  if (typeof PR_LIVE !== 'undefined') PR_LIVE.show(f.k === 'live' ? f : null, animate && !REDUCED);
   if (!animate || REDUCED) return;
   body.animate([{ opacity: 0, transform: 'translateY(26px) scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
   if (f.k === 'term') prType($('.pr-typed'), f.cmd, $('.pr-out'), f);
   if (f.k === 'nano' && f.typed) prType($('.pr-nano-text'), f.text);
   if (f.k === 'files') body.querySelectorAll('.pr-new').forEach((r, n) => r.animate([{ background: '#ffc61a', transform: 'scale(1.04)' }, { transform: 'none' }], { duration: 900, delay: 250 + n * 120 }));
   if (f.k === 'click') { sound.boing(520, .15, .06); $('.pr-click > span').animate([{ transform: 'none' }, { transform: 'translateY(.12em) scale(.94)', boxShadow: 'none' }, { transform: 'none' }], { duration: 420, delay: 450 }); }
-  if (f.k === 'edit' && $('.pr-code ins')) prType($('.pr-code ins'), $('.pr-code ins').textContent);
-  if (f.k === 'browser' && f.typed) prType($('.pr-url'), f.url, $('.pr-page'));
   if (f.k === 'choice') { $('.pr-choice.good, .pr-choice.bad')?.animate([{ transform: 'scale(.9)' }, { transform: 'scale(1.05)' }, { transform: 'none' }], { duration: 450, delay: 300, easing: 'cubic-bezier(.3,1.5,.5,1)' }); $('.pr-say').animate([{ opacity: 0 }, { opacity: 0, offset: .5 }, { opacity: 1 }], { duration: 1200 }); }
 }
 // Keys typed one at a time, then the result appears.
@@ -4204,15 +4164,6 @@ function prDiff(before, after) {
   if (gm) { gm.querySelectorAll('button').forEach((b) => b.remove()); return gm.outerHTML; }
   return rows(now).map((r) => r.outerHTML).join('');
 }
-// The open file with this step's change: the new text marked (typed in when the frame shows), the removed text struck out.
-// Only the lines around the change, so it stays big enough to read.
-function prChange(before, after) {
-  let a = 0; while (a < before.length && a < after.length && before[a] === after[a]) a++;
-  let z = 0; while (z < before.length - a && z < after.length - a && before[before.length - 1 - z] === after[after.length - 1 - z]) z++;
-  const pre = after.slice(0, a).split('\n').slice(-5).join('\n'), post = after.slice(after.length - z).split('\n').slice(0, 5).join('\n');
-  const gone = before.slice(a, before.length - z), [, lead, added, trail] = after.slice(a, after.length - z).match(/^(\s*)([\s\S]*?)(\s*)$/); // spaces and line breaks around the change aren't marked
-  return esc(pre) + (gone.trim() ? `<del>${esc(gone)}</del>` : '') + esc(lead) + (added ? `<ins>${esc(added)}</ins>` : '') + esc(trail) + esc(post);
-}
 // The jelly word on the title frames: its own full-size 3D stage, made the first time it is needed.
 function prJelly(word, color) {
   if (!booted) return;
@@ -4231,7 +4182,7 @@ function prFit(el) {
     let z = Math.min(3, (el.clientWidth * .9) / Math.max(1, v.scrollWidth)); v.style.zoom = z;
     while ((el.scrollHeight > el.clientHeight + 1 || v.getBoundingClientRect().width > el.clientWidth) && z > .6) { z -= .1; v.style.zoom = z; }
   }
-  for (const t of el.querySelectorAll('.pr-big,.pr-files,.pr-term,.pr-code')) {
+  for (const t of el.querySelectorAll('.pr-big,.pr-files,.pr-term')) {
     let s = 1; t.style.setProperty('--s', 1);
     while (el.scrollHeight > el.clientHeight + 1 && s > .5) { s -= .05; t.style.setProperty('--s', s.toFixed(2)); }
   }

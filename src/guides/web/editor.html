@@ -699,7 +699,7 @@ window.BE = {
   on: null,
   gate(g) { gateOpts = g; applyGate(); render(); renderSite(); },
   // the website, as plain data the guide can save; and back again
-  dump() { savePage(); return JSON.parse(JSON.stringify({ site: site.map(({ name, title, root, code, broken }) => ({ name, title, root, code, broken })) })); },
+  dump() { savePage(); return JSON.parse(JSON.stringify({ site: site.map(({ name, title, root, code, broken }) => ({ name, title, root, code, broken })), current, view, mode })); },
   load(data) {
     if (!data?.site?.length) return;
     const ids = []; const walk = (n) => { ids.push(n.id); n.kids.forEach(walk); };
@@ -708,18 +708,12 @@ window.BE = {
     const pg = site[0]; root = pg.root; broken = pg.broken; selected = root.id; code.value = pg.code ?? toDoc();
     if (view === 'html' || broken) fromHtml();
     render(); renderSite();
+    // where the child was: the open page, the view, Edit or Visit (older saves don't say, and open the first page)
+    if (data.current > 0 && data.current < site.length) openPage(data.current);
+    if (data.view && data.view !== view) document.querySelector(`[data-view="${data.view}"]`)?.click();
+    if (data.mode && data.mode !== mode) document.querySelector(`[data-mode="${data.mode}"]`)?.click();
   },
   get state() { return { site, current, view, mode, broken, mistakes, root, page: pageView, selected: find(selected)?.n ?? null }; },
-  // a still picture of the editor and its page, for presenter mode: no scripts, what's typed written into the HTML
-  snapshot() {
-    savePage();
-    const d = document.documentElement.cloneNode(true);
-    d.querySelectorAll('script').forEach((x) => x.remove());
-    d.querySelector('#htmlText').textContent = code.value;
-    d.querySelectorAll('input').forEach((x, i) => x.setAttribute('value', document.querySelectorAll('input')[i]?.value ?? ''));
-    d.querySelector('#pageFrame')?.setAttribute('srcdoc', '<!doctype html>' + pageView.documentElement.outerHTML);
-    return '<!doctype html>' + d.outerHTML;
-  },
   // The guide's hints: make the thing to use glow for a moment, in the editor and on the page.
   glow(sel) {
     for (const d of [document, pageView]) for (const el of d?.querySelectorAll(sel) ?? []) {
@@ -737,7 +731,8 @@ window.BE = {
     add(kind) { add(kind); },
     words(text) {
       const n = find(selected)?.n, t = n?.kind === 'text' ? n : n && [n, ...inOrder(n)].flatMap((x) => x.kids).find((x) => x.kind === 'text');
-      if (!t || broken) return; t.text = text; render(); emit('words');
+      // the space the editor put in front of new words, after other words, stays
+      if (!t || broken) return; t.text = (/^\s/.test(t.text) && text ? ' ' : '') + text; render(); emit('words');
     },
     nudge(dir) { nudge(dir); },
     // a drop the editor refuses: the reason shows on the block it was dropped on, as it does for the child

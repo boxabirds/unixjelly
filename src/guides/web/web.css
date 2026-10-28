@@ -57,3 +57,12 @@
 .demo-drums{place-items:center}
 .demo-drums button{border:4px solid var(--ink);border-radius:50%;box-shadow:0 4px 0 var(--ink);cursor:pointer;aspect-ratio:1;width:min(100%,130px)}
 .web-demos p{margin:0;font-size:.9rem;color:var(--ink-soft)}
+/* presenter mode: the mission's step as a caption, the editor playing live underneath, and a big pointer */
+.pr-stage[data-k=live]{background:#d4eeff}
+.pr-stage[data-k=live] .pr-body{bottom:auto;height:calc(16 * var(--u));justify-content:flex-start;gap:calc(.8 * var(--u))}
+.pr-stage[data-k=live] .pr-big{font-size:calc(3.6 * var(--u) * var(--s, 1))}
+.pr-live{position:absolute;inset:calc(var(--pad) + 17 * var(--u)) var(--pad) var(--pad);overflow:hidden;border:calc(.5 * var(--u)) solid var(--ink);border-radius:calc(2 * var(--u));background:#fff;box-shadow:0 calc(1 * var(--u)) 0 var(--ink);z-index:1}
+.face-right.present-wide .pr-live{right:31vw}
+.pr-live iframe{display:block;width:100%;height:100%;border:0}
+.pr-pointer{position:absolute;width:calc(5 * var(--u));height:calc(5 * var(--u));z-index:3;pointer-events:none;filter:drop-shadow(0 calc(.4 * var(--u)) 0 #24133b55)}
+.pr-pointer svg{width:100%;height:100%}

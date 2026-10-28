@@ -14,15 +14,13 @@ const START_SITE = { site: [{ name: 'index.html', title: 'My jelly page', code: 
 ] } }] };
 // A mission may use anything taught up to and including its own lesson, in course order, as the prerequisite tests
 // expect: a child who jumps ahead to lesson 13 still gets the HTML view its mission needs.
-const upTo = (concept) => { const k = LESSONS.findIndex((L) => L.teaches?.includes(concept)); return k < 0 || k <= cur || !!store.done[LESSONS[k].id]; };
-function gateEditor() {
-  if (!BE) return;
-  BE.gate({
-    kinds: KIND_IDS.filter(upTo),
-    views: ['blocks', upTo('tags') && 'tags', upTo('html') && 'html'].filter(Boolean),
-    moving: upTo('moving'), colours: upTo('colours'), pages: upTo('pages'), title: upTo('title'),
-  });
-}
+const upTo = (concept, at = cur, inOrder = false) => { const k = LESSONS.findIndex((L) => L.teaches?.includes(concept)); return k < 0 || k <= at || (!inOrder && !!store.done[LESSONS[k].id]); };
+// what the editor shows in exercise number `at` (inOrder: by course order alone, as presenter mode shows the course)
+const gateAt = (at, inOrder = false) => {
+  const up = (c) => upTo(c, at, inOrder);
+  return { kinds: KIND_IDS.filter(up), views: ['blocks', up('tags') && 'tags', up('html') && 'html'].filter(Boolean), moving: up('moving'), colours: up('colours'), pages: up('pages'), title: up('title') };
+};
+function gateEditor() { BE?.gate(gateAt(cur)); }
 let siteTimer;
 const SAVE_MS = 400;
 function saveSite() { clearTimeout(siteTimer); siteTimer = setTimeout(() => { store.web1 = BE.dump(); save(); }, SAVE_MS); }
@@ -33,8 +31,6 @@ editorFrame.addEventListener('load', () => {
   if (w.BE?.ready) ready(); else w.BE.onready = ready;
 }, { once: true });
 editorFrame.srcdoc = EDITOR_HTML;
-// Presenter mode plays each step's "Do it for me", then shows this: a picture of the editor and the page.
-const prSnapshot = (li) => (LESSONS[li].demos || !BE ? null : { k: 'web', li, html: BE.snapshot() });
 // A copy of the website as each exercise's mission begins, so Start over can put it back. Kept until a step is done.
 function webMission(L) {
   if (!BE || (store.steps[L.id] ?? []).some(Boolean)) return;
@@ -42,7 +38,7 @@ function webMission(L) {
 }
 function webStartOver(L) {
   const was = store.web1Start?.[L.id];
-  if (was && BE) { BE.load(was); BE.do.mode('edit'); gateEditor(); store.web1 = BE.dump(); }
+  if (was && BE) { const on = BE.on; BE.on = null; BE.load(was); BE.do.mode('edit'); BE.on = on; gateEditor(); store.web1 = BE.dump(); }
   if (!store.done[L.id] && store.nojelly) delete store.nojelly[L.id];
   save(); paintHelp();
 }
@@ -101,4 +97,76 @@ const glowHere = (sel) => document.querySelectorAll(sel).forEach((el) => { el.cl
   };
   const BEAT_MS = 120;
   DEMO.drums = () => [...$('#demoDrums').children].slice(0, TUNE).forEach((d, i) => setTimeout(() => d.click(), i * BEAT_MS));
+})();
+
+/* ---------------- presenter mode: the missions, played live ---------------- */
+// Each step plays in front of the viewer, in a second copy of the editor (the guide's own can't move: an iframe reloads
+// when it is moved). A big pointer goes to what the step uses (the hint's glow says where), clicks, and the step's
+// "Do it for me" happens; new words are typed in. Going back, or opening a frame cold, shows the step already done.
+// The presenter records each step's editor before and after (snap); show(frame, play) puts it on screen.
+const PR_LIVE = (() => {
+  const POINTER_MS = 650, PRESS_MS = 220, TYPE_MS = 55, REST_MS = 300;
+  let box = null, frame = null, live = null, ready = null, pointer = null, run = 0;
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  // the guide's helpers and the steps' doIt use BE: for a moment, that is the presenter's copy
+  const as = (fn) => { const main = BE; BE = live; try { return fn(); } finally { BE = main; } };
+  function mount() {
+    if (ready) return ready;
+    box = document.createElement('div'); box.className = 'pr-live';
+    frame = document.createElement('iframe'); frame.title = 'The block editor and the page'; box.append(frame);
+    pointer = document.createElement('div'); pointer.className = 'pr-pointer'; pointer.hidden = true;
+    pointer.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2l16 11-7 1.5 4 7.5-3 1.5-4-7.5L5 21z" fill="#fff" stroke="#24133b" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+    $('#prStage').append(box, pointer);
+    ready = new Promise((r) => {
+      frame.addEventListener('load', () => { const w = frame.contentWindow, go = () => { live = w.BE; r(); }; if (w.BE?.ready) go(); else w.BE.onready = go; }, { once: true });
+    });
+    frame.srcdoc = EDITOR_HTML;
+    return ready;
+  }
+  // where the hint points: the first thing it would make glow that is on screen, in the editor or on the page
+  function target(step) {
+    let sel = null; const glow = live.glow; live.glow = (s) => { sel = s; };
+    try { as(() => step.show?.()); } finally { live.glow = glow; }
+    if (!sel) return null;
+    const doc = frame.contentDocument, page = live.state.page;
+    for (const [d, box] of [[doc, frame], [page, doc.querySelector('#pageFrame')]]) {
+      const el = [...(d?.querySelectorAll(sel) ?? [])].find((e) => e.getClientRects().length);
+      if (el) { const f = box.getBoundingClientRect(), outer = box === frame ? { left: 0, top: 0 } : frame.getBoundingClientRect(), r = el.getBoundingClientRect(); return { x: outer.left + f.left + r.left + Math.min(r.width / 2, 40), y: outer.top + f.top + r.top + r.height / 2 }; }
+    }
+    return null;
+  }
+  async function play(f, me) {
+    const step = LESSONS[f.li].steps[f.n], at = target(step), s = $('#prStage').getBoundingClientRect(), to = at && { x: at.x - s.left, y: at.y - s.top };
+    if (to) {
+      const from = pointer.hidden ? { x: s.width * .9, y: s.height * .9 } : { x: parseFloat(pointer.style.left), y: parseFloat(pointer.style.top) };
+      pointer.hidden = false;
+      await pointer.animate([{ left: from.x + 'px', top: from.y + 'px' }, { left: to.x + 'px', top: to.y + 'px' }], { duration: POINTER_MS, easing: 'cubic-bezier(.3,.7,.3,1)', fill: 'forwards' }).finished;
+      Object.assign(pointer.style, { left: to.x + 'px', top: to.y + 'px' });
+      if (me !== run) return;
+      pointer.animate([{ transform: 'scale(1)' }, { transform: 'scale(.8)' }, { transform: 'scale(1)' }], { duration: PRESS_MS });
+      sound.boing(520, .15, .06); await wait(PRESS_MS);
+    }
+    if (me !== run) return;
+    // the blocks are drawn again after a change, so an input is known by its block, not by the element
+    const doc = frame.contentDocument, said = (i) => i.dataset.id ?? i.dataset.attr ?? '', before = new Map([...doc.querySelectorAll('input')].map((i) => [said(i), i.value]));
+    as(() => step.doIt());
+    // words that changed are typed in, letter by letter
+    for (const i of doc.querySelectorAll('input')) {
+      const text = i.value; if (!text || before.get(said(i)) === text) continue;
+      for (let k = 1; k <= text.length && me === run; k++) { i.value = text.slice(0, k); await wait(TYPE_MS); }
+      i.value = text; await wait(REST_MS);
+    }
+  }
+  return {
+    can: (L) => !L.demos,
+    snap: () => BE.dump(),
+    async show(f, animate) {
+      const me = ++run;
+      if (!f) { if (box) box.hidden = true; if (pointer) pointer.hidden = true; return; }
+      await mount(); if (me !== run) return;
+      box.hidden = false; live.on = null; live.gate(gateAt(f.li, true)); live.load(animate ? f.before : f.after);
+      if (!animate) { pointer.hidden = true; return; }
+      await wait(REST_MS); if (me === run) play(f, me);
+    },
+  };
 })();
