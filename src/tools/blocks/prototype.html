@@ -10,7 +10,7 @@
 :root {
   --ink: #24133b; --ink-soft: #56467a; --card: #ffffff; --sky: #d4eeff; --sun: #fff0b3; --lilac: #eadcff; --mint: #d8f6e4;
   --berry: #ff4d6d; --lime: #62c934; --lemon: #ffc61a; --blue: #3a5bff; --orange: #ff8a2b; --grape: #9b5cff;
-  --shadow: 2px 2px 0 var(--ink); --line: 1.5px; --soft: #cfc4de; --gold: #ffb800;
+  --shadow: 2px 2px 0 var(--ink); --line: 1.5px; --soft: #cfc4de; --gold: #ffb800; --hover: 0 0 0 1.5px rgba(36, 19, 59, .5);
   --chosen: 0 0 0 2px var(--ink), 0 0 0 4px var(--gold), 0 0 18px 6px rgba(255, 184, 0, .6);
 }
 * { box-sizing: border-box; }
@@ -23,7 +23,7 @@ header p { margin: 0; color: var(--ink-soft); flex: 1; min-width: 220px; }
 .views button { font: 500 12.5px Lexend, sans-serif; border: 0; border-left: 1px solid var(--soft); background: var(--card); color: var(--ink); padding: 3px 10px; cursor: pointer; }
 .views button:first-child { border-left: 0; }
 .views button[aria-pressed=true] { background: var(--lilac); font-weight: 600; }
-main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); gap: 12px; padding: 0 16px 16px; height: calc(100vh - 56px); min-height: 400px; }
+main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); gap: 12px; padding: 0 16px 16px; height: calc(100vh - 92px); min-height: 400px; }
 @media (max-width: 760px) { main { grid-template-columns: 1fr; height: auto; } .panel { height: 75vh; } }
 .panel { background: var(--card); border: var(--line) solid var(--ink); border-radius: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
 .panel > h2 { font: 400 16px 'Titan One', sans-serif; margin: 0; padding: 8px 12px; border-bottom: var(--line) solid var(--ink); display: flex; justify-content: space-between; align-items: center; }
@@ -42,10 +42,16 @@ main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1f
 
 /* the block tree */
 .tree { padding: 8px 14px 32px; flex: 1; overflow: auto; position: relative; min-height: 0; }
-.blk { --c: var(--lemon); border: 1px solid color-mix(in srgb, var(--c) 55%, var(--ink)); border-left: 5px solid var(--c); border-radius: 8px; background: color-mix(in srgb, var(--c) 9%, white); margin: 4px 0; touch-action: none; }
+/* no borders: a block is its tint, and its name is in its colour. Only the selected block gets an edge (its glow). */
+.blk { --c: var(--lemon); border-radius: 8px; background: color-mix(in srgb, var(--c) 13%, white); margin: 4px 0; touch-action: none; }
+.blk > .bh .name, .blk > .bh .tag, .blk > .lid { color: color-mix(in srgb, var(--c) 65%, var(--ink)); }
 .blk.page { --c: var(--ink-soft); background: #faf7ff; }
 .blk.selected { box-shadow: var(--chosen); position: relative; z-index: 1; }
-.blk.hover:not(.selected) { box-shadow: 0 0 0 1.5px var(--ink); }
+/* the page itself is selected when nothing else is: no glow round everything */
+.blk.page.selected { box-shadow: none; }
+.blk.hover:not(.selected) { box-shadow: var(--hover); animation: hover-in .25s ease-out; }
+/* a hover outline fades in; it goes at once, because the animation leaves with the class */
+@keyframes hover-in { from { box-shadow: 0 0 0 1.5px rgba(36, 19, 59, 0); } }
 .blk.dragging { opacity: .35; }
 .blk.flash { animation: flash .7s ease-out; }
 @keyframes flash { from { background: color-mix(in srgb, var(--c) 60%, white); } }
@@ -55,8 +61,8 @@ main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1f
 .kids { padding: 0 6px 4px 16px; }
 .kids:empty::after { content: 'empty: drag something in, or press a + button'; display: block; color: var(--ink-soft); font-weight: 400; font-size: 12px; padding: 2px 0; }
 .blk.page > .kids { padding-left: 8px; }
-.text { --c: #c9c0d6; display: flex; align-items: center; gap: 6px; border: 1px dashed #b7aacb; border-radius: 6px; background: #fff; margin: 3px 0; padding: 0 6px; touch-action: none; }
-.text.selected { border-style: solid; border-color: var(--ink); box-shadow: var(--chosen); position: relative; z-index: 1; }
+.text { --c: #c9c0d6; display: flex; align-items: center; gap: 6px; border-radius: 6px; background: #fff; margin: 3px 0; padding: 0 6px; touch-action: none; }
+.text.selected { box-shadow: var(--chosen); position: relative; z-index: 1; }
 .text .grip { color: var(--ink-soft); cursor: grab; }
 .text input { flex: 1; min-width: 60px; border: 0; font: 400 13.5px Lexend, sans-serif; color: var(--ink); background: transparent; padding: 3px 0; }
 .text input:focus { outline: none; }
@@ -70,12 +76,21 @@ main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1f
 .drop-line.bad { background: var(--berry); }
 .drop-box { position: absolute; border: 2px dashed var(--lime); border-radius: 10px; pointer-events: none; display: none; }
 .drop-box.bad { border-color: var(--berry); }
+.ghost .why { display: none; margin-top: 4px; font-size: 12.5px; color: var(--berry); transform: rotate(3deg); white-space: normal; max-width: 280px; }
+.ghost.bad .why { display: block; }
+.ghost.bad { border-color: var(--berry); }
+/* why a drop didn't work: shown where the block was let go, then fading away */
+.drop-note { position: fixed; z-index: 11; pointer-events: none; max-width: 300px; background: #fff; border: 1.5px solid var(--berry); border-radius: 8px; padding: 3px 9px; font: 500 12.5px/1.4 Lexend, sans-serif; color: var(--ink); box-shadow: 2px 2px 0 rgba(36, 19, 59, .2); transition: opacity .4s; }
+.drop-note b { color: var(--berry); }
+.drop-note.gone { opacity: 0; }
+/* while a block is carried, nothing gets text-selected along the way */
+body.carrying, body.carrying * { user-select: none; -webkit-user-select: none; cursor: grabbing; }
 .ghost { position: fixed; pointer-events: none; z-index: 10; padding: 4px 10px; border: var(--line) solid var(--ink); border-radius: 8px; background: var(--c); font-weight: 500; font-size: 13px; box-shadow: var(--shadow); transform: rotate(-3deg); }
 
 /* the page */
 .page-view { flex: 1; padding: 14px 18px; overflow: auto; font-family: Georgia, 'Times New Roman', serif; font-size: 16px; }
 .page-view [data-id] { cursor: pointer; border-radius: 4px; transition: box-shadow .12s, background .12s; }
-.page-view .hover:not(.selected) { box-shadow: 0 0 0 1.5px var(--ink); }
+.page-view .hover:not(.selected) { box-shadow: var(--hover); animation: hover-in .25s ease-out; }
 .page-view .selected { box-shadow: var(--chosen); background: rgba(255, 214, 77, .22); position: relative; z-index: 1; }
 .page-view .flash { animation: flash .7s ease-out; }
 .page-view h1 { font-size: 2em; margin: .3em 0; }
@@ -103,6 +118,50 @@ main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1f
 .banner { display: none; margin: 6px 12px 0; padding: 6px 10px; border-radius: 8px; background: #fff3c4; border: 1px solid var(--lemon); font-size: 13px; }
 .panel.broken:not(.html) .banner { display: block; }
 .blk.other { --c: #a7a7a7; }
+/* the website bar: one tab per page */
+.site { display: flex; align-items: center; gap: 8px; padding: 0 16px 10px; flex-wrap: wrap; }
+.site .lbl { font-weight: 600; font-size: 13px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.tabs button, .tabs .tab { font: 500 12.5px 'JetBrains Mono', monospace; border: var(--line) solid var(--ink); border-radius: 8px; padding: 3px 9px; background: var(--card); color: var(--ink); cursor: pointer; }
+.tabs .tab.on { background: var(--lilac); box-shadow: 0 0 0 2px var(--gold); display: inline-flex; gap: 6px; align-items: center; cursor: default; }
+.tabs .tab.on button { font: inherit; border: 0; padding: 0 2px; background: none; cursor: pointer; }
+.tabs .tab input { font: inherit; width: 140px; border: 1px solid var(--soft); border-radius: 5px; padding: 0 4px; }
+.tabs .add { font-family: Lexend, sans-serif; background: var(--lime); }
+.tabs .del { font-family: Lexend, sans-serif; background: #ffd0d8; }
+.back { font: 500 12px Lexend, sans-serif; border: var(--line) solid var(--ink); border-radius: 8px; padding: 1px 8px; background: var(--card); cursor: pointer; margin-left: 8px; vertical-align: 2px; }
+/* visiting: the page works like a website, with no selecting and no outlines */
+.page-view.visiting [data-id] { cursor: auto; }
+.page-view.visiting a { cursor: pointer; }
+.page-view.visiting .selected, .page-view.visiting .hover { box-shadow: none !important; background: none !important; animation: none; }
+/* the "+" buttons, in groups */
+.palette { flex-direction: column; gap: 4px; }
+.pgroup { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.pgroup > span { font-size: 11.5px; color: var(--ink-soft); width: 104px; flex: none; }
+/* a block's own settings: which picture, where a link goes, a text box's name */
+.tools .trow { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tools .pic { padding: 1px 3px; background: #fff; }
+.tools .pic img { width: 30px; height: 25px; display: block; }
+.tools .pic[aria-pressed=true] { outline: 2px solid var(--gold); outline-offset: 1px; background: #fff3c4; }
+.tools .field { display: flex; align-items: center; gap: 6px; font-size: 12.5px; flex: 1; min-width: 220px; }
+.tools .field input { flex: 1; min-width: 80px; font: 500 12.5px 'JetBrains Mono', monospace; border: 1px solid var(--soft); border-radius: 6px; padding: 3px 6px; }
+.tools .field input:focus { outline: 2px solid var(--grape); outline-offset: -1px; }
+.bh .thumb { width: 26px; height: 22px; }
+.tags .bh .thumb { display: none; }
+.blk.single > .bh { min-height: 32px; }
+/* the page: tables show their cells, and the card that says what a form would send */
+.page-view table { border-collapse: collapse; margin: .6em 0; }
+.page-view td, .page-view th { border: 1px solid #b9b0c8; padding: 4px 10px; }
+.page-view tr.selected { outline: 3px solid var(--gold); box-shadow: none; }
+.page-view img { max-width: 120px; vertical-align: middle; }
+.page-view form { border: 1px dashed #b9b0c8; padding: 4px 10px; margin: .6em 0; }
+.page-view input { font: inherit; padding: 2px 6px; }
+.page-view a { color: #1a55d9; }
+.panel.pagep { position: relative; }
+.send-card { position: absolute; left: 50%; top: 80px; transform: translateX(-50%); width: min(380px, 90%); background: #fff; border: var(--line) solid var(--ink); border-radius: 12px; box-shadow: 0 0 0 4px var(--gold), var(--shadow); padding: 12px 16px; z-index: 5; }
+.send-card h3 { font: 400 16px 'Titan One', sans-serif; margin: 0 0 6px; }
+.send-card ul { margin: 6px 0; padding-left: 20px; }
+.send-card .later { color: var(--ink-soft); font-size: 13px; }
+.send-card button { font: 600 13px Lexend, sans-serif; border: var(--line) solid var(--ink); border-radius: 8px; padding: 3px 14px; background: var(--lime); cursor: pointer; }
 </style>
 </head>
 <body>
@@ -110,6 +169,7 @@ main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1f
   <h1>Page blocks</h1>
   <p>A web page is boxes inside boxes. Add blocks, drag them anywhere, and watch the page change.</p>
 </header>
+<nav class="site" aria-label="Your website's pages"><span class="lbl">Your website:</span><div class="tabs" id="tabs"></div></nav>
 <main>
   <section class="panel" id="left" aria-label="Blocks">
     <h2>Your page, as <div class="views" role="group" aria-label="Show the page as"><button data-view="blocks" aria-pressed="true">Blocks</button><button data-view="tags" aria-pressed="false">Tags</button><button data-view="html" aria-pressed="false">HTML</button></div></h2>
@@ -120,51 +180,103 @@ main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1f
     <div class="html-edit"><div class="code-wrap"><textarea id="htmlText" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="The page's HTML"></textarea><div class="marks" id="marks" aria-hidden="true"></div></div><div class="check" id="check" aria-live="polite"></div></div>
     <div class="tree" id="tree"><div class="drop-line" id="dropLine"></div><div class="drop-box" id="dropBox"></div></div>
   </section>
-  <section class="panel" aria-label="The page">
-    <h2>The page <small>click anything to find its block</small></h2>
+  <section class="panel pagep" aria-label="The page">
+    <h2><span>The page <button class="back" id="back" hidden>← Back</button></span><div class="views" id="modes" role="group" aria-label="Edit or visit the page"><button data-mode="edit" aria-pressed="true" title="Click anything on the page to find its block">Edit</button><button data-mode="visit" aria-pressed="false" title="Use the page like a real website: links take you to your other pages">Visit</button></div></h2>
     <div class="page-view" id="pageView"></div>
+    <div class="send-card" id="sendCard" role="dialog" aria-label="What the website would receive" hidden></div>
   </section>
 </main>
 <script>
-// Kinds of block: the friendly name, the real tag, the colour, and what may go inside.
+// What may go inside a block that holds words: words, bold, italic, links and pictures.
+const WORDY = ['text', 'bold', 'italic', 'link', 'picture'];
+// Kinds of block: the friendly name, the real tag, the colour, what may go inside, and which group of "+" buttons it is in.
+// single: a block with nothing inside, written as one tag that closes itself (<img/>).
 const KINDS = {
-  page: { name: 'Page', tag: 'body', c: 'var(--ink-soft)', holds: ['heading', 'para', 'list'] },
-  heading: { name: 'Heading', tag: 'h1', c: 'var(--berry)', holds: ['text', 'bold', 'italic'] },
-  para: { name: 'Paragraph', tag: 'p', c: 'var(--blue)', holds: ['text', 'bold', 'italic'] },
-  list: { name: 'List', tag: 'ul', c: 'var(--grape)', holds: ['item'] },
-  item: { name: 'List item', tag: 'li', c: '#c58bff', holds: ['text', 'bold', 'italic'] },
-  bold: { name: 'Bold', tag: 'b', c: 'var(--orange)', holds: ['text', 'bold', 'italic'] },
-  italic: { name: 'Italic', tag: 'i', c: 'var(--lime)', holds: ['text', 'bold', 'italic'] },
-  text: { name: 'Words', c: '#c9c0d6', holds: [] },
+  page: { name: 'Page', tag: 'body', c: 'var(--ink-soft)', holds: ['heading', 'para', 'list', 'table', 'form', 'picture'] },
+  heading: { name: 'Heading', tag: 'h1', c: 'var(--berry)', holds: WORDY, group: 'Words' },
+  para: { name: 'Paragraph', tag: 'p', c: 'var(--blue)', holds: [...WORDY, 'textbox', 'button'], group: 'Words' },
+  text: { name: 'Words', c: '#c9c0d6', holds: [], group: 'Words' },
+  bold: { name: 'Bold', tag: 'b', c: 'var(--orange)', holds: ['text', 'bold', 'italic', 'link'], group: 'Words' },
+  italic: { name: 'Italic', tag: 'i', c: 'var(--lime)', holds: ['text', 'bold', 'italic', 'link'], group: 'Words' },
+  list: { name: 'List', tag: 'ul', c: 'var(--grape)', holds: ['item'], group: 'Lists and tables' },
+  item: { name: 'List item', tag: 'li', c: '#c58bff', holds: [...WORDY, 'textbox', 'button'], group: 'Lists and tables' },
+  table: { name: 'Table', tag: 'table', c: '#1fa5a0', holds: ['row'], group: 'Lists and tables' },
+  row: { name: 'Row', tag: 'tr', c: '#4cc4bf', holds: ['cell'], group: 'Lists and tables' },
+  cell: { name: 'Cell', tag: 'td', c: '#8ddcd8', holds: [...WORDY, 'textbox', 'button'], group: 'Lists and tables' },
+  link: { name: 'Link', tag: 'a', c: '#2f7bff', holds: ['text', 'bold', 'italic', 'picture'], group: 'Links and pictures' },
+  picture: { name: 'Picture', tag: 'img', c: '#e0a100', holds: [], single: true, group: 'Links and pictures' },
+  form: { name: 'Form', tag: 'form', c: '#d0457a', holds: ['para', 'textbox', 'button'], group: 'Forms' },
+  textbox: { name: 'Text box', tag: 'input', c: '#e98ab0', holds: [], single: true, group: 'Forms' },
+  button: { name: 'Button', tag: 'button', c: '#f2b8cf', holds: ['text', 'bold', 'italic'], group: 'Forms' },
 };
 // Why a block can't go somewhere, in a child's words.
 const WHY_NOT = {
+  heading: 'A heading goes straight on the page.',
+  para: 'A paragraph goes straight on the page, or in a form.',
+  text: 'Words go inside a heading, a paragraph, a list item, a cell, a link, a button, bold or italic.',
+  bold: 'Bold goes inside words: a heading, a paragraph, a list item, a cell, a link, a button or italic.',
+  italic: 'Italic goes inside words: a heading, a paragraph, a list item, a cell, a link, a button or bold.',
+  list: 'A list goes straight on the page.',
   item: 'A list item only goes inside a list.',
-  heading: 'A heading goes straight on the page, not inside another block.',
-  para: 'A paragraph goes straight on the page, not inside another block.',
-  list: 'A list goes straight on the page, not inside another block.',
-  text: 'Words go inside a heading, a paragraph, a list item, bold or italic.',
-  bold: 'Bold goes inside words: a heading, a paragraph, a list item, or italic.',
-  italic: 'Italic goes inside words: a heading, a paragraph, a list item, or bold.',
+  table: 'A table goes straight on the page.',
+  row: 'A row only goes inside a table.',
+  cell: 'A cell only goes inside a row.',
+  link: 'A link goes inside words: a heading, a paragraph, a list item, a cell, bold or italic. Not inside another link.',
+  picture: 'A picture goes on the page, or inside a heading, a paragraph, a list item, a cell or a link.',
+  form: 'A form goes straight on the page.',
+  textbox: 'A text box goes in a form, or in a paragraph, a list item or a cell.',
+  button: 'A button goes in a form, or in a paragraph, a list item or a cell.',
 };
 KINDS.other = { name: 'Not in this lesson', c: '#a7a7a7', holds: [] };
 KINDS.other.holds = Object.keys(KINDS);
-const TAG_KIND = Object.fromEntries(Object.entries(KINDS).filter(([, k]) => k.tag).map(([id, k]) => [k.tag, id]));
+const TAG_KIND = { ...Object.fromEntries(Object.entries(KINDS).filter(([, k]) => k.tag).map(([id, k]) => [k.tag, id])), th: 'cell' };
 // blocks that hold words: their HTML goes on one line; the others put each block inside on its own line
-const INLINE = new Set(['heading', 'para', 'item', 'bold', 'italic']);
+const INLINE = new Set(['heading', 'para', 'item', 'cell', 'bold', 'italic', 'link', 'button']);
+// the attributes this lesson uses, in the order they are written
+const ATTRS = ['href', 'src', 'alt', 'name'];
 const INDENT = '  ';
 const COLOURS = [['none', null], ['tomato', 'tomato'], ['hotpink', 'hotpink'], ['royalblue', 'royalblue'], ['seagreen', 'seagreen'], ['darkorange', 'darkorange'], ['purple', 'purple']];
 const FLASH_MS = 700, DRAG_START_PX = 6, EDGE = .3;
+// The pictures in this pretend website's folder. Any other name is a picture that isn't there, as on a real site.
+const svg = (body) => 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100">${body}</svg>`);
+const PICS = {
+  'jelly.svg': svg('<path d="M20 85 Q14 30 60 22 Q106 30 100 85 Z" fill="#62c934" stroke="#24133b" stroke-width="4"/><circle cx="46" cy="52" r="8" fill="#fff" stroke="#24133b" stroke-width="3"/><circle cx="74" cy="52" r="8" fill="#fff" stroke="#24133b" stroke-width="3"/><circle cx="47" cy="54" r="3.5" fill="#24133b"/><circle cx="75" cy="54" r="3.5" fill="#24133b"/><path d="M48 70 Q60 80 72 70" fill="none" stroke="#24133b" stroke-width="4" stroke-linecap="round"/>'),
+  'gerbil.svg': svg('<ellipse cx="62" cy="62" rx="40" ry="28" fill="#d99a5b" stroke="#24133b" stroke-width="4"/><circle cx="34" cy="40" r="12" fill="#f2c08f" stroke="#24133b" stroke-width="4"/><circle cx="30" cy="58" r="4" fill="#24133b"/><circle cx="18" cy="64" r="3" fill="#ff4d6d"/><path d="M100 70 Q116 60 112 40" fill="none" stroke="#24133b" stroke-width="4" stroke-linecap="round"/>'),
+  'star.svg': svg('<path d="M60 8 L73 38 L106 40 L80 61 L89 93 L60 75 L31 93 L40 61 L14 40 L47 38 Z" fill="#ffc61a" stroke="#24133b" stroke-width="4" stroke-linejoin="round"/>'),
+};
 
 let nextId = 1;
-const node = (kind, kids = [], extra = {}) => ({ id: nextId++, kind, kids, style: null, ...extra });
+const node = (kind, kids = [], extra = {}) => ({ id: nextId++, kind, kids, style: null, attrs: {}, ...extra });
 const words = (text) => node('text', [], { text });
+// A fresh block of each kind, with something in it, so it shows up on the page straight away.
+const FRESH = {
+  heading: () => node('heading', [words('New heading')]),
+  para: () => node('para', [words('New paragraph.')]),
+  text: () => words('more words'),
+  bold: () => node('bold', [words('bold words')]),
+  italic: () => node('italic', [words('italic words')]),
+  list: () => node('list', [node('item', [words('new item')])]),
+  item: () => node('item', [words('new item')]),
+  cell: () => node('cell', [words('cell')]),
+  row: () => node('row', [FRESH.cell(), FRESH.cell()]),
+  table: () => node('table', [node('row', [node('cell', [words('Jelly')]), node('cell', [words('Colour')])]), node('row', [node('cell', [words('lime')]), node('cell', [words('green')])])]),
+  link: () => node('link', [words('a link')], { attrs: { href: 'https://jelly.fun' } }),
+  picture: () => node('picture', [], { attrs: { src: 'jelly.svg', alt: 'a green jelly' } }),
+  textbox: () => node('textbox', [], { attrs: { name: 'answer' } }),
+  button: () => node('button', [words('Send')]),
+  form: () => node('form', [node('para', [words('Your name: '), node('textbox', [], { attrs: { name: 'name' } })]), node('button', [words('Send')])]),
+};
 let root = node('page', [
   node('heading', [words('My jelly page')]),
   node('para', [words('I like '), node('bold', [words('strawberry')]), words(' jelly best.')]),
   node('list', [node('item', [words('wobbly')]), node('item', [words('sweet')]), node('item', [words('green')])]),
 ]);
 let selected = root.kids[1].id, view = 'blocks', broken = false, flashId = null, codeEls = [];
+// The website: its pages, which one is open, and (when visiting) the pages visited before, for Back.
+// A page keeps its HTML text only while it has a mistake in it; otherwise the text is written fresh from its blocks.
+const site = [{ name: 'index.html', root, code: null, broken: false }];
+let current = 0, mode = 'edit', visited = [], renaming = false, deleteArmed = null;
+const FRONT = 'index.html', ARM_MS = 3000;
 
 // ---------- the tree ----------
 function find(id, n = root, parent = null) {
@@ -174,8 +286,11 @@ function find(id, n = root, parent = null) {
 }
 const contains = (a, b) => a === b || a.kids.some((k) => contains(k, b));
 const canHold = (parent, kind) => KINDS[parent.kind].holds.includes(kind);
+// a link can never end up inside another link, however deep
+const insideLink = (n) => { for (let p = find(n.id)?.parent; p; p = find(p.id)?.parent) if (p.kind === 'link') return true; return false; };
+const hasLink = (n) => n.kind === 'link' || n.kids.some(hasLink);
 function detach(n) { const { parent } = find(n.id); parent.kids.splice(parent.kids.indexOf(n), 1); return parent; }
-function say(text) { const el = document.getElementById('msg'); el.textContent = text; }
+function say(text) { document.getElementById('msg').textContent = text; }
 
 // Put a block somewhere: where = 'before' | 'after' (the target's parent holds it) or 'inside' (the target holds it).
 function placeOk(n, target, where) {
@@ -183,6 +298,7 @@ function placeOk(n, target, where) {
   const parent = where === 'inside' ? target : find(target.id).parent;
   if (!parent) return { ok: false, why: 'Everything goes inside the page.' };
   if (!canHold(parent, n.kind)) return { ok: false, why: WHY_NOT[n.kind] };
+  if (hasLink(n) && (parent.kind === 'link' || insideLink(parent))) return { ok: false, why: 'A link can\'t go inside another link.' };
   return { ok: true, parent };
 }
 function place(n, target, where) {
@@ -198,20 +314,21 @@ function place(n, target, where) {
 // A new block goes inside the selected block if it fits there, otherwise after the nearest block it can follow.
 function add(kind) {
   if (broken) return;
-  const fresh = kind === 'list' ? node('list', [node('item', [words('new item')])])
-    : kind === 'text' ? words('more words')
-    : node(kind, [words({ heading: 'New heading', para: 'New paragraph.', item: 'new item', bold: 'bold words', italic: 'italic words' }[kind])]);
-  let at = find(selected)?.n ?? root;
-  for (let cur = at; cur; cur = find(cur.id).parent) {
-    if (canHold(cur, kind)) { cur.kids.push(fresh); break; }
+  const fresh = FRESH[kind]();
+  // a new row gets as many cells as the table's other rows
+  let placed = false;
+  for (let cur = find(selected)?.n ?? root; cur && !placed; cur = find(cur.id).parent) {
     const p = find(cur.id).parent;
-    if (p && canHold(p, kind)) { p.kids.splice(p.kids.indexOf(cur) + 1, 0, fresh); break; }
-    if (!p) { say(WHY_NOT[kind]); return; }
+    if (canHold(cur, kind) && !(kind === 'link' && (cur.kind === 'link' || insideLink(cur)))) { cur.kids.push(fresh); placed = true; }
+    else if (p && canHold(p, kind) && !(kind === 'link' && (p.kind === 'link' || insideLink(p)))) { p.kids.splice(p.kids.indexOf(cur) + 1, 0, fresh); placed = true; }
+    else if (!p) { say(`${WHY_NOT[kind]} Click where it should go first.`); return; }
   }
+  const { parent } = find(fresh.id);
+  if (kind === 'row') { const cols = Math.max(...parent.kids.map((r) => r.kids.length)); while (fresh.kids.length < cols) fresh.kids.push(FRESH.cell()); }
   // words added straight after other words need a space between them, as they would when typing
-  const { parent } = find(fresh.id), before = parent.kids[parent.kids.indexOf(fresh) - 1], first = fresh.kind === 'text' ? fresh : fresh.kids[0];
-  if (['text', 'bold', 'italic'].includes(fresh.kind) && before && first?.kind === 'text' && !/\s$/.test(lastWords(before))) first.text = ' ' + first.text;
-  selected = fresh.id; flashId = fresh.id; say(''); render();
+  const before = parent.kids[parent.kids.indexOf(fresh) - 1], first = fresh.kind === 'text' ? fresh : fresh.kids[0];
+  if (['text', 'bold', 'italic', 'link'].includes(fresh.kind) && before && first?.kind === 'text' && !/\s$/.test(lastWords(before))) first.text = ' ' + first.text;
+  selected = fresh.id; flashId = fresh.id; say(''); render(); reveal();
 }
 const lastWords = (n) => n.kind === 'text' ? n.text : n.kids.length ? lastWords(n.kids.at(-1)) : ' ';
 function remove() {
@@ -234,42 +351,62 @@ function nudge(dir) {
 function setColour(c) { if (broken) return; const n = find(selected)?.n; if (!n || n.kind === 'text' || n === root) return; n.style = c; render(); }
 
 // ---------- drawing ----------
-const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const tagOf = (n) => n.tag ?? KINDS[n.kind].tag;
-const openTag = (n) => `<${tagOf(n)}${n.style ? ` style="color: ${n.style}"` : ''}>`;
-const nameOf = (n) => n.kind === 'other' ? `<${n.tag}>: ${KINDS.other.name}` : KINDS[n.kind].name;
+const attrText = (n) => ATTRS.filter((a) => n.attrs[a] != null).map((a) => ` ${a}="${n.attrs[a]}"`).join('') + (n.style ? ` style="color: ${n.style}"` : '');
+const openTag = (n) => `<${tagOf(n)}${attrText(n)}${KINDS[n.kind].single ? '/' : ''}>`;
+// The name on a block, with what makes this one different: where a link goes, which picture, a text box's name.
+function nameOf(n) {
+  if (n.kind === 'other') return `<${n.tag}>: ${KINDS.other.name}`;
+  const a = n.attrs, extra = n.kind === 'link' ? ` to ${a.href ?? 'nowhere yet'}` : n.kind === 'picture' ? `: ${a.src ?? 'none'}` : n.kind === 'textbox' ? ` called "${a.name ?? ''}"` : '';
+  return esc(KINDS[n.kind].name + extra);
+}
 
 // ---------- the HTML view: blocks to text, and text back to blocks ----------
 function toHtml(n, depth = 0) {
   if (n.kind === 'text') return esc(n.text);
+  if (KINDS[n.kind].single) return openTag(n);
   const pad = INDENT.repeat(depth), close = `</${tagOf(n)}>`;
   if (INLINE.has(n.kind)) return openTag(n) + n.kids.map((k) => toHtml(k)).join('') + close;
-  return `${pad}${openTag(n)}\n${n.kids.map((k) => (INLINE.has(k.kind) || k.kind === 'text' ? pad + INDENT : '') + toHtml(k, depth + 1)).join('\n')}\n${pad}${close}`;
+  return `${pad}${openTag(n)}\n${n.kids.map((k) => (INLINE.has(k.kind) || KINDS[k.kind].single || k.kind === 'text' ? pad + INDENT : '') + toHtml(k, depth + 1)).join('\n')}\n${pad}${close}`;
 }
-// The browser's reading of the text, broken or not, turned back into blocks.
+// The browser's reading of the text, broken or not, turned back into blocks. The browser quietly adds a <tbody> box
+// inside every table; it isn't in the child's text, so its rows are lifted back out.
+const WORDY_TAGS = ['b', 'i', 'a', 'img', 'input', 'button'];
 function fromDom(el) {
   const tag = el.tagName.toLowerCase(), kind = TAG_KIND[tag] ?? 'other', n = node(kind, [], kind === 'other' ? { tag } : {});
   if (el.style?.color) n.style = el.style.color;
+  for (const a of ATTRS) if (el.hasAttribute(a)) n.attrs[a] = el.getAttribute(a);
   for (const c of el.childNodes) {
-    if (c.nodeType === Node.ELEMENT_NODE) n.kids.push(fromDom(c));
-    else if (c.nodeType === Node.TEXT_NODE) {
+    if (c.nodeType === Node.ELEMENT_NODE) {
+      if (['tbody', 'thead', 'tfoot'].includes(c.tagName.toLowerCase())) n.kids.push(...fromDom(c).kids);
+      else n.kids.push(fromDom(c));
+    } else if (c.nodeType === Node.TEXT_NODE) {
       // spaces count only between words; spaces next to a block, or at the very start or end, the browser ignores
-      const t = c.textContent.replace(/\s+/g, ' '), wordy = (x) => x && (x.nodeType === Node.TEXT_NODE || ['b', 'i'].includes(x.tagName?.toLowerCase()));
+      const t = c.textContent.replace(/\s+/g, ' '), wordy = (x) => x && (x.nodeType === Node.TEXT_NODE || WORDY_TAGS.includes(x.tagName?.toLowerCase()));
       const keep = !INLINE.has(kind) ? t.trim() : t.trim() || (wordy(c.previousSibling) && wordy(c.nextSibling)) ? t : '';
       if (keep) n.kids.push(words(keep));
     }
   }
   return n;
 }
-// The checker: reads the text the way a person checks lids, and says what is wrong in plain words, with the line.
-const PAGE_PARTS = new Set(['html', 'head', 'title', 'body']);
+// The checker: reads the text the way a person checks lids, and says what is wrong in plain words.
+const PAGE_PARTS = new Set(['html', 'head', 'title', 'body', 'tbody', 'thead', 'tfoot']);
+const SINGLE_TAGS = new Set(Object.values(KINDS).filter((k) => k.single).map((k) => k.tag));
 function check(src) {
   const errs = [], stack = [], els = [], crossed = [], err = (at, text) => errs.push({ at, text });
   for (const m of src.matchAll(/<(\/?)([a-zA-Z][a-zA-Z0-9]*)[^<>]*?(\/?)>/g)) {
     const [all, slash, raw, self] = m, name = raw.toLowerCase(), at = m.index;
     if (!slash && !TAG_KIND[name] && !PAGE_PARTS.has(name)) err(at, `<${name}> isn't one of this lesson's tags.`);
+    const parent = stack.at(-1)?.name ?? 'body';
+    // a tag with nothing inside closes itself: <img/>. It has no lid, and nothing goes on the stack.
+    if (SINGLE_TAGS.has(name)) {
+      if (slash) err(at, `<${name}/> has nothing inside, so it has no lid. Delete </${name}>.`);
+      else { els.push({ name, start: at, end: at + all.length, parent }); if (!self) err(at, `<${name}> has nothing inside, so it closes itself: end it with />.`); }
+      continue;
+    }
     if (self) continue;
-    if (!slash) { const e = { name, start: at, end: src.length, parent: stack.at(-1)?.name ?? 'body' }; stack.push(e); if (!PAGE_PARTS.has(name)) els.push(e); continue; }
+    if (!slash) { const e = { name, start: at, end: src.length, parent }; stack.push(e); if (!PAGE_PARTS.has(name)) els.push(e); continue; }
     const top = stack.at(-1);
     if (top?.name === name) { top.end = at + all.length; stack.pop(); continue; }
     const deeper = stack.findLastIndex((e) => e.name === name);
@@ -291,9 +428,9 @@ function check(src) {
   return { errs, els };
 }
 function fromHtml() {
-  const src = document.getElementById('htmlText').value, r = check(src);
+  const src = code.value, r = check(src);
   root = fromDom(new DOMParser().parseFromString(src, 'text/html').body);
-  const walk = (n) => { if (n.kind === 'page' || n.kind === 'list') for (const k of n.kids) if (k.kind === 'text') r.errs.push({ at: Math.max(0, src.indexOf(k.text.trim())), text: n.kind === 'page' ? 'Words straight on the page need a box, like <p> … </p>.' : 'Words in a list go inside <li> … </li>.' }); n.kids.forEach(walk); };
+  const walk = (n) => { if (['page', 'list', 'table', 'row', 'form'].includes(n.kind)) for (const k of n.kids) if (k.kind === 'text') r.errs.push({ at: Math.max(0, src.indexOf(k.text.trim())), text: n.kind === 'list' ? 'Words in a list go inside <li> … </li>.' : ['table', 'row'].includes(n.kind) ? 'Words in a table go inside a cell: <td> … </td>.' : 'Words straight on the page need a box, like <p> … </p>.' }); n.kids.forEach(walk); };
   walk(root);
   broken = r.errs.length > 0; codeEls = r.els; selected = root.id; mistakes = r.errs;
   renderPage(); renderTools();
@@ -328,7 +465,7 @@ function drawMarks() {
 // The blocks in the order their opening tags appear in the text. When the text has no mistakes, this lines up one to
 // one with codeEls, so a piece of the page can be found in the text and the other way round.
 const inOrder = (n, out = []) => { for (const k of n.kids) if (k.kind !== 'text') { out.push(k); inOrder(k, out); } return out; };
-function codeFor(id) { if (broken) return null; const i = inOrder(root).findIndex((n) => n.id === id); return codeEls.length === inOrder(root).length ? codeEls[i] : null; }
+function codeFor(id) { if (broken) return null; const all = inOrder(root); return codeEls.length === all.length ? codeEls[all.findIndex((n) => n.id === id)] : null; }
 function blockAt(pos) {
   if (broken) return null;
   const all = inOrder(root); if (codeEls.length !== all.length) return null;
@@ -337,47 +474,117 @@ function blockAt(pos) {
 }
 function blockHtml(n) {
   const k = KINDS[n.kind], sel = n.id === selected ? ' selected' : '', fl = n.id === flashId ? ' flash' : '';
-  if (n.kind === 'text') return `<div class="text${sel}${fl}" data-id="${n.id}">${broken ? '' : '<span class="grip" aria-hidden="true">⠿</span>'}<input value="${esc(n.text)}" aria-label="Words" data-id="${n.id}"${broken ? ' readonly' : ''}></div>`;
+  if (n.kind === 'text') return `<div class="text${sel}${fl}" data-id="${n.id}"><input value="${esc(n.text)}" aria-label="Words" data-id="${n.id}"${broken ? ' readonly' : ''}></div>`;
   const colour = n.style ? ` · <span style="color:${n.style}">${n.style}</span>` : '';
-  return `<div class="blk ${n.kind}${sel}${fl}" style="--c:${k.c}" data-id="${n.id}" tabindex="0" role="treeitem" aria-label="${k.name}">
-    <div class="bh">${n === root || broken ? '' : '<span class="grip" aria-hidden="true">⠿</span>'}<span class="name">${nameOf(n)}${colour}</span><span class="tag">${esc(openTag(n))}</span></div>
-    <div class="kids">${n.kids.map(blockHtml).join('')}</div>
-    <div class="lid">${esc(`</${k.tag}>`)}</div>
+  const thumb = n.kind === 'picture' ? `<img class="thumb" src="${PICS[n.attrs.src] ?? ''}" alt="">` : '';
+  return `<div class="blk ${n.kind}${k.single ? ' single' : ''}${sel}${fl}" style="--c:${k.c}" data-id="${n.id}" tabindex="0" role="treeitem" aria-label="${esc(k.name)}">
+    <div class="bh">${thumb}<span class="name">${nameOf(n)}${colour}</span><span class="tag">${esc(openTag(n))}</span></div>
+    ${k.single ? '' : `<div class="kids">${n.kids.map(blockHtml).join('')}</div><div class="lid">${esc(`</${tagOf(n)}>`)}</div>`}
   </div>`;
 }
 function pageHtml(n) {
   if (n.kind === 'text') return `<span data-id="${n.id}" style="--c:var(--grape)"${n.id === selected ? ' class="selected"' : ''}>${esc(n.text)}</span>`;
-  const k = KINDS[n.kind], tag = n === root ? 'div' : k.tag, st = `--c:${k.c};${n.style ? `color:${n.style};` : ''}`;
+  const k = KINDS[n.kind], tag = n === root ? 'div' : tagOf(n), st = `--c:${k.c};${n.style ? `color:${n.style};` : ''}`;
   const cls = [n.id === selected && n !== root && 'selected', n.id === flashId && 'flash'].filter(Boolean).join(' ');
-  return `<${tag} data-id="${n.id}" style="${st}" class="${cls}">${n.kids.map(pageHtml).join('')}</${tag}>`;
+  const a = n.attrs, extra = n.kind === 'picture' ? ` src="${esc(PICS[a.src] ?? a.src ?? '')}" alt="${esc(a.alt ?? '')}"` : n.kind === 'link' ? ` href="${esc(a.href ?? '')}"` : n.kind === 'textbox' ? ` name="${esc(a.name ?? '')}" autocomplete="off"` : '';
+  if (k.single) return `<${tag} data-id="${n.id}" style="${st}" class="${cls}"${extra}>`;
+  return `<${tag} data-id="${n.id}" style="${st}" class="${cls}"${extra}>${n.kids.map(pageHtml).join('')}</${tag}>`;
 }
-function renderPage() { document.getElementById('pageView').innerHTML = pageHtml(root); }
-function render() {
-  const tree = document.getElementById('tree');
+function renderPage() { pageView.innerHTML = pageHtml(root); }
+function renderTree() {
   const keep = tree.scrollTop;
   tree.querySelectorAll('.blk, .text').forEach((e) => e.remove());
   tree.insertAdjacentHTML('beforeend', blockHtml(root));
   tree.scrollTop = keep;
   tree.classList.toggle('tags', view === 'tags');
+}
+const clearMarks = () => { document.getElementById('marks').innerHTML = ''; document.getElementById('check').innerHTML = ''; };
+function savePage() { const pg = site[current]; pg.root = root; pg.broken = broken; pg.code = broken ? code.value : null; }
+function openPage(i) {
+  savePage(); clearMarks(); current = i; renaming = false;
+  const pg = site[i]; root = pg.root; broken = pg.broken; selected = root.id; codeEls = []; mistakes = [];
+  code.value = pg.code ?? toHtml(root);
+  if (view === 'html' || broken) fromHtml();
+  render(); renderSite();
+  if (view === 'html') { clearTimeout(markTimer); drawMarks(); }
+  pageView.scrollTop = 0;
+}
+// A page name a browser can find: small letters, numbers and dashes, ending in .html.
+const tidyName = (raw) => { const base = raw.trim().toLowerCase().replace(/\.html?$/, '').replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''); return base ? base + '.html' : ''; };
+function newPage() {
+  let k = 2; while (site.some((p) => p.name === `page-${k}.html`)) k++;
+  site.push({ name: `page-${k}.html`, root: node('page', [node('heading', [words('A new page')]), node('para', [words('Write something here.')])]), code: null, broken: false });
+  openPage(site.length - 1); renaming = true; renderSite();
+}
+function renameTo(raw, field) {
+  const name = tidyName(raw), pg = site[current];
+  if (!name) return tabNote(field, 'A page name needs at least one letter or number.');
+  if (site.some((p, i) => i !== current && p.name === name)) return tabNote(field, `There's already a page called ${name}.`);
+  // links that pointed at the old name aren't changed, just as on a real website: Visit shows which ones broke
+  pg.name = name; renaming = false; renderSite(); renderTools();
+}
+function tabNote(field, text) { const r = field.getBoundingClientRect(); dropNote(r.left, r.bottom - 6, text); field.focus(); }
+function deletePage() {
+  if (current === 0) return;
+  if (deleteArmed !== current) { deleteArmed = current; renderSite(); setTimeout(() => { deleteArmed = null; renderSite(); }, ARM_MS); return; }
+  deleteArmed = null; clearMarks(); site.splice(current, 1); visited = visited.filter((v) => v !== current).map((v) => v > current ? v - 1 : v); current = 0;
+  const pg = site[0]; root = pg.root; broken = pg.broken; selected = root.id; code.value = pg.code ?? toHtml(root);
+  if (view === 'html' || broken) fromHtml();
+  render(); renderSite();
+}
+function renderSite() {
+  document.getElementById('tabs').innerHTML = site.map((p, i) => {
+    if (i !== current) return `<button class="tab" data-page="${i}">${esc(p.name)}</button>`;
+    if (renaming) return `<span class="tab on"><input id="pageName" value="${esc(p.name)}" aria-label="Page name" spellcheck="false" autocomplete="off"></span>`;
+    return `<span class="tab on">${esc(p.name)}${i === 0 ? '' : '<button data-rename title="Rename this page" aria-label="Rename this page">✎</button>'}</span>`;
+  }).join('') + `<button class="add" data-new>+ New page</button>${current === 0 ? '' : `<button class="del" data-delete>${deleteArmed === current ? 'Sure? Click again to delete' : 'Delete this page'}</button>`}`;
+  if (renaming) { const f = document.getElementById('pageName'); f.focus(); f.select(); }
+  document.getElementById('back').hidden = mode !== 'visit' || !visited.length;
+}
+// Visiting: a link to one of your pages opens it; anything else gets a plain explanation instead.
+function visit(href) {
+  const name = (href ?? '').trim().replace(/^\.\//, '').split('#')[0];
+  if (/^[a-z]+:|^\/\//i.test(name)) return visitCard('A link to another website', `This link goes to <code>${esc(href)}</code>, a website out on the internet. In here, links only go to the pages of your own website.`);
+  const i = site.findIndex((p) => p.name === name);
+  if (i < 0) return visitCard('No page with that name', `Your website has no page called <code>${esc(href || '(nothing)')}</code>. Check the name in the link: every letter counts.`);
+  visited.push(current); openPage(i);
+}
+function visitCard(title, text) {
+  const card = document.getElementById('sendCard');
+  card.innerHTML = `<h3>${title}</h3><p>${text}</p><button type="button" id="sendClose">OK</button>`; card.hidden = false; document.getElementById('sendClose').focus();
+}
+function render() {
+  renderTree();
   const left = document.getElementById('left'); left.classList.toggle('html', view === 'html'); left.classList.toggle('broken', broken);
   for (const b of document.querySelectorAll('[data-view]')) b.setAttribute('aria-pressed', b.dataset.view === view);
   renderPage(); renderTools();
   setTimeout(() => { flashId = null; }, FLASH_MS);
 }
+// The "+" buttons in groups, then what can be done to the selected block: move it, colour it, and its own settings.
+const ATTR_FIELDS = {
+  link: [['href', 'Goes to', 'another-page.html']],
+  picture: [['alt', 'Words for people who can\'t see it', 'a green jelly']],
+  textbox: [['name', 'Its name, sent with the answer', 'name']],
+};
 function renderTools() {
   const n = find(selected)?.n ?? root, pal = document.getElementById('palette'), tools = document.getElementById('tools');
-  pal.innerHTML = ['heading', 'para', 'list', 'item', 'bold', 'italic', 'text'].map((k) => `<button data-add="${k}" style="--c:color-mix(in srgb, ${KINDS[k].c} 45%, white)">+ ${KINDS[k].name}</button>`).join('');
-  if (n === root) { tools.innerHTML = '<span class="lbl">Click a block to move it or colour it.</span>'; return; }
-  const colourable = n.kind !== 'text';
-  tools.innerHTML = `<span class="lbl">${KINDS[n.kind].name}:</span>
+  const groups = [...new Set(Object.values(KINDS).map((k) => k.group).filter(Boolean))];
+  pal.innerHTML = groups.map((g) => `<div class="pgroup"><span>${g}</span>${Object.entries(KINDS).filter(([, k]) => k.group === g).map(([id, k]) => `<button data-add="${id}" style="--c:color-mix(in srgb, ${k.c} 45%, white)">+ ${k.name}</button>`).join('')}</div>`).join('');
+  if (n === root) { tools.innerHTML = '<span class="lbl">Click a block to move it, colour it or change it.</span>'; return; }
+  // colour is for words, so blocks with no words in them (a picture, a text box) don't offer it
+  const colourable = !['text', 'other'].includes(n.kind) && !KINDS[n.kind].single;
+  const pics = n.kind === 'picture' ? `<span class="lbl">Which picture:</span>${Object.keys(PICS).map((p) => `<button class="pic" data-pic="${p}" aria-pressed="${n.attrs.src === p}" title="${p}"><img src="${PICS[p]}" alt="${p}"></button>`).join('')}` : '';
+  const fields = (ATTR_FIELDS[n.kind] ?? []).map(([a, label, eg]) => `<label class="field">${label}: <input data-attr="${a}" value="${esc(n.attrs[a] ?? '')}" placeholder="${eg}" spellcheck="false" autocomplete="off"${a === 'href' ? ' list="pageNames"' : ''}></label>`).join('')
+    + (n.kind === 'link' ? `<datalist id="pageNames">${site.map((p) => `<option value="${esc(p.name)}">`).join('')}</datalist>` : '');
+  tools.innerHTML = `<span class="lbl">${esc(KINDS[n.kind].name)}:</span>
     <button data-nudge="up" title="Move up" aria-label="Move up">↑</button><button data-nudge="down" title="Move down" aria-label="Move down">↓</button>
     <button data-nudge="out" title="Out of its box" aria-label="Out of its box">← out</button><button data-nudge="in" title="Into the block above" aria-label="Into the block above">in →</button>
     ${colourable ? COLOURS.map(([label, c]) => `<button class="sw" data-colour="${c ?? ''}" style="--sw:${c ?? 'repeating-linear-gradient(45deg,#fff 0 4px,#ddd 4px 8px)'}" aria-pressed="${n.style === c}" title="${label}" aria-label="Colour ${label}"></button>`).join('') : ''}
-    <button data-remove style="--c:#ffd0d8">Delete</button>`;
+    <button data-remove style="--c:#ffd0d8">Delete</button>${pics ? `<div class="trow">${pics}</div>` : ''}${fields ? `<div class="trow">${fields}</div>` : ''}`;
 }
 
 // ---------- selecting and linking the two panels ----------
-const tree = document.getElementById('tree'), pageView = document.getElementById('pageView');
+const tree = document.getElementById('tree'), pageView = document.getElementById('pageView'), code = document.getElementById('htmlText');
 function select(id) { selected = id; render(); reveal(); }
 // out of sight: scroll it to the middle, so its glow isn't cut off at the edge. Already in sight: leave it be.
 function bringIntoView(el) {
@@ -394,28 +601,60 @@ function showCode(c) {
   code.focus({ preventScroll: true }); code.setSelectionRange(c.start, c.end);
   if (y < code.scrollTop + lh || y > code.scrollTop + code.clientHeight - lh) code.scrollTop = y - code.clientHeight / 3;
 }
+// Hover outlines wait a moment before appearing, so sweeping the mouse across blocks doesn't make them flicker.
+// Moving off a block takes its outline away at once.
+const HOVER_DELAY_MS = 200;
+let hoverId = null, hoverTimer = null;
 function hover(id) {
+  if (id === hoverId) return;
+  hoverId = id; clearTimeout(hoverTimer);
   for (const el of document.querySelectorAll('.hover')) el.classList.remove('hover');
   if (id == null) return;
-  for (const el of document.querySelectorAll(`[data-id="${id}"]`)) if (!el.matches('input')) el.classList.add('hover');
+  hoverTimer = setTimeout(() => { for (const el of document.querySelectorAll(`[data-id="${id}"]`)) if (!el.matches('.tree input')) el.classList.add('hover'); }, HOVER_DELAY_MS);
 }
-pageView.addEventListener('click', (e) => { const el = e.target.closest('[data-id]'); if (!el) return;
+function markSelected() { for (const el of document.querySelectorAll('.selected')) el.classList.remove('selected'); for (const el of document.querySelectorAll(`[data-id="${selected}"]`)) if (!el.matches('.tree input')) el.classList.add('selected'); }
+pageView.addEventListener('click', (e) => {
+  const a = e.target.closest('a');
+  if (a) e.preventDefault();
+  if (mode === 'visit') { if (a) visit(a.getAttribute('href')); return; }
+  // a click anywhere on a button or text box (even on the button's words) is using it, so it counts as that block
+  const el = e.target.closest('#pageView input, #pageView button') ?? e.target.closest('[data-id]'); if (!el) return;
   if (view === 'html') { let n = find(+el.dataset.id)?.n; if (n?.kind === 'text') n = find(n.id).parent; const c = n && codeFor(n.id); selected = n?.id ?? selected; markSelected(); if (c) showCode(c); return; }
-  select(+el.dataset.id); });
-pageView.addEventListener('mouseover', (e) => hover(+e.target.closest('[data-id]')?.dataset.id || null));
+  // a text box or button on the page is being used: select its block without redrawing the page under the child's finger
+  if (el.matches('input, button')) { selected = +el.dataset.id; renderTree(); renderTools(); markSelected(); bringIntoView(tree.querySelector(`[data-id="${selected}"]`)); return; }
+  select(+el.dataset.id);
+});
+// Send: nothing is sent anywhere, because no website is listening. The card shows what a website would receive.
+pageView.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const sent = [...new FormData(e.target)].map(([k, v]) => `<li><code>${esc(k)}</code> = <b>${esc(v || '(empty)')}</b></li>`).join('');
+  const unnamed = [...e.target.querySelectorAll('input')].filter((i) => !i.getAttribute('name')).length;
+  const card = document.getElementById('sendCard');
+  card.innerHTML = `<h3>What the website would receive</h3>${sent ? `<ul>${sent}</ul>` : '<p>Nothing! Every text box needs a name, or its answer isn\'t sent.</p>'}${sent && unnamed ? `<p>${unnamed === 1 ? 'One text box has' : `${unnamed} text boxes have`} no name, so ${unnamed === 1 ? 'its answer wasn\'t' : 'their answers weren\'t'} sent.</p>` : ''}<p class="later">Nothing was really sent: no website is listening yet. A later course makes a real website answer.</p><button type="button" id="sendClose">OK</button>`;
+  card.hidden = false; document.getElementById('sendClose').focus();
+});
+document.getElementById('sendCard').addEventListener('click', (e) => { if (e.target.id === 'sendClose') e.currentTarget.hidden = true; });
+pageView.addEventListener('mouseover', (e) => { if (mode === 'edit') hover(+e.target.closest('[data-id]')?.dataset.id || null); });
 pageView.addEventListener('mouseleave', () => hover(null));
 tree.addEventListener('mouseover', (e) => hover(+e.target.closest('[data-id]')?.dataset.id || null));
 tree.addEventListener('mouseleave', () => hover(null));
 // typing words: change the model and redraw the page only, so the box being typed in keeps its place
 tree.addEventListener('input', (e) => { if (e.target.matches('input[data-id]')) { find(+e.target.dataset.id).n.text = e.target.value; renderPage(); } });
 tree.addEventListener('focusin', (e) => { if (e.target.matches('input[data-id]')) { selected = +e.target.dataset.id; renderTools(); markSelected(); } });
-function markSelected() { for (const el of document.querySelectorAll('.selected')) el.classList.remove('selected'); for (const el of document.querySelectorAll(`[data-id="${selected}"]`)) if (!el.matches('input')) el.classList.add('selected'); }
 document.getElementById('palette').addEventListener('click', (e) => { const b = e.target.closest('[data-add]'); if (b) add(b.dataset.add); });
-document.getElementById('tools').addEventListener('click', (e) => {
+const tools = document.getElementById('tools');
+tools.addEventListener('click', (e) => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.nudge) nudge(b.dataset.nudge);
+  else if (b.dataset.pic) { find(selected).n.attrs.src = b.dataset.pic; render(); }
   else if ('colour' in b.dataset) setColour(b.dataset.colour || null);
   else if ('remove' in b.dataset) remove();
+});
+// a link's address, a picture's words, a text box's name: the page and the block's label change as the child types
+tools.addEventListener('input', (e) => {
+  const f = e.target.closest('[data-attr]'); if (!f || broken) return;
+  const n = find(selected)?.n; if (!n) return;
+  n.attrs[f.dataset.attr] = f.value; renderTree(); renderPage();
 });
 tree.addEventListener('keydown', (e) => {
   if (e.target.matches('input')) return;
@@ -427,11 +666,10 @@ tree.addEventListener('keydown', (e) => {
 document.querySelector('.views').addEventListener('click', (e) => {
   const b = e.target.closest('[data-view]'); if (!b || b.dataset.view === view) return;
   // into HTML: the text is written fresh from the blocks, unless it has a mistake, which stays for the child to fix
-  if (b.dataset.view === 'html' && !broken) { document.getElementById('htmlText').value = toHtml(root); fromHtml(); }
+  if (b.dataset.view === 'html' && !broken) { code.value = toHtml(root); fromHtml(); }
   view = b.dataset.view; say(''); render();
-  if (view === 'html') { clearTimeout(markTimer); drawMarks(); }
+  if (view === 'html') { clearTimeout(markTimer); drawMarks(); } else reveal();
 });
-const code = document.getElementById('htmlText');
 code.addEventListener('input', fromHtml);
 code.addEventListener('scroll', () => { if (document.getElementById('marks').classList.contains('show')) drawMarks(); });
 // the cursor in the text lights up its piece of the page
@@ -441,32 +679,50 @@ for (const ev of ['click', 'keyup', 'select']) code.addEventListener(ev, follow)
 // ---------- dragging (pointer events, so it works with a mouse, a pen or a finger) ----------
 let drag = null;
 const line = document.getElementById('dropLine'), box = document.getElementById('dropBox');
+// Any part of a block picks it up. In a Words box, dragging inside the box selects text as usual; dragging out of it
+// picks up the block.
 tree.addEventListener('pointerdown', (e) => {
-  if (e.target.matches('input') || e.button > 0 || broken) return;
-  const el = e.target.closest('[data-id]'); if (!el) return;
-  const id = +el.dataset.id; if (id === root.id) { select(id); return; }
-  drag = { id, x: e.clientX, y: e.clientY, on: false, el };
+  if (e.button > 0 || broken) return;
+  const input = e.target.matches('input') ? e.target : null, el = (input ?? e.target).closest('.blk, .text'); if (!el) return;
+  const id = +el.dataset.id; if (id === root.id) { if (!input) select(id); return; }
+  if (!input) e.preventDefault();
+  drag = { id, x: e.clientX, y: e.clientY, on: false, el, input };
 });
 window.addEventListener('pointermove', (e) => {
   if (!drag) return;
   if (!drag.on) {
     if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < DRAG_START_PX) return;
-    drag.on = true; selected = drag.id; markSelected(); renderTools();
+    if (drag.input) {
+      const r = drag.input.getBoundingClientRect();
+      if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) return;
+      drag.input.blur(); getSelection().removeAllRanges();
+    }
+    drag.on = true; document.body.classList.add('carrying'); getSelection().removeAllRanges();
     const n = find(drag.id).n, g = document.createElement('div');
     g.className = 'ghost'; g.style.setProperty('--c', `color-mix(in srgb, ${KINDS[n.kind].c} 45%, white)`);
-    g.textContent = view === 'tags' && n.kind !== 'text' ? openTag(n) : n.kind === 'text' ? `"${n.text}"` : KINDS[n.kind].name;
+    g.innerHTML = `<div>${esc(view === 'tags' && n.kind !== 'text' ? openTag(n) : n.kind === 'text' ? `"${n.text}"` : KINDS[n.kind].name)}</div><div class="why"></div>`;
     document.body.append(g); drag.ghost = g; drag.el.classList.add('dragging');
   }
   drag.ghost.style.left = e.clientX + 12 + 'px'; drag.ghost.style.top = e.clientY + 8 + 'px';
   drag.target = aim(e.clientX, e.clientY);
+  // why it can't go here, right under the block being dragged
+  drag.ghost.classList.toggle('bad', !!drag.target && !drag.target.ok);
+  drag.ghost.querySelector('.why').textContent = drag.target && !drag.target.ok ? drag.target.why : '';
 });
-window.addEventListener('pointerup', () => {
+const NOTE_MS = 2600;
+function dropNote(x, y, why) {
+  const el = document.createElement('div'); el.className = 'drop-note'; el.innerHTML = `<b>✗</b> ${esc(why)}`;
+  document.body.append(el);
+  el.style.left = Math.min(x + 12, innerWidth - el.offsetWidth - 8) + 'px'; el.style.top = y + 14 + 'px';
+  setTimeout(() => el.classList.add('gone'), NOTE_MS); setTimeout(() => el.remove(), NOTE_MS + 500);
+}
+window.addEventListener('pointerup', (e) => {
   if (!drag) return;
-  const d = drag; drag = null; line.style.display = box.style.display = 'none';
-  if (!d.on) { select(d.id); return; }
+  const d = drag; drag = null; line.style.display = box.style.display = 'none'; document.body.classList.remove('carrying');
+  if (!d.on) { if (!d.input) select(d.id); return; }
   d.ghost.remove(); d.el.classList.remove('dragging');
-  if (d.target?.ok) place(find(d.id).n, d.target.n, d.target.where);
-  else { if (d.target) say(d.target.why); render(); }
+  if (d.target?.ok) { selected = d.id; place(find(d.id).n, d.target.n, d.target.where); }
+  else { if (d.target) dropNote(e.clientX, e.clientY, d.target.why); render(); }
 });
 // Where would the block land? Near the top or bottom edge of a block: before or after it. In its middle: inside it.
 function aim(x, y) {
@@ -475,7 +731,7 @@ function aim(x, y) {
   const target = find(+el.dataset.id).n, n = find(drag.id).n;
   if (contains(n, target)) return null;
   const r = el.getBoundingClientRect(), t = tree.getBoundingClientRect(), f = (y - r.top) / r.height;
-  const holds = target.kind !== 'text';
+  const holds = KINDS[target.kind].holds.length > 0;
   let where = target === root ? 'inside' : f < EDGE || (!holds && f < .5) ? 'before' : f > 1 - EDGE || !holds ? 'after' : 'inside';
   let res = placeOk(n, target, where);
   // dropping on a block that can't hold it, but whose neighbours can: put it next to that block instead
@@ -483,10 +739,29 @@ function aim(x, y) {
   const left = r.left - t.left + tree.scrollLeft, top = r.top - t.top + tree.scrollTop;
   if (where === 'inside') { Object.assign(box.style, { display: 'block', left: left + 'px', top: top + 'px', width: r.width + 'px', height: r.height + 'px' }); box.classList.toggle('bad', !res.ok); }
   else { Object.assign(line.style, { display: 'block', left: left + 'px', width: r.width + 'px', top: (where === 'before' ? top - 5 : top + r.height + 1) + 'px' }); line.classList.toggle('bad', !res.ok); }
-  say(res.ok ? '' : res.why);
   return { n: target, where, ok: res.ok, why: res.why };
 }
-render();
+document.getElementById('tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.page) { visited = []; openPage(+b.dataset.page); }
+  else if ('new' in b.dataset) newPage();
+  else if ('rename' in b.dataset) { renaming = true; renderSite(); }
+  else if ('delete' in b.dataset) deletePage();
+});
+document.getElementById('tabs').addEventListener('keydown', (e) => {
+  if (e.target.id !== 'pageName') return;
+  if (e.key === 'Enter') renameTo(e.target.value, e.target);
+  else if (e.key === 'Escape') { renaming = false; renderSite(); }
+});
+document.getElementById('tabs').addEventListener('focusout', (e) => { if (e.target.id === 'pageName' && renaming) renameTo(e.target.value, e.target); });
+document.getElementById('modes').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-mode]'); if (!b) return;
+  mode = b.dataset.mode; visited = [];
+  for (const m of document.querySelectorAll('[data-mode]')) m.setAttribute('aria-pressed', m.dataset.mode === mode);
+  pageView.classList.toggle('visiting', mode === 'visit'); hover(null); renderSite();
+});
+document.getElementById('back').addEventListener('click', () => { if (visited.length) { const i = visited.pop(); openPage(i); } });
+render(); renderSite();
 </script>
 </body>
 </html>
