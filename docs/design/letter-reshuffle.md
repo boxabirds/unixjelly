@@ -96,17 +96,19 @@ Homing ends when no letter moved this frame and everything is still. The letters
 
 These were found by running the real code, not by reasoning about it. Every ordering of the five letters of `mkdir` was dropped onto the stage, one letter per wrong spot, and played to the end (120 orderings):
 
-| Outcome | Orderings |
-|---|---|
-| tidied up | 69 (median 7.7 s, slowest 20.2 s) |
-| hit the 20-second timeout | 29 |
-| never started | 22 |
+| Outcome | 1.8.3 | 1.8.4 |
+|---|---|---|
+| tidied up | 69 (median 7.7 s, slowest 20.2 s) | 68 (median 7.5 s, slowest 16.5 s) |
+| hit the 20-second timeout | 29 | 52 |
+| never started | 22 | 0 |
 
-Every ordering of three letters tidies up, including a full cycle (c in a's spot, a in t's, t in c's): as soon as one letter steps into a lane, its old spot is free for another. Cycles alone don't cause deadlock. Three things do:
+In 1.8.4, jellies that are held up and nearly still are slowed hard, so wedged letters now settle and tidying starts. But nearly all of the 22 that used to never start now hit the timeout instead: they run into the deadlock below. Fixing the deadlock is the next step.
+
+Every ordering of three letters tidies up, including a full cycle (c in a's spot, a in t's, t in c's): as soon as one letter steps into a lane, its old spot is free for another. Cycles alone don't cause deadlock. Two things do, and a third did until 1.8.4:
 
 - **Hold and wait (deadlock).** A letter keeps its lane while it waits for its spot. If the letters sitting in those spots are themselves waiting for a lane, nobody can move. With the word back to front, `m` takes the front lane and `k` the back lane. Each waits by its spot, but `r` is in m's spot and `i` is in k's, and they are waiting for a lane. It is the classic deadlock: resources (lanes) held while waiting, no way to take one back, and a circle of waiting. Only the 20-second timeout ends it. With two lanes, this needs at least two letters waiting for lanes, so it doesn't happen with three letters.
 - **"Home" and "free" disagree.** A letter counts as home within 0.1 sizes of its exact spot. But a spot counts as free only if no one is within the two half-widths plus 0.3 × the gap. At rest, the letters are packed with only 4–10% to spare on that test (p and w in `pwd`: 1.04). So a neighbour nudged a hair off its spot still counts as home, yet looks like it's in the way. The waiting letter holds in its lane until the timeout. In `pwd`, dragging just the `p` to the far end does it.
-- **Never still, so never starts.** Homing needs every letter still: asleep, or on the floor with an RMS speed under 0.03. A wide letter squeezed into a narrow letter's spot (an `m` where the `k` was) stays wedged against its neighbours, and they jiggle at around 0.04–0.06 for ever. The 0.6-second wait for calm never completes, so tidying never starts. All 22 "never started" orderings were like this.
+- **Never still, so never starts (fixed in 1.8.4).** Homing needs every letter still: asleep, or on the floor with an RMS speed under 0.03. A wide letter squeezed into a narrow letter's spot (an `m` where the `k` was) stays wedged against its neighbours, and they jiggle at around 0.04–0.06 for ever. The 0.6-second wait for calm never completes, so tidying never starts. All 22 "never started" orderings were like this. Since 1.8.4 a held-up jelly that is nearly still is slowed hard, so they settle.
 
 Two smaller ones:
 - **Turning is a snap, not a carry.** Wrong-facing letters are re-placed rather than turned in the hand.
