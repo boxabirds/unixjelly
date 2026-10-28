@@ -400,7 +400,7 @@ const openTag = (n) => `<${tagOf(n)}${attrText(n)}${KINDS[n.kind].single ? '/' :
 // The name on a block, with what makes this one different: where a link goes, which picture, a text box's name.
 function nameOf(n) {
   if (n.kind === 'other') return `<${n.tag}>: ${KINDS.other.name}`;
-  const a = n.attrs, extra = n.kind === 'link' ? ` to ${a.href ?? 'nowhere yet'}` : n.kind === 'picture' ? `: ${a.src ?? 'none'}` : n.kind === 'textbox' ? ` called "${a.name ?? ''}"` : '';
+  const a = n.attrs, extra = n.kind === 'link' ? ` to ${a.href || 'nowhere yet'}` : n.kind === 'picture' ? `: ${a.src ?? 'none'}` : n.kind === 'textbox' ? ` called "${a.name ?? ''}"` : '';
   return esc(KINDS[n.kind].name + extra);
 }
 
