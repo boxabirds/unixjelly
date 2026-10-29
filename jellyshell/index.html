@@ -3970,7 +3970,8 @@ function helpFor(s) {
     doIt: s.doIt ?? (lines && (() => lines.forEach(typeCmd))),
   };
 }
-function paintHelp() { const c = curStep(), h = c && helpFor(c.s); $('#lHint').hidden = !h?.hint; $('#lDoIt').hidden = !h?.doIt; }
+const CHEATS = new URLSearchParams(location.search).get('allowcheats') === '1';
+function paintHelp() { const c = curStep(), h = c && helpFor(c.s); $('#lHint').hidden = !h?.hint; $('#lDoIt').hidden = !CHEATS || !h?.doIt; }
 BUBBLES.push({ sel: '#lHint', html: () => { const c = curStep(), h = c && helpFor(c.s); return h?.hint ? `<b>Hint</b><p>${h.hint}</p>` : ''; }, onOpen: () => { const c = curStep(); c && helpFor(c.s).show?.(); } });
 document.body.insertAdjacentHTML('beforeend', `<div class="doit-pop" id="doitPop" role="dialog" aria-modal="true" aria-labelledby="doitTitle" hidden><div class="doit-card">
   <h3 id="doitTitle">I can, but you don't get a jelly!</h3><p>If I do this step for you, this exercise won't give you its jelly.</p>
@@ -3984,7 +3985,7 @@ function doForMe() {
   setTimeout(() => { if (!(store.steps[c.L.id] ?? [])[c.k]) check({ type: 'done for me', lesson: c.L.id, step: c.k }); }, DONE_MS);
 }
 const closeDoIt = () => { $('#doitPop').hidden = true; $('#lDoIt').focus({ preventScroll: true }); };
-$('#lDoIt').onclick = () => { if (jellyless(LESSONS[cur].id)) doForMe(); else { $('#doitPop').hidden = false; $('#doitNo').focus(); } };
+$('#lDoIt').onclick = () => { if (!CHEATS) return; if (jellyless(LESSONS[cur].id)) doForMe(); else { $('#doitPop').hidden = false; $('#doitNo').focus(); } };
 $('#doitYes').onclick = () => { closeDoIt(); doForMe(); };
 $('#doitNo').onclick = closeDoIt;
 $('#doitPop').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeDoIt(); });

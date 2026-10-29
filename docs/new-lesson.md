@@ -47,7 +47,7 @@ Writing tips:
 - **Picture.** Show the real thing from this lesson: the real file name, the real `ls -l` line. If the story says "look at the picture", the picture must show exactly that.
 - **Points.** Each one is a usable fact, often with a `<code>` example. Three is the right number.
 - **Steps.** Each step is one action, with the exact command in `<code>`. Later steps can ask the child to work something out ("Give it to the family group."). Only do that once the command has been practised.
-- **Hint and Do it for me.** A hint says where to look and what to do, using only words already taught. `doIt` does the step the way the child would, so they see it happen, and it must make the step's own `ok` pass: the guide only forces the tick as a fallback.
+- **Hint and Do it for me.** A hint says where to look and what to do, using only words already taught. Children only see the "Do it for me" button with `?allowcheats=1` in the address; presenter mode and `tests/help.mjs` still use every `doIt`. `doIt` does the step the way the child would, so they see it happen, and it must make the step's own `ok` pass: the guide only forces the tick as a fallback.
 - **Words.** UK spelling, short sentences, one new idea per paragraph. Explain a term the first time it appears.
 
 ## 3. Check steps by results, not by typing

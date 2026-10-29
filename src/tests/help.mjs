@@ -8,16 +8,32 @@ const GUIDES = process.argv[2] ? [process.argv[2]] : ['jellyshell', 'jellyshell2
 const ONLY = process.argv[3]?.split(',');
 const HOVER_MS = 450, TICK_MS = 500, CHEER_MS = 1300; // the bubble opens after 200 ms; the forced tick waits 700 ms
 const b = await launch({ draw: false }), problems = [];
+const CHEATS = '?allowcheats=1'; // "Do it for me" only shows with this in the address
 
 for (const g of GUIDES) {
   const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
   p.on('pageerror', (e) => problems.push(`${g}: page error: ${e.message}`));
   await p.goto(guideUrl(g)); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForTimeout(800);
   const ids = await p.evaluate(() => [...document.querySelectorAll('.ni')].map((a) => a.dataset.id));
+  // without the address flag, a child never sees "Do it for me", but still gets the hint
+  {
+    let seen = false;
+    for (const id of ids) {
+      await p.goto(guideUrl(g) + '#' + id); await p.waitForTimeout(700);
+      if (await p.evaluate(() => document.querySelector('#p-lesson').hidden)) continue;
+      for (let k = 0; k < 2; k++) if (await p.evaluate(() => document.querySelector('#lcard').dataset.phase !== 'mission')) { await p.evaluate(() => document.querySelector('#lNext').click()); await p.waitForTimeout(350); }
+      if (!await p.evaluate(() => document.querySelectorAll('#lPips .pip').length)) continue;
+      if (!await p.isHidden('#lDoIt')) problems.push(`${g} ${id}: "Do it for me" shows without ?allowcheats=1`);
+      if (await p.isHidden('#lHint')) problems.push(`${g} ${id}: the hint is hidden without ?allowcheats=1`);
+      seen = true; break;
+    }
+    if (!seen) problems.push(`${g}: found no exercise to check "Do it for me" is hidden`);
+    await p.evaluate(() => localStorage.clear());
+  }
   let exercises = 0, steps = 0;
   for (const id of ids) {
     if (ONLY && !ONLY.includes(id)) continue;
-    await p.goto(guideUrl(g) + '#' + id); await p.waitForTimeout(700);
+    await p.goto(guideUrl(g) + CHEATS + '#' + id); await p.waitForTimeout(700);
     if (await p.evaluate(() => document.querySelector('#p-lesson').hidden)) continue; // not an exercise: the welcome page, the overview…
     for (let k = 0; k < 2; k++) if (await p.evaluate(() => document.querySelector('#lcard').dataset.phase !== 'mission')) { await p.evaluate(() => document.querySelector('#lNext').click()); await p.waitForTimeout(350); }
     const n = await p.evaluate(() => document.querySelectorAll('#lPips .pip').length);

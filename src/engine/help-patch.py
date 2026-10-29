@@ -2,7 +2,9 @@
 # A step can have:
 #   hint: what to do, in words (HTML). The "?" next to the step shows it in the bubble, on hover or tap.
 #   show(): makes the thing to use glow, when the hint opens. Each guide decides how.
-#   doIt(): does the step. "Do it for me" first warns that the lesson then gives no jelly.
+#   doIt(): does the step. "Do it for me" first warns that the lesson then gives no jelly. The button only shows with
+#     ?allowcheats=1 in the address: tutor studies find children click straight through to the answer (docs/research). Presenter mode
+#     still uses doIt.
 # A lesson finished with help still counts as finished, so the next lesson and the next course still open. It just
 # gives no jelly: store.nojelly lists those lessons. Steps with no hint or doIt don't show the buttons.
 # Run by shelly-patch.py, after terms-patch.py (it uses the bubble).
@@ -79,7 +81,8 @@ function helpFor(s) {
     doIt: s.doIt ?? (lines && (() => lines.forEach(typeCmd))),
   };
 }
-function paintHelp() { const c = curStep(), h = c && helpFor(c.s); $('#lHint').hidden = !h?.hint; $('#lDoIt').hidden = !h?.doIt; }
+const CHEATS = new URLSearchParams(location.search).get('allowcheats') === '1';
+function paintHelp() { const c = curStep(), h = c && helpFor(c.s); $('#lHint').hidden = !h?.hint; $('#lDoIt').hidden = !CHEATS || !h?.doIt; }
 BUBBLES.push({ sel: '#lHint', html: () => { const c = curStep(), h = c && helpFor(c.s); return h?.hint ? `<b>Hint</b><p>${h.hint}</p>` : ''; }, onOpen: () => { const c = curStep(); c && helpFor(c.s).show?.(); } });
 document.body.insertAdjacentHTML('beforeend', `<div class="doit-pop" id="doitPop" role="dialog" aria-modal="true" aria-labelledby="doitTitle" hidden><div class="doit-card">
   <h3 id="doitTitle">I can, but you don't get a jelly!</h3><p>If I do this step for you, this exercise won't give you its jelly.</p>
@@ -93,7 +96,7 @@ function doForMe() {
   setTimeout(() => { if (!(store.steps[c.L.id] ?? [])[c.k]) check({ type: 'done for me', lesson: c.L.id, step: c.k }); }, DONE_MS);
 }
 const closeDoIt = () => { $('#doitPop').hidden = true; $('#lDoIt').focus({ preventScroll: true }); };
-$('#lDoIt').onclick = () => { if (jellyless(LESSONS[cur].id)) doForMe(); else { $('#doitPop').hidden = false; $('#doitNo').focus(); } };
+$('#lDoIt').onclick = () => { if (!CHEATS) return; if (jellyless(LESSONS[cur].id)) doForMe(); else { $('#doitPop').hidden = false; $('#doitNo').focus(); } };
 $('#doitYes').onclick = () => { closeDoIt(); doForMe(); };
 $('#doitNo').onclick = closeDoIt;
 $('#doitPop').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeDoIt(); });

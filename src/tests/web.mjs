@@ -12,7 +12,7 @@ const pageHtml = () => editor().evaluate(() => document.querySelector('iframe').
 const pageText = () => editor().evaluate(() => document.querySelector('iframe').contentDocument.body.innerText.replace(/\s+/g, ' ').trim());
 // an exercise's mission, from a fresh start
 async function mission(id) {
-  await p.goto(guideUrl('jellyweb') + '#' + id); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForTimeout(900);
+  await p.goto(guideUrl('jellyweb') + '?allowcheats=1#' + id); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForTimeout(900);
   for (let k = 0; k < 2; k++) { await p.evaluate(() => document.querySelector('#lNext').click()); await p.waitForTimeout(300); }
   await p.waitForTimeout(600);
   return editor();
